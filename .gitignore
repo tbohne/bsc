@@ -1,3 +1,4 @@
 mip_tests/.idea
 mip_tests/target/
 mip_tests/*.iml
+mip_tests/out
