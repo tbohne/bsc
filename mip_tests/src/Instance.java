@@ -4,16 +4,16 @@ public class Instance {
 
     private ArrayList<Integer> items;
     private ArrayList<ArrayList<Integer>> stacks;
-    private ArrayList<ArrayList<Integer>> stackingConstraints;
-    private ArrayList<ArrayList<Integer>> c;
-    private int b;
+    private int[][] stackingConstraints;
+    private int[][] costs;
+    private int stackCapacity;
 
     public Instance(
             int numberOfItems,
             int numberOfStacks,
-            int b,
-            ArrayList<ArrayList<Integer>> stackingConstraints,
-            ArrayList<ArrayList<Integer>> c
+            int stackCapacity,
+            int[][] stackingConstraints,
+            int[][] costs
     ) {
 
         this.items = new ArrayList<>();
@@ -27,9 +27,9 @@ public class Instance {
             this.stacks.add(new ArrayList<>());
         }
 
-        this.b = b;
+        this.stackCapacity = stackCapacity;
         this.stackingConstraints = stackingConstraints;
-        this.c = c;
+        this.costs = costs;
     }
 
     public ArrayList<Integer> getItems() {
@@ -40,15 +40,15 @@ public class Instance {
         return stacks;
     }
 
-    public ArrayList<ArrayList<Integer>> getStackingConstraints() {
+    public int[][] getStackingConstraints() {
         return stackingConstraints;
     }
 
-    public ArrayList<ArrayList<Integer>> getCosts() {
-        return c;
+    public int[][] getCosts() {
+        return costs;
     }
 
     public int getStackCapacity() {
-        return b;
+        return stackCapacity;
     }
 }
