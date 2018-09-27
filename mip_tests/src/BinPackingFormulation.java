@@ -4,47 +4,15 @@ import ilog.concert.IloLinearIntExpr;
 import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
 
-import java.util.ArrayList;
-
 public class BinPackingFormulation {
 
-    public static void main(String[] args) {
+    private Instance instance;
 
-        //////////////////////////////////////////////////////////////////////
+    BinPackingFormulation(Instance instance) {
+        this.instance = instance;
+    }
 
-        // Instance of the SLP - TODO: Read instance from file
-
-        ArrayList<Integer> items = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> stacks = new ArrayList<>();
-
-        for (int i = 0; i < 6; i++) {
-            items.add(i);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            stacks.add(new ArrayList<>());
-        }
-
-        int b = 3;
-
-        int[][] stackingConstraints = {
-                {0, 1, 0, 0, 1, 1},
-                {0, 0, 1, 1, 1, 0},
-                {0, 0, 0, 1, 0, 0},
-                {0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 1},
-                {0, 0, 0, 0, 0, 0}
-        };
-
-        int[][] c = {
-                {1, 1},
-                {1, 1},
-                {1, 1},
-                {1, 1},
-                {1, 1},
-                {1, 1}
-        };
-        //////////////////////////////////////////////////////////////////////
+    public void solve() {
 
         try {
 
@@ -53,19 +21,19 @@ public class BinPackingFormulation {
 
             // VARIABLES
 
-            IloIntVar[][] x = new IloIntVar[items.size()][];
+            IloIntVar[][] x = new IloIntVar[this.instance.getItems().size()][];
 
-            for (int i = 0; i < items.size(); i++) {
-                x[i] = cplex.intVarArray(stacks.size(), 0, 1);
+            for (int i = 0; i < this.instance.getItems().size(); i++) {
+                x[i] = cplex.intVarArray(this.instance.getStacks().size(), 0, 1);
             }
 
             // OBJECTIVE FUNCTION
 
             IloLinearNumExpr objective = cplex.linearNumExpr();
 
-            for (int i = 0; i < items.size(); i++) {
-                for (int q = 0; q < stacks.size(); q++) {
-                    objective.addTerm(c[i][q], x[i][q]);
+            for (int i = 0; i < this.instance.getItems().size(); i++) {
+                for (int q = 0; q < this.instance.getStacks().size(); q++) {
+                    objective.addTerm(this.instance.getCosts()[i][q], x[i][q]);
                 }
             }
 
@@ -74,29 +42,29 @@ public class BinPackingFormulation {
             // CONSTRAINTS
 
             // --- (2) ---
-            for (int i = 0; i < items.size(); i++) {
+            for (int i = 0; i < this.instance.getItems().size(); i++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
-                for (int q = 0; q < stacks.size(); q++) {
+                for (int q = 0; q < this.instance.getStacks().size(); q++) {
                     expr.addTerm(1, x[i][q]);
                 }
                 cplex.addEq(expr, 1);
             }
 
             // --- (3) ---
-            for (int q = 0; q < stacks.size(); q++) {
+            for (int q = 0; q < this.instance.getStacks().size(); q++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
-                for (int i = 0; i < items.size(); i++) {
+                for (int i = 0; i < this.instance.getItems().size(); i++) {
                     expr.addTerm(1, x[i][q]);
                 }
-                cplex.addLe(expr, b);
+                cplex.addLe(expr, this.instance.getStackCapacity());
             }
 
             // --- (4) ---
-            for (int i = 0; i < items.size(); i++) {
-                for (int j = 0; j < items.size(); j++) {
+            for (int i = 0; i < this.instance.getItems().size(); i++) {
+                for (int j = 0; j < this.instance.getItems().size(); j++) {
 
-                    if (i != j && stackingConstraints[i][j] == 0 && stackingConstraints[j][i] == 0) {
-                        for (int q = 0; q < stacks.size(); q++) {
+                    if (i != j && this.instance.getStackingConstraints()[i][j] == 0 && this.instance.getStackingConstraints()[j][i] == 0) {
+                        for (int q = 0; q < this.instance.getStacks().size(); q++) {
                             IloLinearIntExpr expr = cplex.linearIntExpr();
                             expr.addTerm(1, x[i][q]);
                             expr.addTerm(1, x[j][q]);
