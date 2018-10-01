@@ -4,6 +4,8 @@ import ilog.concert.IloLinearIntExpr;
 import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
 
+import java.util.ArrayList;
+
 public class BinPackingFormulation {
 
     private Instance instance;
@@ -73,9 +75,13 @@ public class BinPackingFormulation {
                     }
                 }
             }
+            System.out.println();
+            cplex.setOut(null);
 
             if (cplex.solve()) {
                 System.out.println("obj = " + cplex.getObjValue());
+                this.setStacks(cplex, x);
+                this.printStacks();
             } else {
                 System.out.println("problem not solved");
             }
@@ -87,4 +93,25 @@ public class BinPackingFormulation {
         }
     }
 
+    public void printStacks() {
+        for (int i = 0; i < this.instance.getStacks().size(); i++) {
+            System.out.print("stack " + i + ": ");
+            System.out.println(this.instance.getStacks().get(i));
+        }
+    }
+
+    public void setStacks(IloCplex cplex, IloIntVar[][] x) {
+        for (int i = 0; i < 6; i++) {
+            for (int q = 0; q < 2; q++) {
+                try {
+                    if (cplex.getValue(x[i][q]) == 1.0) {
+                        this.instance.getStacks().get(q).add(i);
+                    }
+                } catch (IloException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
+

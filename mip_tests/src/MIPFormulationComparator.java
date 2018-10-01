@@ -4,6 +4,7 @@ public class MIPFormulationComparator {
 
         Instance instance = Reader.readInstance("res/slp_instance0.txt");
 
+        System.out.println("********************************************************************");
         System.out.println("items: " + instance.getItems());
         System.out.println("stacks: " + instance.getStacks());
         System.out.println("stack capacity: " + instance.getStackCapacity());
@@ -16,7 +17,6 @@ public class MIPFormulationComparator {
             }
             System.out.println();
         }
-
         System.out.println();
         System.out.println("stacking costs:");
         for (int i = 0; i < instance.getItems().size(); i++) {
@@ -25,8 +25,9 @@ public class MIPFormulationComparator {
             }
             System.out.println();
         }
+        System.out.println("********************************************************************");
 
         BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
-
+        binPackingFormulation.solve();
     }
 }
