@@ -102,8 +102,8 @@ public class BinPackingFormulation {
     }
 
     public void setStacks(IloCplex cplex, IloIntVar[][] x) {
-        for (int i = 0; i < 6; i++) {
-            for (int q = 0; q < 2; q++) {
+        for (int i = 0; i < x.length; i++) {
+            for (int q = 0; q < x[0].length; q++) {
                 try {
                     if (cplex.getValue(x[i][q]) == 1.0) {
                         this.instance.getStacks().get(q).add(i);

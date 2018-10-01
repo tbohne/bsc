@@ -2,25 +2,21 @@ public class TestDataGenerator {
 
     public static void main(String[] args) {
 
-        int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(25, 25, false);
+        int numOfItems = 25;
+        int numOfStacks = 5;
+        int stackCap = 5;
 
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+        int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
+
+        int[][] costs = new int[numOfItems][numOfStacks];
+        for (int i = 0; i < numOfItems; i++) {
+            for (int j = 0; j < numOfStacks; j++) {
+                costs[i][j] = (int)Math.round(Math.random());
             }
-            System.out.println();
         }
 
-        System.out.println("----");
-
-        matrix = makeMatrixTransitive(matrix);
-
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.println();
-        }
+        Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs);
+        Writer.writeInstance("res/slp_instance_generated_0.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
