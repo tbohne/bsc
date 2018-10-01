@@ -4,8 +4,6 @@ import ilog.concert.IloLinearIntExpr;
 import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
 
-import java.util.ArrayList;
-
 public class BinPackingFormulation {
 
     private Instance instance;
@@ -78,7 +76,10 @@ public class BinPackingFormulation {
             System.out.println();
             cplex.setOut(null);
 
+            double startTime = cplex.getCplexTime();
+
             if (cplex.solve()) {
+                System.out.println("time to solve: " + String.format("%.2f", cplex.getCplexTime() - startTime) + " s");
                 System.out.println("obj = " + cplex.getObjValue());
                 this.setStacks(cplex, x);
                 this.printStacks();
