@@ -27,7 +27,15 @@ public class MIPFormulationComparator {
         }
         System.out.println("********************************************************************");
 
+        System.out.println("--- BIN-PACKING-FORMULATION ---");
+
         BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
         binPackingFormulation.solve();
+
+        System.out.println();
+        System.out.println("--- THREE-INDEX-FORMULATION ---");
+
+        ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance);
+        threeIndexFormulation.solve();
     }
 }
