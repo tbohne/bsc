@@ -95,6 +95,7 @@ public class BinPackingFormulation {
     }
 
     public void printStacks() {
+        System.out.println("Stacks (top to bottom):");
         for (int i = 0; i < this.instance.getStacks().size(); i++) {
             System.out.print("stack " + i + ": ");
             System.out.println(this.instance.getStacks().get(i));

@@ -2,7 +2,7 @@ public class MIPFormulationComparator {
 
     public static void main(String[] args) {
 
-        Instance instance = Reader.readInstance("res/slp_instance_generated_0.txt");
+        Instance instance = Reader.readInstance("res/slp_instance_generated_1.txt");
 
         System.out.println("********************************************************************");
         System.out.println("items: " + instance.getItems());
@@ -31,6 +31,8 @@ public class MIPFormulationComparator {
 
         BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
         binPackingFormulation.solve();
+
+        instance.resetStacks();
 
         System.out.println();
         System.out.println("--- THREE-INDEX-FORMULATION ---");

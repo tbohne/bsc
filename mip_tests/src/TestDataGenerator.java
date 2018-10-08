@@ -2,9 +2,9 @@ public class TestDataGenerator {
 
     public static void main(String[] args) {
 
-        int numOfItems = 25;
+        int numOfItems = 10;
         int numOfStacks = 5;
-        int stackCap = 5;
+        int stackCap = 3;
 
         int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
 
@@ -16,7 +16,7 @@ public class TestDataGenerator {
         }
 
         Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs);
-        Writer.writeInstance("res/slp_instance_generated_0.txt", instance);
+        Writer.writeInstance("res/slp_instance_generated_1.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
