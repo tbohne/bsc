@@ -32,6 +32,39 @@ public class Instance {
         this.costs = costs;
     }
 
+    /**
+     * Copy constructor
+     * @param instance - the instance to be copied
+     */
+    public Instance(Instance instance) {
+
+        this.items = new ArrayList<>(instance.getItems());
+        this.stacks = new ArrayList<>(instance.getStacks());
+        this.stackCapacity = instance.getStackCapacity();
+
+        this.stackingConstraints = new int[instance.getStackingConstraints().length][];
+        for (int i = 0; i < instance.getStackingConstraints().length; i++) {
+            for (int j = 0; j < instance.getStackingConstraints()[0].length; j++) {
+                this.stackingConstraints[i][j] = instance.getStackingConstraints()[i][j];
+            }
+        }
+
+        this.costs = new int[instance.getCosts().length][];
+        for (int i = 0; i < instance.getCosts().length; i++) {
+            for (int j = 0; j < instance.getCosts()[0].length; j++) {
+                this.costs[i][j] = instance.getCosts()[i][j];
+            }
+        }
+    }
+
+    public void resetStacks() {
+        int numberOfStacks = this.stacks.size();
+        this.stacks = new ArrayList<>();
+        for (int i = 0; i < numberOfStacks; i++) {
+            this.stacks.add(new ArrayList<>());
+        }
+    }
+
     public ArrayList<Integer> getItems() {
         return items;
     }
