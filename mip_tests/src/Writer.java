@@ -10,8 +10,8 @@ public class Writer {
             FileOutputStream fos = new FileOutputStream(file);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-            bw.write(instance.getItems().size() + "\n");
-            bw.write(instance.getStacks().size() + "\n");
+            bw.write(instance.getItems().length + "\n");
+            bw.write(instance.getStacks().length + "\n");
             bw.write(instance.getStackCapacity() + "\n");
             bw.newLine();
             for (int i = 0; i < instance.getStackingConstraints().length; i++) {

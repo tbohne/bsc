@@ -11,16 +11,16 @@ public class MIPFormulationComparator {
         System.out.println();
 
         System.out.println("stacking constraints:");
-        for (int i = 0; i < instance.getItems().size(); i++) {
-            for (int j = 0; j < instance.getItems().size(); j++) {
+        for (int i = 0; i < instance.getItems().length; i++) {
+            for (int j = 0; j < instance.getItems().length; j++) {
                 System.out.print(instance.getStackingConstraints()[i][j] + " ");
             }
             System.out.println();
         }
         System.out.println();
         System.out.println("stacking costs:");
-        for (int i = 0; i < instance.getItems().size(); i++) {
-            for (int j = 0; j < instance.getStacks().size(); j++) {
+        for (int i = 0; i < instance.getItems().length; i++) {
+            for (int j = 0; j < instance.getStacks().length; j++) {
                 System.out.print(instance.getCosts()[i][j] + " ");
             }
             System.out.println();
