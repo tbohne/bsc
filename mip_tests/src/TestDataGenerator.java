@@ -16,7 +16,7 @@ public class TestDataGenerator {
         }
 
         Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs);
-        Writer.writeInstance("res/slp_instance_generated_1.txt", instance);
+        Writer.writeInstance("res/slp_instance_generated_2.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
@@ -51,10 +51,9 @@ public class TestDataGenerator {
             for (int j = 0; j < matrix[0].length; j++) {
                 // we only have to add the ones that follow from transitivity
                 if (i != j && matrix[i][j] == 0) {
-                    int saved = j;
                     for (int k = 0; k < matrix[0].length; k++) {
                         if (matrix[i][k] == 1 && i != k && j != k) {
-                            if (matrix[k][saved] == 1) {
+                            if (matrix[k][j] == 1) {
                                 matrix[i][j] = 1;
                                 break;
                             }
