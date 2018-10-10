@@ -21,18 +21,18 @@ public class BinPackingFormulation {
 
             // VARIABLES
 
-            IloIntVar[][] x = new IloIntVar[this.instance.getItems().size()][];
+            IloIntVar[][] x = new IloIntVar[this.instance.getItems().length][];
 
-            for (int i = 0; i < this.instance.getItems().size(); i++) {
-                x[i] = cplex.intVarArray(this.instance.getStacks().size(), 0, 1);
+            for (int i = 0; i < this.instance.getItems().length; i++) {
+                x[i] = cplex.intVarArray(this.instance.getStacks().length, 0, 1);
             }
 
             // OBJECTIVE FUNCTION
 
             IloLinearNumExpr objective = cplex.linearNumExpr();
 
-            for (int i = 0; i < this.instance.getItems().size(); i++) {
-                for (int q = 0; q < this.instance.getStacks().size(); q++) {
+            for (int i = 0; i < this.instance.getItems().length; i++) {
+                for (int q = 0; q < this.instance.getStacks().length; q++) {
                     objective.addTerm(this.instance.getCosts()[i][q], x[i][q]);
                 }
             }
@@ -42,29 +42,29 @@ public class BinPackingFormulation {
             // CONSTRAINTS
 
             // --- (2) ---
-            for (int i = 0; i < this.instance.getItems().size(); i++) {
+            for (int i = 0; i < this.instance.getItems().length; i++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
-                for (int q = 0; q < this.instance.getStacks().size(); q++) {
+                for (int q = 0; q < this.instance.getStacks().length; q++) {
                     expr.addTerm(1, x[i][q]);
                 }
                 cplex.addEq(expr, 1);
             }
 
             // --- (3) ---
-            for (int q = 0; q < this.instance.getStacks().size(); q++) {
+            for (int q = 0; q < this.instance.getStacks().length; q++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
-                for (int i = 0; i < this.instance.getItems().size(); i++) {
+                for (int i = 0; i < this.instance.getItems().length; i++) {
                     expr.addTerm(1, x[i][q]);
                 }
                 cplex.addLe(expr, this.instance.getStackCapacity());
             }
 
             // --- (4) ---
-            for (int i = 0; i < this.instance.getItems().size(); i++) {
-                for (int j = 0; j < this.instance.getItems().size(); j++) {
+            for (int i = 0; i < this.instance.getItems().length; i++) {
+                for (int j = 0; j < this.instance.getItems().length; j++) {
 
                     if (i != j && this.instance.getStackingConstraints()[i][j] == 0 && this.instance.getStackingConstraints()[j][i] == 0) {
-                        for (int q = 0; q < this.instance.getStacks().size(); q++) {
+                        for (int q = 0; q < this.instance.getStacks().length; q++) {
                             IloLinearIntExpr expr = cplex.linearIntExpr();
                             expr.addTerm(1, x[i][q]);
                             expr.addTerm(1, x[j][q]);
@@ -96,9 +96,14 @@ public class BinPackingFormulation {
 
     public void printStacks() {
         System.out.println("Stacks (top to bottom):");
-        for (int i = 0; i < this.instance.getStacks().size(); i++) {
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
             System.out.print("stack " + i + ": ");
-            System.out.println(this.instance.getStacks().get(i));
+            for (int item : this.instance.getStacks()[i]) {
+                if (item != -1) {
+                    System.out.print(item + " ");
+                }
+            }
+            System.out.println();
         }
     }
 
@@ -107,7 +112,11 @@ public class BinPackingFormulation {
             for (int q = 0; q < x[0].length; q++) {
                 try {
                     if (cplex.getValue(x[i][q]) == 1.0) {
-                        this.instance.getStacks().get(q).add(i);
+                        int idx = 0;
+                        while (this.instance.getStacks()[q][idx] != -1) {
+                            idx++;
+                        }
+                        this.instance.getStacks()[q][idx] = i;
                     }
                 } catch (IloException e) {
                     e.printStackTrace();
