@@ -7,7 +7,6 @@ public class TestDataGenerator {
         int stackCap = 3;
 
         int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
-
         int[][] costs = new int[numOfItems][numOfStacks];
         for (int i = 0; i < numOfItems; i++) {
             for (int j = 0; j < numOfStacks; j++) {
@@ -16,7 +15,7 @@ public class TestDataGenerator {
         }
 
         Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs);
-        Writer.writeInstance("res/slp_instance_generated_2.txt", instance);
+        Writer.writeInstance("res/slp_instance_generated_1.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
@@ -47,15 +46,24 @@ public class TestDataGenerator {
 
     public static int[][] makeMatrixTransitive(int[][] matrix) {
 
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                // we only have to add the ones that follow from transitivity
-                if (i != j && matrix[i][j] == 0) {
-                    for (int k = 0; k < matrix[0].length; k++) {
-                        if (matrix[i][k] == 1 && i != k && j != k) {
-                            if (matrix[k][j] == 1) {
-                                matrix[i][j] = 1;
-                                break;
+        // The ones that are added can then induce new ones in other rows,
+        // therefore we have to repeat the process as long as there are changes.
+
+        boolean somethingChanged = true;
+
+        while (somethingChanged) {
+            somethingChanged = false;
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[0].length; j++) {
+                    // we only have to add the ones that follow from transitivity
+                    if (i != j && matrix[i][j] == 0) {
+                        for (int k = 0; k < matrix[0].length; k++) {
+                            if (matrix[i][k] == 1 && i != k && j != k) {
+                                if (matrix[k][j] == 1) {
+                                    matrix[i][j] = 1;
+                                    somethingChanged = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -64,5 +72,4 @@ public class TestDataGenerator {
         }
         return matrix;
     }
-
 }
