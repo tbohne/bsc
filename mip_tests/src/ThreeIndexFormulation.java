@@ -108,12 +108,14 @@ public class ThreeIndexFormulation {
     }
 
     public void printStacks() {
-        System.out.println("Stacks (bottom to top):");
+        System.out.println("Stacks (top to bottom):");
+
         for (int i = 0; i < this.instance.getStacks().length; i++) {
             System.out.print("stack " + i + ": ");
-            for (int item : this.instance.getStacks()[i]) {
-                if (item != -1) {
-                    System.out.print(item + " ");
+
+            for (int j = this.instance.getStacks()[i].length - 1; j >= 0; j--) {
+                if (this.instance.getStacks()[i][j] != -1) {
+                    System.out.print(this.instance.getStacks()[i][j] + " ");
                 }
             }
             System.out.println();
