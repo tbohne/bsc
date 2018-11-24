@@ -2,7 +2,7 @@ public class MIPFormulationComparator {
 
     public static void main(String[] args) {
 
-        Instance instance = Reader.readInstance("res/slp_instance_generated_1.txt");
+        Instance instance = Reader.readInstance("res/slp_instance_generated_3.txt");
 
         System.out.println("********************************************************************");
         System.out.println("items: " + instance.getItems());

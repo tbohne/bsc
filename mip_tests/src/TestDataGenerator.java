@@ -2,9 +2,9 @@ public class TestDataGenerator {
 
     public static void main(String[] args) {
 
-        int numOfItems = 10;
-        int numOfStacks = 5;
-        int stackCap = 3;
+        int numOfItems = 100;
+        int numOfStacks = 16;
+        int stackCap = 16;
 
         int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
         int[][] costs = new int[numOfItems][numOfStacks];
@@ -15,7 +15,7 @@ public class TestDataGenerator {
         }
 
         Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs);
-        Writer.writeInstance("res/slp_instance_generated_1.txt", instance);
+        Writer.writeInstance("res/slp_instance_generated_3.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
@@ -29,7 +29,7 @@ public class TestDataGenerator {
                     matrix[i][j] = 1;
                 } else {
                     // Sets the entry to 1 in 10% of the cases.
-                    if (Math.random() >= 0.90) {
+                    if (Math.random() >= 0.98) {
                         matrix[i][j] = 1;
                     } else {
                         matrix[i][j] = 0;
