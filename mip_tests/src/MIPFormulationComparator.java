@@ -2,7 +2,7 @@ public class MIPFormulationComparator {
 
     public static void main(String[] args) {
 
-        Instance instance = Reader.readInstance("res/slp_instance_generated_1.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_generated_1.txt");
         System.out.println(instance);
 
         System.out.println("--- BIN-PACKING-FORMULATION ---");

@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Reader {
+public class InstanceReader {
 
     private static int[][] readMatrix(BufferedReader reader, int numberOfItems) {
 

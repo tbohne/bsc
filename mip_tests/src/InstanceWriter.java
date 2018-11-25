@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class Writer {
+public class InstanceWriter {
 
     public static void writeInstance(String filename, Instance instance) {
 
