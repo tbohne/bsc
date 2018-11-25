@@ -14,7 +14,7 @@ public class TestDataGenerator {
             }
         }
 
-        Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs);
+        Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs, "slp_instance_generated_3");
         Writer.writeInstance("res/slp_instance_generated_3.txt", instance);
     }
 
@@ -28,7 +28,6 @@ public class TestDataGenerator {
                 if (i == j) {
                     matrix[i][j] = 1;
                 } else {
-                    // Sets the entry to 1 in 10% of the cases.
                     if (Math.random() >= 0.98) {
                         matrix[i][j] = 1;
                     } else {

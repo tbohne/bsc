@@ -7,12 +7,15 @@ public class Instance {
     private int[][] costs;
     private int stackCapacity;
 
+    private String name;
+
     public Instance(
             int numberOfItems,
             int numberOfStacks,
             int stackCapacity,
             int[][] stackingConstraints,
-            int[][] costs
+            int[][] costs,
+            String name
     ) {
 
         this.items = new int[numberOfItems];
@@ -31,6 +34,7 @@ public class Instance {
         this.stackCapacity = stackCapacity;
         this.stackingConstraints = stackingConstraints;
         this.costs = costs;
+        this.name = name;
     }
 
     public void resetStacks() {
@@ -64,9 +68,12 @@ public class Instance {
         return this.stackCapacity;
     }
 
+    public String getName() { return this.name; }
+
     public String toString() {
 
         String str = "********************************************************************\n";
+        str += "instance: " + this.getName() + "\n";
         str += "items: ";
 
         for (int item : this.getItems()) {

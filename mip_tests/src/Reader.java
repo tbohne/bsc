@@ -56,6 +56,7 @@ public class Reader {
             e.printStackTrace();
         }
 
-        return new Instance(numberOfItems, numberOfStacks, stackCapacity, stackingConstraints, costs);
+        String instancename = filename.replace("res/", "").replace(".txt", "");
+        return new Instance(numberOfItems, numberOfStacks, stackCapacity, stackingConstraints, costs, instancename);
     }
 }
