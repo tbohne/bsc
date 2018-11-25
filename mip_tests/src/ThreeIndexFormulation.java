@@ -18,6 +18,7 @@ public class ThreeIndexFormulation {
 
         try {
 
+            // Defines a new model.
             IloCplex cplex = new IloCplex();
 
             // VARIABLES

@@ -18,7 +18,7 @@ public class BinPackingFormulation {
 
         try {
 
-            // define new model
+            // Defines a new model.
             IloCplex cplex = new IloCplex();
 
             // VARIABLES
@@ -75,6 +75,7 @@ public class BinPackingFormulation {
                     }
                 }
             }
+
             System.out.println();
             cplex.setOut(null);
 

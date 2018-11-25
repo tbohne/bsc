@@ -63,4 +63,36 @@ public class Instance {
     public int getStackCapacity() {
         return this.stackCapacity;
     }
+
+    public String toString() {
+
+        String str = "********************************************************************\n";
+        str += "items: ";
+
+        for (int item : this.getItems()) {
+            str += item + " ";
+        }
+
+        str += "\nnumber of stacks: " + this.getStacks().length + "\n";
+        str += "stack capacity: " + this.getStackCapacity() + "\n\n";
+        str += "stacking constraints:" + "\n";
+
+        for (int i = 0; i < this.getItems().length; i++) {
+            for (int j = 0; j < this.getItems().length; j++) {
+                str += this.getStackingConstraints()[i][j] + " ";
+            }
+            str += "\n";
+        }
+        str += "\nstacking costs:\n";
+
+        for (int i = 0; i < this.getItems().length; i++) {
+            for (int j = 0; j < this.getStacks().length; j++) {
+                str += this.getCosts()[i][j] + " ";
+            }
+            str += "\n";
+        }
+        str += "********************************************************************\n";
+
+        return str;
+    }
 }
