@@ -4,10 +4,16 @@ public class Solution {
     private double objectiveValue;
 
     private int[][] filledStorageArea;
+    private boolean empty;
+
+    public Solution() {
+        this.empty = true;
+    }
 
     public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea) {
         this.timeToSolve = timeToSolve;
         this.objectiveValue = objectiveValue;
+        this.empty = false;
 
         this.filledStorageArea = new int[filledStorageArea.length][];
         for (int i = 0; i < filledStorageArea.length; i++) {
@@ -19,18 +25,23 @@ public class Solution {
 
         String str = "";
 
-        str += "Stacks (top to bottom):\n";
+        if (!this.empty) {
+            str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s\n";
+            str += "objective value: " + this.objectiveValue + "\n\n";
+            str += "stacks (top to bottom):\n";
 
-        for (int i = 0; i < this.filledStorageArea.length; i++) {
-            str += "stack " + i + ": ";
-            for (int item : this.filledStorageArea[i]) {
-                if (item != -1) {
-                    str += item + " ";
+            for (int i = 0; i < this.filledStorageArea.length; i++) {
+                str += "stack " + i + ":    ";
+                for (int item : this.filledStorageArea[i]) {
+                    if (item != -1) {
+                        str += item + " ";
+                    }
                 }
+                str += "\n";
             }
-            str += "\n";
+        } else {
+            str += "Problem not solved.\n";
         }
-
         return str;
     }
 }

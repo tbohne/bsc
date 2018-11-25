@@ -14,7 +14,7 @@ public class BinPackingFormulation {
 
     public Solution solve() {
 
-        Solution sol = new Solution(0.0, 0.0, this.instance.getStacks());
+        Solution sol = new Solution();
 
         try {
 
@@ -81,13 +81,9 @@ public class BinPackingFormulation {
             double startTime = cplex.getCplexTime();
 
             if (cplex.solve()) {
-                System.out.println("time to solve: " + String.format("%.2f", cplex.getCplexTime() - startTime) + " s");
-                System.out.println("obj = " + cplex.getObjValue());
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
                 sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
-            } else {
-                System.out.println("problem not solved");
             }
 
             cplex.end();
