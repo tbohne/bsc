@@ -12,7 +12,9 @@ public class BinPackingFormulation {
         this.instance = instance;
     }
 
-    public void solve() {
+    public Solution solve() {
+
+        Solution sol = new Solution(0.0, 0.0, this.instance.getStacks());
 
         try {
 
@@ -83,7 +85,10 @@ public class BinPackingFormulation {
                 System.out.println("obj = " + cplex.getObjValue());
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-                this.printStacks();
+
+                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
+
+                // this.printStacks();
             } else {
                 System.out.println("problem not solved");
             }
@@ -93,6 +98,8 @@ public class BinPackingFormulation {
         } catch (IloException e) {
             e.printStackTrace();
         }
+
+        return sol;
     }
 
     public void getSolutionFromStackAssignment() {
@@ -116,24 +123,23 @@ public class BinPackingFormulation {
                             break;
                         }
                     }
-
                 }
             }
         }
     }
 
-    public void printStacks() {
-        System.out.println("Stacks (top to bottom):");
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            System.out.print("stack " + i + ": ");
-            for (int item : this.instance.getStacks()[i]) {
-                if (item != -1) {
-                    System.out.print(item + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
+//    public void printStacks() {
+//        System.out.println("Stacks (top to bottom):");
+//        for (int i = 0; i < this.instance.getStacks().length; i++) {
+//            System.out.print("stack " + i + ": ");
+//            for (int item : this.instance.getStacks()[i]) {
+//                if (item != -1) {
+//                    System.out.print(item + " ");
+//                }
+//            }
+//            System.out.println();
+//        }
+//    }
 
     public void setStacks(IloCplex cplex, IloIntVar[][] x) {
         for (int i = 0; i < x.length; i++) {

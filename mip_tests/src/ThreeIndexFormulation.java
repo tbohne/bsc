@@ -12,7 +12,9 @@ public class ThreeIndexFormulation {
         this.instance = instance;
     }
 
-    public void solve() {
+    public Solution solve() {
+
+        Solution sol = new Solution(0.0, 0.0, this.instance.getStacks());
 
         try {
 
@@ -95,7 +97,10 @@ public class ThreeIndexFormulation {
                 System.out.println("time to solve: " + String.format("%.2f", cplex.getCplexTime() - startTime) + " s");
                 System.out.println("obj = " + cplex.getObjValue());
                 this.setStacks(cplex, x);
-                this.printStacks();
+                // this.printStacks();
+
+                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
+
             } else {
                 System.out.println("problem not solved");
             }
@@ -105,24 +110,26 @@ public class ThreeIndexFormulation {
         } catch (IloException e) {
             e.printStackTrace();
         }
+        return sol;
     }
 
-    public void printStacks() {
-        System.out.println("Stacks (top to bottom):");
-
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            System.out.print("stack " + i + ": ");
-
-            for (int j = this.instance.getStacks()[i].length - 1; j >= 0; j--) {
-                if (this.instance.getStacks()[i][j] != -1) {
-                    System.out.print(this.instance.getStacks()[i][j] + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
+//    public void printStacks() {
+//        System.out.println("Stacks (top to bottom):");
+//
+//        for (int i = 0; i < this.instance.getStacks().length; i++) {
+//            System.out.print("stack " + i + ": ");
+//
+//            for (int j = this.instance.getStacks()[i].length - 1; j >= 0; j--) {
+//                if (this.instance.getStacks()[i][j] != -1) {
+//                    System.out.print(this.instance.getStacks()[i][j] + " ");
+//                }
+//            }
+//            System.out.println();
+//        }
+//    }
 
     public void setStacks(IloCplex cplex, IloIntVar[][][] x) {
+
         for (int i = 0; i < this.instance.getItems().length; i++) {
             for (int q = 0; q < this.instance.getStacks().length; q++) {
                 for (int l = 0; l < this.instance.getStackCapacity(); l++) {
@@ -134,6 +141,20 @@ public class ThreeIndexFormulation {
                         e.printStackTrace();
                     }
                 }
+            }
+        }
+
+        // Reverse stack entries:
+
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+
+            for (int j = 0; j < this.instance.getStacks()[i].length / 2; j++) {
+
+                int tmp = this.instance.getStacks()[i][j];
+
+                this.instance.getStacks()[i][j] = this.instance.getStacks()[i][this.instance.getStacks()[i].length - j - 1];
+
+                this.instance.getStacks()[i][this.instance.getStacks()[i].length - j - 1] = tmp;
             }
         }
     }
