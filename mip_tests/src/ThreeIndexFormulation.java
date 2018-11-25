@@ -97,8 +97,6 @@ public class ThreeIndexFormulation {
                 System.out.println("time to solve: " + String.format("%.2f", cplex.getCplexTime() - startTime) + " s");
                 System.out.println("obj = " + cplex.getObjValue());
                 this.setStacks(cplex, x);
-                // this.printStacks();
-
                 sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
 
             } else {
@@ -113,20 +111,15 @@ public class ThreeIndexFormulation {
         return sol;
     }
 
-//    public void printStacks() {
-//        System.out.println("Stacks (top to bottom):");
-//
-//        for (int i = 0; i < this.instance.getStacks().length; i++) {
-//            System.out.print("stack " + i + ": ");
-//
-//            for (int j = this.instance.getStacks()[i].length - 1; j >= 0; j--) {
-//                if (this.instance.getStacks()[i][j] != -1) {
-//                    System.out.print(this.instance.getStacks()[i][j] + " ");
-//                }
-//            }
-//            System.out.println();
-//        }
-//    }
+    public void reverseItemOrderForEachStack() {
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int j = 0; j < this.instance.getStacks()[i].length / 2; j++) {
+                int tmp = this.instance.getStacks()[i][j];
+                this.instance.getStacks()[i][j] = this.instance.getStacks()[i][this.instance.getStacks()[i].length - j - 1];
+                this.instance.getStacks()[i][this.instance.getStacks()[i].length - j - 1] = tmp;
+            }
+        }
+    }
 
     public void setStacks(IloCplex cplex, IloIntVar[][][] x) {
 
@@ -143,19 +136,7 @@ public class ThreeIndexFormulation {
                 }
             }
         }
-
-        // Reverse stack entries:
-
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-
-            for (int j = 0; j < this.instance.getStacks()[i].length / 2; j++) {
-
-                int tmp = this.instance.getStacks()[i][j];
-
-                this.instance.getStacks()[i][j] = this.instance.getStacks()[i][this.instance.getStacks()[i].length - j - 1];
-
-                this.instance.getStacks()[i][this.instance.getStacks()[i].length - j - 1] = tmp;
-            }
-        }
+        // Used to end up with a top to bottom order.
+        this.reverseItemOrderForEachStack();
     }
 }

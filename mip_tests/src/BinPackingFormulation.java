@@ -85,10 +85,7 @@ public class BinPackingFormulation {
                 System.out.println("obj = " + cplex.getObjValue());
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-
                 sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
-
-                // this.printStacks();
             } else {
                 System.out.println("problem not solved");
             }
@@ -127,19 +124,6 @@ public class BinPackingFormulation {
             }
         }
     }
-
-//    public void printStacks() {
-//        System.out.println("Stacks (top to bottom):");
-//        for (int i = 0; i < this.instance.getStacks().length; i++) {
-//            System.out.print("stack " + i + ": ");
-//            for (int item : this.instance.getStacks()[i]) {
-//                if (item != -1) {
-//                    System.out.print(item + " ");
-//                }
-//            }
-//            System.out.println();
-//        }
-//    }
 
     public void setStacks(IloCplex cplex, IloIntVar[][] x) {
         for (int i = 0; i < x.length; i++) {
