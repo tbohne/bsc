@@ -1,21 +1,36 @@
 public class TestDataGenerator {
 
+    public static final String INSTANCE_PREFIX = "res/instances/";
+
     public static void main(String[] args) {
 
-        int numOfItems = 100;
-        int numOfStacks = 16;
-        int stackCap = 16;
+        int numOfItemsInit = 10;
+//        int numOfStacksInit = 5;
+//        int stackCapInit = 3;
 
-        int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
-        int[][] costs = new int[numOfItems][numOfStacks];
-        for (int i = 0; i < numOfItems; i++) {
-            for (int j = 0; j < numOfStacks; j++) {
-                costs[i][j] = (int)Math.round(Math.random());
+        for (int setup = 0; setup < 20; setup++) {
+
+            int numOfItems = numOfItemsInit + setup * 10;
+            int numOfStacks = numOfItems / 2;
+            int x = numOfItems + (int)Math.ceil((numOfItems * 2) / 3);
+            int stackCap = x / numOfStacks;
+
+            // Creates 10 instances for each problem setup.
+            for (int idx = 0; idx < 10; idx++) {
+                int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
+                int[][] costs = new int[numOfItems][numOfStacks];
+                for (int i = 0; i < numOfItems; i++) {
+                    for (int j = 0; j < numOfStacks; j++) {
+                        costs[i][j] = (int)Math.round(Math.random());
+                    }
+                }
+
+                String instanceName = "slp_instance_" + numOfItems + "_" + numOfStacks + "_" + stackCap + "_" + idx;
+
+                Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs, instanceName);
+                InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
             }
         }
-
-        Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs, "slp_instance_generated_3");
-        InstanceWriter.writeInstance("res/instances/slp_instance_100_16_16_0.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
