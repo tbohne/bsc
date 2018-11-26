@@ -1,21 +1,27 @@
 public class MIPFormulationComparator {
 
+    public enum Formulation {
+        BINPACKING,
+        THREEINDEX
+    }
+
+    public static final String INSTANCE_PREFIX = "res/instances/";
+    public static final String SOLUTION_PREFIX = "res/solutions/";
+
     public static void main(String[] args) {
 
-        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_generated_1.txt");
+        String instanceName = "slp_instance_10_5_3_1";
+
+        Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
         System.out.println(instance);
 
-        System.out.println("--- BIN-PACKING-FORMULATION ---");
-
         BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
-        System.out.println(binPackingFormulation.solve());
+        String solutionName = instanceName.replace("instance", "sol");
+        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", binPackingFormulation.solve(), Formulation.BINPACKING);
 
         instance.resetStacks();
 
-        System.out.println();
-        System.out.println("--- THREE-INDEX-FORMULATION ---");
-
         ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance);
-        System.out.println(threeIndexFormulation.solve());
+        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", threeIndexFormulation.solve(), Formulation.THREEINDEX);
     }
 }

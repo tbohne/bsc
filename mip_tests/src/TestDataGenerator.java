@@ -15,7 +15,7 @@ public class TestDataGenerator {
         }
 
         Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs, "slp_instance_generated_3");
-        InstanceWriter.writeInstance("res/instances/slp_instance_generated_3.txt", instance);
+        InstanceWriter.writeInstance("res/instances/slp_instance_100_16_16_0.txt", instance);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {

@@ -21,6 +21,22 @@ public class Solution {
         }
     }
 
+    public int[][] getFilledStorageArea() {
+        return this.filledStorageArea;
+    }
+
+    public boolean isEmpty() {
+        return this.empty;
+    }
+
+    public double getTimeToSolve() {
+        return this.timeToSolve;
+    }
+
+    public double getObjectiveValue() {
+        return this.objectiveValue;
+    }
+
     public String toString() {
 
         String str = "";
