@@ -1,18 +1,18 @@
 solved with: BinPacking Formulation
-time to solve: 0.03 s
+time to solve: 0.04 s
 objective value: 1.0
 
 stacks (top to bottom):
-stack 0:    0 3 5 
-stack 1:    6 16 30 
-stack 2:    28 
-stack 3:    10 62 
-stack 4:    36 17 
-stack 5:    22 
-stack 6:    24 26 
-stack 7:    85 104 
-stack 8:    2 54 92 106 
-stack 9:    37 59 
+stack  0:    0 3 5 
+stack  1:    6 16 30 
+stack  2:    28 
+stack  3:    10 62 
+stack  4:    36 17 
+stack  5:    22 
+stack  6:    24 26 
+stack  7:    85 104 
+stack  8:    2 54 92 106 
+stack  9:    37 59 
 stack 10:    78 
 stack 11:    47 
 stack 12:    43 50 81 
@@ -49,20 +49,20 @@ stack 41:    7 19 33
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 1.62 s
+time to solve: 1.63 s
 objective value: 1.0
 
 stacks (top to bottom):
-stack 0:    60 92 
-stack 1:    19 30 
-stack 2:    21 42 99 
-stack 3:    62 25 10 76 
-stack 4:    89 6 71 
-stack 5:    55 
-stack 6:    85 26 77 
-stack 7:    104 12 46 93 
-stack 8:    54 23 2 17 
-stack 9:    34 59 83 
+stack  0:    60 92 
+stack  1:    19 30 
+stack  2:    21 42 99 
+stack  3:    62 25 10 76 
+stack  4:    89 6 71 
+stack  5:    55 
+stack  6:    85 26 77 
+stack  7:    104 12 46 93 
+stack  8:    54 23 2 17 
+stack  9:    34 59 83 
 stack 10:    44 72 78 105 
 stack 11:    102 
 stack 12:    43 81 13 74 

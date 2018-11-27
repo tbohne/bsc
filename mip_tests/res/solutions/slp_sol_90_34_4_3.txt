@@ -3,16 +3,16 @@ time to solve: 0.06 s
 objective value: 2.0
 
 stacks (top to bottom):
-stack 0:    20 42 61 82 
-stack 1:    17 67 88 
-stack 2:    7 35 81 11 
-stack 3:    18 29 57 24 
-stack 4:    2 40 60 6 
-stack 5:    58 32 83 70 
-stack 6:    34 39 62 63 
-stack 7:    75 44 59 55 
-stack 8:    9 3 22 38 
-stack 9:    0 47 73 86 
+stack  0:    20 42 61 82 
+stack  1:    17 67 88 
+stack  2:    7 35 81 11 
+stack  3:    18 29 57 24 
+stack  4:    2 40 60 6 
+stack  5:    58 32 83 70 
+stack  6:    34 39 62 63 
+stack  7:    75 44 59 55 
+stack  8:    9 3 22 38 
+stack  9:    0 47 73 86 
 stack 10:    77 33 51 74 
 stack 11:    56 
 stack 12:    25 
@@ -41,20 +41,20 @@ stack 33:    1
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 1.00 s
+time to solve: 1.02 s
 objective value: 2.0
 
 stacks (top to bottom):
-stack 0:    82 
-stack 1:    58 
-stack 2:    67 7 35 11 
-stack 3:    29 57 18 
-stack 4:    38 40 
-stack 5:    30 45 74 59 
-stack 6:    62 39 63 
-stack 7:    46 6 
-stack 8:    22 
-stack 9:    26 41 47 60 
+stack  0:    82 
+stack  1:    58 
+stack  2:    67 7 35 11 
+stack  3:    29 57 18 
+stack  4:    38 40 
+stack  5:    30 45 74 59 
+stack  6:    62 39 63 
+stack  7:    46 6 
+stack  8:    22 
+stack  9:    26 41 47 60 
 stack 10:    86 43 51 
 stack 11:    9 73 
 stack 12:    44 81 52 

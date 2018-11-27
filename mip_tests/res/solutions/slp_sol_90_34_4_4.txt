@@ -3,16 +3,16 @@ time to solve: 0.06 s
 objective value: 0.0
 
 stacks (top to bottom):
-stack 0:    71 6 23 55 
-stack 1:    51 7 89 56 
-stack 2:    37 78 82 42 
-stack 3:    50 66 70 77 
-stack 4:    8 29 48 58 
-stack 5:    11 26 85 2 
-stack 6:    14 35 84 88 
-stack 7:    24 18 19 68 
-stack 8:    32 16 25 
-stack 9:    30 72 73 83 
+stack  0:    71 6 23 55 
+stack  1:    51 7 89 56 
+stack  2:    37 78 82 42 
+stack  3:    50 66 70 77 
+stack  4:    8 29 48 58 
+stack  5:    11 26 85 2 
+stack  6:    14 35 84 88 
+stack  7:    24 18 19 68 
+stack  8:    32 16 25 
+stack  9:    30 72 73 83 
 stack 10:    31 46 76 4 
 stack 11:    5 9 39 40 
 stack 12:    21 
@@ -45,16 +45,16 @@ time to solve: 1.11 s
 objective value: 0.0
 
 stacks (top to bottom):
-stack 0:    6 75 23 
-stack 1:    79 49 
-stack 2:    42 
-stack 3:    9 77 50 70 
-stack 4:    19 58 48 
-stack 5:    11 
-stack 6:    14 84 78 35 
-stack 7:    24 33 
-stack 8:    26 66 25 
-stack 9:    85 30 73 56 
+stack  0:    6 75 23 
+stack  1:    79 49 
+stack  2:    42 
+stack  3:    9 77 50 70 
+stack  4:    19 58 48 
+stack  5:    11 
+stack  6:    14 84 78 35 
+stack  7:    24 33 
+stack  8:    26 66 25 
+stack  9:    85 30 73 56 
 stack 10:    31 29 46 4 
 stack 11:    40 39 65 8 
 stack 12:    16 21 68 

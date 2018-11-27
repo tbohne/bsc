@@ -1,5 +1,5 @@
 solved with: BinPacking Formulation
-time to solve: 0.03 s
+time to solve: 0.00 s
 objective value: 14.0
 
 stacks (top to bottom):

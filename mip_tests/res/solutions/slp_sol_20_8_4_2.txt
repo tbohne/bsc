@@ -1,5 +1,5 @@
 solved with: BinPacking Formulation
-time to solve: 0.03 s
+time to solve: 0.01 s
 objective value: 32.0
 
 stacks (top to bottom):
@@ -15,7 +15,7 @@ stack 7:    4
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 0.07 s
+time to solve: 0.08 s
 objective value: 32.0
 
 stacks (top to bottom):

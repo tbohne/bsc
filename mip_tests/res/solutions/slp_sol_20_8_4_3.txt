@@ -15,7 +15,7 @@ stack 7:    6 11 12
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 0.01 s
+time to solve: 0.02 s
 objective value: 12.0
 
 stacks (top to bottom):
