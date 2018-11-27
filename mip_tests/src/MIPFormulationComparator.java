@@ -1,3 +1,5 @@
+import java.io.File;
+
 public class MIPFormulationComparator {
 
     public enum Formulation {
@@ -10,18 +12,30 @@ public class MIPFormulationComparator {
 
     public static void main(String[] args) {
 
-        String instanceName = "slp_instance_10_5_3_1";
+        File dir = new File(INSTANCE_PREFIX);
+        File[] directoryListing = dir.listFiles();
 
-        Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
-        System.out.println(instance);
+        if (directoryListing != null) {
+            for (File file : directoryListing) {
 
-        BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
-        String solutionName = instanceName.replace("instance", "sol");
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", binPackingFormulation.solve(), Formulation.BINPACKING);
+                if (file.toString().contains("slp_instance_")) {
 
-        instance.resetStacks();
+                    String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
 
-        ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance);
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", threeIndexFormulation.solve(), Formulation.THREEINDEX);
+                    Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
+                    System.out.println(instance);
+
+                    String solutionName = instanceName.replace("instance", "sol");
+
+                    BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", binPackingFormulation.solve(), Formulation.BINPACKING);
+
+                    instance.resetStacks();
+
+                    ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance);
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", threeIndexFormulation.solve(), Formulation.THREEINDEX);
+                }
+            }
+        }
     }
 }
