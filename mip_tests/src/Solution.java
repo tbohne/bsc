@@ -6,14 +6,17 @@ public class Solution {
     private int[][] filledStorageArea;
     private boolean empty;
 
+    private String nameOfSolvedInstance;
+
     public Solution() {
         this.empty = true;
     }
 
-    public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea) {
+    public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea, String nameOfSolvedInstance) {
         this.timeToSolve = timeToSolve;
         this.objectiveValue = objectiveValue;
         this.empty = false;
+        this.nameOfSolvedInstance = nameOfSolvedInstance;
 
         this.filledStorageArea = new int[filledStorageArea.length][];
         for (int i = 0; i < filledStorageArea.length; i++) {
@@ -29,12 +32,50 @@ public class Solution {
         return this.empty;
     }
 
-    public double getTimeToSolve() {
-        return this.timeToSolve;
+    public String getTimeToSolve() {
+        return String.format("%.02f", this.timeToSolve);
     }
 
-    public double getObjectiveValue() {
-        return this.objectiveValue;
+    public String getObjectiveValue() {
+        return String.format("%.02f", this.objectiveValue);
+    }
+
+    public String getNameOfSolvedInstance() {
+        return this.nameOfSolvedInstance;
+    }
+
+    public int getMaximumStringOffset(int numberOfStacks) {
+        int cnt = 0;
+        while ((numberOfStacks / 10) > 0) {
+            numberOfStacks /= 10;
+            cnt++;
+        }
+        return cnt;
+    }
+
+    public String getCurrentSpace(int idx, int maxOffset) {
+        String space = "";
+        if (idx < 10) {
+            for (int i = 0; i < maxOffset; i++) {
+                space += " ";
+            }
+            return space;
+        } else if (idx < 100) {
+            for (int i = 0; i < maxOffset - 1; i++) {
+                space += " ";
+            }
+            return space;
+        } else if (idx < 1000) {
+            for (int i = 0; i < maxOffset - 2; i++) {
+                space += " ";
+            }
+            return space;
+        } else {
+            for (int i = 0; i < maxOffset - 3; i++) {
+                space += " ";
+            }
+            return space;
+        }
     }
 
     public String toString() {
@@ -46,8 +87,13 @@ public class Solution {
             str += "objective value: " + this.objectiveValue + "\n\n";
             str += "stacks (top to bottom):\n";
 
+            int maxStringOffset = getMaximumStringOffset(this.filledStorageArea.length);
+
             for (int i = 0; i < this.filledStorageArea.length; i++) {
-                str += "stack " + i + ":    ";
+
+                String space = getCurrentSpace(i, maxStringOffset);
+
+                str += "stack " + space + i + ":    ";
                 for (int item : this.filledStorageArea[i]) {
                     if (item != -1) {
                         str += item + " ";
