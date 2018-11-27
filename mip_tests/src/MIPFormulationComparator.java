@@ -28,12 +28,16 @@ public class MIPFormulationComparator {
                     String solutionName = instanceName.replace("instance", "sol");
 
                     BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance);
-                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", binPackingFormulation.solve(), Formulation.BINPACKING);
+                    Solution sol = binPackingFormulation.solve();
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Formulation.BINPACKING);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Formulation.BINPACKING);
 
                     instance.resetStacks();
 
                     ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance);
-                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", threeIndexFormulation.solve(), Formulation.THREEINDEX);
+                    sol = threeIndexFormulation.solve();
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Formulation.THREEINDEX);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Formulation.THREEINDEX);
                 }
             }
         }
