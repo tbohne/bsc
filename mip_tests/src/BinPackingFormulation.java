@@ -87,7 +87,7 @@ public class BinPackingFormulation {
             if (cplex.solve()) {
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
+                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks(), instance.getName());
             }
 
             cplex.end();

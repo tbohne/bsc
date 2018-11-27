@@ -100,7 +100,7 @@ public class ThreeIndexFormulation {
 
             if (cplex.solve()) {
                 this.setStacks(cplex, x);
-                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
+                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks(), instance.getName());
             }
 
             System.out.println("TIME LIMIT EXCEEDED ? " + cplex.getCplexTime());
