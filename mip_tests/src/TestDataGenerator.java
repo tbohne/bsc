@@ -4,35 +4,38 @@ public class TestDataGenerator {
 
     public static final String INSTANCE_PREFIX = "res/instances/";
 
+    /*************************** CONFIGURATION *********************************/
+    public static final int INITIAL_NUMBER_OF_ITEMS = 10;
+    public static final int NUMBER_OF_SETUPS = 20;
+    public static final int NUMBER_OF_ITEMS_ADDED_PER_SETUP = 10;
+    public static final float ITEM_TO_STACK_MULTIPLIER = (float)(3.0 / 8.0);
+    public static final float STACK_CAP_MULTIPLIER = (float)(2.0 / 3.0);
+    public static final int NUMBER_OF_INSTANCES_PER_SETUP = 10;
+
+    public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
+    public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
+
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.96F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.99F;
+    /***************************************************************************/
+
     public static void main(String[] args) {
 
-        int numOfItemsInit = 10;
-//        int numOfStacksInit = 5;
-//        int stackCapInit = 3;
+        for (int setup = 0; setup < NUMBER_OF_SETUPS; setup++) {
 
-        for (int setup = 0; setup < 20; setup++) {
+            int numOfItems = INITIAL_NUMBER_OF_ITEMS + setup * NUMBER_OF_ITEMS_ADDED_PER_SETUP;
+            int numOfStacks = (int)(numOfItems * ITEM_TO_STACK_MULTIPLIER);
+            int stackCap = (numOfItems + (int)Math.ceil(numOfItems * STACK_CAP_MULTIPLIER)) / numOfStacks;
 
-            int numOfItems = numOfItemsInit + setup * 10;
-            int numOfStacks = numOfItems / 2 - numOfItems / 8;
-            int x = numOfItems + (int)Math.ceil((numOfItems * 2) / 3);
-            int stackCap = x / numOfStacks;
-
-            // Creates 10 instances for each problem setup.
-            for (int idx = 0; idx < 10; idx++) {
+            for (int idx = 0; idx < NUMBER_OF_INSTANCES_PER_SETUP; idx++) {
 
                 int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
 
                 int[][] costs = new int[numOfItems][numOfStacks];
                 for (int i = 0; i < numOfItems; i++) {
                     for (int j = 0; j < numOfStacks; j++) {
-
-                        Random r = new Random();
-                        // inclusive
-                        int low = 0;
-                        // exclusive
-                        int high = 10;
-
-                        costs[i][j] = r.nextInt(high-low) + low;;
+                        Random rand = new Random();
+                        costs[i][j] = rand.nextInt(COSTS_EXCLUSIVE_UPPER_BOUND - COSTS_INCLUSIVE_LOWER_BOUND) + COSTS_INCLUSIVE_LOWER_BOUND;
                     }
                 }
 
@@ -45,7 +48,10 @@ public class TestDataGenerator {
     }
 
     private static double mapRange(double numberOfItems) {
-        return 0.96 + ((numberOfItems - 10) * (0.99 - 0.96)) / (200 - 10);
+        return CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB
+                + ((numberOfItems - INITIAL_NUMBER_OF_ITEMS)
+                * (CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB - CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB))
+                / (NUMBER_OF_ITEMS_ADDED_PER_SETUP * NUMBER_OF_SETUPS - INITIAL_NUMBER_OF_ITEMS);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
@@ -58,7 +64,8 @@ public class TestDataGenerator {
                 if (i == j) {
                     matrix[i][j] = 1;
                 } else {
-                    double chance = dimOne > 20 ? mapRange(dimOne) : mapRange(dimOne) - 0.1;
+//                    double chance = dimOne > 20 ? mapRange(dimOne) : mapRange(dimOne) - 0.1;
+                    double chance = mapRange(dimOne);
                     System.out.println("CHANCE: " + chance);
                     if (Math.random() >= /* 0.90 */ chance) {
                         matrix[i][j] = 1;
