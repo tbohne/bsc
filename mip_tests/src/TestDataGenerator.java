@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class TestDataGenerator {
 
     public static final String INSTANCE_PREFIX = "res/instances/";
@@ -11,17 +13,26 @@ public class TestDataGenerator {
         for (int setup = 0; setup < 20; setup++) {
 
             int numOfItems = numOfItemsInit + setup * 10;
-            int numOfStacks = numOfItems / 2;
+            int numOfStacks = numOfItems / 2 - numOfItems / 8;
             int x = numOfItems + (int)Math.ceil((numOfItems * 2) / 3);
             int stackCap = x / numOfStacks;
 
             // Creates 10 instances for each problem setup.
             for (int idx = 0; idx < 10; idx++) {
+
                 int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
+
                 int[][] costs = new int[numOfItems][numOfStacks];
                 for (int i = 0; i < numOfItems; i++) {
                     for (int j = 0; j < numOfStacks; j++) {
-                        costs[i][j] = (int)Math.round(Math.random());
+
+                        Random r = new Random();
+                        // inclusive
+                        int low = 0;
+                        // exclusive
+                        int high = 10;
+
+                        costs[i][j] = r.nextInt(high-low) + low;;
                     }
                 }
 
@@ -31,6 +42,10 @@ public class TestDataGenerator {
                 InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
             }
         }
+    }
+
+    private static double mapRange(double numberOfItems) {
+        return 0.96 + ((numberOfItems - 10) * (0.99 - 0.96)) / (200 - 10);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
@@ -43,7 +58,9 @@ public class TestDataGenerator {
                 if (i == j) {
                     matrix[i][j] = 1;
                 } else {
-                    if (Math.random() >= 0.98) {
+                    double chance = dimOne > 20 ? mapRange(dimOne) : mapRange(dimOne) - 0.1;
+                    System.out.println("CHANCE: " + chance);
+                    if (Math.random() >= /* 0.90 */ chance) {
                         matrix[i][j] = 1;
                     } else {
                         matrix[i][j] = 0;
