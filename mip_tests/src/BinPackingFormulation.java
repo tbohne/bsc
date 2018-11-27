@@ -81,6 +81,9 @@ public class BinPackingFormulation {
 
             double startTime = cplex.getCplexTime();
 
+            // Sets a time limit of 5 minutes.
+            cplex.setParam(IloCplex.Param.TimeLimit, 300);
+
             if (cplex.solve()) {
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();

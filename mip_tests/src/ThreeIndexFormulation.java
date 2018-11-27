@@ -3,6 +3,7 @@ import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearIntExpr;
 import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
+import ilog.cplex.IloCplex.Param;
 
 public class ThreeIndexFormulation {
 
@@ -94,10 +95,15 @@ public class ThreeIndexFormulation {
 
             double startTime = cplex.getCplexTime();
 
+            // Sets a time limit of 5 minutes.
+            cplex.setParam(Param.TimeLimit, 300);
+
             if (cplex.solve()) {
                 this.setStacks(cplex, x);
                 sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks());
             }
+
+            System.out.println("TIME LIMIT EXCEEDED ? " + cplex.getCplexTime());
 
             cplex.end();
 
