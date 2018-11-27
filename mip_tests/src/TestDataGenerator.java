@@ -5,7 +5,7 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int INITIAL_NUMBER_OF_ITEMS = 10;
+    public static final int INITIAL_NUMBER_OF_ITEMS = 150;
     public static final int NUMBER_OF_SETUPS = 20;
     public static final int NUMBER_OF_ITEMS_ADDED_PER_SETUP = 10;
     public static final float ITEM_TO_STACK_MULTIPLIER = (float)(3.0 / 8.0);
@@ -15,8 +15,8 @@ public class TestDataGenerator {
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.96F;
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.99F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.987F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.994F;
     /***************************************************************************/
 
     public static void main(String[] args) {
@@ -51,7 +51,7 @@ public class TestDataGenerator {
         return CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB
                 + ((numberOfItems - INITIAL_NUMBER_OF_ITEMS)
                 * (CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB - CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB))
-                / (NUMBER_OF_ITEMS_ADDED_PER_SETUP * NUMBER_OF_SETUPS - INITIAL_NUMBER_OF_ITEMS);
+                / ((INITIAL_NUMBER_OF_ITEMS + NUMBER_OF_ITEMS_ADDED_PER_SETUP * NUMBER_OF_SETUPS) - INITIAL_NUMBER_OF_ITEMS);
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
