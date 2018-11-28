@@ -7,16 +7,18 @@ public class Solution {
     private boolean empty;
 
     private String nameOfSolvedInstance;
+    private boolean timeLimitExceeded;
 
     public Solution() {
         this.empty = true;
     }
 
-    public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea, String nameOfSolvedInstance) {
+    public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea, String nameOfSolvedInstance, boolean timeLimitExceeded) {
         this.timeToSolve = timeToSolve;
         this.objectiveValue = objectiveValue;
         this.empty = false;
         this.nameOfSolvedInstance = nameOfSolvedInstance;
+        this.timeLimitExceeded = timeLimitExceeded;
 
         this.filledStorageArea = new int[filledStorageArea.length][];
         for (int i = 0; i < filledStorageArea.length; i++) {
@@ -83,8 +85,10 @@ public class Solution {
         String str = "";
 
         if (!this.empty) {
-            str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s\n";
-            str += "objective value: " + this.objectiveValue + "\n\n";
+            str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s";
+            str += timeLimitExceeded ? " (time limit exceeded)\n" : "\n";
+            str += "objective value: " + this.objectiveValue;
+            str += timeLimitExceeded ? " (not optimal)\n\n" : "\n\n";
             str += "stacks (top to bottom):\n";
 
             int maxStringOffset = getMaximumStringOffset(this.filledStorageArea.length);

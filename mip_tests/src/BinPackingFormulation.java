@@ -7,9 +7,11 @@ import ilog.cplex.IloCplex;
 public class BinPackingFormulation {
 
     private Instance instance;
+    private int timeLimit;
 
-    BinPackingFormulation(Instance instance) {
+    BinPackingFormulation(Instance instance, int timeLimit) {
         this.instance = instance;
+        this.timeLimit = timeLimit;
     }
 
     public Solution solve() {
@@ -79,17 +81,17 @@ public class BinPackingFormulation {
             System.out.println();
             cplex.setOut(null);
 
+            // Sets a time limit of 5 minutes.
+            cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
+
             double startTime = cplex.getCplexTime();
 
-            // Sets a time limit of 5 minutes.
-            cplex.setParam(IloCplex.Param.TimeLimit, 300);
-
             if (cplex.solve()) {
+                double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks(), instance.getName());
+                sol = new Solution(timeToSolve, cplex.getObjValue(), this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
             }
-
             cplex.end();
 
         } catch (IloException e) {

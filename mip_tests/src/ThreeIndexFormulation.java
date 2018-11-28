@@ -8,9 +8,11 @@ import ilog.cplex.IloCplex.Param;
 public class ThreeIndexFormulation {
 
     private Instance instance;
+    private int timeLimit;
 
-    ThreeIndexFormulation(Instance instance) {
+    ThreeIndexFormulation(Instance instance, int timeLimit) {
         this.instance = instance;
+        this.timeLimit = timeLimit;
     }
 
     public Solution solve() {
@@ -93,18 +95,15 @@ public class ThreeIndexFormulation {
             System.out.println();
             cplex.setOut(null);
 
+            cplex.setParam(Param.TimeLimit, timeLimit);
+
             double startTime = cplex.getCplexTime();
 
-            // Sets a time limit of 5 minutes.
-            cplex.setParam(Param.TimeLimit, 300);
-
             if (cplex.solve()) {
+                double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
-                sol = new Solution(cplex.getCplexTime() - startTime, cplex.getObjValue(), this.instance.getStacks(), instance.getName());
+                sol = new Solution(timeToSolve, cplex.getObjValue(), this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
             }
-
-            System.out.println("TIME LIMIT EXCEEDED ? " + cplex.getCplexTime());
-
             cplex.end();
 
         } catch (IloException e) {
