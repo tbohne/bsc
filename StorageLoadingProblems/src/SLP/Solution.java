@@ -36,6 +36,12 @@ public class Solution {
         return this.empty;
     }
 
+    public boolean isFeasible() {
+        // All Items assigned to a stack
+        // Stacking constraints respected
+        return true;
+    }
+
     public String getTimeToSolve() {
         return String.format("%.02f", this.timeToSolve);
     }

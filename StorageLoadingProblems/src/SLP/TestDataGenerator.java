@@ -7,17 +7,17 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int INITIAL_NUMBER_OF_ITEMS = 350;
-    public static final int NUMBER_OF_SETUPS = 5;
-    public static final int NUMBER_OF_ITEMS_ADDED_PER_SETUP = 10;
+    public static final int INITIAL_NUMBER_OF_ITEMS = 20;
+    public static final int NUMBER_OF_SETUPS = 1;
+    public static final int NUMBER_OF_ITEMS_ADDED_PER_SETUP = 1;
     public static final float ITEM_TO_STACK_MULTIPLIER = (float)(3.0 / 8.0);
     public static final float STACK_CAP_MULTIPLIER = (float)(2.0 / 3.0);
-    public static final int NUMBER_OF_INSTANCES_PER_SETUP = 10;
+    public static final int NUMBER_OF_INSTANCES_PER_SETUP = 5;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.993F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.89F;
     public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.996F;
     /***************************************************************************/
 
@@ -25,9 +25,13 @@ public class TestDataGenerator {
 
         for (int setup = 0; setup < NUMBER_OF_SETUPS; setup++) {
 
+//            int numOfItems = INITIAL_NUMBER_OF_ITEMS + setup * NUMBER_OF_ITEMS_ADDED_PER_SETUP;
+//            int numOfStacks = (int)(numOfItems * ITEM_TO_STACK_MULTIPLIER);
+//            int stackCap = (numOfItems + (int)Math.ceil(numOfItems * STACK_CAP_MULTIPLIER)) / numOfStacks;
+
             int numOfItems = INITIAL_NUMBER_OF_ITEMS + setup * NUMBER_OF_ITEMS_ADDED_PER_SETUP;
-            int numOfStacks = (int)(numOfItems * ITEM_TO_STACK_MULTIPLIER);
-            int stackCap = (numOfItems + (int)Math.ceil(numOfItems * STACK_CAP_MULTIPLIER)) / numOfStacks;
+            int numOfStacks = 7;
+            int stackCap = 3;
 
             for (int idx = 0; idx < NUMBER_OF_INSTANCES_PER_SETUP; idx++) {
 
