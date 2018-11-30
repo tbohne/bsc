@@ -106,7 +106,7 @@ public class ThreeIndexFormulation {
             if (cplex.solve()) {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
-                sol = new Solution(timeToSolve, cplex.getObjValue(), this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
+                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
             }
             cplex.end();
 
@@ -132,7 +132,7 @@ public class ThreeIndexFormulation {
             for (int q = 0; q < this.instance.getStacks().length; q++) {
                 for (int l = 0; l < this.instance.getStackCapacity(); l++) {
                     try {
-                        if (cplex.getValue(x[i][q][l]) == 1.0) {
+                        if (Math.round(cplex.getValue(x[i][q][l])) == 1) {
                             this.instance.getStacks()[q][l] = i;
                         }
                     } catch (IloException e) {

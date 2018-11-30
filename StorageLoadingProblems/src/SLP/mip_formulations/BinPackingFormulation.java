@@ -94,7 +94,7 @@ public class BinPackingFormulation {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-                sol = new Solution(timeToSolve, cplex.getObjValue(), this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
+                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
             }
             cplex.end();
 
@@ -135,7 +135,10 @@ public class BinPackingFormulation {
         for (int i = 0; i < x.length; i++) {
             for (int q = 0; q < x[0].length; q++) {
                 try {
-                    if (cplex.getValue(x[i][q]) == 1.0) {
+
+//                    System.out.println("x[" + i + "][" + q + "]: " + Math.round(cplex.getValue(x[i][q])));
+
+                    if (Math.round(cplex.getValue(x[i][q])) == 1) {
                         int idx = 0;
                         while (this.instance.getStacks()[q][idx] != -1) {
                             idx++;
