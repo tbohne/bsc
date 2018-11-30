@@ -5,8 +5,8 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int INITIAL_NUMBER_OF_ITEMS = 150;
-    public static final int NUMBER_OF_SETUPS = 20;
+    public static final int INITIAL_NUMBER_OF_ITEMS = 350;
+    public static final int NUMBER_OF_SETUPS = 5;
     public static final int NUMBER_OF_ITEMS_ADDED_PER_SETUP = 10;
     public static final float ITEM_TO_STACK_MULTIPLIER = (float)(3.0 / 8.0);
     public static final float STACK_CAP_MULTIPLIER = (float)(2.0 / 3.0);
@@ -15,8 +15,8 @@ public class TestDataGenerator {
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.987F;
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.994F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.993F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.996F;
     /***************************************************************************/
 
     public static void main(String[] args) {

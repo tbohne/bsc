@@ -13,15 +13,29 @@ public class MIPFormulationComparator {
     // Specifies the time limit for the solving process in seconds.
     public static final int TIME_LIMIT = 300;
 
+    public static String createStringWithAllSolutionNames() {
+        File dir = new File(SOLUTION_PREFIX);
+        File[] dirListing = dir.listFiles();
+
+        String str = "";
+
+        for (File f : dirListing) {
+            str += f.toString() + " ";
+        }
+        return str;
+    }
+
     public static void main(String[] args) {
 
         File dir = new File(INSTANCE_PREFIX);
         File[] directoryListing = dir.listFiles();
 
+        String allSol = createStringWithAllSolutionNames();
+
         if (directoryListing != null) {
             for (File file : directoryListing) {
 
-                if (file.toString().contains("slp_instance_")) {
+                if (file.toString().contains("slp_instance_") && !allSol.contains(file.toString().replace("res/instances/", ""))) {
 
                     String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
 
