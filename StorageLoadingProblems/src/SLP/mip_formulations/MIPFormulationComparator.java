@@ -1,3 +1,10 @@
+package SLP.mip_formulations;
+
+import SLP.Instance;
+import SLP.InstanceReader;
+import SLP.Solution;
+import SLP.SolutionWriter;
+
 import java.io.File;
 
 public class MIPFormulationComparator {

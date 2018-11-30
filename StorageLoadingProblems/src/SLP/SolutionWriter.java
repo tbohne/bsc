@@ -1,8 +1,12 @@
+package SLP;
+
 import java.io.*;
+
+import static SLP.mip_formulations.MIPFormulationComparator.*;
 
 public class SolutionWriter {
 
-    public static String getNameOfMipFormulation(MIPFormulationComparator.Formulation mipFormulation) {
+    public static String getNameOfMipFormulation(Formulation mipFormulation) {
         switch (mipFormulation) {
             case BINPACKING:
                 return "BinPacking Formulation";
@@ -13,7 +17,7 @@ public class SolutionWriter {
         }
     }
 
-    public static String getNameOfMipFormulationCSV(MIPFormulationComparator.Formulation mipFormulation) {
+    public static String getNameOfMipFormulationCSV(Formulation mipFormulation) {
         switch (mipFormulation) {
             case BINPACKING:
                 return "BinP";
@@ -24,7 +28,7 @@ public class SolutionWriter {
         }
     }
 
-    public static void writeSolutionAsCSV(String filename, Solution sol, MIPFormulationComparator.Formulation mipFormulation) {
+    public static void writeSolutionAsCSV(String filename, Solution sol, Formulation mipFormulation) {
         try {
 
             File file = new File(filename);
@@ -57,7 +61,7 @@ public class SolutionWriter {
 
     }
 
-    public static void writeSolution(String filename, Solution sol, MIPFormulationComparator.Formulation mipFormulation) {
+    public static void writeSolution(String filename, Solution sol, Formulation mipFormulation) {
 
         try {
 

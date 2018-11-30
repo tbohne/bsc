@@ -1,3 +1,5 @@
+package SLP;
+
 import java.io.*;
 
 public class InstanceWriter {

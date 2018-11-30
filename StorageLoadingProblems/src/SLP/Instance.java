@@ -1,3 +1,5 @@
+package SLP;
+
 public class Instance {
 
     private int[] items;

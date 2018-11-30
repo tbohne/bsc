@@ -1,3 +1,7 @@
+package SLP.mip_formulations;
+
+import SLP.Instance;
+import SLP.Solution;
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearIntExpr;

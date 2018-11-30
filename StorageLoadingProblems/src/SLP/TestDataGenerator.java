@@ -1,3 +1,5 @@
+package SLP;
+
 import java.util.Random;
 
 public class TestDataGenerator {

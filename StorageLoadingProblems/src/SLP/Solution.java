@@ -1,3 +1,5 @@
+package SLP;
+
 public class Solution {
 
     private double timeToSolve;
