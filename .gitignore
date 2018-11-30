@@ -1,9 +1,4 @@
-mip_tests/.idea
-mip_tests/target/
-mip_tests/*.iml
-mip_tests/out
-
-matching_problems/.idea
-matching_problems/target/
-matching_problems/*.iml
-matching_problems/out
+*/.idea
+*/target/
+*/*.iml
+*/out
