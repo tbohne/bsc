@@ -43,7 +43,7 @@ public class InitialHeuristicSLPSolver {
 
         ArrayList<ArrayList<Integer>> secondVersion = new ArrayList<>();
 
-        for (int i = matchedItems.size() - 1; i > matchedItems.size() - this.instance.getStacks().length; i--) {
+        for (int i = matchedItems.size() - 1; i > matchedItems.size() - 1 - this.instance.getStacks().length; i--) {
             secondVersion.add(matchedItems.get(i));
         }
 
