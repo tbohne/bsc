@@ -2,6 +2,7 @@ package SLP.constructive_heuristics;
 
 import SLP.Instance;
 import SLP.InstanceReader;
+import SLP.Solution;
 
 public class ConstructiveHeuristicTest {
 
@@ -18,8 +19,10 @@ public class ConstructiveHeuristicTest {
         // System.out.println(instance);
 
         InitialHeuristicSLPSolver solver = new InitialHeuristicSLPSolver(instance);
-        System.out.println(solver.solve());
 
+        Solution sol = solver.solve();
+        System.out.println(sol);
+        System.out.println("feasible: " + sol.isFeasible());
     }
 
 }

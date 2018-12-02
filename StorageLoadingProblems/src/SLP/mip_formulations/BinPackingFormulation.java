@@ -94,7 +94,7 @@ public class BinPackingFormulation {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit);
+                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit, this.instance.getItems().length);
             }
             cplex.end();
 
