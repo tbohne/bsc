@@ -11,16 +11,19 @@ public class Solution {
     private String nameOfSolvedInstance;
     private boolean timeLimitExceeded;
 
+    private int numberOfItems;
+
     public Solution() {
         this.empty = true;
     }
 
-    public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea, String nameOfSolvedInstance, boolean timeLimitExceeded) {
+    public Solution(double timeToSolve, double objectiveValue, int[][] filledStorageArea, String nameOfSolvedInstance, boolean timeLimitExceeded, int numberOfItems) {
         this.timeToSolve = timeToSolve;
         this.objectiveValue = objectiveValue;
         this.empty = false;
         this.nameOfSolvedInstance = nameOfSolvedInstance;
         this.timeLimitExceeded = timeLimitExceeded;
+        this.numberOfItems = numberOfItems;
 
         this.filledStorageArea = new int[filledStorageArea.length][];
         for (int i = 0; i < filledStorageArea.length; i++) {
@@ -37,8 +40,28 @@ public class Solution {
     }
 
     public boolean isFeasible() {
-        // All Items assigned to a stack
-        // Stacking constraints respected
+
+        // TODO:
+        //      - all Items assigned to a stack
+        //      - stacking constraints respected
+
+        // for now just checking whether all items are assigned to a stack
+
+        boolean[] allItemsAssigned = new boolean[this.numberOfItems];
+
+        for (int i = 0; i < this.filledStorageArea.length; i++) {
+            for (int j = 0; j < this.filledStorageArea[i].length; j++) {
+                if (this.filledStorageArea[i][j] != -1) {
+                    allItemsAssigned[this.filledStorageArea[i][j]] = true;
+                }
+            }
+        }
+
+        for (boolean itemAssigned : allItemsAssigned) {
+            if (!itemAssigned) {
+                return false;
+            }
+        }
         return true;
     }
 
