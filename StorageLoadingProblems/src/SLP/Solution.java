@@ -129,9 +129,9 @@ public class Solution {
                 String space = getCurrentSpace(i, maxStringOffset);
 
                 str += "stack " + space + i + ":    ";
-                for (int item : this.filledStorageArea[i]) {
-                    if (item != -1) {
-                        str += item + " ";
+                for (int j = this.filledStorageArea[i].length - 1; j >= 0; j--) {
+                    if (this.filledStorageArea[i][j] != -1) {
+                        str += this.filledStorageArea[i][j] + " ";
                     }
                 }
                 str += "\n";
