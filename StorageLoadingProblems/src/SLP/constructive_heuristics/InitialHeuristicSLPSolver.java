@@ -17,11 +17,15 @@ public class InitialHeuristicSLPSolver {
     private Instance instance;
     private ArrayList<ArrayList<MCMEdge>> edgeShuffles;
     private ArrayList<ArrayList<Integer>> unmatchedItemShuffles;
+    private ArrayList<Integer> unstackableItems;
+    private ArrayList<Integer> additionalUnmatchedItems;
 
     public InitialHeuristicSLPSolver(Instance instance) {
         this.instance = instance;
         this.edgeShuffles = new ArrayList<>();
         this.unmatchedItemShuffles = new ArrayList<>();
+        this.unstackableItems = new ArrayList<>();
+        this.additionalUnmatchedItems = new ArrayList<>();
     }
 
     public void parseMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
@@ -85,16 +89,14 @@ public class InitialHeuristicSLPSolver {
         this.parseMCM(matchedItems, mcm);
         assignRatingToEdges(matchedItems);
 
-        // sort decreasing
         Collections.sort(matchedItems);
-        Collections.reverse(matchedItems);
 
-        System.out.println("#######################################");
-        for (MCMEdge e : matchedItems) {
-            System.out.println(e.getVertexOne() + " - " + e.getVertexTwo() + " --> " + e.getRating());
-        }
-        System.out.println(matchedItems);
-        System.out.println("#######################################");
+//        System.out.println("#######################################");
+//        for (MCMEdge e : matchedItems) {
+//            System.out.println(e.getVertexOne() + " - " + e.getVertexTwo() + " --> " + e.getRating());
+//        }
+//        System.out.println(matchedItems);
+//        System.out.println("#######################################");
 
         this.edgeShuffles = new ArrayList<>();
         int numberOfShuffles = 0;
@@ -106,7 +108,7 @@ public class InitialHeuristicSLPSolver {
             int unsuccessfulShuffleAttempts = 0;
 
             while (this.alreadyMatched(matchedItems) && unsuccessfulShuffleAttempts < 5) {
-                System.out.println("unsuccessful shuffle attempt no. " + unsuccessfulShuffleAttempts);
+//                System.out.println("unsuccessful shuffle attempt no. " + unsuccessfulShuffleAttempts);
                 unsuccessfulShuffleAttempts++;
                 Collections.shuffle(matchedItems);
             }
@@ -118,7 +120,7 @@ public class InitialHeuristicSLPSolver {
             for (int i = 0; i < this.instance.getStacks().length; i++) {
                 currentStackAssignment.add(matchedItems.get(i));
             }
-            System.out.println("used stack assignment: " + currentStackAssignment);
+//            System.out.println("used stack assignment: " + currentStackAssignment);
             stackAssignments.add(currentStackAssignment);
             Collections.shuffle(matchedItems);
             numberOfShuffles++;
@@ -138,10 +140,12 @@ public class InitialHeuristicSLPSolver {
         }
 
         for (int item : this.instance.getItems()) {
-            if (!listOfMatchedItems.contains(item)) {
+            if (!listOfMatchedItems.contains(item) && !unstackableItems.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
+
+        unmatchedItems.addAll(this.additionalUnmatchedItems);
 
         return unmatchedItems;
     }
@@ -155,39 +159,62 @@ public class InitialHeuristicSLPSolver {
     }
 
     public void assignUnmatchedItemsInGivenOrder(ArrayList<Integer> unmatchedItems, int[][] tmpCurrentStacks, ArrayList<Integer> tmpList) {
+
         // Could be extended to try several possible allocations
+
         for (int item : unmatchedItems) {
-            for (int i = 0; i < this.instance.getStacks().length; i++) {
 
-                int currentTopMostItem = tmpCurrentStacks[i][1];
+            System.out.println("ATTEMPT: " + item);
 
-                if (currentTopMostItem == -1) {
-                    if (tmpCurrentStacks[i][0] == -1) {
-                        tmpCurrentStacks[i][0] = item;
-                        tmpList.remove(tmpList.indexOf(item));
-                        break;
-                    } else {
-                        if (this.instance.getStackingConstraints()[item][tmpCurrentStacks[i][0]] == 1) {
-                            tmpCurrentStacks[i][1] = item;
-                            tmpList.remove(tmpList.indexOf(item));
-                            break;
-                        }
+            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+
+                int levelOfCurrentTopMostItem = -1;
+                for (int level = 0; level < tmpCurrentStacks[stack].length; level++) {
+                    if (tmpCurrentStacks[stack][level] != -1) {
+                        levelOfCurrentTopMostItem = level;
                     }
                 }
-                if (this.instance.getStackingConstraints()[item][currentTopMostItem] == 1) {
-                    if (tmpCurrentStacks[i][2] == -1) {
-                        tmpCurrentStacks[i][2] = item;
-                        tmpList.remove(tmpList.indexOf(item));
-                        break;
+
+                if (levelOfCurrentTopMostItem == -1) {
+                    // assign to ground level
+                    tmpCurrentStacks[stack][0] = item;
+                    tmpList.remove(tmpList.indexOf(item));
+                    break;
+                } else {
+                    if (this.instance.getStackingConstraints()[item][tmpCurrentStacks[stack][levelOfCurrentTopMostItem]] == 1) {
+                        if (levelOfCurrentTopMostItem < 2) {
+                            if (tmpCurrentStacks[stack][levelOfCurrentTopMostItem + 1] == -1) {
+                                tmpCurrentStacks[stack][levelOfCurrentTopMostItem + 1] = item;
+                                tmpList.remove(tmpList.indexOf(item));
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    public void setStacks(ArrayList<MCMEdge> matchedItems, ArrayList<Integer> unmatchedItems) {
+    public void setStacks(ArrayList<MCMEdge> matchedItems) {
 
         int cnt = 0;
+        this.unstackableItems = new ArrayList<>();
+        this.additionalUnmatchedItems = new ArrayList<>();
+
+        for (int item : this.getUnmatchedItems(matchedItems)) {
+            System.out.println("NOMATCH: " + item);
+            int sum = 0;
+            for (int constraint : this.instance.getStackingConstraints()[item]) {
+                sum += constraint;
+            }
+            if (sum <= 1) {
+                this.instance.getStacks()[cnt][0] = item;
+                this.unstackableItems.add(item);
+                cnt++;
+            }
+        }
+
+
         // Sets MCM pairs to level 0 and 1 of stacks
         for (MCMEdge edge : matchedItems) {
             if (cnt < this.instance.getStacks().length) {
@@ -195,36 +222,50 @@ public class InitialHeuristicSLPSolver {
                 int vertexTwo = edge.getVertexTwo();
                 this.instance.getStacks()[cnt][0] = vertexOne;
                 this.instance.getStacks()[cnt][1] = vertexTwo;
+            } else {
+                this.additionalUnmatchedItems.add(edge.getVertexOne());
+                this.additionalUnmatchedItems.add(edge.getVertexTwo());
             }
             cnt++;
         }
 
+        System.out.println("##########################");
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
+                System.out.print(this.instance.getStacks()[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println(this.unstackableItems);
+        System.out.println(this.additionalUnmatchedItems);
+        System.out.println("##########################");
+
 //        System.out.println("nomatch: " + unmatchedItems);
 
-        ArrayList<Integer> tmpList = new ArrayList<>(unmatchedItems);
+        ArrayList<Integer> tmpList = new ArrayList<>(this.getUnmatchedItems(matchedItems));
         int[][] tmpCurrentStacks = new int[this.instance.getStacks().length][this.instance.getStacks()[0].length];
         int numberOfShuffles = 0;
 
         while (!tmpList.isEmpty() && numberOfShuffles < this.NUMBER_OF_SHUFFLES_FOR_UNMATCHED_ITEMS) {
             this.copyStackAssignment(this.instance.getStacks(), tmpCurrentStacks);
-            tmpList = new ArrayList<>(unmatchedItems);
+            tmpList = new ArrayList<>(this.getUnmatchedItems(matchedItems));
 
             Collections.shuffle(tmpList);
 
             int unsuccessfulShuffleAttempts = 0;
             while (this.alreadyUsed(tmpList) && unsuccessfulShuffleAttempts < 5) {
-                System.out.println("unsuccessful shuffle attempt no. " + unsuccessfulShuffleAttempts);
+                // System.out.println("unsuccessful shuffle attempt no. " + unsuccessfulShuffleAttempts);
                 Collections.shuffle(tmpList);
                 unsuccessfulShuffleAttempts++;
             }
 
             if (unsuccessfulShuffleAttempts == 5) { break; }
 
-            System.out.println(this.unmatchedItemShuffles);
+//            System.out.println(this.unmatchedItemShuffles);
 
             numberOfShuffles++;
             this.unmatchedItemShuffles.add(new ArrayList<>(tmpList));
-            this.assignUnmatchedItemsInGivenOrder(unmatchedItems, tmpCurrentStacks, tmpList);
+            this.assignUnmatchedItemsInGivenOrder(this.getUnmatchedItems(matchedItems), tmpCurrentStacks, tmpList);
         }
         this.copyStackAssignment(tmpCurrentStacks, this.instance.getStacks());
     }
@@ -263,9 +304,17 @@ public class InitialHeuristicSLPSolver {
         ArrayList<Solution> solutions = new ArrayList<>();
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
-            this.setStacks(matchedItems, this.getUnmatchedItems(matchedItems));
+            this.setStacks(matchedItems);
             Solution sol = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
             solutions.add(sol);
+            this.instance.resetStacks();
+
+            for (MCMEdge e : matchedItems) {
+                e.flipVertices();
+            }
+            this.setStacks(matchedItems);
+            Solution sol2 = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
+            solutions.add(sol2);
             this.instance.resetStacks();
         }
 
@@ -276,8 +325,6 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-        System.out.println("___________________" + matchingSubsets.get(0));
-        System.out.println(getUnmatchedItems(matchingSubsets.get(0)));
         return solutions.get(0);
     }
 
