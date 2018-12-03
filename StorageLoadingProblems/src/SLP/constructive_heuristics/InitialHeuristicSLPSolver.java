@@ -6,8 +6,7 @@ import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class InitialHeuristicSLPSolver {
 
@@ -18,10 +17,13 @@ public class InitialHeuristicSLPSolver {
     private ArrayList<ArrayList<ArrayList<Integer>>> edgeShuffles;
     private ArrayList<ArrayList<Integer>> unmatchedItemShuffles;
 
+    private HashMap<ArrayList<Integer>, Integer> edgeRating;
+
     public InitialHeuristicSLPSolver(Instance instance) {
         this.instance = instance;
         this.edgeShuffles = new ArrayList<>();
         this.unmatchedItemShuffles = new ArrayList<>();
+        this.edgeRating = new HashMap<>();
     }
 
     public void parseMCM(ArrayList<ArrayList<Integer>> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
@@ -53,6 +55,24 @@ public class InitialHeuristicSLPSolver {
         return false;
     }
 
+    public void assignRatingToEdges(ArrayList<ArrayList<Integer>> matchedItems) {
+
+        for (ArrayList<Integer> edge : matchedItems) {
+
+            int rating = 0;
+
+            for (int entry : this.instance.getStackingConstraints()[edge.get(0)]) {
+                rating += entry;
+            }
+
+            for (int entry : this.instance.getStackingConstraints()[edge.get(1)]) {
+                rating += entry;
+            }
+
+            this.edgeRating.put(edge, rating);
+        }
+    }
+
     public ArrayList<ArrayList<ArrayList<Integer>>> extractInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
         // You can possibly take all k element subsets of the mcm as initial stack assignment.
@@ -66,6 +86,17 @@ public class InitialHeuristicSLPSolver {
 
         ArrayList<ArrayList<Integer>> matchedItems = new ArrayList<>();
         this.parseMCM(matchedItems, mcm);
+        assignRatingToEdges(matchedItems);
+
+        System.out.println("##################################################");
+        Iterator it = this.edgeRating.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+        System.out.println("##################################################");
+
         this.edgeShuffles = new ArrayList<>();
 
         int numberOfShuffles = 0;
