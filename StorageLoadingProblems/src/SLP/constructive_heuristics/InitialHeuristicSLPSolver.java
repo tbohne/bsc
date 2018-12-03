@@ -1,6 +1,7 @@
 package SLP.constructive_heuristics;
 
 import SLP.Instance;
+import SLP.MCMEdge;
 import SLP.Solution;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -14,31 +15,27 @@ public class InitialHeuristicSLPSolver {
     private final int NUMBER_OF_SHUFFLES_FOR_MCM_EDGES = 20;
 
     private Instance instance;
-    private ArrayList<ArrayList<ArrayList<Integer>>> edgeShuffles;
+    private ArrayList<ArrayList<MCMEdge>> edgeShuffles;
     private ArrayList<ArrayList<Integer>> unmatchedItemShuffles;
-
-    private HashMap<ArrayList<Integer>, Integer> edgeRating;
 
     public InitialHeuristicSLPSolver(Instance instance) {
         this.instance = instance;
         this.edgeShuffles = new ArrayList<>();
         this.unmatchedItemShuffles = new ArrayList<>();
-        this.edgeRating = new HashMap<>();
     }
 
-    public void parseMCM(ArrayList<ArrayList<Integer>> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
+    public void parseMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
         for (Object edge : mcm.getMatching()) {
             int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
             int vertexTwo = Integer.parseInt(edge.toString().split(":")[1].replace("v", "").replace(")", "").trim());
-            ArrayList<Integer> stack = new ArrayList<>();
-            stack.add(vertexOne);
-            stack.add(vertexTwo);
-            matchedItems.add(stack);
+
+            MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
+            matchedItems.add(e);
         }
     }
 
-    public boolean alreadyMatched(ArrayList<ArrayList<Integer>> matchedItems) {
-        for (ArrayList<ArrayList<Integer>> alreadyMatched : this.edgeShuffles) {
+    public boolean alreadyMatched(ArrayList<MCMEdge> matchedItems) {
+        for (ArrayList<MCMEdge> alreadyMatched : this.edgeShuffles) {
             if (alreadyMatched.equals(matchedItems)) {
                 return true;
             }
@@ -55,25 +52,25 @@ public class InitialHeuristicSLPSolver {
         return false;
     }
 
-    public void assignRatingToEdges(ArrayList<ArrayList<Integer>> matchedItems) {
+    public void assignRatingToEdges(ArrayList<MCMEdge> matchedItems) {
 
-        for (ArrayList<Integer> edge : matchedItems) {
+        for (MCMEdge edge : matchedItems) {
 
             int rating = 0;
 
-            for (int entry : this.instance.getStackingConstraints()[edge.get(0)]) {
+            for (int entry : this.instance.getStackingConstraints()[edge.getVertexOne()]) {
                 rating += entry;
             }
 
-            for (int entry : this.instance.getStackingConstraints()[edge.get(1)]) {
+            for (int entry : this.instance.getStackingConstraints()[edge.getVertexTwo()]) {
                 rating += entry;
             }
 
-            this.edgeRating.put(edge, rating);
+            edge.setRating(rating);
         }
     }
 
-    public ArrayList<ArrayList<ArrayList<Integer>>> extractInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
+    public ArrayList<ArrayList<MCMEdge>> extractInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
         // You can possibly take all k element subsets of the mcm as initial stack assignment.
 
@@ -84,24 +81,25 @@ public class InitialHeuristicSLPSolver {
         // Or even better:
         //  - take a certain amount of random shuffles of the edges in the mcm
 
-        ArrayList<ArrayList<Integer>> matchedItems = new ArrayList<>();
+        ArrayList<MCMEdge> matchedItems = new ArrayList<>();
         this.parseMCM(matchedItems, mcm);
         assignRatingToEdges(matchedItems);
 
-        System.out.println("##################################################");
-        Iterator it = this.edgeRating.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            System.out.println(pair.getKey() + " = " + pair.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
+        // sort decreasing
+        Collections.sort(matchedItems);
+        Collections.reverse(matchedItems);
+
+        System.out.println("#######################################");
+        for (MCMEdge e : matchedItems) {
+            System.out.println(e.getVertexOne() + " - " + e.getVertexTwo() + " --> " + e.getRating());
         }
-        System.out.println("##################################################");
+        System.out.println(matchedItems);
+        System.out.println("#######################################");
 
         this.edgeShuffles = new ArrayList<>();
-
         int numberOfShuffles = 0;
 
-        ArrayList<ArrayList<ArrayList<Integer>>> stackAssignments = new ArrayList<>();
+        ArrayList<ArrayList<MCMEdge>> stackAssignments = new ArrayList<>();
 
         while (numberOfShuffles < this.NUMBER_OF_SHUFFLES_FOR_MCM_EDGES) {
 
@@ -116,10 +114,11 @@ public class InitialHeuristicSLPSolver {
             if (unsuccessfulShuffleAttempts == 5) { break; }
 
             this.edgeShuffles.add(new ArrayList<>(matchedItems));
-            ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
+            ArrayList<MCMEdge> currentStackAssignment = new ArrayList<>();
             for (int i = 0; i < this.instance.getStacks().length; i++) {
                 currentStackAssignment.add(matchedItems.get(i));
             }
+            System.out.println("used stack assignment: " + currentStackAssignment);
             stackAssignments.add(currentStackAssignment);
             Collections.shuffle(matchedItems);
             numberOfShuffles++;
@@ -128,14 +127,14 @@ public class InitialHeuristicSLPSolver {
         return stackAssignments;
     }
 
-    public ArrayList<Integer> getUnmatchedItems(ArrayList<ArrayList<Integer>> matchedItems) {
+    public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> matchedItems) {
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
         ArrayList<Integer> listOfMatchedItems = new ArrayList<>();
 
-        for (ArrayList<Integer> edge : matchedItems) {
-            listOfMatchedItems.add(edge.get(0));
-            listOfMatchedItems.add(edge.get(1));
+        for (MCMEdge edge : matchedItems) {
+            listOfMatchedItems.add(edge.getVertexOne());
+            listOfMatchedItems.add(edge.getVertexTwo());
         }
 
         for (int item : this.instance.getItems()) {
@@ -186,14 +185,14 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void setStacks(ArrayList<ArrayList<Integer>> matchedItems, ArrayList<Integer> unmatchedItems) {
+    public void setStacks(ArrayList<MCMEdge> matchedItems, ArrayList<Integer> unmatchedItems) {
 
         int cnt = 0;
         // Sets MCM pairs to level 0 and 1 of stacks
-        for (ArrayList<Integer> edge : matchedItems) {
+        for (MCMEdge edge : matchedItems) {
             if (cnt < this.instance.getStacks().length) {
-                int vertexOne = edge.get(0);
-                int vertexTwo = edge.get(1);
+                int vertexOne = edge.getVertexOne();
+                int vertexTwo = edge.getVertexTwo();
                 this.instance.getStacks()[cnt][0] = vertexOne;
                 this.instance.getStacks()[cnt][1] = vertexTwo;
             }
@@ -259,11 +258,11 @@ public class InitialHeuristicSLPSolver {
 
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
 
-        ArrayList<ArrayList<ArrayList<Integer>>> matchingSubsets = this.extractInitialStackAssignmentsFromMCM(mcm);
+        ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.extractInitialStackAssignmentsFromMCM(mcm);
 
         ArrayList<Solution> solutions = new ArrayList<>();
 
-        for (ArrayList<ArrayList<Integer>> matchedItems : matchingSubsets) {
+        for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
             this.setStacks(matchedItems, this.getUnmatchedItems(matchedItems));
             Solution sol = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
             solutions.add(sol);
