@@ -17,8 +17,8 @@ public class TestDataGenerator {
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.89F;
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.996F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.92F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.93F;
     /***************************************************************************/
 
     public static void main(String[] args) {

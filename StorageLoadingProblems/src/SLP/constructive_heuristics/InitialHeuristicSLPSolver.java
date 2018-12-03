@@ -175,25 +175,26 @@ public class InitialHeuristicSLPSolver {
 
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
 
-        // using two different subsets of the mcm
-        ArrayList<ArrayList<Integer>> matchedItemsOne = this.extractInitialStackAssignmentsFromMCM(mcm).get(0);
-        ArrayList<ArrayList<Integer>> matchedItemsTwo = this.extractInitialStackAssignmentsFromMCM(mcm).get(1);
-        ArrayList<Integer> unmatchedItemsOne = this.getUnmatchedItems(matchedItemsOne);
-        ArrayList<Integer> unmatchedItemsTwo = this.getUnmatchedItems(matchedItemsTwo);
+        ArrayList<ArrayList<ArrayList<Integer>>> matchingSubsets = this.extractInitialStackAssignmentsFromMCM(mcm);
 
-        System.out.println(mcm.getMatching());
-        System.out.println("unmatched: " + unmatchedItemsOne);
+        ArrayList<Solution> solutions = new ArrayList<>();
 
-        this.setStacks(matchedItemsOne, unmatchedItemsOne);
-
-        Solution sol = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
-
-        if (!sol.isFeasible()) {
+        for (ArrayList<ArrayList<Integer>> matchedItems : matchingSubsets) {
+            this.setStacks(matchedItems, this.getUnmatchedItems(matchedItems));
+            Solution sol = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
+            solutions.add(sol);
             this.instance.resetStacks();
-            this.setStacks(matchedItemsTwo, unmatchedItemsTwo);
-            sol = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
         }
-        return sol;
+
+        for (Solution sol : solutions) {
+            // TODO: return the cheapest based on costs
+            System.out.println(sol.isFeasible());
+            if (sol.isFeasible()) {
+                return sol;
+            }
+        }
+
+        return solutions.get(0);
     }
 
     public Solution solve() {
