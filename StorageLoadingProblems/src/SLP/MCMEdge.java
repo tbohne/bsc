@@ -28,6 +28,12 @@ public class MCMEdge implements Comparable<MCMEdge> {
         this.rating = rating;
     }
 
+    public void flipVertices() {
+        int tmp = this.vertexOne;
+        this.vertexOne = this.vertexTwo;
+        this.vertexTwo = tmp;
+    }
+
     @Override
     public int compareTo(MCMEdge e) {
         return this.rating - e.rating;
