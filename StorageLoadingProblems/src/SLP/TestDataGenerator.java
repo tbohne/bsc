@@ -30,7 +30,7 @@ public class TestDataGenerator {
 //            int stackCap = (numOfItems + (int)Math.ceil(numOfItems * STACK_CAP_MULTIPLIER)) / numOfStacks;
 
             int numOfItems = INITIAL_NUMBER_OF_ITEMS + setup * NUMBER_OF_ITEMS_ADDED_PER_SETUP;
-            int numOfStacks = 7;
+            int numOfStacks = 8;
             int stackCap = 3;
 
             for (int idx = 0; idx < NUMBER_OF_INSTANCES_PER_SETUP; idx++) {
