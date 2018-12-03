@@ -12,6 +12,7 @@ import java.util.Collections;
 public class InitialHeuristicSLPSolver {
 
     private final int NUMBER_OF_SHUFFLES_FOR_UNMATCHED_ITEMS = 20;
+    private final int NUMBER_OF_SHUFFLES_FOR_MCM_EDGES = 20;
 
     private Instance instance;
 
@@ -33,28 +34,32 @@ public class InitialHeuristicSLPSolver {
     public ArrayList<ArrayList<ArrayList<Integer>>> extractInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
         // You can possibly take all k element subsets of the mcm as initial stack assignment.
+
         // I'll start with testing two:
         //      - from start to k
         //      - from end to end - k
 
+        // Or even better:
+        //  - take a certain amount of random shuffles of the edges in the mcm
+
         ArrayList<ArrayList<Integer>> matchedItems = new ArrayList<>();
         this.parseMCM(matchedItems, mcm);
 
-        ArrayList<ArrayList<Integer>> firstVersion = new ArrayList<>();
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            firstVersion.add(matchedItems.get(i));
+        int numberOfShuffles = 0;
+
+        ArrayList<ArrayList<ArrayList<Integer>>> stackAssignments = new ArrayList<>();
+
+        while (numberOfShuffles < this.NUMBER_OF_SHUFFLES_FOR_MCM_EDGES) {
+            ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
+            for (int i = 0; i < this.instance.getStacks().length; i++) {
+                currentStackAssignment.add(matchedItems.get(i));
+            }
+            stackAssignments.add(currentStackAssignment);
+            Collections.shuffle(matchedItems);
+            numberOfShuffles++;
         }
 
-        ArrayList<ArrayList<Integer>> secondVersion = new ArrayList<>();
-        for (int i = matchedItems.size() - 1; i > matchedItems.size() - 1 - this.instance.getStacks().length; i--) {
-            secondVersion.add(matchedItems.get(i));
-        }
-
-        ArrayList<ArrayList<ArrayList<Integer>>> sol = new ArrayList<>();
-        sol.add(firstVersion);
-        sol.add(secondVersion);
-
-        return sol;
+        return stackAssignments;
     }
 
     public ArrayList<Integer> getUnmatchedItems(ArrayList<ArrayList<Integer>> matchedItems) {
@@ -188,7 +193,6 @@ public class InitialHeuristicSLPSolver {
 
         for (Solution sol : solutions) {
             // TODO: return the cheapest based on costs
-            System.out.println(sol.isFeasible());
             if (sol.isFeasible()) {
                 return sol;
             }

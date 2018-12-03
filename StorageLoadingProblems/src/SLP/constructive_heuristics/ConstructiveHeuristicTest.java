@@ -15,7 +15,7 @@ public class ConstructiveHeuristicTest {
         //   - print results
 
 
-        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_20_8_3_1.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_20_8_3_0.txt");
         // System.out.println(instance);
 
         InitialHeuristicSLPSolver solver = new InitialHeuristicSLPSolver(instance);
