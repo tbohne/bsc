@@ -65,11 +65,9 @@ public class InitialHeuristicSLPSolver {
             for (int entry : this.instance.getStackingConstraints()[edge.getVertexOne()]) {
                 rating += entry;
             }
-
             for (int entry : this.instance.getStackingConstraints()[edge.getVertexTwo()]) {
                 rating += entry;
             }
-
             edge.setRating(rating);
         }
     }
@@ -164,8 +162,6 @@ public class InitialHeuristicSLPSolver {
 
         for (int item : unmatchedItems) {
 
-            System.out.println("ATTEMPT: " + item);
-
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
                 int levelOfCurrentTopMostItem = -1;
@@ -202,7 +198,6 @@ public class InitialHeuristicSLPSolver {
         this.additionalUnmatchedItems = new ArrayList<>();
 
         for (int item : this.getUnmatchedItems(matchedItems)) {
-            System.out.println("NOMATCH: " + item);
             int sum = 0;
             for (int constraint : this.instance.getStackingConstraints()[item]) {
                 sum += constraint;
@@ -214,14 +209,21 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-
         // Sets MCM pairs to level 0 and 1 of stacks
         for (MCMEdge edge : matchedItems) {
             if (cnt < this.instance.getStacks().length) {
+
                 int vertexOne = edge.getVertexOne();
                 int vertexTwo = edge.getVertexTwo();
-                this.instance.getStacks()[cnt][0] = vertexOne;
-                this.instance.getStacks()[cnt][1] = vertexTwo;
+
+                if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
+                    this.instance.getStacks()[cnt][0] = vertexOne;
+                    this.instance.getStacks()[cnt][1] = vertexTwo;
+                } else {
+                    this.instance.getStacks()[cnt][0] = vertexTwo;
+                    this.instance.getStacks()[cnt][1] = vertexOne;
+                }
+
             } else {
                 this.additionalUnmatchedItems.add(edge.getVertexOne());
                 this.additionalUnmatchedItems.add(edge.getVertexTwo());
@@ -229,16 +231,16 @@ public class InitialHeuristicSLPSolver {
             cnt++;
         }
 
-        System.out.println("##########################");
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-                System.out.print(this.instance.getStacks()[i][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println(this.unstackableItems);
-        System.out.println(this.additionalUnmatchedItems);
-        System.out.println("##########################");
+//        System.out.println("##########################");
+//        for (int i = 0; i < this.instance.getStacks().length; i++) {
+//            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
+//                System.out.print(this.instance.getStacks()[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println(this.unstackableItems);
+//        System.out.println(this.additionalUnmatchedItems);
+//        System.out.println("##########################");
 
 //        System.out.println("nomatch: " + unmatchedItems);
 
@@ -305,7 +307,7 @@ public class InitialHeuristicSLPSolver {
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
             this.setStacks(matchedItems);
-            Solution sol = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
+            Solution sol = new Solution(0, 0, false, this.instance);
             solutions.add(sol);
             this.instance.resetStacks();
 
@@ -313,7 +315,7 @@ public class InitialHeuristicSLPSolver {
                 e.flipVertices();
             }
             this.setStacks(matchedItems);
-            Solution sol2 = new Solution(0, 0, this.instance.getStacks(), "test", false, this.instance.getItems().length);
+            Solution sol2 = new Solution(0, 0, false, this.instance);
             solutions.add(sol2);
             this.instance.resetStacks();
         }
