@@ -106,7 +106,7 @@ public class ThreeIndexFormulation {
             if (cplex.solve()) {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
-                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, this.instance.getStacks(), instance.getName(), timeToSolve > timeLimit, this.instance.getItems().length);
+                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, timeToSolve > timeLimit, this.instance);
             }
             cplex.end();
 
