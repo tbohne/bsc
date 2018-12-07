@@ -24,5 +24,4 @@ public class ConstructiveHeuristicTest {
         System.out.println(sol);
         System.out.println("feasible: " + sol.isFeasible());
     }
-
 }
