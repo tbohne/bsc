@@ -90,6 +90,25 @@ public class Solution {
         return this.allItemsAssigned() && this.stackingConstraintsRespected();
     }
 
+    public int getNumberOfAssignedItems() {
+
+        if (this.empty) {
+            return 0;
+        }
+
+        int numberOfAssignedItems = 0;
+
+        for (int i = 0; i < this.filledStorageArea.length; i++) {
+            for (int j = 0; j < this.filledStorageArea[i].length; j++) {
+                if (this.filledStorageArea[i][j] != -1) {
+                    numberOfAssignedItems++;
+                }
+            }
+        }
+
+        return numberOfAssignedItems;
+    }
+
     public String getTimeToSolve() {
         return String.format("%.02f", this.timeToSolve);
     }
