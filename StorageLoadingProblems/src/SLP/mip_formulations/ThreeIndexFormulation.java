@@ -14,7 +14,7 @@ public class ThreeIndexFormulation {
     private Instance instance;
     private int timeLimit;
 
-    ThreeIndexFormulation(Instance instance, int timeLimit) {
+    public ThreeIndexFormulation(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }

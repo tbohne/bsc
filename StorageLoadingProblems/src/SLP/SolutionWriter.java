@@ -2,7 +2,7 @@ package SLP;
 
 import java.io.*;
 
-import static SLP.mip_formulations.MIPFormulationComparator.*;
+import static SLP.SolverComparison.*;
 
 public class SolutionWriter {
 

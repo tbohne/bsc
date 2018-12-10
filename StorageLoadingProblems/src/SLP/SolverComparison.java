@@ -1,13 +1,11 @@
-package SLP.mip_formulations;
+package SLP;
 
-import SLP.Instance;
-import SLP.InstanceReader;
-import SLP.Solution;
-import SLP.SolutionWriter;
+import SLP.mip_formulations.BinPackingFormulation;
+import SLP.mip_formulations.ThreeIndexFormulation;
 
 import java.io.File;
 
-public class MIPFormulationComparator {
+public class SolverComparison {
 
     public enum Formulation {
         BINPACKING,

@@ -13,7 +13,7 @@ public class BinPackingFormulation {
     private Instance instance;
     private int timeLimit;
 
-    BinPackingFormulation(Instance instance, int timeLimit) {
+    public BinPackingFormulation(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }
