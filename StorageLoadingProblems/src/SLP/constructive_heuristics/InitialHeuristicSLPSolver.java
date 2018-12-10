@@ -13,17 +13,16 @@ import java.util.stream.Collectors;
 public class InitialHeuristicSLPSolver {
 
     private Instance instance;
-    private ArrayList<ArrayList<MCMEdge>> edgeShuffles;
-    private ArrayList<ArrayList<Integer>> unmatchedItemShuffles;
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
 
+    private ArrayList<List<Integer>> alreadyUsedShuffles;
+
     public InitialHeuristicSLPSolver(Instance instance) {
         this.instance = instance;
-        this.edgeShuffles = new ArrayList<>();
-        this.unmatchedItemShuffles = new ArrayList<>();
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
+        this.alreadyUsedShuffles = new ArrayList<>();
     }
 
     public void parseMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
@@ -34,24 +33,6 @@ public class InitialHeuristicSLPSolver {
             MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
             matchedItems.add(e);
         }
-    }
-
-    public boolean alreadyMatched(ArrayList<MCMEdge> matchedItems) {
-        for (ArrayList<MCMEdge> alreadyMatched : this.edgeShuffles) {
-            if (alreadyMatched.equals(matchedItems)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean alreadyUsed(ArrayList<Integer> unmatchedItems) {
-        for (ArrayList<Integer> shuffle : this.unmatchedItemShuffles) {
-            if (shuffle.equals(unmatchedItems)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void assignRatingToEdges(ArrayList<MCMEdge> matchedItems) {
@@ -165,17 +146,50 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
+    public boolean isPartOfAlreadyUsedShuffles(ArrayList<Integer> currentShuffle) {
+        for (List<Integer> shuffle : this.alreadyUsedShuffles) {
+            if (shuffle.equals(currentShuffle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public ArrayList<List<Integer>> getUnmatchedPerms(ArrayList<MCMEdge> matchedItems) {
 
         ArrayList<Integer> tmpList = new ArrayList<>(this.getUnmatchedItems(matchedItems));
         ArrayList<List<Integer>> res = new ArrayList<>();
-
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
-        Permutations.of(tmpList).forEach(p -> {
-            List<Integer> edgeList = p.collect(Collectors.toList());
-            unmatchedItemPermutations.add(edgeList);
-        });
+        // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
+        // after that 40k random shuffles are used instead.
+        if (tmpList.size() < 9) {
+            Permutations.of(tmpList).forEach(p -> {
+                List<Integer> edgeList = p.collect(Collectors.toList());
+                unmatchedItemPermutations.add(edgeList);
+            });
+        } else {
+
+            ArrayList<List<Integer>> alreadyTested = new ArrayList<>();
+
+            for (int i = 0; i < 40000; i++) {
+                List<Integer> edgeList = new ArrayList<>(tmpList);
+                unmatchedItemPermutations.add(edgeList);
+                Collections.shuffle(tmpList);
+
+                int unsuccessfulShuffleAttempts = 0;
+                while (isPartOfAlreadyUsedShuffles(tmpList)) {
+                    Collections.shuffle(tmpList);
+                    if (unsuccessfulShuffleAttempts == 10) {
+                        for (List el : unmatchedItemPermutations) {
+                            res.add(el);
+                        }
+                        return res;
+                    }
+                    unsuccessfulShuffleAttempts++;
+                }
+            }
+        }
 
         for (List el : unmatchedItemPermutations) {
             res.add(el);
@@ -264,12 +278,13 @@ public class InitialHeuristicSLPSolver {
 
         Solution bestSol = new Solution();
 
-//        for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
-        for (int i = 0; i < 50; i++) {
+        for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
 
-            ArrayList<MCMEdge> matchedItems = matchingSubsets.get(i);
+            if (solutions.size() > 2000000) { break; }
 
-            Collections.shuffle(matchingSubsets);
+//        for (int i = 0; i < 50; i++) {
+//            ArrayList<MCMEdge> matchedItems = matchingSubsets.get(i);
+//            Collections.shuffle(matchingSubsets);
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPerms(matchedItems)) {
 
