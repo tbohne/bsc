@@ -6,29 +6,33 @@ import static SLP.SolverComparison.*;
 
 public class SolutionWriter {
 
-    public static String getNameOfMipFormulation(Formulation mipFormulation) {
-        switch (mipFormulation) {
-            case BINPACKING:
+    public static String getNameOfMipFormulation(Solver solver) {
+        switch (solver) {
+            case MIP_BINPACKING:
                 return "BinPacking Formulation";
-            case THREEINDEX:
+            case MIP_THREEINDEX:
                 return "ThreeIndex Formulation";
+            case CONSTRUCTIVE_HEURISTIC:
+                return "Constructive Heuristic";
             default:
                 return "";
         }
     }
 
-    public static String getNameOfMipFormulationCSV(Formulation mipFormulation) {
-        switch (mipFormulation) {
-            case BINPACKING:
+    public static String getNameOfMipFormulationCSV(Solver solver) {
+        switch (solver) {
+            case MIP_BINPACKING:
                 return "BinP";
-            case THREEINDEX:
+            case MIP_THREEINDEX:
                 return "3Idx";
+            case CONSTRUCTIVE_HEURISTIC:
+                return "ConstHeu";
             default:
                 return "";
         }
     }
 
-    public static void writeSolutionAsCSV(String filename, Solution sol, Formulation mipFormulation) {
+    public static void writeSolutionAsCSV(String filename, Solution sol, Solver solver) {
         try {
 
             File file = new File(filename);
@@ -44,10 +48,10 @@ public class SolutionWriter {
             BufferedWriter bw = new BufferedWriter(fw);
 
             if (newFile) {
-                bw.write("instance,mip,time,val\n");
+                bw.write("instance,solver,time,val\n");
             }
 
-            String mip = getNameOfMipFormulationCSV(mipFormulation);
+            String mip = getNameOfMipFormulationCSV(solver);
             if (!sol.isEmpty()) {
                 bw.write(sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "") + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n");
             }
@@ -61,7 +65,7 @@ public class SolutionWriter {
 
     }
 
-    public static void writeSolution(String filename, Solution sol, Formulation mipFormulation) {
+    public static void writeSolution(String filename, Solution sol, Solver solver) {
 
         try {
 
@@ -77,7 +81,7 @@ public class SolutionWriter {
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            String mip = getNameOfMipFormulation(mipFormulation);
+            String mip = getNameOfMipFormulation(solver);
 
             if (appendNewLines) {
                 bw.newLine();

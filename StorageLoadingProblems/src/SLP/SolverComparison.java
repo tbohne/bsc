@@ -1,5 +1,6 @@
 package SLP;
 
+import SLP.constructive_heuristics.InitialHeuristicSLPSolver;
 import SLP.mip_formulations.BinPackingFormulation;
 import SLP.mip_formulations.ThreeIndexFormulation;
 
@@ -7,9 +8,10 @@ import java.io.File;
 
 public class SolverComparison {
 
-    public enum Formulation {
-        BINPACKING,
-        THREEINDEX
+    public enum Solver {
+        MIP_BINPACKING,
+        MIP_THREEINDEX,
+        CONSTRUCTIVE_HEURISTIC
     }
 
     public static final String INSTANCE_PREFIX = "res/instances/";
@@ -51,15 +53,26 @@ public class SolverComparison {
 
                     BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance, TIME_LIMIT);
                     Solution sol = binPackingFormulation.solve();
-                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Formulation.BINPACKING);
-                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Formulation.BINPACKING);
+                    System.out.println("---------------");
+                    System.out.println(sol);
+                    System.out.println("---------------");
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_BINPACKING);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_BINPACKING);
 
                     instance.resetStacks();
 
                     ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance, TIME_LIMIT);
                     sol = threeIndexFormulation.solve();
-                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Formulation.THREEINDEX);
-                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Formulation.THREEINDEX);
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_THREEINDEX);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_THREEINDEX);
+
+                    instance.resetStacks();
+
+                    // TODO: add time limit
+                    InitialHeuristicSLPSolver initialHeuristicSLPSolver = new InitialHeuristicSLPSolver(instance);
+                    sol = initialHeuristicSLPSolver.solve();
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_HEURISTIC);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_HEURISTIC);
                 }
             }
         }

@@ -87,7 +87,7 @@ public class Solution {
         //      - all Items assigned to a stack
         //      - stacking constraints respected
 
-        return this.allItemsAssigned() && this.stackingConstraintsRespected();
+        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected();
     }
 
     public int getNumberOfAssignedItems() {
@@ -159,7 +159,7 @@ public class Solution {
 
         String str = "";
 
-        if (!this.empty) {
+        if (this.isFeasible()) {
             str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s";
             str += timeLimitExceeded ? " (time limit exceeded)\n" : "\n";
             str += "objective value: " + this.objectiveValue;
