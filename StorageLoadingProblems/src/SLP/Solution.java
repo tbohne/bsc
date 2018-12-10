@@ -35,6 +35,23 @@ public class Solution {
         }
     }
 
+    public Solution(double timeToSolve, boolean timeLimitExceeded, Instance solvedInstance) {
+        this.timeToSolve = timeToSolve;
+        this.empty = false;
+        this.nameOfSolvedInstance = solvedInstance.getName();
+        this.timeLimitExceeded = timeLimitExceeded;
+        this.numberOfItems = solvedInstance.getItems().length;
+
+        this.solvedInstance = solvedInstance;
+
+        this.filledStorageArea = new int[solvedInstance.getStacks().length][];
+        for (int i = 0; i < solvedInstance.getStacks().length; i++) {
+            this.filledStorageArea[i] = solvedInstance.getStacks()[i].clone();
+        }
+
+        this.objectiveValue = this.getCost();
+    }
+
     public int[][] getFilledStorageArea() {
         return this.filledStorageArea;
     }
@@ -65,11 +82,11 @@ public class Solution {
 
     public boolean stackingConstraintsRespected() {
 
-        for (int i = 0; i < this.filledStorageArea.length; i++) {
-            for (int j = 1; j < this.filledStorageArea[i].length; j++) {
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+            for (int level = 1; level < this.filledStorageArea[stack].length; level++) {
 
-                int itemAbove = this.filledStorageArea[i][j];
-                int itemBelow = this.filledStorageArea[i][j - 1];
+                int itemBelow = this.filledStorageArea[stack][level];
+                int itemAbove = this.filledStorageArea[stack][level - 1];
 
                 if (itemAbove != -1 && itemBelow != -1) {
                     if (this.solvedInstance.getStackingConstraints()[itemAbove][itemBelow] != 1) {
@@ -107,6 +124,25 @@ public class Solution {
         }
 
         return numberOfAssignedItems;
+    }
+
+    public int getCost() {
+
+        if (this.empty) {
+            return 9999999;
+        }
+
+        int cost = 0;
+
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+            for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
+                int item = this.filledStorageArea[stack][level];
+                if (item != -1) {
+                    cost += this.solvedInstance.getCosts()[item][stack];
+                }
+            }
+        }
+        return cost;
     }
 
     public String getTimeToSolve() {
@@ -173,7 +209,7 @@ public class Solution {
                 String space = getCurrentSpace(i, maxStringOffset);
 
                 str += "stack " + space + i + ":    ";
-                for (int j = this.filledStorageArea[i].length - 1; j >= 0; j--) {
+                for (int j = 0; j < this.filledStorageArea[i].length; j++) {
                     if (this.filledStorageArea[i][j] != -1) {
                         str += this.filledStorageArea[i][j] + " ";
                     }
