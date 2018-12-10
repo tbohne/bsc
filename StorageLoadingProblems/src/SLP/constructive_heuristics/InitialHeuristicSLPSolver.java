@@ -57,7 +57,6 @@ public class InitialHeuristicSLPSolver {
     public void assignRatingToEdges(ArrayList<MCMEdge> matchedItems) {
 
         for (MCMEdge edge : matchedItems) {
-
             int rating = 0;
 
             for (int entry : this.instance.getStackingConstraints()[edge.getVertexOne()]) {
@@ -70,30 +69,30 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public ArrayList<ArrayList<MCMEdge>> extractInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
+    public ArrayList<ArrayList<MCMEdge>> getInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
-        ArrayList<MCMEdge> matchedItems = new ArrayList<>();
-        this.parseMCM(matchedItems, mcm);
+        ArrayList<MCMEdge> edges = new ArrayList<>();
+        this.parseMCM(edges, mcm);
+        this.assignRatingToEdges(edges);
+        // The edges are sorted based on their ratings.
+        Collections.sort(edges);
 
         ArrayList<List> edgePermutations = new ArrayList<>();
+        // The first permutation that is added is the one based on the sorting
+        // which should be the most promising stack assignment.
+        edgePermutations.add(edges);
 
-        assignRatingToEdges(matchedItems);
-        Collections.sort(matchedItems);
-        edgePermutations.add(matchedItems);
-
-        Permutations.of(matchedItems).forEach(p -> {
+        Permutations.of(edges).forEach(p -> {
             List<MCMEdge> edgeList = p.collect(Collectors.toList());
             edgePermutations.add(edgeList);
         });
 
         ArrayList<ArrayList<MCMEdge>> stackAssignments = new ArrayList<>();
 
-        for (List<MCMEdge> l : edgePermutations) {
-
+        for (List<MCMEdge> edgePerm : edgePermutations) {
             ArrayList<MCMEdge> currentStackAssignment = new ArrayList<>();
-
             for (int i = 0; i < this.instance.getStacks().length; i++) {
-                currentStackAssignment.add(l.get(i));
+                currentStackAssignment.add(edgePerm.get(i));
             }
             stackAssignments.add(currentStackAssignment);
         }
@@ -101,18 +100,19 @@ public class InitialHeuristicSLPSolver {
         return stackAssignments;
     }
 
-    public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> matchedItems) {
+    public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> edges) {
 
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        ArrayList<Integer> listOfMatchedItems = new ArrayList<>();
+        ArrayList<Integer> matchedItems = new ArrayList<>();
 
-        for (MCMEdge edge : matchedItems) {
-            listOfMatchedItems.add(edge.getVertexOne());
-            listOfMatchedItems.add(edge.getVertexTwo());
+        for (MCMEdge edge : edges) {
+            matchedItems.add(edge.getVertexOne());
+            matchedItems.add(edge.getVertexTwo());
         }
 
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
+
         for (int item : this.instance.getItems()) {
-            if (!listOfMatchedItems.contains(item) && !unstackableItems.contains(item)) {
+            if (!matchedItems.contains(item) && !unstackableItems.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
@@ -132,7 +132,7 @@ public class InitialHeuristicSLPSolver {
 
     public void assignUnmatchedItemsInGivenOrder(int[][] tmpCurrentStacks, List<Integer> unmatchedItems) {
 
-        ArrayList<Integer> tmp = new ArrayList<>(unmatchedItems);
+//        ArrayList<Integer> tmp = new ArrayList<>(unmatchedItems);
 
         for (int item : unmatchedItems) {
 
@@ -148,14 +148,14 @@ public class InitialHeuristicSLPSolver {
                 if (levelOfCurrentTopMostItem == -1) {
                     // assign to ground level
                     tmpCurrentStacks[stack][0] = item;
-                    tmp.remove(tmp.indexOf(item));
+//                    tmp.remove(tmp.indexOf(item));
                     break;
                 } else {
                     if (this.instance.getStackingConstraints()[item][tmpCurrentStacks[stack][levelOfCurrentTopMostItem]] == 1) {
                         if (levelOfCurrentTopMostItem < 2) {
                             if (tmpCurrentStacks[stack][levelOfCurrentTopMostItem + 1] == -1) {
                                 tmpCurrentStacks[stack][levelOfCurrentTopMostItem + 1] = item;
-                                tmp.remove(tmp.indexOf(item));
+//                                tmp.remove(tmp.indexOf(item));
                                 break;
                             }
                         }
@@ -259,7 +259,7 @@ public class InitialHeuristicSLPSolver {
 
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
 
-        ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.extractInitialStackAssignmentsFromMCM(mcm);
+        ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
         ArrayList<Solution> solutions = new ArrayList<>();
 
         Solution bestSol = new Solution();
