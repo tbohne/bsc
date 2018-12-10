@@ -18,6 +18,8 @@ public class InitialHeuristicSLPSolver {
 
     private ArrayList<List<Integer>> alreadyUsedShuffles;
 
+    private double startTime;
+
     public InitialHeuristicSLPSolver(Instance instance) {
         this.instance = instance;
         this.unstackableItems = new ArrayList<>();
@@ -340,7 +342,9 @@ public class InitialHeuristicSLPSolver {
         Solution sol = new Solution();
 
         if (this.instance.getStackCapacity() == 3) {
+            this.startTime = System.currentTimeMillis();
             sol = this.capThreeApproach();
+            sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         }
         return sol;
     }

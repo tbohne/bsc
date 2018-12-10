@@ -98,6 +98,10 @@ public class Solution {
         return true;
     }
 
+    public void setTimeToSolve(double duration) {
+        this.timeToSolve = duration;
+    }
+
     public boolean isFeasible() {
 
         // TODO:
