@@ -7,57 +7,55 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int INITIAL_NUMBER_OF_ITEMS = 20;
-    public static final int NUMBER_OF_SETUPS = 1;
-    public static final int NUMBER_OF_ITEMS_ADDED_PER_SETUP = 1;
-    public static final float ITEM_TO_STACK_MULTIPLIER = (float)(3.0 / 8.0);
-    public static final float STACK_CAP_MULTIPLIER = (float)(2.0 / 3.0);
-    public static final int NUMBER_OF_INSTANCES_PER_SETUP = 5;
+    public static final int NUMBER_OF_INSTANCES = 100;
+    public static final int NUMBER_OF_ITEMS = 20;
+    public static final int STACK_CAPACITY = 3;
+
+    // The number of stacks m is initially m = n / b,
+    // this number specifies the percentage by which the initial m gets increased.
+    public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
+
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0825F;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
-
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB = 0.92F;
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB = 0.93F;
     /***************************************************************************/
 
     public static void main(String[] args) {
 
-        for (int setup = 0; setup < NUMBER_OF_SETUPS; setup++) {
+        int numOfStacks = (NUMBER_OF_ITEMS / STACK_CAPACITY);
 
-//            int numOfItems = INITIAL_NUMBER_OF_ITEMS + setup * NUMBER_OF_ITEMS_ADDED_PER_SETUP;
-//            int numOfStacks = (int)(numOfItems * ITEM_TO_STACK_MULTIPLIER);
-//            int stackCap = (numOfItems + (int)Math.ceil(numOfItems * STACK_CAP_MULTIPLIER)) / numOfStacks;
-
-            int numOfItems = INITIAL_NUMBER_OF_ITEMS + setup * NUMBER_OF_ITEMS_ADDED_PER_SETUP;
-            int numOfStacks = 8;
-            int stackCap = 3;
-
-            for (int idx = 0; idx < NUMBER_OF_INSTANCES_PER_SETUP; idx++) {
-
-                int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(numOfItems, numOfItems, true);
-
-                int[][] costs = new int[numOfItems][numOfStacks];
-                for (int i = 0; i < numOfItems; i++) {
-                    for (int j = 0; j < numOfStacks; j++) {
-                        Random rand = new Random();
-                        costs[i][j] = rand.nextInt(COSTS_EXCLUSIVE_UPPER_BOUND - COSTS_INCLUSIVE_LOWER_BOUND) + COSTS_INCLUSIVE_LOWER_BOUND;
-                    }
-                }
-
-                String instanceName = "slp_instance_" + numOfItems + "_" + numOfStacks + "_" + stackCap + "_" + idx;
-
-                Instance instance = new Instance(numOfItems, numOfStacks, stackCap, matrix, costs, instanceName);
-                InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
-            }
+        if (ADDITIONAL_STACK_PERCENTAGE > 0) {
+            numOfStacks = (int)(Math.ceil(numOfStacks + numOfStacks * 0.2));
         }
-    }
 
-    private static double mapRange(double numberOfItems) {
-        return CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB
-                + ((numberOfItems - INITIAL_NUMBER_OF_ITEMS)
-                * (CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_UB - CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS_LB))
-                / ((INITIAL_NUMBER_OF_ITEMS + NUMBER_OF_ITEMS_ADDED_PER_SETUP * NUMBER_OF_SETUPS) - INITIAL_NUMBER_OF_ITEMS);
+        for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
+
+            int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
+
+            int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
+            for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+                for (int j = 0; j < numOfStacks; j++) {
+                    Random rand = new Random();
+                    costs[i][j] = rand.nextInt(COSTS_EXCLUSIVE_UPPER_BOUND - COSTS_INCLUSIVE_LOWER_BOUND) + COSTS_INCLUSIVE_LOWER_BOUND;
+                }
+            }
+
+            String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idx;
+
+            Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, matrix, costs, instanceName);
+            InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
+            InstanceWriter.writeConfig(
+                    INSTANCE_PREFIX + "config.txt",
+                    NUMBER_OF_INSTANCES,
+                    NUMBER_OF_ITEMS,
+                    STACK_CAPACITY,
+                    ADDITIONAL_STACK_PERCENTAGE,
+                    CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
+                    COSTS_INCLUSIVE_LOWER_BOUND,
+                    COSTS_EXCLUSIVE_UPPER_BOUND
+            );
+        }
     }
 
     public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
@@ -70,10 +68,7 @@ public class TestDataGenerator {
                 if (i == j) {
                     matrix[i][j] = 1;
                 } else {
-//                    double chance = dimOne > 20 ? mapRange(dimOne) : mapRange(dimOne) - 0.1;
-                    double chance = mapRange(dimOne);
-                    System.out.println("CHANCE: " + chance);
-                    if (Math.random() >= /* 0.90 */ chance) {
+                    if (Math.random() >= 1.0 - CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS) {
                         matrix[i][j] = 1;
                     } else {
                         matrix[i][j] = 0;
