@@ -1,9 +1,9 @@
 library(ggplot2)
 
-Input <- read.csv(file="../../res/solutions/solutions.csv", header = TRUE, sep=",")
+Input <- read.csv(file="../../../res/solutions/solutions.csv", header = TRUE, sep=",")
 
-MipEntries <- subset(Input, mip=="BinP" | mip=="3Idx")
+MipEntries <- subset(Input, solver=="BinP" | solver=="3Idx" | solver=="ConstHeu")
 
-plotPointsPre <- ggplot(data = MipEntries, aes(x=time, y=instance, color=mip, group=mip, xlab="time (s)", ylab="instance")) + geom_point()
+plotPointsPre <- ggplot(data = MipEntries, aes(x=time, y=instance, color=solver, group=solver, xlab="time (s)", ylab="instance")) + geom_point()
 
 ggsave(plotPointsPre, file="test.png", width=10, height=25)
