@@ -120,7 +120,7 @@ public class InitialHeuristicSLPSolver {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
                 int levelOfCurrentTopMostItem = -1;
-                for (int level = 0; level < tmpCurrentStacks[stack].length; level++) {
+                for (int level = 2; level > 0; level--) {
                     if (tmpCurrentStacks[stack][level] != -1) {
                         levelOfCurrentTopMostItem = level;
                     }
@@ -128,14 +128,14 @@ public class InitialHeuristicSLPSolver {
 
                 if (levelOfCurrentTopMostItem == -1) {
                     // assign to ground level
-                    tmpCurrentStacks[stack][0] = item;
+                    tmpCurrentStacks[stack][2] = item;
 //                    tmp.remove(tmp.indexOf(item));
                     break;
                 } else {
                     if (this.instance.getStackingConstraints()[item][tmpCurrentStacks[stack][levelOfCurrentTopMostItem]] == 1) {
-                        if (levelOfCurrentTopMostItem < 2) {
-                            if (tmpCurrentStacks[stack][levelOfCurrentTopMostItem + 1] == -1) {
-                                tmpCurrentStacks[stack][levelOfCurrentTopMostItem + 1] = item;
+                        if (levelOfCurrentTopMostItem > 0) {
+                            if (tmpCurrentStacks[stack][levelOfCurrentTopMostItem - 1] == -1) {
+                                tmpCurrentStacks[stack][levelOfCurrentTopMostItem - 1] = item;
 //                                tmp.remove(tmp.indexOf(item));
                                 break;
                             }
@@ -209,13 +209,14 @@ public class InitialHeuristicSLPSolver {
                 sum += constraint;
             }
             if (sum <= 1) {
-                this.instance.getStacks()[cnt][0] = item;
+                this.instance.getStacks()[cnt][2] = item;
                 this.unstackableItems.add(item);
                 cnt++;
             }
         }
 
         // Sets MCM pairs to level 0 and 1 of stacks
+        // (0 is actually the top level, so level 0 is 2 here)
         for (MCMEdge edge : matchedItems) {
             if (cnt < this.instance.getStacks().length) {
 
@@ -223,10 +224,10 @@ public class InitialHeuristicSLPSolver {
                 int vertexTwo = edge.getVertexTwo();
 
                 if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
-                    this.instance.getStacks()[cnt][0] = vertexOne;
+                    this.instance.getStacks()[cnt][2] = vertexOne;
                     this.instance.getStacks()[cnt][1] = vertexTwo;
                 } else {
-                    this.instance.getStacks()[cnt][0] = vertexTwo;
+                    this.instance.getStacks()[cnt][2] = vertexTwo;
                     this.instance.getStacks()[cnt][1] = vertexOne;
                 }
 
@@ -289,16 +290,17 @@ public class InitialHeuristicSLPSolver {
             for (List<Integer> unmatchedItems : this.getUnmatchedPerms(matchedItems)) {
 
                 this.setStacks(matchedItems, unmatchedItems);
-                Solution sollll = new Solution(0, 0, false, this.instance);
-                solutions.add(sollll);
+                Solution sol1 = new Solution(0, false, this.instance);
+                solutions.add(sol1);
 
-                if (sollll.getNumberOfAssignedItems() > bestSol.getNumberOfAssignedItems()) {
-                    bestSol = sollll;
+                if (sol1.isFeasible() && sol1.getCost() < bestSol.getCost()) {
+                    bestSol = sol1;
                 }
 
-                if (sollll.isFeasible()) {
-                    return sollll;
-                }
+                // TODO: implement option to just look for feasible solutions
+//                if (sol1.isFeasible()) {
+//                    return sol1;
+//                }
 
                 this.instance.resetStacks();
 
@@ -306,28 +308,29 @@ public class InitialHeuristicSLPSolver {
                     e.flipVertices();
                 }
                 this.setStacks(matchedItems, unmatchedItems);
-                Solution sol2 = new Solution(0, 0, false, this.instance);
+                Solution sol2 = new Solution(0, false, this.instance);
                 solutions.add(sol2);
 
-                if (sol2.getNumberOfAssignedItems() > bestSol.getNumberOfAssignedItems()) {
+                if (sol2.isFeasible() && sol2.getCost() < bestSol.getCost()) {
                     bestSol = sol2;
                 }
 
-                if (sol2.isFeasible()) {
-                    return sol2;
-                }
+                /// TODO: implement option to just look for feasible solutions
+//                if (sol2.isFeasible()) {
+//                    return sol2;
+//                }
 
                 this.instance.resetStacks();
             }
         }
 
         System.out.println("number of solutions: " + solutions.size());
-        for (Solution sol : solutions) {
-            // TODO: return the cheapest based on costs
-            if (sol.isFeasible()) {
-                return sol;
-            }
-        }
+//        for (Solution sol : solutions) {
+//            // TODO: return the cheapest based on costs
+//            if (sol.isFeasible()) {
+//                return sol;
+//            }
+//        }
 
         return bestSol;
     }
