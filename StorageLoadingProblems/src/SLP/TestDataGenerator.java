@@ -15,7 +15,7 @@ public class TestDataGenerator {
     // this number specifies the percentage by which the initial m gets increased.
     public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0065F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0055F;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 0;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
