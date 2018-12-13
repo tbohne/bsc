@@ -3,12 +3,12 @@ package SLP.constructive_heuristics;
 import SLP.Instance;
 import SLP.MCMEdge;
 import SLP.Solution;
+import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InitialHeuristicSLPSolver {
 
@@ -63,12 +63,18 @@ public class InitialHeuristicSLPSolver {
         ArrayList<List> edgePermutations = new ArrayList<>();
         // The first permutation that is added is the one based on the sorting
         // which should be the most promising stack assignment.
-        edgePermutations.add(edges);
+        edgePermutations.add(new ArrayList(edges));
 
-        Permutations.of(edges).forEach(p -> {
-            List<MCMEdge> edgeList = p.collect(Collectors.toList());
-            edgePermutations.add(edgeList);
-        });
+        if (edges.size() < 9) {
+            for (List<MCMEdge> edgeList : Collections2.permutations(edges)) {
+                edgePermutations.add(new ArrayList(edgeList));
+            }
+        } else {
+            for (int i = 0; i < 40000; i++) {
+                edgePermutations.add(new ArrayList(edges));
+                Collections.shuffle(edges);
+            }
+        }
 
         ArrayList<ArrayList<MCMEdge>> stackAssignments = new ArrayList<>();
 
@@ -77,7 +83,7 @@ public class InitialHeuristicSLPSolver {
             for (int i = 0; i < this.instance.getStacks().length; i++) {
                 currentStackAssignment.add(edgePerm.get(i));
             }
-            stackAssignments.add(currentStackAssignment);
+            stackAssignments.add(new ArrayList<>(currentStackAssignment));
         }
 
         return stackAssignments;
@@ -113,32 +119,36 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void assignUnmatchedItemsInGivenOrder(int[][] tmpCurrentStacks, List<Integer> unmatchedItems) {
-
-//        ArrayList<Integer> tmp = new ArrayList<>(unmatchedItems);
+    public void assignUnmatchedItemsInGivenOrder(List<Integer> unmatchedItems) {
 
         for (int item : unmatchedItems) {
 
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
-                int levelOfCurrentTopMostItem = -1;
-                for (int level = 2; level > 0; level--) {
-                    if (tmpCurrentStacks[stack][level] != -1) {
+//                System.out.println("CURRENT STACK:####################");
+//                for (int i = 0; i < this.instance.getStacks()[stack].length; i++) {
+//                    System.out.print(this.instance.getStacks()[stack][i] + " ");
+//                }
+
+                int levelOfCurrentTopMostItem = -99;
+                for (int level = 2; level >= 0; level--) {
+                    if (this.instance.getStacks()[stack][level] != -1) {
                         levelOfCurrentTopMostItem = level;
                     }
                 }
 
+//                System.out.println("current top most item: " + this.instance.getStacks()[stack][levelOfCurrentTopMostItem]);
+//                System.out.println("##################################");
+
                 if (levelOfCurrentTopMostItem == -1) {
                     // assign to ground level
-                    tmpCurrentStacks[stack][2] = item;
-//                    tmp.remove(tmp.indexOf(item));
+                    this.instance.getStacks()[stack][2] = item;
                     break;
                 } else {
-                    if (this.instance.getStackingConstraints()[item][tmpCurrentStacks[stack][levelOfCurrentTopMostItem]] == 1) {
+                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][levelOfCurrentTopMostItem]] == 1) {
                         if (levelOfCurrentTopMostItem > 0) {
-                            if (tmpCurrentStacks[stack][levelOfCurrentTopMostItem - 1] == -1) {
-                                tmpCurrentStacks[stack][levelOfCurrentTopMostItem - 1] = item;
-//                                tmp.remove(tmp.indexOf(item));
+                            if (this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] == -1) {
+                                this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] = item;
                                 break;
                             }
                         }
@@ -165,24 +175,21 @@ public class InitialHeuristicSLPSolver {
 
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
-        if (tmpList.size() < 9) {
-            Permutations.of(tmpList).forEach(p -> {
-                List<Integer> edgeList = p.collect(Collectors.toList());
-                unmatchedItemPermutations.add(edgeList);
-            });
+        if (tmpList.size() < 8) {
+            for (List<Integer> edgeList : Collections2.permutations(tmpList)) {
+                unmatchedItemPermutations.add(new ArrayList<>(edgeList));
+            }
         } else {
 
-            ArrayList<List<Integer>> alreadyTested = new ArrayList<>();
-
             for (int i = 0; i < 40000; i++) {
-                List<Integer> edgeList = new ArrayList<>(tmpList);
-                unmatchedItemPermutations.add(edgeList);
+                unmatchedItemPermutations.add(new ArrayList<>(tmpList));
                 Collections.shuffle(tmpList);
 
                 int unsuccessfulShuffleAttempts = 0;
                 while (isPartOfAlreadyUsedShuffles(tmpList)) {
+                    System.out.println("already");
                     Collections.shuffle(tmpList);
-                    if (unsuccessfulShuffleAttempts == 10) {
+                    if (unsuccessfulShuffleAttempts == 5) {
                         for (List el : unmatchedItemPermutations) {
                             res.add(el);
                         }
@@ -190,11 +197,12 @@ public class InitialHeuristicSLPSolver {
                     }
                     unsuccessfulShuffleAttempts++;
                 }
+                this.alreadyUsedShuffles.add(new ArrayList<>(tmpList));
             }
         }
 
         for (List el : unmatchedItemPermutations) {
-            res.add(el);
+            res.add(new ArrayList<>(el));
         }
         return res;
     }
@@ -240,11 +248,19 @@ public class InitialHeuristicSLPSolver {
             cnt++;
         }
 
-        int[][] tmpCurrentStacks = new int[this.instance.getStacks().length][this.instance.getStacks()[0].length];
-        this.copyStackAssignment(this.instance.getStacks(), tmpCurrentStacks);
-        this.assignUnmatchedItemsInGivenOrder(tmpCurrentStacks, this.getUnmatchedItems(matchedItems));
+//        int[][] tmpCurrentStacks = new int[this.instance.getStacks().length][this.instance.getStacks()[0].length];
+//        this.copyStackAssignment(this.instance.getStacks(), tmpCurrentStacks);
+        this.assignUnmatchedItemsInGivenOrder(this.getUnmatchedItems(matchedItems));
+//        this.copyStackAssignment(tmpCurrentStacks, this.instance.getStacks());
 
-        this.copyStackAssignment(tmpCurrentStacks, this.instance.getStacks());
+//        System.out.println("############################################");
+//        for (int i = 0; i < this.instance.getStacks().length; i++) {
+//            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
+//                System.out.print(this.instance.getStacks()[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println("############################################");
     }
 
     public void generateStackingConstraintGraph(DefaultUndirectedGraph<String, DefaultEdge> graph) {
@@ -277,13 +293,17 @@ public class InitialHeuristicSLPSolver {
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
 
         ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
-        ArrayList<Solution> solutions = new ArrayList<>();
+
+//        ArrayList<Solution> solutions = new ArrayList<>();
 
         Solution bestSol = new Solution();
 
+        int generatedSolutions = 0;
+
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
 
-            if (solutions.size() > 2000000) { break; }
+//            if (solutions.size() > 20000) { break; }
+            if (generatedSolutions > 200000) { break; }
 
 //        for (int i = 0; i < 50; i++) {
 //            ArrayList<MCMEdge> matchedItems = matchingSubsets.get(i);
@@ -291,12 +311,14 @@ public class InitialHeuristicSLPSolver {
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPerms(matchedItems)) {
 
+                System.out.println(unmatchedItems);
+
                 this.setStacks(matchedItems, unmatchedItems);
                 Solution sol1 = new Solution(0, false, this.instance);
-                solutions.add(sol1);
+//                solutions.add(new Solution(sol1));
 
                 if (sol1.isFeasible() && sol1.getCost() < bestSol.getCost()) {
-                    bestSol = sol1;
+                    bestSol = new Solution(sol1);
                 }
 
                 // TODO: implement option to just look for feasible solutions
@@ -309,13 +331,16 @@ public class InitialHeuristicSLPSolver {
                 for (MCMEdge e : matchedItems) {
                     e.flipVertices();
                 }
+
                 this.setStacks(matchedItems, unmatchedItems);
                 Solution sol2 = new Solution(0, false, this.instance);
-                solutions.add(sol2);
+//                solutions.add(new Solution(sol2));
 
                 if (sol2.isFeasible() && sol2.getCost() < bestSol.getCost()) {
-                    bestSol = sol2;
+                    bestSol = new Solution(sol2);
                 }
+
+                generatedSolutions += 2;
 
                 /// TODO: implement option to just look for feasible solutions
 //                if (sol2.isFeasible()) {
@@ -326,7 +351,8 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-        System.out.println("number of solutions: " + solutions.size());
+//        System.out.println("number of solutions: " + solutions.size());
+        System.out.println("number of solutions: " + generatedSolutions);
 //        for (Solution sol : solutions) {
 //            // TODO: return the cheapest based on costs
 //            if (sol.isFeasible()) {
