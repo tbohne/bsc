@@ -39,6 +39,29 @@ public class Instance {
         this.name = name;
     }
 
+    public Instance(Instance instance) {
+        this.stacks = new int[instance.getStacks().length][instance.getStackCapacity()];
+        for (int i = 0; i < instance.getStacks().length; i++) {
+            for (int j = 0; j < instance.getStackCapacity(); j++) {
+                this.stacks[i][j] = instance.getStacks()[i][j];
+            }
+        }
+
+        this.items = instance.getItems().clone();
+        this.stackCapacity = instance.getStackCapacity();
+
+        this.stackingConstraints = new int[instance.getStackingConstraints().length][];
+        for (int i = 0; i < instance.getStackingConstraints().length; i++) {
+            this.stackingConstraints[i] = instance.getStackingConstraints()[i].clone();
+        }
+
+        this.costs = new int[instance.getCosts().length][];
+        for (int i = 0; i < instance.getCosts().length; i++) {
+            this.costs[i] = instance.getCosts()[i].clone();
+        }
+        this.name = instance.getName();
+    }
+
     public void resetStacks() {
         int numberOfStacks = this.stacks.length;
         int stackCapacity = this.stacks[0].length;

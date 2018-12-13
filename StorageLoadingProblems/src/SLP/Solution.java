@@ -52,6 +52,20 @@ public class Solution {
         this.objectiveValue = this.getCost();
     }
 
+    public Solution(Solution sol) {
+        this.timeToSolve = sol.timeToSolve;
+        this.objectiveValue = sol.objectiveValue;
+        this.empty = sol.empty;
+        this.numberOfItems = sol.numberOfItems;
+        this.solvedInstance = new Instance(sol.solvedInstance);
+        this.nameOfSolvedInstance = sol.nameOfSolvedInstance;
+        this.timeLimitExceeded = sol.timeLimitExceeded;
+        this.filledStorageArea = new int[sol.solvedInstance.getStacks().length][];
+        for (int i = 0; i < sol.solvedInstance.getStacks().length; i++) {
+            this.filledStorageArea[i] = sol.solvedInstance.getStacks()[i].clone();
+        }
+    }
+
     public int[][] getFilledStorageArea() {
         return this.filledStorageArea;
     }
