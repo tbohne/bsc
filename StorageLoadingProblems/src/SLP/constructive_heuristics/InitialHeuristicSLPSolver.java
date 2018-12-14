@@ -42,12 +42,13 @@ public class InitialHeuristicSLPSolver {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
 
-            for (int entry : this.instance.getStackingConstraints()[edge.getVertexOne()]) {
-                rating += entry;
+            // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
+            // A high rating means that many items can be placed on top of the initial assignment.
+
+            for (int i = 0; i < this.instance.getStackingConstraints().length; i++) {
+                rating += (this.instance.getStackingConstraints()[i][edge.getVertexOne()] + this.instance.getStackingConstraints()[i][edge.getVertexTwo()]);
             }
-            for (int entry : this.instance.getStackingConstraints()[edge.getVertexTwo()]) {
-                rating += entry;
-            }
+
             edge.setRating(rating);
         }
     }
@@ -57,24 +58,28 @@ public class InitialHeuristicSLPSolver {
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, mcm);
         this.assignRatingToEdges(edges);
+
         // The edges are sorted based on their ratings.
         Collections.sort(edges);
+        Collections.reverse(edges);
 
         ArrayList<List> edgePermutations = new ArrayList<>();
         // The first permutation that is added is the one based on the sorting
         // which should be the most promising stack assignment.
         edgePermutations.add(new ArrayList(edges));
+        Collections.reverse(edges);
+        edgePermutations.add(new ArrayList(edges));
 
-        if (edges.size() < 9) {
-            for (List<MCMEdge> edgeList : Collections2.permutations(edges)) {
-                edgePermutations.add(new ArrayList(edgeList));
-            }
-        } else {
-            for (int i = 0; i < 40000; i++) {
-                edgePermutations.add(new ArrayList(edges));
-                Collections.shuffle(edges);
-            }
-        }
+//        if (edges.size() < 9) {
+//            for (List<MCMEdge> edgeList : Collections2.permutations(edges)) {
+//                edgePermutations.add(new ArrayList(edgeList));
+//            }
+//        } else {
+//            for (int i = 0; i < 40000; i++) {
+//                edgePermutations.add(new ArrayList(edges));
+//                Collections.shuffle(edges);
+//            }
+//        }
 
         ArrayList<ArrayList<MCMEdge>> stackAssignments = new ArrayList<>();
 
@@ -302,7 +307,7 @@ public class InitialHeuristicSLPSolver {
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPerms(matchedItems)) {
 
-                System.out.println(unmatchedItems);
+                System.out.println(generatedSolutions);
 
                 this.setStacks(matchedItems, unmatchedItems);
                 Solution sol1 = new Solution(0, false, this.instance);
