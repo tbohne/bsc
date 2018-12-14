@@ -12,6 +12,12 @@ public class MCMEdge implements Comparable<MCMEdge> {
         this.rating = rating;
     }
 
+    public MCMEdge(MCMEdge edge) {
+        this.vertexOne = edge.vertexOne;
+        this.vertexTwo = edge.getVertexTwo();
+        this.rating = edge.rating;
+    }
+
     public int getVertexOne() {
         return vertexOne;
     }
