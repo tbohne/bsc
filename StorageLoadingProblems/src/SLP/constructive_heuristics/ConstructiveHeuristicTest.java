@@ -17,12 +17,12 @@ public class ConstructiveHeuristicTest {
         //   - print results
 
 
-        Instance instance = InstanceReader.readInstance("res/instances/v6/slp_instance_300_120_3_26.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/v6/slp_instance_300_120_3_43.txt");
         // System.out.println(instance);
 
         InitialHeuristicSLPSolver solver = new InitialHeuristicSLPSolver(instance);
 
-        Solution sol = solver.solve();
+        Solution sol = solver.solve(false);
         System.out.println(sol);
         System.out.println("feasible: " + sol.isFeasible());
         System.out.println("cost: " + sol.getCost());

@@ -280,7 +280,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public Solution capThreeApproach() {
+    public Solution capThreeApproach(boolean optimizeSolution) {
 
         // TODO:
         //   - calc MCM between items for b = 2
@@ -289,12 +289,8 @@ public class InitialHeuristicSLPSolver {
 
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateStackingConstraintGraph(graph);
-
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-
         ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
-
-//        ArrayList<Solution> solutions = new ArrayList<>();
 
         Solution bestSol = new Solution();
 
@@ -302,12 +298,7 @@ public class InitialHeuristicSLPSolver {
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
 
-//            if (solutions.size() > 20000) { break; }
             if (generatedSolutions > 200000) { break; }
-
-//        for (int i = 0; i < 50; i++) {
-//            ArrayList<MCMEdge> matchedItems = matchingSubsets.get(i);
-//            Collections.shuffle(matchingSubsets);
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPerms(matchedItems)) {
 
@@ -315,61 +306,59 @@ public class InitialHeuristicSLPSolver {
 
                 this.setStacks(matchedItems, unmatchedItems);
                 Solution sol1 = new Solution(0, false, this.instance);
-//                solutions.add(new Solution(sol1));
+
+                if (!optimizeSolution && sol1.isFeasible()) {
+                    return sol1;
+                }
 
                 if (sol1.isFeasible() && sol1.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol1);
                 }
 
-                // TODO: implement option to just look for feasible solutions
-//                if (sol1.isFeasible()) {
-//                    return sol1;
-//                }
-
                 this.instance.resetStacks();
 
+                ArrayList<MCMEdge> copyMatchedItems = new ArrayList<>();
                 for (MCMEdge e : matchedItems) {
+                    copyMatchedItems.add(new MCMEdge(e));
+                }
+
+                for (MCMEdge e : copyMatchedItems) {
                     e.flipVertices();
                 }
 
-                this.setStacks(matchedItems, unmatchedItems);
+                this.setStacks(copyMatchedItems, unmatchedItems);
                 Solution sol2 = new Solution(0, false, this.instance);
-//                solutions.add(new Solution(sol2));
+
+                if (!optimizeSolution && sol2.isFeasible()) {
+                    return sol2;
+                }
 
                 if (sol2.isFeasible() && sol2.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol2);
                 }
 
                 generatedSolutions += 2;
-
-                /// TODO: implement option to just look for feasible solutions
-//                if (sol2.isFeasible()) {
-//                    return sol2;
-//                }
-
                 this.instance.resetStacks();
             }
         }
 
-//        System.out.println("number of solutions: " + solutions.size());
         System.out.println("number of solutions: " + generatedSolutions);
-//        for (Solution sol : solutions) {
-//            // TODO: return the cheapest based on costs
-//            if (sol.isFeasible()) {
-//                return sol;
-//            }
-//        }
 
         return bestSol;
     }
 
-    public Solution solve() {
+    /**
+     *
+     * @param optimizeSolution - specifies whether the solution should be optimized or just valid
+     * @return
+     */
+    public Solution solve(boolean optimizeSolution) {
 
         Solution sol = new Solution();
 
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
-            sol = this.capThreeApproach();
+            sol = this.capThreeApproach(optimizeSolution);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         }
         return sol;

@@ -53,9 +53,6 @@ public class SolverComparison {
 
                     BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance, TIME_LIMIT);
                     Solution sol = binPackingFormulation.solve();
-                    System.out.println("---------------");
-                    System.out.println(sol);
-                    System.out.println("---------------");
                     SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_BINPACKING);
                     SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_BINPACKING);
 
@@ -70,7 +67,7 @@ public class SolverComparison {
 
                     // TODO: add time limit
                     InitialHeuristicSLPSolver initialHeuristicSLPSolver = new InitialHeuristicSLPSolver(instance);
-                    sol = initialHeuristicSLPSolver.solve();
+                    sol = initialHeuristicSLPSolver.solve(false);
                     SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_HEURISTIC);
                     SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_HEURISTIC);
                 }
