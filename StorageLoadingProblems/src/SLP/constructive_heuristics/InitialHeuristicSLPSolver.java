@@ -230,63 +230,53 @@ public class InitialHeuristicSLPSolver {
         return rating;
     }
 
-    public ArrayList<List<Integer>> getUnmatchedPerms(ArrayList<MCMEdge> matchedItems) {
+    public ArrayList<List<Integer>> getUnmatchedPermutations(ArrayList<MCMEdge> matchedItems) {
 
-        ArrayList<Integer> tmpList = new ArrayList<>(this.getInitiallyUnmatchedItems(matchedItems));
-        ArrayList<List<Integer>> res = new ArrayList<>();
+        ArrayList<Integer> initiallyUnmatchedItems = new ArrayList<>(this.getInitiallyUnmatchedItems(matchedItems));
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
-        ////////////////////////////////////////////////////////////
-
-        // TODO: Order by rating (hardest cases first)
         HashMap<Integer, Integer> unmatchedItemRatings = new HashMap<>();
-        for (int item : tmpList) {
+        for (int item : initiallyUnmatchedItems) {
             unmatchedItemRatings.put(item, this.computeRatingForUnmatchedItem(item));
         }
 
-        Map<Integer, Integer> sorted = MapUtil.sortByValue(unmatchedItemRatings);
-        ArrayList<Integer> newApproach = new ArrayList<>();
+        // ordered by rating - hardest cases first
+        Map<Integer, Integer> sortedItemRatings = MapUtil.sortByValue(unmatchedItemRatings);
+        ArrayList<Integer> unmatchedItemsSortedByRating = new ArrayList<>();
 
-        for (int i : sorted.keySet()) {
-            newApproach.add(i);
+        for (int item : sortedItemRatings.keySet()) {
+            unmatchedItemsSortedByRating.add(item);
         }
 
-        ////////////////////////////////////////////////////////////
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
+        Collections.reverse(unmatchedItemsSortedByRating);
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
 
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
-        if (tmpList.size() < 7) {
-            for (List<Integer> edgeList : Collections2.permutations(tmpList)) {
-                unmatchedItemPermutations.add(new ArrayList<>(edgeList));
+        if (initiallyUnmatchedItems.size() < 7) {
+            for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
+                unmatchedItemPermutations.add(new ArrayList<>(itemList));
             }
         } else {
-
             for (int i = 0; i < 500; i++) {
-                unmatchedItemPermutations.add(new ArrayList<>(newApproach));
-                Collections.reverse(newApproach);
-                unmatchedItemPermutations.add(new ArrayList<>(newApproach));
-                Collections.shuffle(tmpList);
+                unmatchedItemPermutations.add(new ArrayList<>(initiallyUnmatchedItems));
+                Collections.shuffle(initiallyUnmatchedItems);
 
                 int unsuccessfulShuffleAttempts = 0;
-                while (isPartOfAlreadyUsedShuffles(tmpList)) {
+                while (isPartOfAlreadyUsedShuffles(initiallyUnmatchedItems)) {
                     System.out.println("already");
-                    Collections.shuffle(tmpList);
+                    Collections.shuffle(initiallyUnmatchedItems);
                     if (unsuccessfulShuffleAttempts == 5) {
-                        for (List el : unmatchedItemPermutations) {
-                            res.add(el);
-                        }
-                        return res;
+                        return unmatchedItemPermutations;
                     }
                     unsuccessfulShuffleAttempts++;
                 }
-                this.alreadyUsedShuffles.add(new ArrayList<>(tmpList));
+                this.alreadyUsedShuffles.add(new ArrayList<>(initiallyUnmatchedItems));
             }
         }
 
-        for (List el : unmatchedItemPermutations) {
-            res.add(new ArrayList<>(el));
-        }
-        return res;
+        return unmatchedItemPermutations;
     }
 
     public boolean assignItemToFirstPossiblePosition(int item) {
@@ -586,7 +576,7 @@ public class InitialHeuristicSLPSolver {
 
             if (generatedSolutions > 20000) { break; }
 
-            for (List<Integer> unmatchedItems : this.getUnmatchedPerms(matchedItems)) {
+            for (List<Integer> unmatchedItems : this.getUnmatchedPermutations(matchedItems)) {
 
                 if (!this.setStacks(matchedItems, unmatchedItems)) {
                     this.instance.resetStacks();
