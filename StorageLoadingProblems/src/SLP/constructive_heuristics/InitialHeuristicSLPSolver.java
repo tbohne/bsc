@@ -75,6 +75,32 @@ public class InitialHeuristicSLPSolver {
         return edgesRev;
     }
 
+    public List<MCMEdge> edgeExchange(List<MCMEdge> edges) {
+
+        ArrayList tmpEdges = new ArrayList(edges);
+
+        int numberOfEdgesToBeReplaced = (int) (0.4 * this.instance.getStacks().length);
+        if (numberOfEdgesToBeReplaced > (edges.size() - this.instance.getStacks().length)) {
+            numberOfEdgesToBeReplaced = edges.size() - this.instance.getStacks().length;
+        }
+
+        ArrayList<Integer> toBeReplaced = new ArrayList<>();
+
+        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
+            Random r = new Random();
+            int low = 0;
+            int high = this.instance.getStacks().length - 1;
+            int result = r.nextInt(high - low) + low;
+            toBeReplaced.add(result);
+        }
+
+        for (int i = 0; i < toBeReplaced.size(); i++) {
+            Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
+        }
+
+        return new ArrayList(tmpEdges);
+    }
+
     public ArrayList<ArrayList<MCMEdge>> getInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> edges = new ArrayList<>();
@@ -108,53 +134,11 @@ public class InitialHeuristicSLPSolver {
         // - exchange the elements
 
         for (int cnt = 0; cnt < 15; cnt++) {
-
-            ArrayList tmpEdges = new ArrayList(edges);
-
-            int numberOfEdgesToBeReplaced = (int) (0.4 * this.instance.getStacks().length);
-            if (numberOfEdgesToBeReplaced > (edges.size() - this.instance.getStacks().length)) {
-                numberOfEdgesToBeReplaced = edges.size() - this.instance.getStacks().length;
-            }
-
-            ArrayList<Integer> toBeReplaced = new ArrayList<>();
-
-            for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-                Random r = new Random();
-                int low = 0;
-                int high = this.instance.getStacks().length - 1;
-                int result = r.nextInt(high - low) + low;
-                toBeReplaced.add(result);
-            }
-
-            for (int i = 0; i < toBeReplaced.size(); i++) {
-                Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
-            }
-            edgePermutations.add(new ArrayList(tmpEdges));
+            edgePermutations.add(new ArrayList(this.edgeExchange(edges)));
         }
 
         for (int cnt = 0; cnt < 15; cnt++) {
-
-            ArrayList tmpEdges = new ArrayList(edgesCopy);
-
-            int numberOfEdgesToBeReplaced = (int) (0.4 * this.instance.getStacks().length);
-            if (numberOfEdgesToBeReplaced > (edgesCopy.size() - this.instance.getStacks().length)) {
-                numberOfEdgesToBeReplaced = edgesCopy.size() - this.instance.getStacks().length;
-            }
-
-            ArrayList<Integer> toBeReplaced = new ArrayList<>();
-
-            for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-                Random r = new Random();
-                int low = 0;
-                int high = this.instance.getStacks().length - 1;
-                int result = r.nextInt(high - low) + low;
-                toBeReplaced.add(result);
-            }
-
-            for (int i = 0; i < toBeReplaced.size(); i++) {
-                Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
-            }
-            edgePermutations.add(new ArrayList(tmpEdges));
+            edgePermutations.add(new ArrayList(this.edgeExchange(edgesCopy)));
         }
 
         Collections.reverse(edges);
