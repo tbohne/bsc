@@ -69,13 +69,18 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public List<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
+    public ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
         ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
         Collections.reverse(edgesRev);
         return edgesRev;
     }
 
-    public List<MCMEdge> edgeExchange(List<MCMEdge> edges) {
+    // TODO: exchange certain elements of this sequence with other (unused) ones
+    // IDEA:
+    // - choose a number n (20%) of random elements to be replaced
+    // - choose the next n unused elements from the ordered list
+    // - exchange the elements
+    public ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges) {
 
         ArrayList tmpEdges = new ArrayList(edges);
 
@@ -118,7 +123,7 @@ public class InitialHeuristicSLPSolver {
         Collections.sort(edges);
         Collections.sort(edgesCopy);
 
-        ArrayList<List> edgePermutations = new ArrayList<>();
+        ArrayList<ArrayList<MCMEdge>> edgePermutations = new ArrayList<>();
         // The first permutation that is added is the one based on the sorting
         // which should be the most promising stack assignment.
         edgePermutations.add(new ArrayList(edges));
@@ -127,22 +132,13 @@ public class InitialHeuristicSLPSolver {
         edgePermutations.add(this.getReversedCopyOfEdgeList(edges));
         edgePermutations.add(this.getReversedCopyOfEdgeList(edgesCopy));
 
-        // TODO: exchange certain elements of this sequence with other (unused) ones
-        // IDEA:
-        // - choose a number n (20%) of random elements to be replaced
-        // - choose the next n unused elements from the ordered list
-        // - exchange the elements
-
+        // TODO: Remove hard coded values
         for (int cnt = 0; cnt < 15; cnt++) {
             edgePermutations.add(new ArrayList(this.edgeExchange(edges)));
         }
-
         for (int cnt = 0; cnt < 15; cnt++) {
             edgePermutations.add(new ArrayList(this.edgeExchange(edgesCopy)));
         }
-
-        Collections.reverse(edges);
-        edgePermutations.add(new ArrayList(edges));
 
         if (edges.size() < 9) {
             for (List<MCMEdge> edgeList : Collections2.permutations(edges)) {
@@ -155,17 +151,7 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-        ArrayList<ArrayList<MCMEdge>> stackAssignments = new ArrayList<>();
-
-        for (List<MCMEdge> edgePerm : edgePermutations) {
-            ArrayList<MCMEdge> currentStackAssignment = new ArrayList<>();
-            for (int i = 0; i < this.instance.getStacks().length; i++) {
-                currentStackAssignment.add(edgePerm.get(i));
-            }
-            stackAssignments.add(new ArrayList<>(currentStackAssignment));
-        }
-
-        return stackAssignments;
+        return edgePermutations;
     }
 
     public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> edges) {
