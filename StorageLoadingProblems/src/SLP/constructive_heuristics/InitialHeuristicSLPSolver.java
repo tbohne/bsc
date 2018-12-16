@@ -38,7 +38,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void assignRatingToEdgesV1(ArrayList<MCMEdge> matchedItems) {
+    public void assignRatingToEdgesStrategyOne(ArrayList<MCMEdge> matchedItems) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
 
@@ -53,7 +53,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void assignRatingToEdges(ArrayList<MCMEdge> matchedItems) {
+    public void assignRatingToEdgesStrategyTwo(ArrayList<MCMEdge> matchedItems) {
 
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
@@ -69,36 +69,37 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
+    public List<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
+        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
+        Collections.reverse(edgesRev);
+        return edgesRev;
+    }
+
     public ArrayList<ArrayList<MCMEdge>> getInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, mcm);
 
-        ArrayList<MCMEdge> edgeCopy = new ArrayList<>();
+        ArrayList<MCMEdge> edgesCopy = new ArrayList<>();
         for (MCMEdge e : edges) {
-            edgeCopy.add(new MCMEdge(e));
+            edgesCopy.add(new MCMEdge(e));
         }
 
-        this.assignRatingToEdgesV1(edges);
-        this.assignRatingToEdges(edgeCopy);
+        this.assignRatingToEdgesStrategyOne(edges);
+        this.assignRatingToEdgesStrategyTwo(edgesCopy);
 
         // The edges are sorted based on their ratings.
         Collections.sort(edges);
-        Collections.sort(edgeCopy);
+        Collections.sort(edgesCopy);
 
         ArrayList<List> edgePermutations = new ArrayList<>();
         // The first permutation that is added is the one based on the sorting
         // which should be the most promising stack assignment.
         edgePermutations.add(new ArrayList(edges));
-        edgePermutations.add(new ArrayList(edgeCopy));
+        edgePermutations.add(new ArrayList(edgesCopy));
 
-        ArrayList<MCMEdge> test0 = new ArrayList<>(edges);
-        Collections.reverse(test0);
-        edgePermutations.add(test0);
-
-        ArrayList<MCMEdge> test1 = new ArrayList<>(edgeCopy);
-        Collections.reverse(test1);
-        edgePermutations.add(test1);
+        edgePermutations.add(this.getReversedCopyOfEdgeList(edges));
+        edgePermutations.add(this.getReversedCopyOfEdgeList(edgesCopy));
 
         // TODO: exchange certain elements of this sequence with other (unused) ones
         // IDEA:
@@ -133,11 +134,11 @@ public class InitialHeuristicSLPSolver {
 
         for (int cnt = 0; cnt < 15; cnt++) {
 
-            ArrayList tmpEdges = new ArrayList(edgeCopy);
+            ArrayList tmpEdges = new ArrayList(edgesCopy);
 
             int numberOfEdgesToBeReplaced = (int) (0.4 * this.instance.getStacks().length);
-            if (numberOfEdgesToBeReplaced > (edgeCopy.size() - this.instance.getStacks().length)) {
-                numberOfEdgesToBeReplaced = edgeCopy.size() - this.instance.getStacks().length;
+            if (numberOfEdgesToBeReplaced > (edgesCopy.size() - this.instance.getStacks().length)) {
+                numberOfEdgesToBeReplaced = edgesCopy.size() - this.instance.getStacks().length;
             }
 
             ArrayList<Integer> toBeReplaced = new ArrayList<>();
