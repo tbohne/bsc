@@ -284,6 +284,8 @@ public class InitialHeuristicSLPSolver {
         for (int i = 0; i < this.instance.getStacks().length; i++) {
             for (int j = 2; j > 0; j--) {
 
+                // TODO: generalize steps
+
                 // GROUND LEVEL CASE
                 if (j == 2 && this.instance.getStacks()[i][j] == -1) {
                     this.instance.getStacks()[i][j] = item;
@@ -304,16 +306,6 @@ public class InitialHeuristicSLPSolver {
                         return true;
                     }
                 }
-
-//                if (this.instance.getStacks()[i][j] == -1 && this.instance.getStacks()[i][j - 1] == -1) {
-//                    this.instance.getStacks()[i][j] = item;
-//                    return true;
-//                } else if (this.instance.getStacks()[i][j] != -1 && this.instance.getStacks()[i][j - 1] == -1) {
-//                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[i][j]] == 1) {
-//                        this.instance.getStacks()[i][j - 1] = item;
-//                        return true;
-//                    }
-//                }
             }
         }
         return false;
@@ -342,23 +334,17 @@ public class InitialHeuristicSLPSolver {
 
             // ORDER ONE
             if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
-
                 // assign to ground and 2nd level
                 if (this.instance.getStacks()[cnt][2] == -1) {
-
                     this.instance.getStacks()[cnt][2] = vertexOne;
                     this.instance.getStacks()[cnt][1] = vertexTwo;
-
                     return true;
-
                 // assign to 2nd and 3rd level
                 } else if (this.instance.getStacks()[cnt][1] == -1
                         && this.instance.getStackingConstraints()[vertexOne][this.instance.getStacks()[cnt][2]] == 1) {
                     this.instance.getStacks()[cnt][1] = vertexOne;
                     this.instance.getStacks()[cnt][0] = vertexTwo;
-
                     return true;
-
                 // no two free positions
                 } else {
                     cnt++;
@@ -366,22 +352,16 @@ public class InitialHeuristicSLPSolver {
 
             // ORDER TWO
             } else {
-
                 if (this.instance.getStacks()[cnt][2] == -1) {
-
                     this.instance.getStacks()[cnt][2] = vertexTwo;
                     this.instance.getStacks()[cnt][1] = vertexOne;
-
                     return true;
 
                 } else if (this.instance.getStacks()[cnt][1] == -1
-
                         && this.instance.getStackingConstraints()[vertexTwo][this.instance.getStacks()[cnt][2]] == 1) {
                     this.instance.getStacks()[cnt][1] = vertexTwo;
                     this.instance.getStacks()[cnt][0] = vertexOne;
-
                     return true;
-
                 } else {
                     cnt++;
                 }
@@ -390,24 +370,20 @@ public class InitialHeuristicSLPSolver {
         return false;
     }
 
+    public boolean listContainsDuplicates(List<Integer> items) {
+        Set<Integer> set = new HashSet<>(items);
+        if(set.size() < items.size()){
+            return true;
+        }
+        return false;
+    }
+
     public boolean setStacks(ArrayList<MCMEdge> matchedItems, List<Integer> unmatchedItems) {
 
-        ArrayList<Integer> test = new ArrayList<>();
-
-        for (MCMEdge e : matchedItems) {
-            test.add(e.getVertexTwo());
-            test.add(e.getVertexOne());
+        if (matchedItems.size() * 2 + unmatchedItems.size() != this.instance.getItems().length) {
+            System.out.println("PROBLEM: number of matched items + number of unmatched items != number of items");
+            System.exit(1);
         }
-        for (int i : unmatchedItems) {
-            test.add(i);
-        }
-
-        Set<Integer> set = new HashSet<Integer>(test);
-        if(set.size() < test.size()){
-            System.out.println("DUPLICATES");
-        }
-
-//        System.out.println("number of matched plus number of unmatched in setStacks: " + (matchedItems.size() * 2 + unmatchedItems.size()));
 
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
