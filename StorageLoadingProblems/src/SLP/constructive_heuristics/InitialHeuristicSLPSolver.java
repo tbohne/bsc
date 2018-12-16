@@ -500,16 +500,12 @@ public class InitialHeuristicSLPSolver {
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
 
-//            System.out.println(generatedSolutions);
-//            System.out.println(matchedItems);
-
             if (generatedSolutions > 20000) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPermutations(matchedItems)) {
 
                 if (!this.setStacks(matchedItems, unmatchedItems)) {
                     this.instance.resetStacks();
-//                    System.out.println("break");
                     break;
                 }
                 Solution sol1 = new Solution(0, false, this.instance);
@@ -535,7 +531,6 @@ public class InitialHeuristicSLPSolver {
 
                 if (!this.setStacks(copyMatchedItems, unmatchedItems)) {
                     this.instance.resetStacks();
-//                    System.out.println("break");
                     break;
                 }
                 Solution sol2 = new Solution(0, false, this.instance);
@@ -549,24 +544,6 @@ public class InitialHeuristicSLPSolver {
                 }
 
                 generatedSolutions += 2;
-
-//                if (generatedSolutions == 2) {
-//
-//                    // There seems to be an assignment that conflicts the stacking constraints
-//
-//                    System.out.println(sol2.getNumberOfAssignedItems());
-//                    System.out.println(sol2.isFeasible());
-//
-//                    for (int i = 0; i < this.instance.getStacks().length; i++) {
-//                        for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-//                            System.out.print(this.instance.getStacks()[i][j] + " ");
-//                        }
-//                        System.out.println();
-//                    }
-//
-//                    System.exit(0);
-//                }
-
                 this.instance.resetStacks();
             }
         }
