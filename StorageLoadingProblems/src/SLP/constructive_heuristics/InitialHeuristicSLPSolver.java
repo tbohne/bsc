@@ -16,7 +16,6 @@ public class InitialHeuristicSLPSolver {
     private Instance instance;
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
-
     private ArrayList<List<Integer>> alreadyUsedShuffles;
 
     private double startTime;
@@ -84,7 +83,7 @@ public class InitialHeuristicSLPSolver {
 
         ArrayList tmpEdges = new ArrayList(edges);
 
-        int numberOfEdgesToBeReplaced = (int) (0.4 * this.instance.getStacks().length);
+        int numberOfEdgesToBeReplaced = (int) (0.3 * this.instance.getStacks().length);
         if (numberOfEdgesToBeReplaced > (edges.size() - this.instance.getStacks().length)) {
             numberOfEdgesToBeReplaced = edges.size() - this.instance.getStacks().length;
         }
@@ -133,10 +132,10 @@ public class InitialHeuristicSLPSolver {
         edgePermutations.add(this.getReversedCopyOfEdgeList(edgesCopy));
 
         // TODO: Remove hard coded values
-        for (int cnt = 0; cnt < 15; cnt++) {
+        for (int cnt = 0; cnt < 50000; cnt++) {
             edgePermutations.add(new ArrayList(this.edgeExchange(edges)));
         }
-        for (int cnt = 0; cnt < 15; cnt++) {
+        for (int cnt = 0; cnt < 50000; cnt++) {
             edgePermutations.add(new ArrayList(this.edgeExchange(edgesCopy)));
         }
 
@@ -145,7 +144,7 @@ public class InitialHeuristicSLPSolver {
                 edgePermutations.add(new ArrayList(edgeList));
             }
         } else {
-            for (int i = 0; i < 40000; i++) {
+            for (int i = 0; i < 400000; i++) {
                 Collections.shuffle(edges);
                 edgePermutations.add(new ArrayList(edges));
             }
@@ -253,12 +252,12 @@ public class InitialHeuristicSLPSolver {
 
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
-        if (initiallyUnmatchedItems.size() < 7) {
-            for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
-                unmatchedItemPermutations.add(new ArrayList<>(itemList));
-            }
-        } else {
-            for (int i = 0; i < 500; i++) {
+//        if (initiallyUnmatchedItems.size() < 9) {
+//            for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
+//                unmatchedItemPermutations.add(new ArrayList<>(itemList));
+//            }
+//        } else {
+            for (int i = 0; i < 50000; i++) {
                 unmatchedItemPermutations.add(new ArrayList<>(initiallyUnmatchedItems));
                 Collections.shuffle(initiallyUnmatchedItems);
 
@@ -266,14 +265,14 @@ public class InitialHeuristicSLPSolver {
                 while (isPartOfAlreadyUsedShuffles(initiallyUnmatchedItems)) {
                     System.out.println("already");
                     Collections.shuffle(initiallyUnmatchedItems);
-                    if (unsuccessfulShuffleAttempts == 5) {
+                    if (unsuccessfulShuffleAttempts == 10) {
                         return unmatchedItemPermutations;
                     }
                     unsuccessfulShuffleAttempts++;
                 }
                 this.alreadyUsedShuffles.add(new ArrayList<>(initiallyUnmatchedItems));
             }
-        }
+//        }
 
         return unmatchedItemPermutations;
     }
@@ -396,7 +395,7 @@ public class InitialHeuristicSLPSolver {
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
-            if (this.computeRatingForUnmatchedItem(vertexOne) == 1 || this.computeRatingForUnmatchedItem(vertexTwo) == 1) {
+            if (this.computeRatingForUnmatchedItem(vertexOne) <= 2 || this.computeRatingForUnmatchedItem(vertexTwo) <= 2) {
 
                 prioritizedEdges.add(new MCMEdge(vertexOne, vertexTwo, 0));
 
@@ -412,7 +411,7 @@ public class InitialHeuristicSLPSolver {
         }
 
         for (int item : unmatchedItems) {
-            if (this.computeRatingForUnmatchedItem(item) <= 1) {
+            if (this.computeRatingForUnmatchedItem(item) <= 2) {
                 this.unstackableItems.add(item);
                 if (!this.assignItemToFirstPossiblePosition(item)) {
                     return false;
@@ -500,7 +499,7 @@ public class InitialHeuristicSLPSolver {
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
 
-            if (generatedSolutions > 20000) { break; }
+            if (generatedSolutions > 10000000) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPermutations(matchedItems)) {
 
@@ -509,6 +508,8 @@ public class InitialHeuristicSLPSolver {
                     break;
                 }
                 Solution sol1 = new Solution(0, false, this.instance);
+
+                System.out.println(sol1.getNumberOfAssignedItems());
 
                 if (!optimizeSolution && sol1.isFeasible()) {
                     return sol1;
@@ -534,6 +535,7 @@ public class InitialHeuristicSLPSolver {
                     break;
                 }
                 Solution sol2 = new Solution(0, false, this.instance);
+                sol2.getNumberOfAssignedItems();
 
                 if (!optimizeSolution && sol2.isFeasible()) {
                     return sol2;
