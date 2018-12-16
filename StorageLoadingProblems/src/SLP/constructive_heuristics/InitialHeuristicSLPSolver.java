@@ -154,7 +154,7 @@ public class InitialHeuristicSLPSolver {
         return edgePermutations;
     }
 
-    public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> edges) {
+    public ArrayList<Integer> getInitiallyUnmatchedItems(ArrayList<MCMEdge> edges) {
 
         ArrayList<Integer> matchedItems = new ArrayList<>();
 
@@ -166,12 +166,10 @@ public class InitialHeuristicSLPSolver {
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
 
         for (int item : this.instance.getItems()) {
-            if (!matchedItems.contains(item) /*&& !this.unstackableItems.contains(item)*/) {
+            if (!matchedItems.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
-
-//        unmatchedItems.addAll(this.additionalUnmatchedItems);
 
         return unmatchedItems;
     }
@@ -186,23 +184,8 @@ public class InitialHeuristicSLPSolver {
 
     public void assignUnmatchedItemsInGivenOrder(List<Integer> unmatchedItems) {
 
-//        System.out.println("SIZE: " + unmatchedItems.size());
-
         for (int item : unmatchedItems) {
-
-//            for (int i = 0; i < this.instance.getStacks().length; i++) {
-//                for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-//                    System.out.print(this.instance.getStacks()[i][j] + " ");
-//                }
-//                System.out.println();
-//            }
-
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-
-//                System.out.println("CURRENT STACK:####################");
-//                for (int i = 0; i < this.instance.getStacks()[stack].length; i++) {
-//                    System.out.print(this.instance.getStacks()[stack][i] + " ");
-//                }
 
                 int levelOfCurrentTopMostItem = -99;
                 for (int level = 2; level >= 0; level--) {
@@ -210,9 +193,6 @@ public class InitialHeuristicSLPSolver {
                         levelOfCurrentTopMostItem = level;
                     }
                 }
-
-//                System.out.println("current top most item: " + this.instance.getStacks()[stack][levelOfCurrentTopMostItem]);
-//                System.out.println("##################################");
 
                 if (levelOfCurrentTopMostItem == -99) {
                     // assign to ground level
@@ -252,7 +232,7 @@ public class InitialHeuristicSLPSolver {
 
     public ArrayList<List<Integer>> getUnmatchedPerms(ArrayList<MCMEdge> matchedItems) {
 
-        ArrayList<Integer> tmpList = new ArrayList<>(this.getUnmatchedItems(matchedItems));
+        ArrayList<Integer> tmpList = new ArrayList<>(this.getInitiallyUnmatchedItems(matchedItems));
         ArrayList<List<Integer>> res = new ArrayList<>();
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
@@ -264,10 +244,7 @@ public class InitialHeuristicSLPSolver {
             unmatchedItemRatings.put(item, this.computeRatingForUnmatchedItem(item));
         }
 
-//        System.out.println("BEFORE: " + unmatchedItemRatings);
         Map<Integer, Integer> sorted = MapUtil.sortByValue(unmatchedItemRatings);
-//        System.out.println("AFTER: " + sorted);
-
         ArrayList<Integer> newApproach = new ArrayList<>();
 
         for (int i : sorted.keySet()) {
