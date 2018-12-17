@@ -450,8 +450,8 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-        System.out.println("unexpected: " + (this.unstackableItems.size() + prioritizedEdges.size()));
-        System.out.println("stacks: " + this.instance.getStacks().length);
+//        System.out.println("unexpected: " + (this.unstackableItems.size() + prioritizedEdges.size()));
+//        System.out.println("stacks: " + this.instance.getStacks().length);
 
 //        int unexpected = this.unstackableItems.size() + prioritizedEdges.size();
 //        if (Math.abs(unexpected - this.instance.getStacks().length) < 30) {
@@ -521,7 +521,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public Solution capThreeApproach(boolean optimizeSolution) {
+    public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
 
         // TODO:
         //   - calc MCM between items for b = 2
@@ -539,9 +539,12 @@ public class InitialHeuristicSLPSolver {
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
 
-            System.out.println(matchedItems);
+            // Time limit of 5 minutes
+            if ((System.currentTimeMillis() - startTime) / 1000.0 >= 15) {
+                break;
+            }
 
-            if (generatedSolutions > 10000000) { break; }
+            if (generatedSolutions > 1000000) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedPermutations(matchedItems)) {
 
@@ -551,7 +554,7 @@ public class InitialHeuristicSLPSolver {
                 }
                 Solution sol1 = new Solution(0, false, this.instance);
 
-                System.out.println(sol1.getNumberOfAssignedItems());
+//                System.out.println(sol1.getNumberOfAssignedItems());
 
                 if (!optimizeSolution && sol1.isFeasible()) {
                     return sol1;
@@ -608,7 +611,7 @@ public class InitialHeuristicSLPSolver {
 
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
-            sol = this.capThreeApproach(optimizeSolution);
+            sol = this.capThreeApproach(optimizeSolution, startTime);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         }
         return sol;
