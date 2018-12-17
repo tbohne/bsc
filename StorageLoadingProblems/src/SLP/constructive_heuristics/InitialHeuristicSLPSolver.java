@@ -521,6 +521,32 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
+    public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM) {
+        ArrayList<MCMEdge> edges = new ArrayList<>();
+        this.parseMCM(edges, initialMCM);
+        this.assignRowRatingToEdges(edges);
+        Collections.sort(edges);
+
+        int cnt = 0;
+        ArrayList<Integer> initialMCMItems = new ArrayList<>();
+        for (MCMEdge e : edges) {
+            if (cnt < this.instance.getStacks().length) {
+                initialMCMItems.add(e.getVertexOne());
+                initialMCMItems.add(e.getVertexTwo());
+            } else {
+                break;
+            }
+            cnt++;
+        }
+
+        ArrayList<Integer> initiallyUnmatchedItems = new ArrayList<>();
+        for (int i : this.instance.getItems()) {
+            if (!initialMCMItems.contains(i)) {
+                initiallyUnmatchedItems.add(i);
+            }
+        }
+    }
+
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
 
         // TODO:
@@ -532,6 +558,10 @@ public class InitialHeuristicSLPSolver {
         this.generateStackingConstraintGraph(graph);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
         ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
+
+        this.iterativeMCMApproach(mcm);
+        // TODO: testing new approach, exiting here for now
+        System.exit(0);
 
         Solution bestSol = new Solution();
 
