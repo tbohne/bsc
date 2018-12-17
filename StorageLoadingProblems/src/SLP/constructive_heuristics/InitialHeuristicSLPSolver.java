@@ -545,6 +545,36 @@ public class InitialHeuristicSLPSolver {
                 initiallyUnmatchedItems.add(i);
             }
         }
+
+        /******************** generate graph ********************/
+        DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
+
+        // adding the first m edges from the mcm as nodes to the graph
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            g1.addVertex("edge" + edges.get(i));
+        }
+
+        // adding all unmatched items as nodes to the graph
+        for (int i : initiallyUnmatchedItems) {
+            g1.addVertex("v" + i);
+        }
+
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int j = 0; j < initiallyUnmatchedItems.size(); j++) {
+
+                // if it is possible to complete the stack assignment with the unmatched item, it is done
+
+                if (this.instance.getStackingConstraints()[edges.get(i).getVertexOne()][initiallyUnmatchedItems.get(j)] == 1
+                        || this.instance.getStackingConstraints()[edges.get(i).getVertexTwo()][initiallyUnmatchedItems.get(j)] == 1
+                        || this.instance.getStackingConstraints()[initiallyUnmatchedItems.get(j)][edges.get(i).getVertexOne()] == 1) {
+
+                    if (!g1.containsEdge("v" + initiallyUnmatchedItems.get(j), "edge" + edges.get(i))) {
+                        g1.addEdge("edge" + edges.get(i), "v" + initiallyUnmatchedItems.get(j));
+                    }
+                }
+            }
+        }
+        /********************************************************/
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
