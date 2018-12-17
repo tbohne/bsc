@@ -600,6 +600,19 @@ public class InitialHeuristicSLPSolver {
         ArrayList<ArrayList<Integer>> stackAssignmentOne = new ArrayList<>();
         this.parseNewMCM(stackAssignmentOne, newMCM);
 
+        ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
+        for (ArrayList<Integer> stack : stackAssignmentOne) {
+            for (int item : stack) {
+                alreadyAssignedItems.add(item);
+            }
+        }
+
+        ArrayList<Integer> toDo = new ArrayList<>();
+        for (int i : this.instance.getItems()) {
+            if (!alreadyAssignedItems.contains(i)) {
+                toDo.add(i);
+            }
+        }
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
