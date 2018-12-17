@@ -521,6 +521,21 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
+    public void parseNewMCM(ArrayList<ArrayList<Integer>> stackAssignmentOne, EdmondsMaximumCardinalityMatching newMCM) {
+        for (Object edge : newMCM.getMatching().getEdges()) {
+            String parsed = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
+            int first = Integer.parseInt(parsed.split(",")[0].trim());
+            int second = Integer.parseInt(parsed.split(",")[1].trim());
+            int third = Integer.parseInt(parsed.split(",")[2].trim());
+
+            ArrayList<Integer> currAssignment = new ArrayList<>();
+            currAssignment.add(first);
+            currAssignment.add(second);
+            currAssignment.add(third);
+            stackAssignmentOne.add(new ArrayList<>(currAssignment));
+        }
+    }
+
     public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM) {
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, initialMCM);
@@ -581,6 +596,10 @@ public class InitialHeuristicSLPSolver {
         System.out.println("--> " + newMCM.getMatching().getEdges().size() * 3 + " items are assigned");
         System.out.println("--> " + (this.instance.getStacks().length - newMCM.getMatching().getEdges().size()) + " stacks are remaining");
         System.out.println("--> " + (this.instance.getItems().length - newMCM.getMatching().getEdges().size() * 3) + " items to be assigned");
+
+        ArrayList<ArrayList<Integer>> stackAssignmentOne = new ArrayList<>();
+        this.parseNewMCM(stackAssignmentOne, newMCM);
+
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
