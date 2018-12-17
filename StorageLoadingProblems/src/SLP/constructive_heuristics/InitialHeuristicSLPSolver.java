@@ -250,6 +250,21 @@ public class InitialHeuristicSLPSolver {
         Collections.reverse(unmatchedItemsSortedByRating);
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
 
+        ///////////////////////// TODO: Complete idea
+//        // restore
+//        Collections.reverse(unmatchedItemsSortedByRating);
+//        for (int i = 0; i < 10000; i++) {
+//            Random r = new Random();
+//            int low = 0;
+//            int high = unmatchedItemsSortedByRating.size() - 1;
+//            int res1 = r.nextInt(high - low) + low;
+//            int res2 = r.nextInt(high - low) + low;
+//            ArrayList<Integer> tmp = new ArrayList<>(unmatchedItemsSortedByRating);
+//            Collections.swap(tmp, res1, res2);
+//            unmatchedItemPermutations.add(new ArrayList<>(tmp));
+//        }
+        //////////////////////////////////
+
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
 //        if (initiallyUnmatchedItems.size() < 9) {
@@ -395,7 +410,7 @@ public class InitialHeuristicSLPSolver {
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
-            if (this.computeRatingForUnmatchedItem(vertexOne) <= 2 || this.computeRatingForUnmatchedItem(vertexTwo) <= 2) {
+            if (this.computeRatingForUnmatchedItem(vertexOne) <= 10 || this.computeRatingForUnmatchedItem(vertexTwo) <= 10) {
 
                 prioritizedEdges.add(new MCMEdge(vertexOne, vertexTwo, 0));
 
@@ -411,7 +426,7 @@ public class InitialHeuristicSLPSolver {
         }
 
         for (int item : unmatchedItems) {
-            if (this.computeRatingForUnmatchedItem(item) <= 2) {
+            if (this.computeRatingForUnmatchedItem(item) <= 10) {
                 this.unstackableItems.add(item);
                 if (!this.assignItemToFirstPossiblePosition(item)) {
                     return false;
