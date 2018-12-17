@@ -575,6 +575,12 @@ public class InitialHeuristicSLPSolver {
             }
         }
         /********************************************************/
+
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
+        System.out.println("we have " + newMCM.getMatching().getEdges().size() + " completely filled stacks:");
+        System.out.println("--> " + newMCM.getMatching().getEdges().size() * 3 + " items are assigned");
+        System.out.println("--> " + (this.instance.getStacks().length - newMCM.getMatching().getEdges().size()) + " stacks are remaining");
+        System.out.println("--> " + (this.instance.getItems().length - newMCM.getMatching().getEdges().size() * 3) + " items to be assigned");
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
