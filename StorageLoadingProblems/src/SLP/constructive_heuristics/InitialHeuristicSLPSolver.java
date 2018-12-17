@@ -37,7 +37,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void assignRatingToEdgesStrategyOne(ArrayList<MCMEdge> matchedItems) {
+    public void assignRowRatingToEdges(ArrayList<MCMEdge> matchedItems) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
 
@@ -52,7 +52,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void assignRatingToEdgesStrategyTwo(ArrayList<MCMEdge> matchedItems) {
+    public void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems) {
 
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
@@ -115,8 +115,8 @@ public class InitialHeuristicSLPSolver {
             edgesCopy.add(new MCMEdge(e));
         }
 
-        this.assignRatingToEdgesStrategyOne(edges);
-        this.assignRatingToEdgesStrategyTwo(edgesCopy);
+        this.assignRowRatingToEdges(edges);
+        this.assignColRatingToEdges(edgesCopy);
 
         // The edges are sorted based on their ratings.
         Collections.sort(edges);
@@ -132,11 +132,17 @@ public class InitialHeuristicSLPSolver {
         edgePermutations.add(this.getReversedCopyOfEdgeList(edgesCopy));
 
         // TODO: Remove hard coded values
-        for (int cnt = 0; cnt < 50000; cnt++) {
-            edgePermutations.add(new ArrayList(this.edgeExchange(edges)));
+        for (int cnt = 0; cnt < 5000; cnt++) {
+            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(edges));
+            if (!edgePermutations.contains(tmp)) {
+                edgePermutations.add(tmp);
+            }
         }
-        for (int cnt = 0; cnt < 50000; cnt++) {
-            edgePermutations.add(new ArrayList(this.edgeExchange(edgesCopy)));
+        for (int cnt = 0; cnt < 5000; cnt++) {
+            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(edgesCopy));
+            if (!edgePermutations.contains(tmp)) {
+                edgePermutations.add(tmp);
+            }
         }
 
         if (edges.size() < 9) {
@@ -144,9 +150,11 @@ public class InitialHeuristicSLPSolver {
                 edgePermutations.add(new ArrayList(edgeList));
             }
         } else {
-            for (int i = 0; i < 400000; i++) {
+            for (int i = 0; i < 40000; i++) {
                 Collections.shuffle(edges);
-                edgePermutations.add(new ArrayList(edges));
+//                if (!edgePermutations.contains(edges)) {
+                    edgePermutations.add(new ArrayList(edges));
+//                }
             }
         }
 
@@ -220,10 +228,18 @@ public class InitialHeuristicSLPSolver {
         return false;
     }
 
-    public int computeRatingForUnmatchedItem(int item) {
+    public int computeRowRatingForUnmatchedItem(int item) {
         int rating = 0;
         for (int entry : this.instance.getStackingConstraints()[item]) {
             rating += entry;
+        }
+        return rating;
+    }
+
+    public int computeColRatingForUnmatchedItem(int item) {
+        int rating = 0;
+        for (int i = 0; i < this.instance.getStackingConstraints().length; i++) {
+            rating += this.instance.getStackingConstraints()[i][item];
         }
         return rating;
     }
@@ -235,7 +251,7 @@ public class InitialHeuristicSLPSolver {
 
         HashMap<Integer, Integer> unmatchedItemRatings = new HashMap<>();
         for (int item : initiallyUnmatchedItems) {
-            unmatchedItemRatings.put(item, this.computeRatingForUnmatchedItem(item));
+            unmatchedItemRatings.put(item, this.computeRowRatingForUnmatchedItem(item));
         }
 
         // ordered by rating - hardest cases first
@@ -272,7 +288,7 @@ public class InitialHeuristicSLPSolver {
 //                unmatchedItemPermutations.add(new ArrayList<>(itemList));
 //            }
 //        } else {
-            for (int i = 0; i < 50000; i++) {
+            for (int i = 0; i < 500; i++) {
                 unmatchedItemPermutations.add(new ArrayList<>(initiallyUnmatchedItems));
                 Collections.shuffle(initiallyUnmatchedItems);
 
@@ -410,7 +426,7 @@ public class InitialHeuristicSLPSolver {
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
-            if (this.computeRatingForUnmatchedItem(vertexOne) <= 10 || this.computeRatingForUnmatchedItem(vertexTwo) <= 10) {
+            if (this.computeRowRatingForUnmatchedItem(vertexOne) <= 10 || this.computeRowRatingForUnmatchedItem(vertexTwo) <= 10) {
 
                 prioritizedEdges.add(new MCMEdge(vertexOne, vertexTwo, 0));
 
@@ -426,13 +442,21 @@ public class InitialHeuristicSLPSolver {
         }
 
         for (int item : unmatchedItems) {
-            if (this.computeRatingForUnmatchedItem(item) <= 10) {
+            if (this.computeRowRatingForUnmatchedItem(item) <= 10) {
                 this.unstackableItems.add(item);
                 if (!this.assignItemToFirstPossiblePosition(item)) {
                     return false;
                 }
             }
         }
+
+        System.out.println("unexpected: " + (this.unstackableItems.size() + prioritizedEdges.size()));
+        System.out.println("stacks: " + this.instance.getStacks().length);
+
+//        int unexpected = this.unstackableItems.size() + prioritizedEdges.size();
+//        if (Math.abs(unexpected - this.instance.getStacks().length) < 30) {
+//            return false;
+//        }
 
         // Sets MCM pairs to level 0 and 1 of stacks
         // (0 is actually the top level, so level 0 is 2 here)
@@ -468,9 +492,10 @@ public class InitialHeuristicSLPSolver {
             toBeRemoved.remove(0);
         }
 
+        // TODO: Check - could cause problems
         for (int item : stillTodoItems) {
             // If we still have a one here, we have a problem.
-            if (this.computeRatingForUnmatchedItem(item) == 1) {
+            if (this.computeRowRatingForUnmatchedItem(item) == 1) {
                 return false;
             }
         }
@@ -513,6 +538,8 @@ public class InitialHeuristicSLPSolver {
         int generatedSolutions = 0;
 
         for (ArrayList<MCMEdge> matchedItems : matchingSubsets) {
+
+            System.out.println(matchedItems);
 
             if (generatedSolutions > 10000000) { break; }
 
