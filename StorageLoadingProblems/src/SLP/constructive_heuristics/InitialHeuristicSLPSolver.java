@@ -594,11 +594,11 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public ArrayList<Integer> getCurrentListOfUnmatchedItems(ArrayList<MCMEdge> edges) {
+    public ArrayList<Integer> getCurrentListOfUnmatchedItems(int length, ArrayList<MCMEdge> edges, int[] todoItems, ArrayList<Integer> alreadyDoneItems) {
         int cnt = 0;
         ArrayList<Integer> MCMItems = new ArrayList<>();
         for (MCMEdge e : edges) {
-            if (cnt < this.instance.getStacks().length) {
+            if (cnt < length) {
                 MCMItems.add(e.getVertexOne());
                 MCMItems.add(e.getVertexTwo());
             } else {
@@ -608,8 +608,8 @@ public class InitialHeuristicSLPSolver {
         }
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int i : this.instance.getItems()) {
-            if (!MCMItems.contains(i)) {
+        for (int i : todoItems) {
+            if (!MCMItems.contains(i) && !alreadyDoneItems.contains(i)) {
                 unmatchedItems.add(i);
             }
         }
@@ -640,7 +640,7 @@ public class InitialHeuristicSLPSolver {
         Collections.sort(edges);
 
         /*** 1 ***/
-        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(edges);
+        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(this.instance.getStacks().length, edges, this.instance.getItems(), new ArrayList<Integer>());
         DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateSpecialGraph(g1, edges, unmatchedItems, this.instance.getStacks().length);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
@@ -664,6 +664,8 @@ public class InitialHeuristicSLPSolver {
         this.parseMCM(edges, mcm);
 
         int stacksNeeded = (int)Math.ceil(edges.size() / 3);
+
+//        ArrayList<Integer> stillUnmatchedItems = this.getCurrentListOfUnmatchedItems(edges);
 
         ArrayList<Integer> partOfMatching = new ArrayList<>();
         int cnt = 0;
