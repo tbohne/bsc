@@ -655,9 +655,9 @@ public class InitialHeuristicSLPSolver {
         System.out.println("--> " + (this.instance.getStacks().length - newMCM.getMatching().getEdges().size()) + " stacks are remaining");
         System.out.println("--> " + (this.instance.getItems().length - newMCM.getMatching().getEdges().size() * 3) + " items to be assigned");
 
-        ArrayList<ArrayList<Integer>> stackAssignmentOne = new ArrayList<>();
-        this.parseNewMCM(stackAssignmentOne, newMCM);
-        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(stackAssignmentOne);
+        ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
+        this.parseNewMCM(currentStackAssignment, newMCM);
+        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
 
         //////////////////// COMPLETELY FILLED STACKS v1 COMPLETED ////////////////////
 
@@ -666,9 +666,7 @@ public class InitialHeuristicSLPSolver {
 
         edges = new ArrayList<>();
         this.parseMCM(edges, mcm);
-
         int stacksNeeded = (int)Math.ceil(edges.size() / 3);
-
         ArrayList<Integer> stillUnmatchedItems = this.getCurrentListOfUnmatchedItems(stacksNeeded, edges, toDo, new ArrayList<>());
 
         /******************** generate graph ********************/
@@ -695,34 +693,13 @@ public class InitialHeuristicSLPSolver {
         ArrayList<ArrayList<Integer>> stackAssignmentTwo = new ArrayList<>();
         this.parseNewMCM(stackAssignmentTwo, finalMCM);
 
-        ArrayList<Integer> nowDone = new ArrayList<>();
-        for (ArrayList<Integer> stack : stackAssignmentTwo) {
-            for (int i : stack) {
-                nowDone.add(i);
-            }
-        }
+        currentStackAssignment.addAll(stackAssignmentTwo);
+        toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
 
-        ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
-        for (ArrayList<Integer> stack : stackAssignmentOne) {
-            for (int item : stack) {
-                alreadyAssignedItems.add(item);
-            }
-        }
-
-        System.out.println("items assigned (overall) " + (nowDone.size() + alreadyAssignedItems.size()));
-        System.out.println("items todo: " + (this.instance.getItems().length - (nowDone.size() + alreadyAssignedItems.size())));
-
-        ArrayList<Integer> toGo = new ArrayList<>();
-        for (int i : this.instance.getItems()) {
-            if (!nowDone.contains(i) && !alreadyAssignedItems.contains(i)) {
-                toGo.add(i);
-            }
-        }
-
-        System.out.println("togo: " + toGo.size());
+        System.out.println("todo: " + toDo.size());
 
         // Now a "2-MCM" again
-        EdmondsMaximumCardinalityMatching mcmF = this.getMCMForUnmatchedItems(toGo);
+        EdmondsMaximumCardinalityMatching mcmF = this.getMCMForUnmatchedItems(toDo);
         System.out.println(mcmF.getMatching().getEdges().size());
 
         ///////////////////////////////////////////////////////////////////////
@@ -745,7 +722,7 @@ public class InitialHeuristicSLPSolver {
         }
 
         ArrayList<Integer> stillUnmatchedItems2 = new ArrayList<>();
-        for (int item : toGo) {
+        for (int item : toDo) {
             if (!partOfMatching2.contains(item)) {
                 stillUnmatchedItems2.add(item);
             }
@@ -758,7 +735,7 @@ public class InitialHeuristicSLPSolver {
 
         EdmondsMaximumCardinalityMatching mcmFFF = new EdmondsMaximumCardinalityMatching(g3);
         System.out.println("another " + mcmFFF.getMatching().getEdges().size() + " completely filled stacks");
-        System.out.println("remaining items: " + (toGo.size() - mcmFFF.getMatching().getEdges().size() * 3));
+        System.out.println("remaining items: " + (toDo.size() - mcmFFF.getMatching().getEdges().size() * 3));
         System.out.println("--> "
                 + (this.instance.getStacks().length
                 - newMCM.getMatching().getEdges().size()
