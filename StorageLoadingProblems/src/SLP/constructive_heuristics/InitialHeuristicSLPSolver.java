@@ -561,10 +561,14 @@ public class InitialHeuristicSLPSolver {
         return mcm;
     }
 
-    public void generateSpecialGraph(DefaultUndirectedGraph<String, DefaultEdge> graph, ArrayList<MCMEdge> edges, ArrayList<Integer> unmatchedItems) {
+    public void generateSpecialGraph(
+            DefaultUndirectedGraph<String, DefaultEdge> graph,
+            ArrayList<MCMEdge> edges,
+            ArrayList<Integer> unmatchedItems,
+            int stacksNeeded) {
 
         // adding the first m edges from the mcm as nodes to the graph
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
+        for (int i = 0; i < stacksNeeded; i++) {
             graph.addVertex("edge" + edges.get(i));
         }
 
@@ -573,7 +577,7 @@ public class InitialHeuristicSLPSolver {
             graph.addVertex("v" + i);
         }
 
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
+        for (int i = 0; i < stacksNeeded; i++) {
             for (int j = 0; j < unmatchedItems.size(); j++) {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
@@ -618,7 +622,7 @@ public class InitialHeuristicSLPSolver {
 
         /******************** generate graph ********************/
         DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g1, edges, initiallyUnmatchedItems);
+        this.generateSpecialGraph(g1, edges, initiallyUnmatchedItems, this.instance.getStacks().length);
         /********************************************************/
 
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
@@ -676,32 +680,7 @@ public class InitialHeuristicSLPSolver {
 
         /******************** generate graph ********************/
         DefaultUndirectedGraph<String, DefaultEdge> g2 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-
-        for (int i = 0; i < stacksNeeded; i++) {
-            g2.addVertex("edge" + edgesHere.get(i));
-        }
-
-        // adding all unmatched items as nodes to the graph
-        for (int i : stillUnmatchedItems) {
-            g2.addVertex("v" + i);
-        }
-
-        for (int i = 0; i < stacksNeeded; i++) {
-            for (int j = 0; j < stillUnmatchedItems.size(); j++) {
-
-                // if it is possible to complete the stack assignment with the unmatched item, it is done
-
-                if (this.instance.getStackingConstraints()[edgesHere.get(i).getVertexOne()][stillUnmatchedItems.get(j)] == 1
-                        || this.instance.getStackingConstraints()[edgesHere.get(i).getVertexTwo()][stillUnmatchedItems.get(j)] == 1
-                        || this.instance.getStackingConstraints()[stillUnmatchedItems.get(j)][edgesHere.get(i).getVertexOne()] == 1) {
-
-
-                    if (!g2.containsEdge("v" + stillUnmatchedItems.get(j), "edge" + edgesHere.get(i))) {
-                        g2.addEdge("edge" + edgesHere.get(i), "v" + stillUnmatchedItems.get(j));
-                    }
-                }
-            }
-        }
+        this.generateSpecialGraph(g2, edgesHere, stillUnmatchedItems, stacksNeeded);
         /********************************************************/
 
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> finalMCM = new EdmondsMaximumCardinalityMatching<>(g2);
