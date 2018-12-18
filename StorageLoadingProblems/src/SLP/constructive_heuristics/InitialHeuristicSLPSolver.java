@@ -616,21 +616,36 @@ public class InitialHeuristicSLPSolver {
         return unmatchedItems;
     }
 
+    public ArrayList<Integer> getUnmatchedItemsFromStorageAreaSnapshot(ArrayList<ArrayList<Integer>> storageArea) {
+        ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
+        for (ArrayList<Integer> stack : storageArea) {
+            for (int item : stack) {
+                alreadyAssignedItems.add(item);
+            }
+        }
+        ArrayList<Integer> toDo = new ArrayList<>();
+        for (int i : this.instance.getItems()) {
+            if (!alreadyAssignedItems.contains(i)) {
+                toDo.add(i);
+            }
+        }
+        return toDo;
+    }
+
     public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM) {
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, initialMCM);
-
+        // TODO: Check whether it is reasonable to sort the edges first
         this.assignColRatingToEdges(edges);
         Collections.sort(edges);
 
-        ArrayList<Integer> initiallyUnmatchedItems = this.getCurrentListOfUnmatchedItems(edges);
-
-        /******************** generate graph ********************/
+        /*** 1 ***/
+        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(edges);
         DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g1, edges, initiallyUnmatchedItems, this.instance.getStacks().length);
-        /********************************************************/
-
+        this.generateSpecialGraph(g1, edges, unmatchedItems, this.instance.getStacks().length);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
+        /*********/
+
         System.out.println("we have " + newMCM.getMatching().getEdges().size() + " completely filled stacks:");
         System.out.println("--> " + newMCM.getMatching().getEdges().size() * 3 + " items are assigned");
         System.out.println("--> " + (this.instance.getStacks().length - newMCM.getMatching().getEdges().size()) + " stacks are remaining");
@@ -638,33 +653,21 @@ public class InitialHeuristicSLPSolver {
 
         ArrayList<ArrayList<Integer>> stackAssignmentOne = new ArrayList<>();
         this.parseNewMCM(stackAssignmentOne, newMCM);
+        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(stackAssignmentOne);
 
-        ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
-        for (ArrayList<Integer> stack : stackAssignmentOne) {
-            for (int item : stack) {
-                alreadyAssignedItems.add(item);
-            }
-        }
-
-        ArrayList<Integer> toDo = new ArrayList<>();
-        for (int i : this.instance.getItems()) {
-            if (!alreadyAssignedItems.contains(i)) {
-                toDo.add(i);
-            }
-        }
         //////////////////// COMPLETELY FILLED STACKS v1 COMPLETED ////////////////////
 
         EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnmatchedItems(toDo);
         System.out.println(mcm.getMatching().getEdges().size() + " pairs of items to be stored in one stack");
 
-        ArrayList<MCMEdge> edgesHere = new ArrayList<>();
-        this.parseMCM(edgesHere, mcm);
+        edges = new ArrayList<>();
+        this.parseMCM(edges, mcm);
 
-        int stacksNeeded = (int)Math.ceil(edgesHere.size() / 3);
+        int stacksNeeded = (int)Math.ceil(edges.size() / 3);
 
         ArrayList<Integer> partOfMatching = new ArrayList<>();
         int cnt = 0;
-        for (MCMEdge e : edgesHere) {
+        for (MCMEdge e : edges) {
             if (cnt < stacksNeeded) {
                 partOfMatching.add(e.getVertexOne());
                 partOfMatching.add(e.getVertexTwo());
@@ -681,11 +684,9 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-        // System.out.println("still unmatched items: " + stillUnmatchedItems.size());
-
         /******************** generate graph ********************/
         DefaultUndirectedGraph<String, DefaultEdge> g2 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g2, edgesHere, stillUnmatchedItems, stacksNeeded);
+        this.generateSpecialGraph(g2, edges, stillUnmatchedItems, stacksNeeded);
         /********************************************************/
 
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> finalMCM = new EdmondsMaximumCardinalityMatching<>(g2);
@@ -711,6 +712,13 @@ public class InitialHeuristicSLPSolver {
         for (ArrayList<Integer> stack : stackAssignmentTwo) {
             for (int i : stack) {
                 nowDone.add(i);
+            }
+        }
+
+        ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
+        for (ArrayList<Integer> stack : stackAssignmentOne) {
+            for (int item : stack) {
+                alreadyAssignedItems.add(item);
             }
         }
 
