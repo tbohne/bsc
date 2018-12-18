@@ -17,6 +17,8 @@ public class InitialHeuristicSLPSolver {
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
     private ArrayList<List<Integer>> alreadyUsedShuffles;
+    private ArrayList<ArrayList<Integer>> stackAssignment;
+    private int previousNumberOfItemsToDo;
 
     private double startTime;
 
@@ -25,6 +27,8 @@ public class InitialHeuristicSLPSolver {
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
         this.alreadyUsedShuffles = new ArrayList<>();
+        this.stackAssignment = new ArrayList<>();
+        this.previousNumberOfItemsToDo = this.instance.getItems().length;
     }
 
     public void parseMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
@@ -623,6 +627,13 @@ public class InitialHeuristicSLPSolver {
                 alreadyAssignedItems.add(item);
             }
         }
+
+        for (ArrayList<Integer> stack : this.stackAssignment) {
+            for (int item : stack) {
+                alreadyAssignedItems.add(item);
+            }
+        }
+
         ArrayList<Integer> toDo = new ArrayList<>();
         for (int i : this.instance.getItems()) {
             if (!alreadyAssignedItems.contains(i)) {
@@ -632,7 +643,17 @@ public class InitialHeuristicSLPSolver {
         return toDo;
     }
 
-    public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM) {
+    public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM, int stackneed, ArrayList<Integer> todoItems) {
+
+        System.out.println("todo: " + todoItems.size());
+
+        if (todoItems.size() == 0 || this.previousNumberOfItemsToDo == todoItems.size()) {
+            if (this.previousNumberOfItemsToDo != this.instance.getItems().length) {
+                return;
+            }
+        }
+        this.previousNumberOfItemsToDo = todoItems.size();
+
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, initialMCM);
         // TODO: Check whether it is reasonable to sort the edges first
@@ -640,48 +661,24 @@ public class InitialHeuristicSLPSolver {
         Collections.sort(edges);
 
         // WITH EDGES
-        ArrayList<Integer> items = new ArrayList<>();
-        for (int i : this.instance.getItems()) {
-            items.add(i);
-        }
-        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(this.instance.getStacks().length, edges, items);
+        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(stackneed, edges, todoItems);
         DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g1, edges, unmatchedItems, this.instance.getStacks().length);
+        this.generateSpecialGraph(g1, edges, unmatchedItems, stackneed);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
 
         ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
         this.parseNewMCM(currentStackAssignment, newMCM);
 
-        //////////////////// COMPLETELY FILLED STACKS v1 COMPLETED ////////////////////
+        this.stackAssignment.addAll(currentStackAssignment);
 
         // WITHOUT EDGES
         ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
         EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnmatchedItems(toDo);
-
         edges = new ArrayList<>();
         this.parseMCM(edges, mcm);
         int stacksNeeded = (int)Math.ceil(edges.size() / 3);
-        // WITH EDGES
-        ArrayList<Integer> stillUnmatchedItems = this.getCurrentListOfUnmatchedItems(stacksNeeded, edges, toDo);
-        DefaultUndirectedGraph<String, DefaultEdge> g2 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g2, edges, stillUnmatchedItems, stacksNeeded);
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> finalMCM = new EdmondsMaximumCardinalityMatching<>(g2);
 
-        ArrayList<ArrayList<Integer>> stackAssignmentTwo = new ArrayList<>();
-        this.parseNewMCM(stackAssignmentTwo, finalMCM);
-        currentStackAssignment.addAll(stackAssignmentTwo);
-        // WITHOUT EDGES
-        toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
-        EdmondsMaximumCardinalityMatching mcmF = this.getMCMForUnmatchedItems(toDo);
-
-        ArrayList<MCMEdge> edgesHere2 = new ArrayList<>();
-        this.parseMCM(edgesHere2, mcmF);
-        int stacksNeeded2 = (int)Math.ceil(edgesHere2.size() / 3);
-        // WITH EDGES
-        ArrayList<Integer> stillUnmatchedItems2 = this.getCurrentListOfUnmatchedItems(stacksNeeded2, edgesHere2, toDo);
-        DefaultUndirectedGraph<String, DefaultEdge> g3 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g3, edgesHere2, stillUnmatchedItems2, stacksNeeded2);
-        EdmondsMaximumCardinalityMatching mcmFFF = new EdmondsMaximumCardinalityMatching(g3);
+        this.iterativeMCMApproach(mcm, stacksNeeded, toDo);
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
@@ -696,7 +693,13 @@ public class InitialHeuristicSLPSolver {
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
         ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
 
-        this.iterativeMCMApproach(mcm);
+        ArrayList<Integer> items = new ArrayList<>();
+        for (int item : this.instance.getItems()) {
+            items.add(item);
+        }
+
+        this.iterativeMCMApproach(mcm, this.instance.getStacks().length, items);
+
         // TODO: testing new approach, exiting here for now
         System.exit(0);
 
