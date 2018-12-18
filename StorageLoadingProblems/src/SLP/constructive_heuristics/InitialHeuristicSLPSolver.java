@@ -536,9 +536,33 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
+    public void getMCMForUnmatchedItems(ArrayList<Integer> toDo) {
+
+        DefaultUndirectedGraph<String, DefaultEdge> g2 = new DefaultUndirectedGraph<>(DefaultEdge.class);
+
+        for (int item : toDo) {
+            g2.addVertex("v" + item);
+        }
+
+        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
+        for (int i = 0; i < toDo.size(); i++) {
+            for (int j = 0; j < toDo.size(); j++) {
+
+                if (toDo.get(i) != toDo.get(j) && this.instance.getStackingConstraints()[toDo.get(i)][toDo.get(j)] == 1
+                        || this.instance.getStackingConstraints()[toDo.get(j)][toDo.get(i)] == 1) {
+
+                    if (!g2.containsEdge("v" + toDo.get(j), "v" + toDo.get(i))) {
+                        g2.addEdge("v" + toDo.get(i), "v" + toDo.get(j));
+                    }
+                }
+            }
+        }
+    }
+
     public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM) {
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, initialMCM);
+
         this.assignRowRatingToEdges(edges);
         Collections.sort(edges);
 
@@ -613,6 +637,9 @@ public class InitialHeuristicSLPSolver {
                 toDo.add(i);
             }
         }
+        //////////////////// COMPLETELY FILLED STACKS v1 COMPLETED ////////////////////
+
+        this.getMCMForUnmatchedItems(toDo);
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
