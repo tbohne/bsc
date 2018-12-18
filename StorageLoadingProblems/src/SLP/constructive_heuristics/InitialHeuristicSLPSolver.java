@@ -639,7 +639,7 @@ public class InitialHeuristicSLPSolver {
         this.assignColRatingToEdges(edges);
         Collections.sort(edges);
 
-        /*** 1 ***/
+        // WITH EDGES
         ArrayList<Integer> items = new ArrayList<>();
         for (int i : this.instance.getItems()) {
             items.add(i);
@@ -648,87 +648,40 @@ public class InitialHeuristicSLPSolver {
         DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateSpecialGraph(g1, edges, unmatchedItems, this.instance.getStacks().length);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
-        /*********/
-
-        System.out.println("we have " + newMCM.getMatching().getEdges().size() + " completely filled stacks:");
-        System.out.println("--> " + newMCM.getMatching().getEdges().size() * 3 + " items are assigned");
-        System.out.println("--> " + (this.instance.getStacks().length - newMCM.getMatching().getEdges().size()) + " stacks are remaining");
-        System.out.println("--> " + (this.instance.getItems().length - newMCM.getMatching().getEdges().size() * 3) + " items to be assigned");
 
         ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
         this.parseNewMCM(currentStackAssignment, newMCM);
-        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
 
         //////////////////// COMPLETELY FILLED STACKS v1 COMPLETED ////////////////////
 
+        // WITHOUT EDGES
+        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
         EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnmatchedItems(toDo);
-        System.out.println(mcm.getMatching().getEdges().size() + " pairs of items to be stored in one stack");
 
         edges = new ArrayList<>();
         this.parseMCM(edges, mcm);
         int stacksNeeded = (int)Math.ceil(edges.size() / 3);
+        // WITH EDGES
         ArrayList<Integer> stillUnmatchedItems = this.getCurrentListOfUnmatchedItems(stacksNeeded, edges, toDo);
-
-        /******************** generate graph ********************/
         DefaultUndirectedGraph<String, DefaultEdge> g2 = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateSpecialGraph(g2, edges, stillUnmatchedItems, stacksNeeded);
-        /********************************************************/
-
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> finalMCM = new EdmondsMaximumCardinalityMatching<>(g2);
-        System.out.println("we have " + finalMCM.getMatching().getEdges().size() + " completely filled stacks:");
-        System.out.println("--> " + (finalMCM.getMatching().getEdges().size() * 3) + " items assigned");
-        System.out.println("--> "
-                + (this.instance.getStacks().length
-                - newMCM.getMatching().getEdges().size()
-                - finalMCM.getMatching().getEdges().size())
-                + " stacks remaining"
-        );
-        System.out.println("--> "
-                + (this.instance.getItems().length
-                - newMCM.getMatching().getEdges().size() * 3
-                - finalMCM.getMatching().getEdges().size() * 3)
-                + " items to be assigned"
-        );
 
         ArrayList<ArrayList<Integer>> stackAssignmentTwo = new ArrayList<>();
         this.parseNewMCM(stackAssignmentTwo, finalMCM);
-
         currentStackAssignment.addAll(stackAssignmentTwo);
+        // WITHOUT EDGES
         toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
-
-        System.out.println("todo: " + toDo.size());
-
-        // Now a "2-MCM" again
         EdmondsMaximumCardinalityMatching mcmF = this.getMCMForUnmatchedItems(toDo);
-        System.out.println(mcmF.getMatching().getEdges().size());
-
-        ///////////////////////////////////////////////////////////////////////
 
         ArrayList<MCMEdge> edgesHere2 = new ArrayList<>();
         this.parseMCM(edgesHere2, mcmF);
-
         int stacksNeeded2 = (int)Math.ceil(edgesHere2.size() / 3);
-
-        ArrayList<Integer> stillUnmatchedItems2 = this.getCurrentListOfUnmatchedItems(
-                stacksNeeded2, edgesHere2, toDo
-        );
-
-        /******************** generate graph ********************/
+        // WITH EDGES
+        ArrayList<Integer> stillUnmatchedItems2 = this.getCurrentListOfUnmatchedItems(stacksNeeded2, edgesHere2, toDo);
         DefaultUndirectedGraph<String, DefaultEdge> g3 = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateSpecialGraph(g3, edgesHere2, stillUnmatchedItems2, stacksNeeded2);
-        /********************************************************/
-
         EdmondsMaximumCardinalityMatching mcmFFF = new EdmondsMaximumCardinalityMatching(g3);
-        System.out.println("another " + mcmFFF.getMatching().getEdges().size() + " completely filled stacks");
-        System.out.println("remaining items: " + (toDo.size() - mcmFFF.getMatching().getEdges().size() * 3));
-        System.out.println("--> "
-                + (this.instance.getStacks().length
-                - newMCM.getMatching().getEdges().size()
-                - finalMCM.getMatching().getEdges().size()
-                - mcmFFF.getMatching().getEdges().size())
-                + " stacks remaining"
-        );
-
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
