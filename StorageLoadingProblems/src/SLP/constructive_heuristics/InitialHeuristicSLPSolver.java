@@ -536,12 +536,12 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void getMCMForUnmatchedItems(ArrayList<Integer> toDo) {
+    public EdmondsMaximumCardinalityMatching<String, DefaultEdge> getMCMForUnmatchedItems(ArrayList<Integer> toDo) {
 
-        DefaultUndirectedGraph<String, DefaultEdge> g2 = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
         for (int item : toDo) {
-            g2.addVertex("v" + item);
+            graph.addVertex("v" + item);
         }
 
         // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
@@ -551,12 +551,14 @@ public class InitialHeuristicSLPSolver {
                 if (toDo.get(i) != toDo.get(j) && this.instance.getStackingConstraints()[toDo.get(i)][toDo.get(j)] == 1
                         || this.instance.getStackingConstraints()[toDo.get(j)][toDo.get(i)] == 1) {
 
-                    if (!g2.containsEdge("v" + toDo.get(j), "v" + toDo.get(i))) {
-                        g2.addEdge("v" + toDo.get(i), "v" + toDo.get(j));
+                    if (!graph.containsEdge("v" + toDo.get(j), "v" + toDo.get(i))) {
+                        graph.addEdge("v" + toDo.get(i), "v" + toDo.get(j));
                     }
                 }
             }
         }
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+        return mcm;
     }
 
     public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM) {
@@ -639,7 +641,9 @@ public class InitialHeuristicSLPSolver {
         }
         //////////////////// COMPLETELY FILLED STACKS v1 COMPLETED ////////////////////
 
-        this.getMCMForUnmatchedItems(toDo);
+        EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnmatchedItems(toDo);
+        System.out.println(mcm.getMatching().getEdges().size() + " pairs of items to be stored in one stack");
+
     }
 
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
