@@ -736,7 +736,6 @@ public class InitialHeuristicSLPSolver {
         for (int item : this.instance.getItems()) {
             items.add(item);
         }
-
         this.iterativeMCMApproach(mcm, this.instance.getStacks().length, items);
 
         ////////////////////////////
@@ -745,25 +744,6 @@ public class InitialHeuristicSLPSolver {
         EdmondsMaximumCardinalityMatching finalMCM = this.getMCMForUnmatchedItems(toDo);
         ArrayList<MCMEdge> edges = new ArrayList<>();
         this.parseMCM(edges, finalMCM);
-//
-//        DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-//        this.generateSpecialGraph(g1, edges, toDo, this.instance.getStacks().length - this.stackAssignment.size());
-//        EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
-//
-//        ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
-//        this.parseNewMCM(currentStackAssignment, newMCM);
-//        System.out.println(currentStackAssignment.size());
-//
-//        this.stackAssignment.addAll(currentStackAssignment);
-//
-//        for (ArrayList<Integer> stack : this.stackAssignment) {
-//            System.out.println(stack);
-//        }
-//        toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignment);
-
-        System.out.println("storage area: " + this.stackAssignment.size());
-        System.out.println("todo: " + toDo.size());
-        System.out.println("edges: " + edges.size());
 
         int freeStacks = this.instance.getStacks().length - this.stackAssignment.size();
         System.out.println("free stacks: " + freeStacks);
@@ -779,18 +759,10 @@ public class InitialHeuristicSLPSolver {
 
         this.assignColRatingToEdges(edges);
         Collections.sort(edges);
-
-        System.out.println("unstackable: " + toDo.size());
-        System.out.println("--> actually free stacks: " + (freeStacks - toDo.size()));
-
-        ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
         int numberUsedEdges = edges.size() - (int)Math.ceil(edges.size() / 2) + 10;
         ArrayList<ArrayList<MCMEdge>> edgeOfChoicePermutations = new ArrayList<>();
-
         ArrayList<ArrayList<Integer>> toDoLists = new ArrayList<>();
 
-
-//        for (List<MCMEdge> es : Collections2.permutations(edges)) {
         for (int i = 0; i < 10000; i++) {
             ArrayList<Integer> tmptoDo = new ArrayList<>(toDo);
             ArrayList<MCMEdge> edgesOfChoice = new ArrayList<>();
@@ -866,11 +838,7 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-
-        ///////////////////////////////////////////////////////////////////////
-
         this.stackAssignment.addAll(bestCurrentStackAssignments);
-        System.out.println("finally todo: " + toDo.size());
 
         for (int item : toDo) {
             ArrayList<Integer> tmp = new ArrayList<>();
@@ -899,8 +867,6 @@ public class InitialHeuristicSLPSolver {
         Solution sol = new Solution(0, false, this.instance);
         System.out.println("sol feasible: " + sol.isFeasible());
         System.out.println(sol.getNumberOfAssignedItems());
-
-        ////////////////////////////
 
         // TODO: testing new approach, exiting here for now
         System.exit(0);
