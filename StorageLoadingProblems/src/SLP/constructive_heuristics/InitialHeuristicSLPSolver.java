@@ -586,13 +586,26 @@ public class InitialHeuristicSLPSolver {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
 
-                if (this.instance.getStackingConstraints()[edges.get(i).getVertexOne()][unmatchedItems.get(j)] == 1
-                        || this.instance.getStackingConstraints()[edges.get(i).getVertexTwo()][unmatchedItems.get(j)] == 1
-                        || this.instance.getStackingConstraints()[unmatchedItems.get(j)][edges.get(i).getVertexOne()] == 1) {
+                if (this.instance.getStackingConstraints()[edges.get(i).getVertexOne()][edges.get(i).getVertexTwo()] == 1) {
 
-                    if (!graph.containsEdge("v" + unmatchedItems.get(j), "edge" + edges.get(i))) {
-                        graph.addEdge("edge" + edges.get(i), "v" + unmatchedItems.get(j));
+                    if (this.instance.getStackingConstraints()[edges.get(i).getVertexTwo()][unmatchedItems.get(j)] == 1
+                            || this.instance.getStackingConstraints()[unmatchedItems.get(j)][edges.get(i).getVertexOne()] == 1) {
+
+                        if (!graph.containsEdge("v" + unmatchedItems.get(j), "edge" + edges.get(i))) {
+                            graph.addEdge("edge" + edges.get(i), "v" + unmatchedItems.get(j));
+                        }
                     }
+
+                } else {
+
+                    if (this.instance.getStackingConstraints()[edges.get(i).getVertexOne()][unmatchedItems.get(j)] == 1
+                            || this.instance.getStackingConstraints()[unmatchedItems.get(j)][edges.get(i).getVertexTwo()] == 1) {
+
+                        if (!graph.containsEdge("v" + unmatchedItems.get(j), "edge" + edges.get(i))) {
+                            graph.addEdge("edge" + edges.get(i), "v" + unmatchedItems.get(j));
+                        }
+                    }
+
                 }
             }
         }
@@ -700,6 +713,164 @@ public class InitialHeuristicSLPSolver {
 
         this.iterativeMCMApproach(mcm, this.instance.getStacks().length, items);
 
+        ////////////////////////////
+        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignment);
+
+        EdmondsMaximumCardinalityMatching finalMCM = this.getMCMForUnmatchedItems(toDo);
+        ArrayList<MCMEdge> edges = new ArrayList<>();
+        this.parseMCM(edges, finalMCM);
+//
+//        DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
+//        this.generateSpecialGraph(g1, edges, toDo, this.instance.getStacks().length - this.stackAssignment.size());
+//        EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
+//
+//        ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
+//        this.parseNewMCM(currentStackAssignment, newMCM);
+//        System.out.println(currentStackAssignment.size());
+//
+//        this.stackAssignment.addAll(currentStackAssignment);
+//
+//        for (ArrayList<Integer> stack : this.stackAssignment) {
+//            System.out.println(stack);
+//        }
+//        toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignment);
+
+        System.out.println("storage area: " + this.stackAssignment.size());
+        System.out.println("todo: " + toDo.size());
+        System.out.println("edges: " + edges.size());
+
+        int freeStacks = this.instance.getStacks().length - this.stackAssignment.size();
+        System.out.println("free stacks: " + freeStacks);
+
+        for (MCMEdge e : edges) {
+            if (toDo.contains(e.getVertexOne())) {
+                toDo.remove(toDo.indexOf(e.getVertexOne()));
+            }
+            if (toDo.contains(e.getVertexTwo())) {
+                toDo.remove(toDo.indexOf(e.getVertexTwo()));
+            }
+        }
+
+        this.assignColRatingToEdges(edges);
+        Collections.sort(edges);
+
+        System.out.println("unstackable: " + toDo.size());
+        System.out.println("--> actually free stacks: " + (freeStacks - toDo.size()));
+
+        ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
+        int numberUsedEdges = edges.size() - (int)Math.ceil(edges.size() / 2) + 10;
+        ArrayList<ArrayList<MCMEdge>> edgeOfChoicePermutations = new ArrayList<>();
+
+        ArrayList<ArrayList<Integer>> toDoLists = new ArrayList<>();
+
+
+//        for (List<MCMEdge> es : Collections2.permutations(edges)) {
+        for (int i = 0; i < 10000; i++) {
+            ArrayList<Integer> tmptoDo = new ArrayList<>(toDo);
+            ArrayList<MCMEdge> edgesOfChoice = new ArrayList<>();
+
+            int cnt = 0;
+            for (MCMEdge e : edges) {
+                if (cnt < numberUsedEdges) {
+                    edgesOfChoice.add(e);
+                } else {
+                    tmptoDo.add(e.getVertexOne());
+                    tmptoDo.add(e.getVertexTwo());
+                }
+                cnt++;
+            }
+            Collections.shuffle(edges);
+            edgeOfChoicePermutations.add(new ArrayList<>(edgesOfChoice));
+            toDoLists.add(new ArrayList<>(tmptoDo));
+        }
+
+        int numberOfAssignments = 0;
+        int maxNumberOfAssignments = 0;
+        ArrayList<MCMEdge> bestEdgeSet = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> bestCurrentStackAssignments = new ArrayList<>();
+        
+        ///////////////////////////////////////////////////////////////////////
+
+        for (ArrayList<MCMEdge> edgesOfChoice : edgeOfChoicePermutations) {
+
+            numberOfAssignments = 0;
+
+            ArrayList<ArrayList<Integer>> tmpCurrentStackAssignments = new ArrayList<>();
+
+            ArrayList<Integer> currTodo = new ArrayList<>(toDoLists.get(edgeOfChoicePermutations.indexOf(edgesOfChoice)));
+
+            for (MCMEdge e : edgesOfChoice) {
+                ArrayList<Integer> currStack = new ArrayList<>();
+                currStack.add(e.getVertexOne());
+                currStack.add(e.getVertexTwo());
+
+                for (int item : currTodo) {
+                    if (this.instance.getStackingConstraints()[e.getVertexOne()][e.getVertexTwo()] == 1) {
+                        if (this.instance.getStackingConstraints()[e.getVertexTwo()][item] == 1
+                                || this.instance.getStackingConstraints()[item][e.getVertexOne()] == 1) {
+
+                            numberOfAssignments++;
+
+                            currStack.add(item);
+                            currTodo.remove(currTodo.indexOf(item));
+                            break;
+                        }
+
+                    } else {
+
+                        if (this.instance.getStackingConstraints()[e.getVertexOne()][item] == 1
+                                || this.instance.getStackingConstraints()[item][e.getVertexTwo()] == 1) {
+
+                            numberOfAssignments++;
+
+                            currStack.add(item);
+                            currTodo.remove(currTodo.indexOf(item));
+                            break;
+                        }
+                    }
+                }
+                tmpCurrentStackAssignments.add(currStack);
+            }
+
+            if (numberOfAssignments > maxNumberOfAssignments) {
+                maxNumberOfAssignments = numberOfAssignments;
+                bestEdgeSet = new ArrayList<>(edgesOfChoice);
+                bestCurrentStackAssignments = new ArrayList<>(tmpCurrentStackAssignments);
+                toDo = new ArrayList<>(currTodo);
+            }
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////
+
+        this.stackAssignment.addAll(bestCurrentStackAssignments);
+        System.out.println("finally todo: " + toDo.size());
+
+        for (int item : toDo) {
+            ArrayList<Integer> tmp = new ArrayList<>();
+            tmp.add(item);
+            this.stackAssignment.add(tmp);
+        }
+
+        toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignment);
+        System.out.println("stacks used: " + this.stackAssignment.size());
+        System.out.println("todo: " + toDo);
+
+        this.instance.getStacks();
+
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
+                if (i < this.stackAssignment.size()) {
+                    ArrayList<Integer> stack = this.stackAssignment.get(i);
+                    if (j < stack.size()) {
+                        this.instance.getStacks()[i][j] = stack.get(j);
+                    }
+                }
+            }
+        }
+
+        ////////////////////////////
+
         // TODO: testing new approach, exiting here for now
         System.exit(0);
 
@@ -766,7 +937,6 @@ public class InitialHeuristicSLPSolver {
         }
 
         System.out.println("number of solutions: " + generatedSolutions);
-
         return bestSol;
     }
 
