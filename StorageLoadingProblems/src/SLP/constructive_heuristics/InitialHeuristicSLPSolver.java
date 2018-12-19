@@ -694,6 +694,32 @@ public class InitialHeuristicSLPSolver {
         this.iterativeMCMApproach(mcm, stacksNeeded, toDo);
     }
 
+    public void getSolutionFromStackAssignment() {
+
+        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+
+            boolean somethingChanged = true;
+
+            while (somethingChanged) {
+
+                somethingChanged = false;
+
+                for (int item = 0; item < this.instance.getStackCapacity() - 1; item++) {
+
+                    if (this.instance.getStacks()[stack][item] != -1 && this.instance.getStacks()[stack][item + 1] != -1) {
+                        if (this.instance.getStackingConstraints()[this.instance.getStacks()[stack][item]][this.instance.getStacks()[stack][item + 1]] == 0) {
+                            int tmp = this.instance.getStacks()[stack][item];
+                            this.instance.getStacks()[stack][item] = this.instance.getStacks()[stack][item + 1];
+                            this.instance.getStacks()[stack][item + 1] = tmp;
+                            somethingChanged = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
 
         // TODO:
@@ -788,7 +814,7 @@ public class InitialHeuristicSLPSolver {
         int maxNumberOfAssignments = 0;
         ArrayList<MCMEdge> bestEdgeSet = new ArrayList<>();
         ArrayList<ArrayList<Integer>> bestCurrentStackAssignments = new ArrayList<>();
-        
+
         ///////////////////////////////////////////////////////////////////////
 
         for (ArrayList<MCMEdge> edgesOfChoice : edgeOfChoicePermutations) {
@@ -868,6 +894,11 @@ public class InitialHeuristicSLPSolver {
                 }
             }
         }
+
+        this.getSolutionFromStackAssignment();
+        Solution sol = new Solution(0, false, this.instance);
+        System.out.println("sol feasible: " + sol.isFeasible());
+        System.out.println(sol.getNumberOfAssignedItems());
 
         ////////////////////////////
 
