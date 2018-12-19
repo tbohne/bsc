@@ -74,6 +74,32 @@ public class Solution {
         return this.empty;
     }
 
+    // TODO: fix infinite loop for invalid stack assignments
+    public void transformStackAssignmentIntoValidSolutionIfPossible() {
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+
+            boolean somethingChanged = true;
+
+            while (somethingChanged) {
+
+                somethingChanged = false;
+
+                for (int item = 0; item < this.solvedInstance.getStackCapacity() - 1; item++) {
+
+                    if (this.filledStorageArea[stack][item] != -1 && this.filledStorageArea[stack][item + 1] != -1) {
+                        if (this.solvedInstance.getStackingConstraints()[this.filledStorageArea[stack][item]][this.filledStorageArea[stack][item + 1]] == 0) {
+                            int tmp = this.filledStorageArea[stack][item];
+                            this.filledStorageArea[stack][item] = this.filledStorageArea[stack][item + 1];
+                            this.filledStorageArea[stack][item + 1] = tmp;
+                            somethingChanged = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public boolean allItemsAssigned() {
 
         boolean[] allItemsAssigned = new boolean[this.numberOfItems];
