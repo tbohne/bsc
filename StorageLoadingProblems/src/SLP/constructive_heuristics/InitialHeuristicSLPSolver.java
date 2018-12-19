@@ -720,25 +720,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
-
-        // TODO:
-        //   - calc MCM between items for b = 2
-        //   - interpret MCM edges as stack assignments
-        //   - iterate over remaining items and assign to feasible stack
-
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateStackingConstraintGraph(graph);
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
-
-        ArrayList<Integer> items = new ArrayList<>();
-        for (int item : this.instance.getItems()) {
-            items.add(item);
-        }
-        this.iterativeMCMApproach(mcm, this.instance.getStacks().length, items);
-
-        ////////////////////////////
+    public void completeStackAssignment() {
         ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignment);
 
         EdmondsMaximumCardinalityMatching finalMCM = this.getMCMForUnmatchedItems(toDo);
@@ -864,13 +846,11 @@ public class InitialHeuristicSLPSolver {
         }
 
         this.getSolutionFromStackAssignment();
-        Solution sol = new Solution(0, false, this.instance);
-        System.out.println("sol feasible: " + sol.isFeasible());
-        System.out.println(sol.getNumberOfAssignedItems());
+    }
 
-        // TODO: testing new approach, exiting here for now
-        System.exit(0);
+    public Solution stillToBeNamedApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm, boolean optimizeSolution) {
 
+        ArrayList<ArrayList<MCMEdge>> matchingSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
         Solution bestSol = new Solution();
 
         int generatedSolutions = 0;
@@ -935,6 +915,34 @@ public class InitialHeuristicSLPSolver {
 
         System.out.println("number of solutions: " + generatedSolutions);
         return bestSol;
+    }
+
+    public Solution capThreeApproach(boolean optimizeSolution, double startTime) {
+
+        // TODO:
+        //   - calc MCM between items for b = 2
+        //   - interpret MCM edges as stack assignments
+        //   - iterate over remaining items and assign to feasible stack
+
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        this.generateStackingConstraintGraph(graph);
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+
+        ArrayList<Integer> items = new ArrayList<>();
+        for (int item : this.instance.getItems()) {
+            items.add(item);
+        }
+        this.iterativeMCMApproach(mcm, this.instance.getStacks().length, items);
+        this.completeStackAssignment();
+
+        Solution sol = new Solution(0, false, this.instance);
+        System.out.println("sol feasible: " + sol.isFeasible());
+        System.out.println(sol.getNumberOfAssignedItems());
+
+        // TODO: testing new approach, exiting here for now
+        System.exit(0);
+
+        return stillToBeNamedApproach(mcm, optimizeSolution);
     }
 
     /**
