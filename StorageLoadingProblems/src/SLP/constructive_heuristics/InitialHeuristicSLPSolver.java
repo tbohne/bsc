@@ -2,7 +2,7 @@ package SLP.constructive_heuristics;
 
 import SLP.Instance;
 import SLP.MCMEdge;
-import SLP.MapUtil;
+import SLP.util.MapUtil;
 import SLP.Solution;
 import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
@@ -18,7 +18,7 @@ public class InitialHeuristicSLPSolver {
     private ArrayList<Integer> additionalUnmatchedItems;
     private ArrayList<List<Integer>> alreadyUsedShuffles;
     private ArrayList<ArrayList<Integer>> stackAssignments;
-    private int previousNumberOfItemsToDo;
+    private int previousNumberOfRemainingItems;
 
     private double startTime;
 
@@ -28,7 +28,7 @@ public class InitialHeuristicSLPSolver {
         this.additionalUnmatchedItems = new ArrayList<>();
         this.alreadyUsedShuffles = new ArrayList<>();
         this.stackAssignments = new ArrayList<>();
-        this.previousNumberOfItemsToDo = this.instance.getItems().length;
+        this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
 
     public void parseMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
@@ -656,68 +656,37 @@ public class InitialHeuristicSLPSolver {
         return toDo;
     }
 
-    public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching initialMCM, int stackneed, ArrayList<Integer> todoItems) {
+    public void iterativeMCMApproach(EdmondsMaximumCardinalityMatching itemPairs, int numberOfEdgesToBeUsed, ArrayList<Integer> remainingItems) {
 
-        System.out.println("todo: " + todoItems.size());
+        System.out.println("remaining items: " + remainingItems.size());
 
-        if (todoItems.size() == 0 || this.previousNumberOfItemsToDo == todoItems.size()) {
-            if (this.previousNumberOfItemsToDo != this.instance.getItems().length) {
-                return;
-            }
+        if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
+            if (this.previousNumberOfRemainingItems != this.instance.getItems().length) { return; }
         }
-        this.previousNumberOfItemsToDo = todoItems.size();
-
+        this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> edges = new ArrayList<>();
-        this.parseMCM(edges, initialMCM);
-        // TODO: Check whether it is reasonable to sort the edges first
+        this.parseMCM(edges, itemPairs);
         this.assignColRatingToEdges(edges);
         Collections.sort(edges);
 
-        // WITH EDGES
-        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(stackneed, edges, todoItems);
-        DefaultUndirectedGraph<String, DefaultEdge> g1 = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateSpecialGraph(g1, edges, unmatchedItems, stackneed);
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> newMCM = new EdmondsMaximumCardinalityMatching<>(g1);
+        // COMPUTING COMPATIBLE ITEM-TRIPLES FROM ITEM-PAIRS AND REMAINING ITEMS
+        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(numberOfEdgesToBeUsed, edges, remainingItems);
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        this.generateSpecialGraph(graph, edges, unmatchedItems, numberOfEdgesToBeUsed);
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
 
         ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
-        this.parseNewMCM(currentStackAssignment, newMCM);
-
+        this.parseNewMCM(currentStackAssignment, itemTriples);
         this.stackAssignments.addAll(currentStackAssignment);
 
-        // WITHOUT EDGES
-        ArrayList<Integer> toDo = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
-        EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnmatchedItems(toDo);
+        // COMPUTING COMPATIBLE ITEM-PAIRS FROM REMAINING ITEMS
+        unmatchedItems = this.getUnmatchedItemsFromStorageAreaSnapshot(currentStackAssignment);
+        EdmondsMaximumCardinalityMatching remainingItemPairs = this.getMCMForUnmatchedItems(unmatchedItems);
         edges = new ArrayList<>();
-        this.parseMCM(edges, mcm);
-        int stacksNeeded = (int)Math.ceil(edges.size() / 3);
+        this.parseMCM(edges, remainingItemPairs);
+        numberOfEdgesToBeUsed = (int)Math.ceil(edges.size() / 3);
 
-        this.iterativeMCMApproach(mcm, stacksNeeded, toDo);
-    }
-
-    public void getSolutionFromStackAssignment() {
-
-        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-
-            boolean somethingChanged = true;
-
-            while (somethingChanged) {
-
-                somethingChanged = false;
-
-                for (int item = 0; item < this.instance.getStackCapacity() - 1; item++) {
-
-                    if (this.instance.getStacks()[stack][item] != -1 && this.instance.getStacks()[stack][item + 1] != -1) {
-                        if (this.instance.getStackingConstraints()[this.instance.getStacks()[stack][item]][this.instance.getStacks()[stack][item + 1]] == 0) {
-                            int tmp = this.instance.getStacks()[stack][item];
-                            this.instance.getStacks()[stack][item] = this.instance.getStacks()[stack][item + 1];
-                            this.instance.getStacks()[stack][item + 1] = tmp;
-                            somethingChanged = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        this.iterativeMCMApproach(remainingItemPairs, numberOfEdgesToBeUsed, unmatchedItems);
     }
 
     public void completeStackAssignments() {
@@ -831,8 +800,6 @@ public class InitialHeuristicSLPSolver {
                 }
             }
         }
-
-        this.getSolutionFromStackAssignment();
     }
 
     public Solution stillToBeNamedApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm, boolean optimizeSolution) {
@@ -923,6 +890,7 @@ public class InitialHeuristicSLPSolver {
         this.completeStackAssignments();
 
         Solution sol = new Solution(0, false, this.instance);
+        sol.transformStackAssignmentIntoValidSolutionIfPossible();
         System.out.println("sol feasible: " + sol.isFeasible());
         System.out.println(sol.getNumberOfAssignedItems());
 
