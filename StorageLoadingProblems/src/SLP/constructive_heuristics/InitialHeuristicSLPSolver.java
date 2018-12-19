@@ -689,29 +689,13 @@ public class InitialHeuristicSLPSolver {
         this.iterativeMCMApproach(remainingItemPairs, numberOfEdgesToBeUsed, unmatchedItems);
     }
 
-    public void completeStackAssignments() {
-        ArrayList<Integer> remainingItems = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignments);
+    public void generateEdgePermutationsAndCorrespondingRemainingItems(
+            ArrayList<MCMEdge> edges,
+            int numberOfUsedEdges,
+            ArrayList<Integer> remainingItems,
+            ArrayList<ArrayList<MCMEdge>> edgePermutations,
+            ArrayList<ArrayList<Integer>> listsOfRemainingItems) {
 
-        EdmondsMaximumCardinalityMatching finalMCM = this.getMCMForUnmatchedItems(remainingItems);
-        ArrayList<MCMEdge> edges = new ArrayList<>();
-        this.parseMCM(edges, finalMCM);
-
-        for (MCMEdge e : edges) {
-            if (remainingItems.contains(e.getVertexOne())) {
-                remainingItems.remove(remainingItems.indexOf(e.getVertexOne()));
-            }
-            if (remainingItems.contains(e.getVertexTwo())) {
-                remainingItems.remove(remainingItems.indexOf(e.getVertexTwo()));
-            }
-        }
-
-        this.assignColRatingToEdges(edges);
-        Collections.sort(edges);
-        // TODO: search for reasonable way to compute the number of used edges
-        int numberOfUsedEdges = edges.size() - (int)Math.ceil(edges.size() / 2) + 10;
-
-        ArrayList<ArrayList<MCMEdge>> edgePermutations = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
 
         for (int i = 0; i < 10000; i++) {
             ArrayList<Integer> tmpRemainingItems = new ArrayList<>(remainingItems);
@@ -732,9 +716,16 @@ public class InitialHeuristicSLPSolver {
             edgePermutations.add(new ArrayList<>(tmpEdges));
             listsOfRemainingItems.add(new ArrayList<>(tmpRemainingItems));
         }
+    }
+
+    public void findBestRemainingStackAssignments(
+            ArrayList<ArrayList<Integer>> bestStackAssignments,
+            ArrayList<ArrayList<MCMEdge>> edgePermutations,
+            ArrayList<ArrayList<Integer>> listsOfRemainingItems,
+            ArrayList<Integer> remainingItems
+    ) {
 
         int maxNumberOfAssignments = 0;
-        ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
 
         for (ArrayList<MCMEdge> currentEdges : edgePermutations) {
 
@@ -773,11 +764,44 @@ public class InitialHeuristicSLPSolver {
 
             if (numberOfAssignments > maxNumberOfAssignments) {
                 maxNumberOfAssignments = numberOfAssignments;
-                bestStackAssignments = new ArrayList<>(currentStackAssignments);
-                remainingItems = new ArrayList<>(currentRemainingItems);
+                bestStackAssignments.clear();
+                bestStackAssignments.addAll(currentStackAssignments);
+                remainingItems.clear();
+                remainingItems.addAll(currentRemainingItems);
+            }
+        }
+    }
+
+    public void completeStackAssignments() {
+        ArrayList<Integer> remainingItems = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignments);
+
+        EdmondsMaximumCardinalityMatching finalMCM = this.getMCMForUnmatchedItems(remainingItems);
+        ArrayList<MCMEdge> edges = new ArrayList<>();
+        this.parseMCM(edges, finalMCM);
+
+        for (MCMEdge e : edges) {
+            if (remainingItems.contains(e.getVertexOne())) {
+                remainingItems.remove(remainingItems.indexOf(e.getVertexOne()));
+            }
+            if (remainingItems.contains(e.getVertexTwo())) {
+                remainingItems.remove(remainingItems.indexOf(e.getVertexTwo()));
             }
         }
 
+        this.assignColRatingToEdges(edges);
+        Collections.sort(edges);
+        // TODO: search for reasonable way to compute the number of used edges
+        int numberOfUsedEdges = edges.size() - (int)Math.ceil(edges.size() / 2) + 10;
+
+        ArrayList<ArrayList<MCMEdge>> edgePermutations = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
+        this.generateEdgePermutationsAndCorrespondingRemainingItems(
+            edges, numberOfUsedEdges, remainingItems, edgePermutations, listsOfRemainingItems
+        );
+
+        // TODO:
+        ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
+        this.findBestRemainingStackAssignments(bestStackAssignments, edgePermutations, listsOfRemainingItems, remainingItems);
         this.stackAssignments.addAll(bestStackAssignments);
 
         for (int item : remainingItems) {
