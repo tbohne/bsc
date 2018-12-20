@@ -422,17 +422,7 @@ public class InitialHeuristicSLPSolver {
         return false;
     }
 
-    public boolean setStacks(ArrayList<MCMEdge> matchedItems, List<Integer> unmatchedItems) {
-
-        if (matchedItems.size() * 2 + unmatchedItems.size() != this.instance.getItems().length) {
-            System.out.println("PROBLEM: number of matched items + number of unmatched items != number of items");
-            System.exit(0);
-        }
-        this.unstackableItems = new ArrayList<>();
-        this.additionalUnmatchedItems = new ArrayList<>();
-
-        // Edges that contain inflexible items are prioritized.
-        ArrayList<MCMEdge> prioritizedEdges = new ArrayList<>();
+    public void prioritizeInflexibleEdges(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
 
         int cnt = 0;
 
@@ -454,7 +444,9 @@ public class InitialHeuristicSLPSolver {
                 cnt++;
             }
         }
+    }
 
+    public boolean prioritizeInflexibleItem(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
             if (this.computeRowRatingForUnmatchedItem(item) <= 10) {
                 this.unstackableItems.add(item);
@@ -463,17 +455,10 @@ public class InitialHeuristicSLPSolver {
                 }
             }
         }
+        return true;
+    }
 
-//        System.out.println("unexpected: " + (this.unstackableItems.size() + prioritizedEdges.size()));
-//        System.out.println("stacks: " + this.instance.getStacks().length);
-
-//        int unexpected = this.unstackableItems.size() + prioritizedEdges.size();
-//        if (Math.abs(unexpected - this.instance.getStacks().length) < 30) {
-//            return false;
-//        }
-
-        // Sets MCM pairs to level 0 and 1 of stacks
-        // (0 is actually the top level, so level 0 is 2 here)
+    public void processMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
         for (MCMEdge edge : matchedItems) {
             boolean continueOuterLoop = false;
             for (MCMEdge e : prioritizedEdges) {
@@ -489,32 +474,52 @@ public class InitialHeuristicSLPSolver {
                 this.additionalUnmatchedItems.add(edge.getVertexTwo());
             }
         }
+    }
 
-        ArrayList<Integer> stillTodoItems = new ArrayList<>(unmatchedItems);
-        stillTodoItems.addAll(this.additionalUnmatchedItems);
+    public boolean getUnmatchedItems(ArrayList<Integer> unmatchedItems) {
+
+        unmatchedItems.addAll(this.additionalUnmatchedItems);
 
         ArrayList<Integer> toBeRemoved = new ArrayList<>();
-        for (int item : stillTodoItems) {
+        for (int item : unmatchedItems) {
             if (this.unstackableItems.contains(item)) {
                 toBeRemoved.add(item);
             }
         }
-
         while (toBeRemoved.size() > 0) {
-            int idx = stillTodoItems.indexOf(toBeRemoved.get(0));
-            stillTodoItems.remove(idx);
+            int idx = unmatchedItems.indexOf(toBeRemoved.get(0));
+            unmatchedItems.remove(idx);
             toBeRemoved.remove(0);
         }
 
         // TODO: Check - could cause problems
-        for (int item : stillTodoItems) {
+        for (int item : unmatchedItems) {
             // If we still have a one here, we have a problem.
             if (this.computeRowRatingForUnmatchedItem(item) == 1) {
                 return false;
             }
         }
+        return true;
+    }
 
-        this.assignUnmatchedItemsInGivenOrder(stillTodoItems);
+    public boolean setStacks(ArrayList<MCMEdge> matchedItems, List<Integer> unmatchedItems) {
+
+        if (matchedItems.size() * 2 + unmatchedItems.size() != this.instance.getItems().length) {
+            System.out.println("PROBLEM: number of matched items + number of unmatched items != number of items");
+            System.exit(0);
+        }
+
+        this.unstackableItems = new ArrayList<>();
+        this.additionalUnmatchedItems = new ArrayList<>();
+        ArrayList<MCMEdge> prioritizedEdges = new ArrayList<>();
+
+        this.prioritizeInflexibleEdges(matchedItems, prioritizedEdges);
+        if (!this.prioritizeInflexibleItem(unmatchedItems)) { return false; }
+        this.processMatchedItems(matchedItems, prioritizedEdges);
+
+        ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
+        if (!this.getUnmatchedItems(stillUnmatchedItems)) { return false; }
+        this.assignUnmatchedItemsInGivenOrder(stillUnmatchedItems);
         return true;
     }
 
@@ -901,11 +906,11 @@ public class InitialHeuristicSLPSolver {
 
         Solution sol = new Solution(0, false, this.instance);
         sol.transformStackAssignmentIntoValidSolutionIfPossible();
-        System.out.println("sol feasible: " + sol.isFeasible());
-        System.out.println(sol.getNumberOfAssignedItems());
+//        System.out.println("sol feasible: " + sol.isFeasible());
+//        System.out.println(sol.getNumberOfAssignedItems());
 
-        return sol;
-//        return permutationApproach(mcm, optimizeSolution);
+//        return sol;
+        return permutationApproach(mcm, optimizeSolution);
     }
 
     /**
