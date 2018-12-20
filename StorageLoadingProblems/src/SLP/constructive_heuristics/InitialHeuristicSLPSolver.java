@@ -799,35 +799,7 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
-    public void completeStackAssignments() {
-        ArrayList<Integer> remainingItems = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignments);
-        EdmondsMaximumCardinalityMatching finalMCM = this.getMCMForUnmatchedItems(remainingItems);
-        ArrayList<MCMEdge> edges = new ArrayList<>();
-        this.parseItemPairMCM(edges, finalMCM);
-        this.updateRemainingItems(edges, remainingItems);
-
-        this.assignColRatingToEdges(edges);
-        Collections.sort(edges);
-        // TODO: search for reasonable way to compute the number of used edges
-        int numberOfUsedEdges = edges.size() - (int)Math.ceil(edges.size() / 2) + 10;
-
-        ArrayList<ArrayList<MCMEdge>> edgePermutations = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
-        this.generateEdgePermutationsAndCorrespondingRemainingItems(
-            edges, numberOfUsedEdges, remainingItems, edgePermutations, listsOfRemainingItems
-        );
-
-        // TODO:
-        ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
-        this.findBestRemainingStackAssignments(bestStackAssignments, edgePermutations, listsOfRemainingItems, remainingItems);
-        this.stackAssignments.addAll(bestStackAssignments);
-
-        this.assignUnstackableItemsToOwnStack(remainingItems);
-
-        remainingItems = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignments);
-        System.out.println("stacks used: " + this.stackAssignments.size());
-        System.out.println("remaining items: " + remainingItems);
-
+    public void fillStorageAreaWithGeneratedStackAssignments() {
         for (int i = 0; i < this.instance.getStacks().length; i++) {
             for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
                 if (i < this.stackAssignments.size()) {
@@ -838,6 +810,41 @@ public class InitialHeuristicSLPSolver {
                 }
             }
         }
+    }
+
+    public void checkItemAssignments() {
+        ArrayList<Integer> remainingItems = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignments);
+        if (remainingItems.size() > 0) {
+            System.out.println("Problem: Not all items have been assigned, even though the process is complete.");
+        }
+    }
+
+    public void completeStackAssignments() {
+        ArrayList<Integer> remainingItems = this.getUnmatchedItemsFromStorageAreaSnapshot(this.stackAssignments);
+        EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnmatchedItems(remainingItems);
+        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
+        this.parseItemPairMCM(itemPairs, mcm);
+        this.updateRemainingItems(itemPairs, remainingItems);
+
+        this.assignColRatingToEdges(itemPairs);
+        Collections.sort(itemPairs);
+        // TODO: search for reasonable way to compute the number of used item pairs
+        int numberOfUsedItemPairs = itemPairs.size() - (int)Math.ceil(itemPairs.size() / 2) + 10;
+
+        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
+        this.generateEdgePermutationsAndCorrespondingRemainingItems(
+            itemPairs, numberOfUsedItemPairs, remainingItems, itemPairPermutations, listsOfRemainingItems
+        );
+
+        ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
+        this.findBestRemainingStackAssignments(bestStackAssignments, itemPairPermutations, listsOfRemainingItems, remainingItems);
+        this.stackAssignments.addAll(bestStackAssignments);
+        this.assignUnstackableItemsToOwnStack(remainingItems);
+
+        System.out.println("stacks used: " + this.stackAssignments.size());
+        this.checkItemAssignments();
+        this.fillStorageAreaWithGeneratedStackAssignments();
     }
 
     public Solution stillToBeNamedApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm, boolean optimizeSolution) {
