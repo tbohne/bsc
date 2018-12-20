@@ -355,59 +355,36 @@ public class InitialHeuristicSLPSolver {
         return false;
     }
 
-    public int numberOfAlreadyAssignedItems() {
-        int items = 0;
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-                if (this.instance.getStacks()[i][j] != -1) {
-                    items++;
-                }
-            }
+    public boolean assignItemsInGivenOrder(int idx, int below, int above) {
+        // assign to 1st and 2nd level
+        if (this.instance.getStacks()[idx][2] == -1) {
+            this.instance.getStacks()[idx][2] = below;
+            this.instance.getStacks()[idx][1] = above;
+            return true;
+        // assign to 2nd and 3rd level
+        } else if (this.instance.getStacks()[idx][1] == -1
+                && this.instance.getStackingConstraints()[below][this.instance.getStacks()[idx][2]] == 1) {
+            this.instance.getStacks()[idx][1] = below;
+            this.instance.getStacks()[idx][0] = above;
+            return true;
         }
-        return items;
+        // no two free positions
+        return false;
     }
 
     public boolean assignEdgeToFirstPossiblePosition(MCMEdge edge) {
 
-        int cnt = 0;
-
-        while (cnt < this.instance.getStacks().length) {
-
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
-            // ORDER ONE
             if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
-                // assign to ground and 2nd level
-                if (this.instance.getStacks()[cnt][2] == -1) {
-                    this.instance.getStacks()[cnt][2] = vertexOne;
-                    this.instance.getStacks()[cnt][1] = vertexTwo;
+                if (this.assignItemsInGivenOrder(i, vertexOne, vertexTwo)) {
                     return true;
-                // assign to 2nd and 3rd level
-                } else if (this.instance.getStacks()[cnt][1] == -1
-                        && this.instance.getStackingConstraints()[vertexOne][this.instance.getStacks()[cnt][2]] == 1) {
-                    this.instance.getStacks()[cnt][1] = vertexOne;
-                    this.instance.getStacks()[cnt][0] = vertexTwo;
-                    return true;
-                // no two free positions
-                } else {
-                    cnt++;
                 }
-
-            // ORDER TWO
             } else {
-                if (this.instance.getStacks()[cnt][2] == -1) {
-                    this.instance.getStacks()[cnt][2] = vertexTwo;
-                    this.instance.getStacks()[cnt][1] = vertexOne;
+                if (this.assignItemsInGivenOrder(i, vertexTwo, vertexOne)) {
                     return true;
-
-                } else if (this.instance.getStacks()[cnt][1] == -1
-                        && this.instance.getStackingConstraints()[vertexTwo][this.instance.getStacks()[cnt][2]] == 1) {
-                    this.instance.getStacks()[cnt][1] = vertexTwo;
-                    this.instance.getStacks()[cnt][0] = vertexOne;
-                    return true;
-                } else {
-                    cnt++;
                 }
             }
         }
