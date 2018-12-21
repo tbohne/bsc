@@ -30,22 +30,6 @@ public class ThreeCapPermutationHeuristic {
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
 
-    public void generateStackingConstraintGraph(DefaultUndirectedGraph<String, DefaultEdge> graph) {
-        for (int item : this.instance.getItems()) {
-            graph.addVertex("v" + item);
-        }
-        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
-        for (int i = 0; i < this.instance.getStackingConstraints().length; i++) {
-            for (int j = 0; j < this.instance.getStackingConstraints()[0].length; j++) {
-                if (i != j && this.instance.getStackingConstraints()[i][j] == 1 || this.instance.getStackingConstraints()[j][i] == 1) {
-                    if (!graph.containsEdge("v" + j, "v" + i)) {
-                        graph.addEdge("v" + i, "v" + j);
-                    }
-                }
-            }
-        }
-    }
-
     public ArrayList<Integer> getInitiallyUnmatchedItems(ArrayList<MCMEdge> itemPairs) {
 
         ArrayList<Integer> matchedItems = new ArrayList<>();
@@ -537,7 +521,7 @@ public class ThreeCapPermutationHeuristic {
 
     public Solution capThreeApproach(boolean optimizeSolution) {
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateStackingConstraintGraph(graph);
+        HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
 
         return permutationApproach(mcm, optimizeSolution);
