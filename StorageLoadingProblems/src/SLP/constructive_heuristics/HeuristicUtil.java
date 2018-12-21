@@ -9,6 +9,28 @@ import java.util.*;
 
 public class HeuristicUtil {
 
+    public static EdmondsMaximumCardinalityMatching<String, DefaultEdge> getMCMForUnassignedItems(ArrayList<Integer> unassignedItems, int[][] stackingConstraints) {
+
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        for (int item : unassignedItems) {
+            graph.addVertex("v" + item);
+        }
+        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
+        for (int i = 0; i < unassignedItems.size(); i++) {
+            for (int j = 0; j < unassignedItems.size(); j++) {
+                if (unassignedItems.get(i) != unassignedItems.get(j) && stackingConstraints[unassignedItems.get(i)][unassignedItems.get(j)] == 1
+                        || stackingConstraints[unassignedItems.get(j)][unassignedItems.get(i)] == 1) {
+
+                    if (!graph.containsEdge("v" + unassignedItems.get(j), "v" + unassignedItems.get(i))) {
+                        graph.addEdge("v" + unassignedItems.get(i), "v" + unassignedItems.get(j));
+                    }
+                }
+            }
+        }
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+        return mcm;
+    }
+
     public static void generateStackingConstraintGraph(
             DefaultUndirectedGraph<String, DefaultEdge> graph,
             int[] items,
