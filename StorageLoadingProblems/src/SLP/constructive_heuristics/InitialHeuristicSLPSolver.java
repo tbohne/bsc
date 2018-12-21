@@ -19,7 +19,6 @@ public class InitialHeuristicSLPSolver {
     private ArrayList<List<Integer>> alreadyUsedShuffles;
     private ArrayList<ArrayList<Integer>> stackAssignments;
     private int previousNumberOfRemainingItems;
-
     private double startTime;
 
     public InitialHeuristicSLPSolver(Instance instance) {
@@ -35,13 +34,12 @@ public class InitialHeuristicSLPSolver {
         for (Object edge : mcm.getMatching()) {
             int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
             int vertexTwo = Integer.parseInt(edge.toString().split(":")[1].replace("v", "").replace(")", "").trim());
-
             MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
             matchedItems.add(e);
         }
     }
 
-    public void parseItemTripleMCM(ArrayList<ArrayList<Integer>> stackAssignmentOne, EdmondsMaximumCardinalityMatching mcm) {
+    public void parseItemTripleMCM(ArrayList<ArrayList<Integer>> currentStackAssignments, EdmondsMaximumCardinalityMatching mcm) {
         for (Object edge : mcm.getMatching().getEdges()) {
             String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
             int first = Integer.parseInt(parsedEdge.split(",")[0].trim());
@@ -52,7 +50,7 @@ public class InitialHeuristicSLPSolver {
             currAssignment.add(first);
             currAssignment.add(second);
             currAssignment.add(third);
-            stackAssignmentOne.add(new ArrayList<>(currAssignment));
+            currentStackAssignments.add(new ArrayList<>(currAssignment));
         }
     }
 
@@ -83,13 +81,18 @@ public class InitialHeuristicSLPSolver {
         }
     }
 
+    public int getRandomValueInBetween(int low, int high) {
+        Random r = new Random();
+        return r.nextInt(high - low) + low;
+    }
+
     public ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
         ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
         Collections.reverse(edgesRev);
         return edgesRev;
     }
 
-    // TODO: exchange certain elements of this sequence with other (unused) ones
+    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
     // IDEA:
     // - choose a number n (20%) of random elements to be replaced
     // - choose the next n unused elements from the ordered list
@@ -106,13 +109,8 @@ public class InitialHeuristicSLPSolver {
         ArrayList<Integer> toBeReplaced = new ArrayList<>();
 
         for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            Random r = new Random();
-            int low = 0;
-            int high = this.instance.getStacks().length - 1;
-            int result = r.nextInt(high - low) + low;
-            toBeReplaced.add(result);
+            toBeReplaced.add(this.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
         }
-
         for (int i = 0; i < toBeReplaced.size(); i++) {
             Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
         }
@@ -122,33 +120,30 @@ public class InitialHeuristicSLPSolver {
 
     public ArrayList<ArrayList<MCMEdge>> getInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
-        ArrayList<MCMEdge> edges = new ArrayList<>();
-        this.parseItemPairMCM(edges, mcm);
-
+        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
+        this.parseItemPairMCM(itemPairs, mcm);
         ArrayList<MCMEdge> edgesCopy = new ArrayList<>();
-        for (MCMEdge e : edges) {
+        for (MCMEdge e : itemPairs) {
             edgesCopy.add(new MCMEdge(e));
         }
 
-        this.assignRowRatingToEdges(edges);
+        this.assignRowRatingToEdges(itemPairs);
         this.assignColRatingToEdges(edgesCopy);
-
-        // The edges are sorted based on their ratings.
-        Collections.sort(edges);
+        // The edges get sorted based on their ratings.
+        Collections.sort(itemPairs);
         Collections.sort(edgesCopy);
 
         ArrayList<ArrayList<MCMEdge>> edgePermutations = new ArrayList<>();
         // The first permutation that is added is the one based on the sorting
         // which should be the most promising stack assignment.
-        edgePermutations.add(new ArrayList(edges));
+        edgePermutations.add(new ArrayList(itemPairs));
         edgePermutations.add(new ArrayList(edgesCopy));
-
-        edgePermutations.add(this.getReversedCopyOfEdgeList(edges));
+        edgePermutations.add(this.getReversedCopyOfEdgeList(itemPairs));
         edgePermutations.add(this.getReversedCopyOfEdgeList(edgesCopy));
 
         // TODO: Remove hard coded values
         for (int cnt = 0; cnt < 5000; cnt++) {
-            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(edges));
+            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
             if (!edgePermutations.contains(tmp)) {
                 edgePermutations.add(tmp);
             }
@@ -160,39 +155,33 @@ public class InitialHeuristicSLPSolver {
             }
         }
 
-        if (edges.size() < 9) {
-            for (List<MCMEdge> edgeList : Collections2.permutations(edges)) {
+        if (itemPairs.size() < 9) {
+            for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
                 edgePermutations.add(new ArrayList(edgeList));
             }
         } else {
             for (int i = 0; i < 40000; i++) {
-                Collections.shuffle(edges);
-//                if (!edgePermutations.contains(edges)) {
-                    edgePermutations.add(new ArrayList(edges));
-//                }
+                Collections.shuffle(itemPairs);
+                edgePermutations.add(new ArrayList(itemPairs));
             }
         }
-
         return edgePermutations;
     }
 
-    public ArrayList<Integer> getInitiallyUnmatchedItems(ArrayList<MCMEdge> edges) {
+    public ArrayList<Integer> getInitiallyUnmatchedItems(ArrayList<MCMEdge> itemPairs) {
 
         ArrayList<Integer> matchedItems = new ArrayList<>();
-
-        for (MCMEdge edge : edges) {
+        for (MCMEdge edge : itemPairs) {
             matchedItems.add(edge.getVertexOne());
             matchedItems.add(edge.getVertexTwo());
         }
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
-
         for (int item : this.instance.getItems()) {
             if (!matchedItems.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
-
         return unmatchedItems;
     }
 
@@ -298,12 +287,12 @@ public class InitialHeuristicSLPSolver {
 
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
-//        if (initiallyUnmatchedItems.size() < 9) {
-//            for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
-//                unmatchedItemPermutations.add(new ArrayList<>(itemList));
-//            }
-//        } else {
-            for (int i = 0; i < 500; i++) {
+        if (initiallyUnmatchedItems.size() < 9) {
+            for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
+                unmatchedItemPermutations.add(new ArrayList<>(itemList));
+            }
+        } else {
+            for (int i = 0; i < 40000; i++) {
                 unmatchedItemPermutations.add(new ArrayList<>(initiallyUnmatchedItems));
                 Collections.shuffle(initiallyUnmatchedItems);
 
@@ -318,35 +307,35 @@ public class InitialHeuristicSLPSolver {
                 }
                 this.alreadyUsedShuffles.add(new ArrayList<>(initiallyUnmatchedItems));
             }
-//        }
+        }
 
         return unmatchedItemPermutations;
     }
 
     public boolean assignItemToFirstPossiblePosition(int item) {
 
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 2; j > 0; j--) {
+        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+            for (int level = 2; level > 0; level--) {
 
                 // TODO: generalize steps
 
                 // GROUND LEVEL CASE
-                if (j == 2 && this.instance.getStacks()[i][j] == -1) {
-                    this.instance.getStacks()[i][j] = item;
+                if (level == 2 && this.instance.getStacks()[stack][level] == -1) {
+                    this.instance.getStacks()[stack][level] = item;
                     return true;
-                } else if (j == 2 && this.instance.getStacks()[i][j] != -1) {
-                    if (this.instance.getStacks()[i][j - 1] == -1 && this.instance.getStackingConstraints()[item][this.instance.getStacks()[i][j]] == 1) {
-                        this.instance.getStacks()[i][j - 1] = item;
+                } else if (level == 2 && this.instance.getStacks()[stack][level] != -1) {
+                    if (this.instance.getStacks()[stack][level - 1] == -1 && this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][level]] == 1) {
+                        this.instance.getStacks()[stack][level - 1] = item;
                         return true;
                     }
-                } else if (j == 1 && this.instance.getStacks()[i][j] == -1) {
-                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[i][j + 1]] == 1) {
-                        this.instance.getStacks()[i][j] = item;
+                } else if (level == 1 && this.instance.getStacks()[stack][level] == -1) {
+                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][level + 1]] == 1) {
+                        this.instance.getStacks()[stack][level] = item;
                         return true;
                     }
-                } else if (j == 1 && this.instance.getStacks()[i][j] != -1) {
-                    if (this.instance.getStacks()[i][j - 1] == -1 && this.instance.getStackingConstraints()[item][this.instance.getStacks()[i][j]] == 1) {
-                        this.instance.getStacks()[i][j - 1] = item;
+                } else if (level == 1 && this.instance.getStacks()[stack][level] != -1) {
+                    if (this.instance.getStacks()[stack][level - 1] == -1 && this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][level]] == 1) {
+                        this.instance.getStacks()[stack][level - 1] = item;
                         return true;
                     }
                 }
@@ -634,13 +623,13 @@ public class InitialHeuristicSLPSolver {
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateBipartiteGraph(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
+        ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
+        this.parseItemTripleMCM(currentStackAssignments, itemTriples);
 
-        ArrayList<ArrayList<Integer>> currentStackAssignment = new ArrayList<>();
-        this.parseItemTripleMCM(currentStackAssignment, itemTriples);
-        this.stackAssignments.addAll(currentStackAssignment);
+        this.stackAssignments.addAll(currentStackAssignments);
 
         // COMPUTING COMPATIBLE ITEM PAIRS FROM REMAINING ITEMS
-        unmatchedItems = this.getUnassignedItemsFromStorageAreaSnapshot(currentStackAssignment);
+        unmatchedItems = this.getUnassignedItemsFromStorageAreaSnapshot(currentStackAssignments);
         EdmondsMaximumCardinalityMatching remainingItemPairs = this.getMCMForUnassignedItems(unmatchedItems);
         itemPairs = new ArrayList<>();
         this.parseItemPairMCM(itemPairs, remainingItemPairs);
