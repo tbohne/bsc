@@ -179,7 +179,7 @@ public class ThreeCapPermutationHeuristic {
         this.processMatchedItems(matchedItems, prioritizedEdges);
 
         ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
-        if (!this.getUnmatchedItems(stillUnmatchedItems)) { return false; }
+        if (!this.updateUnmatchedItems(stillUnmatchedItems)) { return false; }
         this.assignUnmatchedItemsInGivenOrder(stillUnmatchedItems);
         return true;
     }
@@ -214,7 +214,7 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public boolean getUnmatchedItems(ArrayList<Integer> unmatchedItems) {
+    public boolean updateUnmatchedItems(ArrayList<Integer> unmatchedItems) {
 
         unmatchedItems.addAll(this.additionalUnmatchedItems);
 
@@ -294,15 +294,6 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public void parseItemPairMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
-        for (Object edge : mcm.getMatching()) {
-            int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
-            int vertexTwo = Integer.parseInt(edge.toString().split(":")[1].replace("v", "").replace(")", "").trim());
-            MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
-            matchedItems.add(e);
-        }
-    }
-
     public ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
         ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
         Collections.reverse(edgesRev);
@@ -343,7 +334,7 @@ public class ThreeCapPermutationHeuristic {
     public ArrayList<ArrayList<MCMEdge>> getInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        this.parseItemPairMCM(itemPairs, mcm);
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         ArrayList<MCMEdge> edgesCopy = new ArrayList<>();
         for (MCMEdge e : itemPairs) {
             edgesCopy.add(new MCMEdge(e));

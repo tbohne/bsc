@@ -26,30 +26,6 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
 
-    public void parseItemPairMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
-        for (Object edge : mcm.getMatching()) {
-            int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
-            int vertexTwo = Integer.parseInt(edge.toString().split(":")[1].replace("v", "").replace(")", "").trim());
-            MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
-            matchedItems.add(e);
-        }
-    }
-
-    public void parseItemTripleMCM(ArrayList<ArrayList<Integer>> currentStackAssignments, EdmondsMaximumCardinalityMatching mcm) {
-        for (Object edge : mcm.getMatching().getEdges()) {
-            String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
-            int first = Integer.parseInt(parsedEdge.split(",")[0].trim());
-            int second = Integer.parseInt(parsedEdge.split(",")[1].trim());
-            int third = Integer.parseInt(parsedEdge.split(",")[2].trim());
-
-            ArrayList<Integer> currAssignment = new ArrayList<>();
-            currAssignment.add(first);
-            currAssignment.add(second);
-            currAssignment.add(third);
-            currentStackAssignments.add(new ArrayList<>(currAssignment));
-        }
-    }
-
     public int getRandomValueInBetween(int low, int high) {
         Random r = new Random();
         return r.nextInt(high - low) + low;
@@ -187,7 +163,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
         this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        this.parseItemPairMCM(itemPairs, mcm);
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         HeuristicUtil.assignColRatingToEdges(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
 
@@ -197,7 +173,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.generateBipartiteGraph(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
         ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
-        this.parseItemTripleMCM(currentStackAssignments, itemTriples);
+        HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
 
         this.stackAssignments.addAll(currentStackAssignments);
 
@@ -205,7 +181,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         unmatchedItems = this.getUnassignedItemsFromStorageAreaSnapshot(currentStackAssignments);
         EdmondsMaximumCardinalityMatching remainingItemPairs = this.getMCMForUnassignedItems(unmatchedItems);
         itemPairs = new ArrayList<>();
-        this.parseItemPairMCM(itemPairs, remainingItemPairs);
+        HeuristicUtil.parseItemPairMCM(itemPairs, remainingItemPairs);
         numberOfEdgesToBeUsed = (int)Math.ceil(itemPairs.size() / 3);
 
         this.recursiveMCMApproach(remainingItemPairs, numberOfEdgesToBeUsed, unmatchedItems);
@@ -345,7 +321,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         ArrayList<Integer> remainingItems = this.getUnassignedItemsFromStorageAreaSnapshot(this.stackAssignments);
         EdmondsMaximumCardinalityMatching mcm = this.getMCMForUnassignedItems(remainingItems);
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        this.parseItemPairMCM(itemPairs, mcm);
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         this.updateRemainingItems(itemPairs, remainingItems);
 
         HeuristicUtil.assignColRatingToEdges(itemPairs, this.instance.getStackingConstraints());

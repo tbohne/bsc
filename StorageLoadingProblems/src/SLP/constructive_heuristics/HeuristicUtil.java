@@ -1,6 +1,7 @@
 package SLP.constructive_heuristics;
 
 import SLP.MCMEdge;
+import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
@@ -97,5 +98,29 @@ public class HeuristicUtil {
             }
         }
         return false;
+    }
+
+    public static void parseItemPairMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
+        for (Object edge : mcm.getMatching()) {
+            int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
+            int vertexTwo = Integer.parseInt(edge.toString().split(":")[1].replace("v", "").replace(")", "").trim());
+            MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
+            matchedItems.add(e);
+        }
+    }
+
+    public static void parseItemTripleMCM(ArrayList<ArrayList<Integer>> currentStackAssignments, EdmondsMaximumCardinalityMatching mcm) {
+        for (Object edge : mcm.getMatching().getEdges()) {
+            String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
+            int first = Integer.parseInt(parsedEdge.split(",")[0].trim());
+            int second = Integer.parseInt(parsedEdge.split(",")[1].trim());
+            int third = Integer.parseInt(parsedEdge.split(",")[2].trim());
+
+            ArrayList<Integer> currAssignment = new ArrayList<>();
+            currAssignment.add(first);
+            currAssignment.add(second);
+            currAssignment.add(third);
+            currentStackAssignments.add(new ArrayList<>(currAssignment));
+        }
     }
 }
