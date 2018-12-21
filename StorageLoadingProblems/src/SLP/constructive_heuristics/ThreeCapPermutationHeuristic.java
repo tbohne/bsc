@@ -30,26 +30,9 @@ public class ThreeCapPermutationHeuristic {
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
 
-    public ArrayList<Integer> getInitiallyUnmatchedItems(ArrayList<MCMEdge> itemPairs) {
-
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (MCMEdge edge : itemPairs) {
-            matchedItems.add(edge.getVertexOne());
-            matchedItems.add(edge.getVertexTwo());
-        }
-
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : this.instance.getItems()) {
-            if (!matchedItems.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
-    }
-
     public ArrayList<List<Integer>> getUnmatchedPermutations(ArrayList<MCMEdge> matchedItems) {
 
-        ArrayList<Integer> initiallyUnmatchedItems = new ArrayList<>(this.getInitiallyUnmatchedItems(matchedItems));
+        ArrayList<Integer> initiallyUnmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
         HashMap<Integer, Integer> unmatchedItemRatings = new HashMap<>();

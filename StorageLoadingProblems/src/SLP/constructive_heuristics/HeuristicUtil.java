@@ -71,4 +71,21 @@ public class HeuristicUtil {
             edge.setRating(rating);
         }
     }
+
+    public static ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs, int[] items) {
+
+        ArrayList<Integer> matchedItems = new ArrayList<>();
+        for (MCMEdge edge : itemPairs) {
+            matchedItems.add(edge.getVertexOne());
+            matchedItems.add(edge.getVertexTwo());
+        }
+
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
+        for (int item : items) {
+            if (!matchedItems.contains(item)) {
+                unmatchedItems.add(item);
+            }
+        }
+        return unmatchedItems;
+    }
 }
