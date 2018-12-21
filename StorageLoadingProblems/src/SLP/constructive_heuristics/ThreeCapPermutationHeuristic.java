@@ -439,8 +439,10 @@ public class ThreeCapPermutationHeuristic {
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
             DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+
             HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+
             sol = permutationApproach(mcm, optimizeSolution);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         } else {

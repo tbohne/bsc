@@ -15,11 +15,13 @@ public class ThreeCapRecursiveMCMHeuristic {
     private ArrayList<ArrayList<Integer>> stackAssignments;
     private int previousNumberOfRemainingItems;
     private double startTime;
+    private ArrayList<ArrayList<MCMEdge>> alreadyUsedEdgeShuffles;
 
     public ThreeCapRecursiveMCMHeuristic(Instance instance) {
         this.instance = instance;
         this.stackAssignments = new ArrayList<>();
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
+        this.alreadyUsedEdgeShuffles = new ArrayList<>();
     }
 
     public void completeStackAssignment(DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemA, int unmatchedItem, int pairItemB, MCMEdge itemPair) {
@@ -148,7 +150,10 @@ public class ThreeCapRecursiveMCMHeuristic {
             ArrayList<ArrayList<Integer>> listsOfRemainingItems
     ) {
 
-        for (int i = 0; i < 10000; i++) {
+        HeuristicUtil.assignColRatingToEdges(edges, this.instance.getStackingConstraints());
+        Collections.sort(edges);
+
+        for (int i = 0; i < 1000; i++) {
             ArrayList<Integer> tmpRemainingItems = new ArrayList<>(remainingItems);
             ArrayList<MCMEdge> tmpItemPairs = new ArrayList<>();
 
@@ -160,8 +165,14 @@ public class ThreeCapRecursiveMCMHeuristic {
                     tmpRemainingItems.add(edges.get(j).getVertexTwo());
                 }
             }
-            // TODO: add check for already used shuffles
-            Collections.shuffle(edges);
+
+            this.alreadyUsedEdgeShuffles.add(new ArrayList<>(edges));
+            int unsuccessfulShuffleAttempts = 0;
+            while (alreadyUsedEdgeShuffles.contains(edges) && unsuccessfulShuffleAttempts < 10) {
+                Collections.shuffle(edges);
+                unsuccessfulShuffleAttempts++;
+            }
+
             itemPairPermutations.add(new ArrayList<>(tmpItemPairs));
             listsOfRemainingItems.add(new ArrayList<>(tmpRemainingItems));
         }
@@ -176,6 +187,9 @@ public class ThreeCapRecursiveMCMHeuristic {
         int numberOfAssignments = 0;
 
         for (MCMEdge e : currentEdges) {
+
+            // TODO: sort items here and prefer the inflexible ones
+
             ArrayList<Integer> currentStack = new ArrayList<>();
             currentStack.add(e.getVertexOne());
             currentStack.add(e.getVertexTwo());
