@@ -22,16 +22,27 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
 
-    public void generateBipartiteGraph(
+    public void completeStackAssignment(DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemA, int unmatchedItem, int pairItemB, MCMEdge itemPair) {
+
+        if (this.instance.getStackingConstraints()[pairItemA][unmatchedItem] == 1
+            || this.instance.getStackingConstraints()[unmatchedItem][pairItemB] == 1) {
+
+            if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+                graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+            }
+        }
+    }
+
+    public void generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
             DefaultUndirectedGraph<String, DefaultEdge> graph,
-            ArrayList<MCMEdge> edges,
+            ArrayList<MCMEdge> itemPairs,
             ArrayList<Integer> unmatchedItems,
             int numberOfUsedItemPairs
     ) {
 
         // adding the specified number of item pairs as nodes to the graph
         for (int i = 0; i < numberOfUsedItemPairs; i++) {
-            graph.addVertex("edge" + edges.get(i));
+            graph.addVertex("edge" + itemPairs.get(i));
         }
 
         // adding all unmatched items as nodes to the graph
@@ -43,23 +54,14 @@ public class ThreeCapRecursiveMCMHeuristic {
             for (int j = 0; j < unmatchedItems.size(); j++) {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
-
-                if (this.instance.getStackingConstraints()[edges.get(i).getVertexOne()][edges.get(i).getVertexTwo()] == 1) {
-                    if (this.instance.getStackingConstraints()[edges.get(i).getVertexTwo()][unmatchedItems.get(j)] == 1
-                            || this.instance.getStackingConstraints()[unmatchedItems.get(j)][edges.get(i).getVertexOne()] == 1) {
-
-                        if (!graph.containsEdge("v" + unmatchedItems.get(j), "edge" + edges.get(i))) {
-                            graph.addEdge("edge" + edges.get(i), "v" + unmatchedItems.get(j));
-                        }
-                    }
+                if (this.instance.getStackingConstraints()[itemPairs.get(i).getVertexOne()][itemPairs.get(i).getVertexTwo()] == 1) {
+                    this.completeStackAssignment(graph, itemPairs.get(i).getVertexTwo(), unmatchedItems.get(j),
+                        itemPairs.get(i).getVertexOne(), itemPairs.get(i)
+                    );
                 } else {
-                    if (this.instance.getStackingConstraints()[edges.get(i).getVertexOne()][unmatchedItems.get(j)] == 1
-                            || this.instance.getStackingConstraints()[unmatchedItems.get(j)][edges.get(i).getVertexTwo()] == 1) {
-
-                        if (!graph.containsEdge("v" + unmatchedItems.get(j), "edge" + edges.get(i))) {
-                            graph.addEdge("edge" + edges.get(i), "v" + unmatchedItems.get(j));
-                        }
-                    }
+                    this.completeStackAssignment(graph, itemPairs.get(i).getVertexOne(), unmatchedItems.get(j),
+                        itemPairs.get(i).getVertexTwo(), itemPairs.get(i)
+                    );
                 }
             }
         }
@@ -117,7 +119,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
         ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(numberOfEdgesToBeUsed, itemPairs, remainingItems);
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateBipartiteGraph(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
+        this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
         ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
         HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
