@@ -25,4 +25,20 @@ public class HeuristicUtil {
             }
         }
     }
+
+    public static int computeRowRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
+        int rating = 0;
+        for (int entry : stackingConstraints[item]) {
+            rating += entry;
+        }
+        return rating;
+    }
+
+    public int computeColRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
+        int rating = 0;
+        for (int i = 0; i < stackingConstraints.length; i++) {
+            rating += stackingConstraints[i][item];
+        }
+        return rating;
+    }
 }

@@ -54,7 +54,7 @@ public class ThreeCapPermutationHeuristic {
 
         HashMap<Integer, Integer> unmatchedItemRatings = new HashMap<>();
         for (int item : initiallyUnmatchedItems) {
-            unmatchedItemRatings.put(item, this.computeRowRatingForUnmatchedItem(item));
+            unmatchedItemRatings.put(item, HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
         }
 
         // ordered by rating - hardest cases first
@@ -120,22 +120,6 @@ public class ThreeCapPermutationHeuristic {
         return false;
     }
 
-    public int computeRowRatingForUnmatchedItem(int item) {
-        int rating = 0;
-        for (int entry : this.instance.getStackingConstraints()[item]) {
-            rating += entry;
-        }
-        return rating;
-    }
-
-    public int computeColRatingForUnmatchedItem(int item) {
-        int rating = 0;
-        for (int i = 0; i < this.instance.getStackingConstraints().length; i++) {
-            rating += this.instance.getStackingConstraints()[i][item];
-        }
-        return rating;
-    }
-
     public void prioritizeInflexibleEdges(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
 
         int cnt = 0;
@@ -144,7 +128,8 @@ public class ThreeCapPermutationHeuristic {
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
-            if (this.computeRowRatingForUnmatchedItem(vertexOne) <= 10 || this.computeRowRatingForUnmatchedItem(vertexTwo) <= 10) {
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(vertexOne, this.instance.getStackingConstraints()) <= 10
+                    || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= 10) {
 
                 prioritizedEdges.add(new MCMEdge(vertexOne, vertexTwo, 0));
 
@@ -194,7 +179,7 @@ public class ThreeCapPermutationHeuristic {
 
     public boolean prioritizeInflexibleItem(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
-            if (this.computeRowRatingForUnmatchedItem(item) <= 10) {
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= 10) {
                 this.unstackableItems.add(item);
                 if (!this.assignItemToFirstPossiblePosition(item)) {
                     return false;
@@ -274,7 +259,7 @@ public class ThreeCapPermutationHeuristic {
         // TODO: Check - could cause problems
         for (int item : unmatchedItems) {
             // If we still have a one here, we have a problem.
-            if (this.computeRowRatingForUnmatchedItem(item) == 1) {
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) == 1) {
                 return false;
             }
         }
