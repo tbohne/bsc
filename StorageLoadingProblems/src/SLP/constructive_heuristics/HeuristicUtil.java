@@ -5,10 +5,7 @@ import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class HeuristicUtil {
 
@@ -135,5 +132,21 @@ public class HeuristicUtil {
     public static int getRandomValueInBetween(int low, int high) {
         Random r = new Random();
         return r.nextInt(high - low) + low;
+    }
+
+    public static void copyStackAssignment(int[][] init, int[][] original, int[][] copy) {
+        for (int i = 0; i < original.length; i++) {
+            for (int j = 0; j < original[0].length; j++) {
+                copy[i][j] = init[i][j];
+            }
+        }
+    }
+
+    public static boolean listContainsDuplicates(List<Integer> items) {
+        Set<Integer> set = new HashSet<>(items);
+        if(set.size() < items.size()){
+            return true;
+        }
+        return false;
     }
 }

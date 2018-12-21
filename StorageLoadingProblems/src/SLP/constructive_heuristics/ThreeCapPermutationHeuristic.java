@@ -17,8 +17,6 @@ public class ThreeCapPermutationHeuristic {
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
     private ArrayList<List<Integer>> alreadyUsedShuffles;
-    private ArrayList<ArrayList<Integer>> stackAssignments;
-    private int previousNumberOfRemainingItems;
     private double startTime;
 
     public ThreeCapPermutationHeuristic(Instance instance) {
@@ -26,8 +24,6 @@ public class ThreeCapPermutationHeuristic {
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
         this.alreadyUsedShuffles = new ArrayList<>();
-        this.stackAssignments = new ArrayList<>();
-        this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
 
     public ArrayList<List<Integer>> getUnmatchedPermutations(ArrayList<MCMEdge> matchedItems) {
@@ -452,5 +448,4 @@ public class ThreeCapPermutationHeuristic {
         }
         return sol;
     }
-
 }
