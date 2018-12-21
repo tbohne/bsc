@@ -345,27 +345,6 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.fillStorageAreaWithGeneratedStackAssignments();
     }
 
-    public Solution capThreeApproach(boolean optimizeSolution) {
-
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-
-        ArrayList<Integer> items = new ArrayList<>();
-        for (int item : this.instance.getItems()) {
-            items.add(item);
-        }
-        this.recursiveMCMApproach(mcm, this.instance.getStacks().length, items);
-        this.completeStackAssignmentsForRecursiveApproach();
-
-        Solution sol = new Solution(0, false, this.instance);
-        sol.transformStackAssignmentIntoValidSolutionIfPossible();
-        System.out.println("sol feasible: " + sol.isFeasible());
-        System.out.println(sol.getNumberOfAssignedItems());
-
-        return sol;
-    }
-
     /**
      *
      * @param optimizeSolution - specifies whether the solution should be optimized or just valid
@@ -376,10 +355,30 @@ public class ThreeCapRecursiveMCMHeuristic {
         Solution sol = new Solution();
 
         if (this.instance.getStackCapacity() == 3) {
+
             this.startTime = System.currentTimeMillis();
-            sol = this.capThreeApproach(optimizeSolution);
+
+            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+            HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+
+            ArrayList<Integer> items = new ArrayList<>();
+            for (int item : this.instance.getItems()) {
+                items.add(item);
+            }
+            this.recursiveMCMApproach(mcm, this.instance.getStacks().length, items);
+            this.completeStackAssignmentsForRecursiveApproach();
+
+            sol = new Solution(0, false, this.instance);
+            sol.transformStackAssignmentIntoValidSolutionIfPossible();
+            System.out.println("sol feasible: " + sol.isFeasible());
+            System.out.println(sol.getNumberOfAssignedItems());
+
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
+        } else {
+            System.out.println("This heuristic is designed to solve SLP with a stack capacity of 3.");
         }
+
         return sol;
     }
 }
