@@ -79,7 +79,7 @@ public class ThreeCapPermutationHeuristic {
                 Collections.shuffle(initiallyUnmatchedItems);
 
                 int unsuccessfulShuffleAttempts = 0;
-                while (isPartOfAlreadyUsedShuffles(initiallyUnmatchedItems)) {
+                while (HeuristicUtil.isAlreadyUsedShuffle(initiallyUnmatchedItems, this.alreadyUsedShuffles)) {
                     System.out.println("already");
                     Collections.shuffle(initiallyUnmatchedItems);
                     if (unsuccessfulShuffleAttempts == 10) {
@@ -92,15 +92,6 @@ public class ThreeCapPermutationHeuristic {
         }
 
         return unmatchedItemPermutations;
-    }
-
-    public boolean isPartOfAlreadyUsedShuffles(ArrayList<Integer> currentShuffle) {
-        for (List<Integer> shuffle : this.alreadyUsedShuffles) {
-            if (shuffle.equals(currentShuffle)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void prioritizeInflexibleEdges(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {

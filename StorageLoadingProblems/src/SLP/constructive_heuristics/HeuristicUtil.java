@@ -5,6 +5,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HeuristicUtil {
 
@@ -87,5 +88,14 @@ public class HeuristicUtil {
             }
         }
         return unmatchedItems;
+    }
+
+    public static boolean isAlreadyUsedShuffle(ArrayList<Integer> currentShuffle, List<List<Integer>> alreadyUsedShuffles) {
+        for (List<Integer> shuffle : alreadyUsedShuffles) {
+            if (shuffle.equals(currentShuffle)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

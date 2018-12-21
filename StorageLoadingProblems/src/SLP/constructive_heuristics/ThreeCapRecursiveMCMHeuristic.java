@@ -14,7 +14,6 @@ public class ThreeCapRecursiveMCMHeuristic {
     private Instance instance;
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
-    private ArrayList<List<Integer>> alreadyUsedShuffles;
     private ArrayList<ArrayList<Integer>> stackAssignments;
     private int previousNumberOfRemainingItems;
     private double startTime;
@@ -23,7 +22,6 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.instance = instance;
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
-        this.alreadyUsedShuffles = new ArrayList<>();
         this.stackAssignments = new ArrayList<>();
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
     }
