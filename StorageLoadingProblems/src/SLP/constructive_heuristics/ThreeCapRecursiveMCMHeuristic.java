@@ -12,46 +12,14 @@ import java.util.*;
 public class ThreeCapRecursiveMCMHeuristic {
 
     private Instance instance;
-    private ArrayList<Integer> unstackableItems;
-    private ArrayList<Integer> additionalUnmatchedItems;
     private ArrayList<ArrayList<Integer>> stackAssignments;
     private int previousNumberOfRemainingItems;
     private double startTime;
 
     public ThreeCapRecursiveMCMHeuristic(Instance instance) {
         this.instance = instance;
-        this.unstackableItems = new ArrayList<>();
-        this.additionalUnmatchedItems = new ArrayList<>();
         this.stackAssignments = new ArrayList<>();
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
-    }
-
-    public int getRandomValueInBetween(int low, int high) {
-        Random r = new Random();
-        return r.nextInt(high - low) + low;
-    }
-
-    public ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
-        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
-        Collections.reverse(edgesRev);
-        return edgesRev;
-    }
-
-
-    public void copyStackAssignment(int[][] init, int[][] copy) {
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 0; j < this.instance.getStacks()[0].length; j++) {
-                copy[i][j] = init[i][j];
-            }
-        }
-    }
-
-    public boolean listContainsDuplicates(List<Integer> items) {
-        Set<Integer> set = new HashSet<>(items);
-        if(set.size() < items.size()){
-            return true;
-        }
-        return false;
     }
 
     public EdmondsMaximumCardinalityMatching<String, DefaultEdge> getMCMForUnassignedItems(ArrayList<Integer> unassignedItems) {
