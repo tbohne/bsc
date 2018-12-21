@@ -12,8 +12,10 @@ public class SolutionWriter {
                 return "BinPacking Formulation";
             case MIP_THREEINDEX:
                 return "ThreeIndex Formulation";
-            case CONSTRUCTIVE_HEURISTIC:
-                return "Constructive Heuristic";
+            case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
+                return "Constructive Permutation Heuristic (3cap)";
+            case CONSTRUCTIVE_THREE_CAP_RECURSION:
+                return "Constructive Recursion Heuristic (3cap)";
             default:
                 return "";
         }
@@ -25,8 +27,10 @@ public class SolutionWriter {
                 return "BinP";
             case MIP_THREEINDEX:
                 return "3Idx";
-            case CONSTRUCTIVE_HEURISTIC:
-                return "ConstHeu";
+            case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
+                return "3CapPerm";
+            case CONSTRUCTIVE_THREE_CAP_RECURSION:
+                return "3CapRec";
             default:
                 return "";
         }
@@ -52,7 +56,7 @@ public class SolutionWriter {
             }
 
             String mip = getNameOfMipFormulationCSV(solver);
-            if (!sol.isEmpty()) {
+            if (sol.isFeasible()) {
                 bw.write(sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "") + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n");
             }
             bw.close();
