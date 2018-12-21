@@ -69,7 +69,8 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     public ArrayList<Integer> getCurrentListOfUnmatchedItems(int length, ArrayList<MCMEdge> edges, ArrayList<Integer> unassignedItems) {
 
-        // TODO: sort edges here
+        HeuristicUtil.assignColRatingToEdges(edges, this.instance.getStackingConstraints());
+        Collections.sort(edges);
 
         ArrayList<Integer> matchedItemsOfChoice = new ArrayList<>();
         for (int i = 0; i < length; i++) {
