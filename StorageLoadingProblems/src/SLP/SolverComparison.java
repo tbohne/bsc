@@ -1,6 +1,7 @@
 package SLP;
 
-import SLP.constructive_heuristics.InitialHeuristicSLPSolver;
+import SLP.constructive_heuristics.ThreeCapPermutationHeuristic;
+import SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic;
 import SLP.mip_formulations.BinPackingFormulation;
 import SLP.mip_formulations.ThreeIndexFormulation;
 
@@ -11,7 +12,8 @@ public class SolverComparison {
     public enum Solver {
         MIP_BINPACKING,
         MIP_THREEINDEX,
-        CONSTRUCTIVE_HEURISTIC
+        CONSTRUCTIVE_THREE_CAP_PERMUTATION,
+        CONSTRUCTIVE_THREE_CAP_RECURSION
     }
 
     public static final String INSTANCE_PREFIX = "res/instances/";
@@ -66,10 +68,18 @@ public class SolverComparison {
                     instance.resetStacks();
 
                     // TODO: add time limit
-                    InitialHeuristicSLPSolver initialHeuristicSLPSolver = new InitialHeuristicSLPSolver(instance);
-                    sol = initialHeuristicSLPSolver.solve(false);
-                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_HEURISTIC);
-                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_HEURISTIC);
+                    
+                    ThreeCapPermutationHeuristic permMCMSolver = new ThreeCapPermutationHeuristic(instance);
+                    sol = permMCMSolver.solve(false);
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP_PERMUTATION);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP_PERMUTATION);
+
+                    instance.resetStacks();
+
+                    ThreeCapRecursiveMCMHeuristic recMCMSolver = new ThreeCapRecursiveMCMHeuristic(instance);
+                    sol = recMCMSolver.solve(false);
+                    SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP_RECURSION);
+                    SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP_RECURSION);
                 }
             }
         }
