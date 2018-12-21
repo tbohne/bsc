@@ -1,7 +1,10 @@
 package SLP.constructive_heuristics;
 
+import SLP.MCMEdge;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
+
+import java.util.ArrayList;
 
 public class HeuristicUtil {
 
@@ -40,5 +43,32 @@ public class HeuristicUtil {
             rating += stackingConstraints[i][item];
         }
         return rating;
+    }
+
+    public static void assignRowRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            int rating = 0;
+
+            for (int entry : stackingConstraints[edge.getVertexOne()]) {
+                rating += entry;
+            }
+            for (int entry : stackingConstraints[edge.getVertexTwo()]) {
+                rating += entry;
+            }
+            edge.setRating(rating);
+        }
+    }
+
+    public static void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            int rating = 0;
+
+            // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
+            // A high rating means that many items can be placed on top of the initial assignment.
+            for (int i = 0; i < stackingConstraints.length; i++) {
+                rating += (stackingConstraints[i][edge.getVertexOne()] + stackingConstraints[i][edge.getVertexTwo()]);
+            }
+            edge.setRating(rating);
+        }
     }
 }

@@ -180,19 +180,6 @@ public class ThreeCapRecursiveMCMHeuristic {
         return unassignedItems;
     }
 
-    public void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems) {
-        for (MCMEdge edge : matchedItems) {
-            int rating = 0;
-
-            // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
-            // A high rating means that many items can be placed on top of the initial assignment.
-            for (int i = 0; i < this.instance.getStackingConstraints().length; i++) {
-                rating += (this.instance.getStackingConstraints()[i][edge.getVertexOne()] + this.instance.getStackingConstraints()[i][edge.getVertexTwo()]);
-            }
-            edge.setRating(rating);
-        }
-    }
-
     public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm, int numberOfEdgesToBeUsed, ArrayList<Integer> remainingItems) {
 
 //        System.out.println("remaining items: " + remainingItems.size());
@@ -203,7 +190,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         this.parseItemPairMCM(itemPairs, mcm);
-        this.assignColRatingToEdges(itemPairs);
+        HeuristicUtil.assignColRatingToEdges(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
 
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
@@ -363,7 +350,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.parseItemPairMCM(itemPairs, mcm);
         this.updateRemainingItems(itemPairs, remainingItems);
 
-        this.assignColRatingToEdges(itemPairs);
+        HeuristicUtil.assignColRatingToEdges(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         // TODO: search for reasonable way to compute the number of used item pairs
         int numberOfUsedItemPairs = itemPairs.size() - (int)Math.ceil(itemPairs.size() / 2) + 10;

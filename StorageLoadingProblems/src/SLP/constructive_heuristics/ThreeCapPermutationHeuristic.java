@@ -320,33 +320,6 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public void assignRowRatingToEdges(ArrayList<MCMEdge> matchedItems) {
-        for (MCMEdge edge : matchedItems) {
-            int rating = 0;
-
-            for (int entry : this.instance.getStackingConstraints()[edge.getVertexOne()]) {
-                rating += entry;
-            }
-            for (int entry : this.instance.getStackingConstraints()[edge.getVertexTwo()]) {
-                rating += entry;
-            }
-            edge.setRating(rating);
-        }
-    }
-
-    public void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems) {
-        for (MCMEdge edge : matchedItems) {
-            int rating = 0;
-
-            // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
-            // A high rating means that many items can be placed on top of the initial assignment.
-            for (int i = 0; i < this.instance.getStackingConstraints().length; i++) {
-                rating += (this.instance.getStackingConstraints()[i][edge.getVertexOne()] + this.instance.getStackingConstraints()[i][edge.getVertexTwo()]);
-            }
-            edge.setRating(rating);
-        }
-    }
-
     public void parseItemPairMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
         for (Object edge : mcm.getMatching()) {
             int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
@@ -402,8 +375,8 @@ public class ThreeCapPermutationHeuristic {
             edgesCopy.add(new MCMEdge(e));
         }
 
-        this.assignRowRatingToEdges(itemPairs);
-        this.assignColRatingToEdges(edgesCopy);
+        HeuristicUtil.assignRowRatingToEdges(itemPairs, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdges(edgesCopy, this.instance.getStackingConstraints());
         // The edges get sorted based on their ratings.
         Collections.sort(itemPairs);
         Collections.sort(edgesCopy);
