@@ -6,7 +6,9 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class HeuristicUtil {
 
@@ -122,5 +124,16 @@ public class HeuristicUtil {
             currAssignment.add(third);
             currentStackAssignments.add(new ArrayList<>(currAssignment));
         }
+    }
+
+    public static ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
+        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
+        Collections.reverse(edgesRev);
+        return edgesRev;
+    }
+
+    public static int getRandomValueInBetween(int low, int high) {
+        Random r = new Random();
+        return r.nextInt(high - low) + low;
     }
 }

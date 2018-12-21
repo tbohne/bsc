@@ -294,17 +294,6 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
-        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
-        Collections.reverse(edgesRev);
-        return edgesRev;
-    }
-
-    public int getRandomValueInBetween(int low, int high) {
-        Random r = new Random();
-        return r.nextInt(high - low) + low;
-    }
-
     // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
     // IDEA:
     // - choose a number n (20%) of random elements to be replaced
@@ -322,7 +311,7 @@ public class ThreeCapPermutationHeuristic {
         ArrayList<Integer> toBeReplaced = new ArrayList<>();
 
         for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(this.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
+            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
         }
         for (int i = 0; i < toBeReplaced.size(); i++) {
             Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
@@ -351,8 +340,8 @@ public class ThreeCapPermutationHeuristic {
         // which should be the most promising stack assignment.
         edgePermutations.add(new ArrayList(itemPairs));
         edgePermutations.add(new ArrayList(edgesCopy));
-        edgePermutations.add(this.getReversedCopyOfEdgeList(itemPairs));
-        edgePermutations.add(this.getReversedCopyOfEdgeList(edgesCopy));
+        edgePermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
+        edgePermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(edgesCopy));
 
         // TODO: Remove hard coded values
         for (int cnt = 0; cnt < 5000; cnt++) {
