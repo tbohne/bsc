@@ -68,14 +68,17 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     public ArrayList<Integer> getCurrentListOfUnmatchedItems(int length, ArrayList<MCMEdge> edges, ArrayList<Integer> unassignedItems) {
-        ArrayList<Integer> MCMItems = new ArrayList<>();
+
+        // TODO: sort edges here
+
+        ArrayList<Integer> matchedItemsOfChoice = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            MCMItems.add(edges.get(i).getVertexOne());
-            MCMItems.add(edges.get(i).getVertexTwo());
+            matchedItemsOfChoice.add(edges.get(i).getVertexOne());
+            matchedItemsOfChoice.add(edges.get(i).getVertexTwo());
         }
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
         for (int item : unassignedItems) {
-            if (!MCMItems.contains(item)) {
+            if (!matchedItemsOfChoice.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
@@ -105,11 +108,11 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm, int numberOfEdgesToBeUsed, ArrayList<Integer> remainingItems) {
 
-//        System.out.println("remaining items: " + remainingItems.size());
-
+        // base case
         if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
             if (this.previousNumberOfRemainingItems != this.instance.getItems().length) { return; }
         }
+
         this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
@@ -179,7 +182,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             for (int item : currentRemainingItems) {
                 if (this.instance.getStackingConstraints()[e.getVertexOne()][e.getVertexTwo()] == 1) {
                     if (this.instance.getStackingConstraints()[e.getVertexTwo()][item] == 1
-                            || this.instance.getStackingConstraints()[item][e.getVertexOne()] == 1)
+                        || this.instance.getStackingConstraints()[item][e.getVertexOne()] == 1)
                     {
                         numberOfAssignments++;
                         currentStack.add(item);
@@ -188,7 +191,7 @@ public class ThreeCapRecursiveMCMHeuristic {
                     }
                 } else {
                     if (this.instance.getStackingConstraints()[e.getVertexOne()][item] == 1
-                            || this.instance.getStackingConstraints()[item][e.getVertexTwo()] == 1)
+                        || this.instance.getStackingConstraints()[item][e.getVertexTwo()] == 1)
                     {
                         numberOfAssignments++;
                         currentStack.add(item);
@@ -214,7 +217,6 @@ public class ThreeCapRecursiveMCMHeuristic {
         for (ArrayList<MCMEdge> currentEdges : edgePermutations) {
             ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
             ArrayList<Integer> currentRemainingItems = new ArrayList<>(listsOfRemainingItems.get(edgePermutations.indexOf(currentEdges)));
-
             int numberOfAssignments = this.generateCurrentStackAssignments(currentEdges, currentRemainingItems, currentStackAssignments);
 
             if (numberOfAssignments > maxNumberOfAssignments) {
@@ -281,7 +283,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
         this.generateItemPairPermutationsAndCorrespondingListsOfRemainingItems(
-                itemPairs, numberOfUsedItemPairs, remainingItems, itemPairPermutations, listsOfRemainingItems
+            itemPairs, numberOfUsedItemPairs, remainingItems, itemPairPermutations, listsOfRemainingItems
         );
 
         ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
