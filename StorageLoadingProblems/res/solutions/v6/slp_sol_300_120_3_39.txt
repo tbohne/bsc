@@ -1,5 +1,5 @@
 solved with: BinPacking Formulation
-time to solve: 300.69 s (time limit exceeded)
+time to solve: 300.66 s (time limit exceeded)
 objective value: 12.0 (not optimal)
 
 stacks (top to bottom):
@@ -127,7 +127,7 @@ stack 119:    147 251 37
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 300.72 s (time limit exceeded)
+time to solve: 300.81 s (time limit exceeded)
 objective value: 396.0 (not optimal)
 
 stacks (top to bottom):
@@ -254,5 +254,10 @@ stack 119:    274 18 74
 
 #####################################################
 
-solved with: Constructive Heuristic
+solved with: Constructive Permutation Heuristic (3cap)
+Problem not solved.
+
+#####################################################
+
+solved with: Constructive Recursion Heuristic (3cap)
 Problem not solved.

@@ -1,5 +1,5 @@
 solved with: BinPacking Formulation
-time to solve: 300.52 s (time limit exceeded)
+time to solve: 300.42 s (time limit exceeded)
 objective value: 209.0 (not optimal)
 
 stacks (top to bottom):
@@ -127,8 +127,8 @@ stack 119:    85
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 300.38 s (time limit exceeded)
-objective value: 526.0 (not optimal)
+time to solve: 300.34 s (time limit exceeded)
+objective value: 537.0 (not optimal)
 
 stacks (top to bottom):
 stack   0:    268 277 265 
@@ -153,7 +153,7 @@ stack  18:    213 181 44
 stack  19:    175 204 77 
 stack  20:    252 
 stack  21:    123 20 234 
-stack  22:    94 122 293 
+stack  22:    94 188 293 
 stack  23:    139 168 6 
 stack  24:    3 245 136 
 stack  25:    160 
@@ -165,11 +165,11 @@ stack  30:    85
 stack  31:    251 208 
 stack  32:    64 222 49 
 stack  33:    226 191 297 
-stack  34:    200 188 9 
+stack  34:    200 106 9 
 stack  35:    25 281 19 
 stack  36:    128 266 66 
 stack  37:    47 
-stack  38:    96 67 106 
+stack  38:    96 67 125 
 stack  39:    184 
 stack  40:    135 150 291 
 stack  41:    229 280 147 
@@ -205,7 +205,7 @@ stack  70:    13
 stack  71:    7 196 162 
 stack  72:    104 22 59 
 stack  73:    183 88 153 
-stack  74:    289 152 125 
+stack  74:    289 152 122 
 stack  75:    253 32 
 stack  76:    276 
 stack  77:    270 154 219 
@@ -254,5 +254,10 @@ stack 119:    71 130 246
 
 #####################################################
 
-solved with: Constructive Heuristic
+solved with: Constructive Permutation Heuristic (3cap)
+Problem not solved.
+
+#####################################################
+
+solved with: Constructive Recursion Heuristic (3cap)
 Problem not solved.

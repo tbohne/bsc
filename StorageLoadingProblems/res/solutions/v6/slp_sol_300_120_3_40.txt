@@ -127,7 +127,7 @@ stack 119:    219 276 84
 #####################################################
 
 solved with: ThreeIndex Formulation
-time to solve: 300.71 s (time limit exceeded)
+time to solve: 300.69 s (time limit exceeded)
 objective value: 1261.0 (not optimal)
 
 stacks (top to bottom):
@@ -254,5 +254,10 @@ stack 119:    216 251 111
 
 #####################################################
 
-solved with: Constructive Heuristic
+solved with: Constructive Permutation Heuristic (3cap)
+Problem not solved.
+
+#####################################################
+
+solved with: Constructive Recursion Heuristic (3cap)
 Problem not solved.
