@@ -1,8 +1,8 @@
 library(ggplot2)
 
-Input <- read.csv(file="../../../res/solutions/solutions.csv", header = TRUE, sep=",")
+Input <- read.csv(file="../../../res/solutions/v6/solutions.csv", header = TRUE, sep=",")
 
-MipEntries <- subset(Input, solver=="BinP" | solver=="3Idx" | solver=="ConstHeu")
+MipEntries <- subset(Input, solver=="BinP" | solver=="3Idx" | solver=="3CapRec" | solver=="3CapPerm")
 
 plotPointsPre <- ggplot(data = MipEntries, aes(x=time, y=instance, color=solver, group=solver, xlab="time (s)", ylab="instance")) + geom_point()
 
