@@ -1,7 +1,7 @@
 library(ggplot2)
 library(plyr)
 
-input <- read.csv(file="../../../res/solutions/v6/solutions.csv", header = TRUE, sep=",")
+input <- read.csv(file="../../../res/solutions/solutions.csv", header = TRUE, sep=",")
 
 # gg <- ggplot(data=input, aes(y=0, yend=100))
 # gg <- gg + geom_segment(aes(x=solver, xend=0, color="3Idx"), size=9)
@@ -11,10 +11,11 @@ input <- read.csv(file="../../../res/solutions/v6/solutions.csv", header = TRUE,
 PERCENTAGE <- c(
     count(input, vars = "solver")[1, "freq"],
     count(input, vars = "solver")[2, "freq"],
-    count(input, vars = "solver")[3, "freq"]
+    count(input, vars = "solver")[3, "freq"],
+    count(input, vars = "solver")[4, "freq"]
 )
 
-SOLVER <- c("BinP","3Idx","ConstHeu")
+SOLVER <- c("3CapPerm","3CapRec","3Idx","BinP")
 
 png(file = "test.png")
 

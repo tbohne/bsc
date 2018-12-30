@@ -68,7 +68,7 @@ public class SolverComparison {
                     instance.resetStacks();
 
                     // TODO: add time limit
-                    
+
                     ThreeCapPermutationHeuristic permMCMSolver = new ThreeCapPermutationHeuristic(instance);
                     sol = permMCMSolver.solve(false);
                     SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP_PERMUTATION);
