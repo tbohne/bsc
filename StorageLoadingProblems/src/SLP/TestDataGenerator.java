@@ -15,7 +15,7 @@ public class TestDataGenerator {
     // this number specifies the percentage by which the initial m gets increased.
     public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0035F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.15F;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 1;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
@@ -57,7 +57,7 @@ public class TestDataGenerator {
             Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, stackingConstraintMatrix, stackConstraintMatrix, costs, instanceName);
             InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
             InstanceWriter.writeConfig(
-                    INSTANCE_PREFIX + "config.txt",
+                    INSTANCE_PREFIX + "instance_set_config.csv",
                     NUMBER_OF_INSTANCES,
                     NUMBER_OF_ITEMS,
                     STACK_CAPACITY,
