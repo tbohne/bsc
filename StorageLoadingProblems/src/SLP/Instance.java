@@ -6,6 +6,7 @@ public class Instance {
     private int[][] stacks;
 
     private int[][] stackingConstraints;
+    private int[][] stackConstraints;
     private int[][] costs;
     private int stackCapacity;
 
@@ -16,6 +17,7 @@ public class Instance {
             int numberOfStacks,
             int stackCapacity,
             int[][] stackingConstraints,
+            int[][] stackConstraints,
             int[][] costs,
             String name
     ) {
@@ -35,6 +37,7 @@ public class Instance {
 
         this.stackCapacity = stackCapacity;
         this.stackingConstraints = stackingConstraints;
+        this.stackConstraints = stackConstraints;
         this.costs = costs;
         this.name = name;
     }
@@ -53,6 +56,11 @@ public class Instance {
         this.stackingConstraints = new int[instance.getStackingConstraints().length][];
         for (int i = 0; i < instance.getStackingConstraints().length; i++) {
             this.stackingConstraints[i] = instance.getStackingConstraints()[i].clone();
+        }
+
+        this.stackConstraints = new int[instance.getStackConstraints().length][];
+        for (int i = 0; i < instance.getStackConstraints().length; i++) {
+            this.stackConstraints[i] = instance.getStackConstraints()[i].clone();
         }
 
         this.costs = new int[instance.getCosts().length][];
@@ -85,6 +93,10 @@ public class Instance {
         return this.stackingConstraints;
     }
 
+    public int[][] getStackConstraints() {
+        return this.stackConstraints;
+    }
+
     public int[][] getCosts() {
         return this.costs;
     }
@@ -115,6 +127,15 @@ public class Instance {
             }
             str += "\n";
         }
+
+        str += "stack constraints:\n";
+        for (int i = 0; i < this.getItems().length; i++) {
+            for (int j = 0; j < this.getStacks().length; j++) {
+                str += this.getStackConstraints()[i][j] + " ";
+            }
+            str += "\n";
+        }
+        
         str += "\nstacking costs:\n";
 
         for (int i = 0; i < this.getItems().length; i++) {
