@@ -7,8 +7,8 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int NUMBER_OF_INSTANCES = 50;
-    public static final int NUMBER_OF_ITEMS = 500;
+    public static final int NUMBER_OF_INSTANCES = 10;
+    public static final int NUMBER_OF_ITEMS = 10;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -31,7 +31,7 @@ public class TestDataGenerator {
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
 
-            int[][] matrix = TestDataGenerator.generateStackingConstraintMatrix(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
+            int[][] stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrix(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
 
             int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
@@ -41,9 +41,20 @@ public class TestDataGenerator {
                 }
             }
 
+            int[][] stackConstraintMatrix = new int[NUMBER_OF_ITEMS][numOfStacks];
+            for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+                for (int j = 0; j < numOfStacks; j++) {
+                    if(Math.random() < 0.75) {
+                        stackConstraintMatrix[i][j] = 1;
+                    } else {
+                        stackConstraintMatrix[i][j] = 0;
+                    }
+                }
+            }
+
             String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idx;
 
-            Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, matrix, costs, instanceName);
+            Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, stackingConstraintMatrix, stackConstraintMatrix, costs, instanceName);
             InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
             InstanceWriter.writeConfig(
                     INSTANCE_PREFIX + "config.txt",
