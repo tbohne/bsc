@@ -16,12 +16,14 @@ public class ThreeCapRecursiveMCMHeuristic {
     private int previousNumberOfRemainingItems;
     private double startTime;
     private ArrayList<ArrayList<MCMEdge>> alreadyUsedEdgeShuffles;
+    private boolean firstRecursiveStep;
 
     public ThreeCapRecursiveMCMHeuristic(Instance instance) {
         this.instance = instance;
         this.stackAssignments = new ArrayList<>();
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
         this.alreadyUsedEdgeShuffles = new ArrayList<>();
+        this.firstRecursiveStep = true;
     }
 
     public void completeStackAssignment(DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemA, int unmatchedItem, int pairItemB, MCMEdge itemPair) {
@@ -41,6 +43,10 @@ public class ThreeCapRecursiveMCMHeuristic {
             ArrayList<Integer> unmatchedItems,
             int numberOfUsedItemPairs
     ) {
+
+        if (numberOfUsedItemPairs > itemPairs.size()) {
+            numberOfUsedItemPairs = itemPairs.size();
+        }
 
         // adding the specified number of item pairs as nodes to the graph
         for (int i = 0; i < numberOfUsedItemPairs; i++) {
@@ -73,6 +79,10 @@ public class ThreeCapRecursiveMCMHeuristic {
 
         HeuristicUtil.assignColRatingToEdges(edges, this.instance.getStackingConstraints());
         Collections.sort(edges);
+
+        if (length > edges.size()) {
+            length = edges.size();
+        }
 
         ArrayList<Integer> matchedItemsOfChoice = new ArrayList<>();
         for (int i = 0; i < length; i++) {
@@ -113,8 +123,10 @@ public class ThreeCapRecursiveMCMHeuristic {
 
         // base case
         if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
-            if (this.previousNumberOfRemainingItems != this.instance.getItems().length) { return; }
+            if (!this.firstRecursiveStep) { return; }
         }
+
+        this.firstRecursiveStep = false;
 
         this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
@@ -332,6 +344,8 @@ public class ThreeCapRecursiveMCMHeuristic {
             for (int item : this.instance.getItems()) {
                 items.add(item);
             }
+
+            this.firstRecursiveStep = true;
             this.recursiveMCMApproach(mcm, this.instance.getStacks().length, items);
             this.completeStackAssignmentsForRecursiveApproach();
 

@@ -95,6 +95,9 @@ public class ThreeCapPermutationHeuristic {
         int cnt = 0;
 
         for (MCMEdge edge : matchedItems) {
+
+            if (cnt >= this.instance.getStacks().length) { break; }
+
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
