@@ -55,6 +55,7 @@ public class InstanceWriter {
             int stackCap,
             int additionalStackPercentage,
             float chanceForOneInStackingConstraints,
+            float chanceForOneInStackConstraints,
             int costsInclusiveLowerBound,
             int costsExclusiveUpperBound
     ) {
@@ -66,9 +67,9 @@ public class InstanceWriter {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
             bw.write("numOfInstances,numOfItems,stackCapacity,additionalStackPercentage,chanceForOneInStackingConstraints,"
-                    + "costsInclusiveLB,costsExclusiveUB\n");
+                    + "chanceForOneInStackConstraints,costsInclusiveLB,costsExclusiveUB\n");
             bw.write(numOfInstances + "," + numOfItems + "," + stackCap + "," + additionalStackPercentage + ","
-                + chanceForOneInStackingConstraints + "," + costsInclusiveLowerBound + "," + costsExclusiveUpperBound);
+                + chanceForOneInStackingConstraints + "," + chanceForOneInStackConstraints + "," + costsInclusiveLowerBound + "," + costsExclusiveUpperBound);
 
             bw.close();
 

@@ -8,14 +8,15 @@ public class TestDataGenerator {
 
     /*************************** CONFIGURATION *********************************/
     public static final int NUMBER_OF_INSTANCES = 10;
-    public static final int NUMBER_OF_ITEMS = 10;
+    public static final int NUMBER_OF_ITEMS = 300;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.
-    public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
+    public static final int ADDITIONAL_STACK_PERCENTAGE = 25;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.15F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0052F;
+    public static final float CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS = 0.80F;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 1;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
@@ -44,7 +45,7 @@ public class TestDataGenerator {
             int[][] stackConstraintMatrix = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
                 for (int j = 0; j < numOfStacks; j++) {
-                    if(Math.random() < 0.75) {
+                    if (Math.random() < CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS) {
                         stackConstraintMatrix[i][j] = 1;
                     } else {
                         stackConstraintMatrix[i][j] = 0;
@@ -63,6 +64,7 @@ public class TestDataGenerator {
                     STACK_CAPACITY,
                     ADDITIONAL_STACK_PERCENTAGE,
                     CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
+                    CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS,
                     COSTS_INCLUSIVE_LOWER_BOUND,
                     COSTS_EXCLUSIVE_UPPER_BOUND
             );
