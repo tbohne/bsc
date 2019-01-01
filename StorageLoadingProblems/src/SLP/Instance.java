@@ -131,8 +131,9 @@ public class Instance {
         str += "\n";
 
         str += "stack constraints:\n";
-        for (int i = 0; i < this.getItems().length; i++) {
-            for (int j = 0; j < this.getStacks().length; j++) {
+
+        for (int i = 0; i < this.getStackConstraints().length; i++) {
+            for (int j = 0; j < this.getStackConstraints()[i].length; j++) {
                 str += this.getStackConstraints()[i][j] + " ";
             }
             str += "\n";
@@ -140,8 +141,8 @@ public class Instance {
 
         str += "\nstacking costs:\n";
 
-        for (int i = 0; i < this.getItems().length; i++) {
-            for (int j = 0; j < this.getStacks().length; j++) {
+        for (int i = 0; i < this.getCosts().length; i++) {
+            for (int j = 0; j < this.getCosts()[i].length; j++) {
                 str += this.getCosts()[i][j] + " ";
             }
             str += "\n";

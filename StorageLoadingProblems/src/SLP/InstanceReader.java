@@ -45,6 +45,7 @@ public class InstanceReader {
         int[][] costs = new int [numberOfItems][];
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+
             numberOfItems = Integer.parseInt(reader.readLine().trim());
             numberOfStacks = Integer.parseInt(reader.readLine().trim());
             stackCapacity = Integer.parseInt(reader.readLine().trim());
@@ -53,10 +54,7 @@ public class InstanceReader {
                 stackingConstraints = readMatrix(reader, numberOfItems);
             }
 
-            if (reader.readLine().trim().equals("")) {
-                stackConstraints = readMatrix(reader, numberOfItems);
-            }
-
+            stackConstraints = readMatrix(reader, numberOfItems);
             costs = readMatrix(reader, numberOfItems);
 
         } catch (IOException e) {
