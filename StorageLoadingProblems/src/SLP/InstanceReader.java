@@ -41,6 +41,7 @@ public class InstanceReader {
         int numberOfStacks = 0;
         int stackCapacity = 0;
         int[][] stackingConstraints = new int[numberOfItems][];
+        int[][] stackConstraints = new int[numberOfItems][];
         int[][] costs = new int [numberOfItems][];
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -52,6 +53,10 @@ public class InstanceReader {
                 stackingConstraints = readMatrix(reader, numberOfItems);
             }
 
+            if (reader.readLine().trim().equals("")) {
+                stackConstraints = readMatrix(reader, numberOfItems);
+            }
+
             costs = readMatrix(reader, numberOfItems);
 
         } catch (IOException e) {
@@ -59,6 +64,6 @@ public class InstanceReader {
         }
 
         String instancename = filename.replace("res/", "").replace(".txt", "");
-        return new Instance(numberOfItems, numberOfStacks, stackCapacity, stackingConstraints, costs, instancename);
+        return new Instance(numberOfItems, numberOfStacks, stackCapacity, stackingConstraints, stackConstraints, costs, instancename);
     }
 }

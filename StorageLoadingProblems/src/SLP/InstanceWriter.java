@@ -24,6 +24,14 @@ public class InstanceWriter {
             }
             bw.newLine();
 
+            for (int i = 0; i < instance.getStackConstraints().length; i++) {
+                for (int j = 0; j < instance.getStackConstraints()[0].length; j++) {
+                    bw.write(instance.getStackConstraints()[i][j] + " ");
+                }
+                bw.newLine();
+            }
+            bw.newLine();
+
             for (int i = 0; i < instance.getCosts().length; i++) {
                 for (int j = 0; j < instance.getCosts()[0].length; j++) {
                     bw.write(instance.getCosts()[i][j] + " ");
