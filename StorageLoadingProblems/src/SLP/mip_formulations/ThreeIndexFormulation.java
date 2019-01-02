@@ -62,9 +62,13 @@ public class ThreeIndexFormulation {
             for (int i = 0; i < this.instance.getItems().length; i++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
                 for (int q = 0; q < this.instance.getStacks().length; q++) {
-                    for (int l = 0; l < this.instance.getStackCapacity(); l++) {
-                        expr.addTerm(1, x[i][q][l]);
+                    // only if i can be stacked into q
+                    if (this.instance.getStackConstraints()[i][q] == 1) {
+                        for (int l = 0; l < this.instance.getStackCapacity(); l++) {
+                            expr.addTerm(1, x[i][q][l]);
+                        }
                     }
+
                 }
                 cplex.addEq(expr, 1);
             }
