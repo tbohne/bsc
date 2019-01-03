@@ -57,7 +57,6 @@ public class TwoCapHeuristic {
         HashMap<Integer, ArrayList<Integer>> itemPairStackCombination = new HashMap<>();
 
         for (Object edge : mcm.getMatching().getEdges()) {
-
             int firstItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[0].trim());
             int secondItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[0].replace(")", "").trim());
             int stack = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[1].replace("stack", "").replace(")", "").trim());
@@ -66,10 +65,21 @@ public class TwoCapHeuristic {
             items.add(firstItem);
             items.add(secondItem);
             itemPairStackCombination.put(stack, items);
-
         }
 
         return itemPairStackCombination;
+    }
+
+    public void fixOrderInStacks() {
+        for (int[] stack : this.instance.getStacks()) {
+            if (stack[0] != -1 && stack[1] != -1) {
+                if (this.instance.getStackingConstraints()[stack[0]][stack[1]] != 1) {
+                    int tmp = stack[0];
+                    stack[0] = stack[1];
+                    stack[1] = tmp;
+                }
+            }
+        }
     }
 
     public Solution firstApproach(EdmondsMaximumCardinalityMatching mcm, boolean optimizeSolution) {
@@ -111,7 +121,8 @@ public class TwoCapHeuristic {
                 }
             }
         }
-
+        
+        this.fixOrderInStacks();
         Solution sol = new Solution(0, false, this.instance);
 
         return sol;
