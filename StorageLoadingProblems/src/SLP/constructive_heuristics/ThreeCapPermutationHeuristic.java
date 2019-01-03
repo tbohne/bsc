@@ -104,6 +104,12 @@ public class ThreeCapPermutationHeuristic {
             if (HeuristicUtil.computeRowRatingForUnmatchedItem(vertexOne, this.instance.getStackingConstraints()) <= 10
                     || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= 10) {
 
+                while (cnt < this.instance.getStacks().length
+                    && (this.instance.getStackConstraints()[vertexOne][cnt] != 1 || this.instance.getStackConstraints()[vertexTwo][cnt] != 1)) {
+                        cnt++;
+                }
+                if (cnt >= this.instance.getStacks().length) { break; }
+
                 prioritizedEdges.add(new MCMEdge(vertexOne, vertexTwo, 0));
 
                 if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
@@ -121,6 +127,12 @@ public class ThreeCapPermutationHeuristic {
     public boolean assignItemToFirstPossiblePosition(int item) {
 
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+
+            // item and stack are incompatible
+            if (this.instance.getStackConstraints()[item][stack] != 1) {
+                continue;
+            }
+
             for (int level = 2; level > 0; level--) {
 
                 // TODO: generalize steps
@@ -187,6 +199,10 @@ public class ThreeCapPermutationHeuristic {
 
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+                
+                if (this.instance.getStackConstraints()[item][stack] != 1) {
+                    continue;
+                }
 
                 int levelOfCurrentTopMostItem = -99;
                 for (int level = 2; level >= 0; level--) {
@@ -240,6 +256,12 @@ public class ThreeCapPermutationHeuristic {
     }
 
     public boolean assignItemsInGivenOrder(int idx, int below, int above) {
+
+        // at least one of the items is not compatible with the stack
+        if (this.instance.getStackConstraints()[below][idx] != 1 || this.instance.getStackConstraints()[above][idx] != 1) {
+            return false;
+        }
+
         // assign to 1st and 2nd level
         if (this.instance.getStacks()[idx][2] == -1) {
             this.instance.getStacks()[idx][2] = below;
@@ -361,7 +383,7 @@ public class ThreeCapPermutationHeuristic {
                 edgePermutations.add(new ArrayList(edgeList));
             }
         } else {
-            for (int i = 0; i < 40000; i++) {
+            for (int i = 0; i < 400000; i++) {
                 Collections.shuffle(itemPairs);
                 edgePermutations.add(new ArrayList(itemPairs));
             }
@@ -376,6 +398,7 @@ public class ThreeCapPermutationHeuristic {
         int generatedSolutions = 0;
 
         for (ArrayList<MCMEdge> matchedItems : itemPairSubsets) {
+
             // time limit of 5 minutes
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= 300) { break; }
             // limits the number of generated solutions to ~1 mio.
