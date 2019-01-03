@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TwoCapHeuristic {
 
@@ -48,18 +49,37 @@ public class TwoCapHeuristic {
         System.out.println("items assigned: " +  finalMCM.getMatching().getEdges().size() * 2);
         System.out.println("free stacks: " + (this.instance.getStacks().length - finalMCM.getMatching().getEdges().size()));
 
-        System.out.println(finalMCM.getMatching().getEdges());
-
         return finalMCM;
+    }
+
+    public HashMap parseItemPairStackCombination(Object edge) {
+        int firstItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[0].trim());
+        int secondItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[0].replace(")", "").trim());
+        int stack = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[1].replace("stack", "").replace(")", "").trim());
+
+        HashMap<Integer, ArrayList<Integer>> itemPairStackCombination = new HashMap<>();
+        ArrayList<Integer> items = new ArrayList<>();
+        items.add(firstItem);
+        items.add(secondItem);
+        itemPairStackCombination.put(stack, items);
+
+        return itemPairStackCombination;
     }
 
     public Solution firstApproach(EdmondsMaximumCardinalityMatching mcm, boolean optimizeSolution) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-        this.getMatchingBetweenItemPairsAndStacks(itemPairs);
+        EdmondsMaximumCardinalityMatching finalMCM = this.getMatchingBetweenItemPairsAndStacks(itemPairs);
 
-        return new Solution();
+        for (Object edge : finalMCM.getMatching().getEdges()) {
+            HashMap itemPairStackCombination = this.parseItemPairStackCombination(edge);
+            System.out.println(itemPairStackCombination);
+        }
+
+        Solution sol = new Solution(0, false, this.instance);
+
+        return sol;
     }
 
     /**
