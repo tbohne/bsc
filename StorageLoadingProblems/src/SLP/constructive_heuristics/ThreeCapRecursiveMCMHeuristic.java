@@ -276,16 +276,52 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     public void fillStorageAreaWithGeneratedStackAssignments() {
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-                if (i < this.stackAssignments.size()) {
-                    ArrayList<Integer> stack = this.stackAssignments.get(i);
-                    if (j < stack.size()) {
-                        this.instance.getStacks()[i][j] = stack.get(j);
+
+        ArrayList<Integer> usedStacks = new ArrayList<>();
+
+//        while (this.stackAssignments.size() > 0) {
+
+
+            for (ArrayList<Integer> currStack : this.stackAssignments) {
+
+                for (int i = 0; i < this.instance.getStacks().length; i++) {
+
+                    if (usedStacks.contains(i)) {
+                        continue;
                     }
+
+                    boolean itemsCompatible = true;
+                    for (int item : currStack) {
+                        if (this.instance.getStackConstraints()[item][i] != 1) {
+                            itemsCompatible = false;
+                        }
+                    }
+                    if (!itemsCompatible) {
+                        continue;
+                    }
+                    for (int level = 0; level < this.instance.getStacks()[i].length; level++) {
+                        if (level < currStack.size()) {
+                            this.instance.getStacks()[i][level] = currStack.get(level);
+                        }
+                    }
+                    usedStacks.add(i);
+                    break;
                 }
             }
-        }
+
+//            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+//                for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
+//                    if (stack < this.stackAssignments.size()) {
+//                        ArrayList<Integer> currStack = this.stackAssignments.get(stack);
+//
+//                        if (level < currStack.size()) {
+//                            this.instance.getStacks()[stack][level] = currStack.get(level);
+//                        }
+//                    }
+//                }
+//            }
+
+//        }
     }
 
     public void checkItemAssignments() {
