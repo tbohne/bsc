@@ -138,6 +138,22 @@ public class Solution {
         return true;
     }
 
+    public boolean stackConstraintsRespected() {
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+            for (int level = 1; level < this.filledStorageArea[stack].length; level++) {
+
+                int item = this.filledStorageArea[stack][level];
+
+                if (item != -1) {
+                    if (this.solvedInstance.getStackConstraints()[item][stack] != 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public void setTimeToSolve(double duration) {
         this.timeToSolve = duration;
     }
@@ -148,7 +164,13 @@ public class Solution {
         //      - all Items assigned to a stack
         //      - stacking constraints respected
 
-        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected();
+        if (!this.empty) {
+            System.out.println("all items: " + this.allItemsAssigned());
+            System.out.println("stacking: " + this.stackingConstraintsRespected());
+            System.out.println("stack: " + this.stackConstraintsRespected());
+        }
+
+        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() /* && this.stackConstraintsRespected() */;
     }
 
     public int getNumberOfAssignedItems() {
