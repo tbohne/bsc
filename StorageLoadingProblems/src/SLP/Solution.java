@@ -170,7 +170,7 @@ public class Solution {
             System.out.println("stack: " + this.stackConstraintsRespected());
         }
 
-        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() /* && this.stackConstraintsRespected() */;
+        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() && this.stackConstraintsRespected();
     }
 
     public int getNumberOfAssignedItems() {
