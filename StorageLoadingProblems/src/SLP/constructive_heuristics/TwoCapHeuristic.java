@@ -121,7 +121,7 @@ public class TwoCapHeuristic {
                 }
             }
         }
-        
+
         this.fixOrderInStacks();
         Solution sol = new Solution(0, false, this.instance);
 

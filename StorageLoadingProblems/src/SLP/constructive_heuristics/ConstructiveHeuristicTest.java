@@ -16,18 +16,13 @@ public class ConstructiveHeuristicTest {
         //   - solve instance using the heuristic
         //   - print results
 
-        Instance instance = InstanceReader.readInstance("res/instances/v6/slp_instance_300_120_3_90.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_400_240_2_5.txt");
         // System.out.println(instance);
 
-        ThreeCapPermutationHeuristic solver1 = new ThreeCapPermutationHeuristic(instance);
-        ThreeCapRecursiveMCMHeuristic solver2 = new ThreeCapRecursiveMCMHeuristic(instance);
+        TwoCapHeuristic solver = new TwoCapHeuristic(instance);
+        Solution sol = solver.solve(false);
 
-//        Solution sol1 = solver1.solve(false);
-//        instance.resetStacks();
-        Solution sol2 = solver2.solve(false);
-
-//        System.out.println("feasible: " + sol1.isFeasible());
-//        System.out.println("cost: " + sol1.getCost());
-        System.out.println("cost: " + sol2.getCost());
+        System.out.println("feasible: " + sol.isFeasible());
+        System.out.println("cost: " + sol.getCost());
     }
 }

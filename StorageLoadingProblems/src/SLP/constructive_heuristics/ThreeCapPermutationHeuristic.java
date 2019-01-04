@@ -199,7 +199,7 @@ public class ThreeCapPermutationHeuristic {
 
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                
+
                 if (this.instance.getStackConstraints()[item][stack] != 1) {
                     continue;
                 }
