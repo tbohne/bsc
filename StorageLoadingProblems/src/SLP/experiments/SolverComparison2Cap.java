@@ -1,7 +1,6 @@
 package SLP.experiments;
 
 import SLP.constructive_heuristics.TwoCapHeuristic;
-import SLP.experiments.SolverComparison;
 import SLP.mip_formulations.BinPackingFormulation;
 import SLP.mip_formulations.ThreeIndexFormulation;
 import SLP.representations.Instance;
@@ -26,9 +25,9 @@ public class SolverComparison2Cap extends SolverComparison {
                 if (file.toString().contains("slp_instance_") && !allSol.contains(file.toString().replace("res/instances/", ""))) {
 
                     String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
-
                     Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
-                    System.out.println(instance);
+
+//                    System.out.println(instance);
 
                     String solutionName = instanceName.replace("instance", "sol");
 

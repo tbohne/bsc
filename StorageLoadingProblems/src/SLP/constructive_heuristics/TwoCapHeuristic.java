@@ -41,7 +41,6 @@ public class TwoCapHeuristic {
                         if (!graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
                             graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
                         }
-
                 }
             }
         }
