@@ -9,6 +9,7 @@ import SLP.representations.Solution;
 import SLP.representations.SolutionWriter;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class SolverComparison2Cap extends SolverComparison {
 
@@ -16,6 +17,7 @@ public class SolverComparison2Cap extends SolverComparison {
 
         File dir = new File(INSTANCE_PREFIX);
         File[] directoryListing = dir.listFiles();
+        Arrays.sort(directoryListing);
 
         String allSol = createStringWithAllSolutionNames();
 

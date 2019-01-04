@@ -16,7 +16,7 @@ public class SolverComparison {
     public static final String SOLUTION_PREFIX = "res/solutions/";
 
     // Specifies the time limit for the solving process in seconds.
-    public static final int TIME_LIMIT = 90;
+    public static final int TIME_LIMIT = 2;
 
     public static String createStringWithAllSolutionNames() {
         File dir = new File(SOLUTION_PREFIX);
