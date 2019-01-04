@@ -47,7 +47,7 @@ public class SolverComparison2Cap extends SolverComparison {
                     instance.resetStacks();
 
                     TwoCapHeuristic twoCapHeuristic = new TwoCapHeuristic(instance, TIME_LIMIT);
-                    sol = twoCapHeuristic.solve(false);
+                    sol = twoCapHeuristic.solve();
                     SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_TWO_CAP);
                     SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_TWO_CAP);
                 }

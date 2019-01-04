@@ -29,7 +29,6 @@ public class TwoCapHeuristic {
         for (MCMEdge e : itemPairs) {
             graph.addVertex("edge" + e);
         }
-
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
             graph.addVertex("stack" + stack);
         }
@@ -37,22 +36,20 @@ public class TwoCapHeuristic {
         for (int i = 0; i < itemPairs.size(); i++) {
             for (int j = 0; j < this.instance.getStacks().length; j++) {
                 if (this.instance.getStackConstraints()[itemPairs.get(i).getVertexOne()][j] == 1
-                        && this.instance.getStackConstraints()[itemPairs.get(i).getVertexTwo()][j] == 1) {
+                    && this.instance.getStackConstraints()[itemPairs.get(i).getVertexTwo()][j] == 1) {
 
-                            if (!graph.containsEdge("stack" + j, "edge" + itemPairs.get(i))
-                                    && !graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
-                                        graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
-                            }
+                        if (!graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
+                            graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
+                        }
 
                 }
             }
         }
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemPairStackMatching = new EdmondsMaximumCardinalityMatching<>(graph);
+        System.out.println("items assigned: " +  itemPairStackMatching.getMatching().getEdges().size() * 2);
+        System.out.println("free stacks: " + (this.instance.getStacks().length - itemPairStackMatching.getMatching().getEdges().size()));
 
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> finalMCM = new EdmondsMaximumCardinalityMatching<>(graph);
-        System.out.println("items assigned: " +  finalMCM.getMatching().getEdges().size() * 2);
-        System.out.println("free stacks: " + (this.instance.getStacks().length - finalMCM.getMatching().getEdges().size()));
-
-        return finalMCM;
+        return itemPairStackMatching;
     }
 
     public void fixOrderInStacks() {
@@ -67,22 +64,9 @@ public class TwoCapHeuristic {
         }
     }
 
-    public Solution firstApproach(EdmondsMaximumCardinalityMatching mcm, boolean optimizeSolution) {
+    public ArrayList<Integer> getUnmatchedItems() {
 
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-        EdmondsMaximumCardinalityMatching finalMCM = this.getMatchingBetweenItemPairsAndStacks(itemPairs);
-
-        HashMap itemPairStackCombinations = HeuristicUtil.parseItemPairStackCombination(finalMCM);
-
-        for (Object key : itemPairStackCombinations.keySet()) {
-            this.instance.getStacks()[(int)key][0] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(0);
-            this.instance.getStacks()[(int)key][1] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(1);
-        }
-
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
         ArrayList<Integer> matchedItems = new ArrayList<>();
-
         for (int[] stack : this.instance.getStacks()) {
             for (int item : stack) {
                 if (item != -1) {
@@ -91,14 +75,30 @@ public class TwoCapHeuristic {
             }
         }
 
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
         for (int item : this.instance.getItems()) {
             if (!matchedItems.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
 
+        return unmatchedItems;
+    }
+
+    public Solution firstApproach(EdmondsMaximumCardinalityMatching mcm) {
+
+        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        EdmondsMaximumCardinalityMatching matchingBetweenItemPairsAndStacks = this.getMatchingBetweenItemPairsAndStacks(itemPairs);
+        HashMap itemPairStackCombinations = HeuristicUtil.parseItemPairStackCombination(matchingBetweenItemPairsAndStacks);
+
+        for (Object key : itemPairStackCombinations.keySet()) {
+            this.instance.getStacks()[(int)key][0] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(0);
+            this.instance.getStacks()[(int)key][1] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(1);
+        }
+
         // TODO: take costs into account
-        for (int item : unmatchedItems) {
+        for (int item : this.getUnmatchedItems()) {
             for (int[] stack : this.instance.getStacks()) {
                 if (stack[0] == -1) {
                     stack[0] = item;
@@ -113,12 +113,7 @@ public class TwoCapHeuristic {
         return sol;
     }
 
-    /**
-     *
-     * @param optimizeSolution - specifies whether the solution should be optimized or just valid
-     * @return
-     */
-    public Solution solve(boolean optimizeSolution) {
+    public Solution solve() {
 
         Solution sol = new Solution();
 
@@ -126,11 +121,9 @@ public class TwoCapHeuristic {
 
             this.startTime = System.currentTimeMillis();
             DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-
             HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-
-            sol = firstApproach(mcm, optimizeSolution);
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(graph);
+            sol = firstApproach(itemMatching);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
 
         } else {
