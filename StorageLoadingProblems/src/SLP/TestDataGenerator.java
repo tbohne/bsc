@@ -8,15 +8,15 @@ public class TestDataGenerator {
 
     /*************************** CONFIGURATION *********************************/
     public static final int NUMBER_OF_INSTANCES = 10;
-    public static final int NUMBER_OF_ITEMS = 300;
-    public static final int STACK_CAPACITY = 3;
+    public static final int NUMBER_OF_ITEMS = 400;
+    public static final int STACK_CAPACITY = 2;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.
-    public static final int ADDITIONAL_STACK_PERCENTAGE = 25;
+    public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0052F;
-    public static final float CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS = 0.80F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0045F;
+    public static final float CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS = 0.75F;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 1;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
