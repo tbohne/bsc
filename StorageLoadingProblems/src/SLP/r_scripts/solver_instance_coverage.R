@@ -2,9 +2,7 @@ library(ggplot2)
 library(plyr)
 
 input <- read.csv(file = "../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
-
 config_file <- read.csv(file = "../../../res/instances/instance_set_config.csv", header = TRUE, sep = ",")
-
 numOfInstances <- config_file["numOfInstances"]
 
 # gg <- ggplot(data=input, aes(y=0, yend=100))
@@ -27,15 +25,27 @@ paste("BinP: ", sum(input == "BinP"), " solutions")
 paste("3Idx: ", sum(input == "3Idx"), " solutions")
 paste("3CapPerm: ", sum(input == "3CapPerm"), " solutions")
 paste("3CapRec: ", sum(input == "3CapRec"), " solutions")
+paste("2Cap: ", sum(input == "2Cap"), " solutions")
 
+############################# 2 CAP #############################
 SOLUTIONS <- c(
     sum(input == "BinP") / as.integer(numOfInstances) * 100,
     sum(input == "3Idx") / as.integer(numOfInstances) * 100,
-    sum(input == "3CapPerm") / as.integer(numOfInstances) * 100,
-    sum(input == "3CapRec") / as.integer(numOfInstances) * 100
+    sum(input == "2Cap") / as.integer(numOfInstances) * 100
 )
+SOLVER <- c("BinP", "3Idx", "2Cap")
+#################################################################
 
-SOLVER <- c("BinP", "3Idx", "3CapPerm", "3CapRec")
+############################# 3 CAP #############################
+# SOLUTIONS <- c(
+#     sum(input == "BinP") / as.integer(numOfInstances) * 100,
+#     sum(input == "3Idx") / as.integer(numOfInstances) * 100,
+#     # sum(input == "3CapPerm") / as.integer(numOfInstances) * 100,
+#     # sum(input == "3CapRec") / as.integer(numOfInstances) * 100,
+#     sum(input == "2Cap") / as.integer(numOfInstances) * 100
+# )
+# SOLVER <- c("BinP", "3Idx", "3CapPerm", "3CapRec")
+#################################################################
 
 png(file = "test.png")
 
