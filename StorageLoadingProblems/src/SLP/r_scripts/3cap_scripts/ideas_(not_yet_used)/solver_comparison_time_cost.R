@@ -1,6 +1,6 @@
 library(ggplot2)
 
-Input <- read.csv(file="../../../res/solutions/v6/solutions.csv", header = TRUE, sep=",")
+Input <- read.csv(file="../../../../res/solutions/v8/solutions.csv", header = TRUE, sep=",")
 
 MipEntries <- subset(Input, solver=="BinP" | solver=="3Idx" | solver=="3CapRec" | solver=="3CapPerm")
 
