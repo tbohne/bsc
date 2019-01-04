@@ -1,4 +1,4 @@
-package SLP.constructive_heuristics;
+package SLP.util;
 
 import SLP.MCMEdge;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;

@@ -3,6 +3,7 @@ package SLP.constructive_heuristics;
 import SLP.Instance;
 import SLP.MCMEdge;
 import SLP.Solution;
+import SLP.util.HeuristicUtil;
 import SLP.util.MapUtil;
 import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;

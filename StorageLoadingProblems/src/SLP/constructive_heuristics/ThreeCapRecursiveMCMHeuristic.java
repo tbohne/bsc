@@ -3,6 +3,7 @@ package SLP.constructive_heuristics;
 import SLP.Instance;
 import SLP.MCMEdge;
 import SLP.Solution;
+import SLP.util.HeuristicUtil;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
