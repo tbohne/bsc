@@ -6,12 +6,14 @@ import static SLP.SolverComparison3Cap.*;
 
 public class SolutionWriter {
 
-    public static String getNameOfMipFormulation(Solver solver) {
+    public static String getNameOfSolver(Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
                 return "BinPacking Formulation";
             case MIP_THREEINDEX:
                 return "ThreeIndex Formulation";
+            case CONSTRUCTIVE_TWO_CAP:
+                return "Constructive Heuristic (2Cap)";
             case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
                 return "Constructive Permutation Heuristic (3cap)";
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
@@ -21,12 +23,14 @@ public class SolutionWriter {
         }
     }
 
-    public static String getNameOfMipFormulationCSV(Solver solver) {
+    public static String getNameOfSolverCSV(Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
                 return "BinP";
             case MIP_THREEINDEX:
                 return "3Idx";
+            case CONSTRUCTIVE_TWO_CAP:
+                return "2Cap";
             case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
                 return "3CapPerm";
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
@@ -55,7 +59,7 @@ public class SolutionWriter {
                 bw.write("instance,solver,time,val\n");
             }
 
-            String mip = getNameOfMipFormulationCSV(solver);
+            String mip = getNameOfSolverCSV(solver);
             if (sol.isFeasible()) {
                 bw.write(sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "") + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n");
             }
@@ -72,7 +76,6 @@ public class SolutionWriter {
     public static void writeSolution(String filename, Solution sol, Solver solver) {
 
         try {
-
             File file = new File(filename);
 
             boolean appendNewLines = true;
@@ -85,7 +88,7 @@ public class SolutionWriter {
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            String mip = getNameOfMipFormulation(solver);
+            String solverName = getNameOfSolver(solver);
 
             if (appendNewLines) {
                 bw.newLine();
@@ -93,7 +96,7 @@ public class SolutionWriter {
                 bw.newLine();
             }
 
-            bw.write("solved with: " + mip + "\n");
+            bw.write("solved with: " + solverName + "\n");
             bw.write(sol.toString());
 
             bw.close();
