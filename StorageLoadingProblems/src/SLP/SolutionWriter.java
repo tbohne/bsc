@@ -2,7 +2,7 @@ package SLP;
 
 import java.io.*;
 
-import static SLP.SolverComparison.*;
+import static SLP.SolverComparison3Cap.*;
 
 public class SolutionWriter {
 
