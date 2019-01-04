@@ -14,9 +14,11 @@ public class TwoCapHeuristic {
 
     private Instance instance;
     private double startTime;
+    private int timeLimit;
 
-    public TwoCapHeuristic(Instance instance) {
+    public TwoCapHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
+        this.timeLimit = timeLimit;
     }
 
     public EdmondsMaximumCardinalityMatching getMatchingBetweenItemPairsAndStacks(ArrayList<MCMEdge> itemPairs) {
@@ -123,7 +125,7 @@ public class TwoCapHeuristic {
         }
 
         this.fixOrderInStacks();
-        Solution sol = new Solution(0, false, this.instance);
+        Solution sol = new Solution(0, this.timeLimit, this.instance);
 
         return sol;
     }

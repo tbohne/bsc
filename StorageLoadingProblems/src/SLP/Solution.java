@@ -3,13 +3,13 @@ package SLP;
 public class Solution {
 
     private double timeToSolve;
+    private int timeLimit;
     private double objectiveValue;
 
     private int[][] filledStorageArea;
     private boolean empty;
 
     private String nameOfSolvedInstance;
-    private boolean timeLimitExceeded;
 
     private Instance solvedInstance;
 
@@ -19,12 +19,12 @@ public class Solution {
         this.empty = true;
     }
 
-    public Solution(double timeToSolve, double objectiveValue, boolean timeLimitExceeded, Instance solvedInstance) {
+    public Solution(double timeToSolve, double objectiveValue, int timeLimit, Instance solvedInstance) {
         this.timeToSolve = timeToSolve;
         this.objectiveValue = objectiveValue;
         this.empty = false;
         this.nameOfSolvedInstance = solvedInstance.getName();
-        this.timeLimitExceeded = timeLimitExceeded;
+        this.timeLimit = timeLimit;
         this.numberOfItems = solvedInstance.getItems().length;
 
         this.solvedInstance = solvedInstance;
@@ -35,11 +35,11 @@ public class Solution {
         }
     }
 
-    public Solution(double timeToSolve, boolean timeLimitExceeded, Instance solvedInstance) {
+    public Solution(double timeToSolve, int timeLimit, Instance solvedInstance) {
         this.timeToSolve = timeToSolve;
         this.empty = false;
         this.nameOfSolvedInstance = solvedInstance.getName();
-        this.timeLimitExceeded = timeLimitExceeded;
+        this.timeLimit = timeLimit;
         this.numberOfItems = solvedInstance.getItems().length;
 
         this.solvedInstance = solvedInstance;
@@ -59,7 +59,7 @@ public class Solution {
         this.numberOfItems = sol.numberOfItems;
         this.solvedInstance = new Instance(sol.solvedInstance);
         this.nameOfSolvedInstance = sol.nameOfSolvedInstance;
-        this.timeLimitExceeded = sol.timeLimitExceeded;
+        this.timeLimit = sol.timeLimit;
         this.filledStorageArea = new int[sol.solvedInstance.getStacks().length][];
         for (int i = 0; i < sol.solvedInstance.getStacks().length; i++) {
             this.filledStorageArea[i] = sol.solvedInstance.getStacks()[i].clone();
@@ -262,10 +262,11 @@ public class Solution {
         String str = "";
 
         if (this.isFeasible()) {
+            str += "time limit: " + this.timeLimit + " s\n";
             str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s";
-            str += timeLimitExceeded ? " (time limit exceeded)\n" : "\n";
+            str += this.timeToSolve > this.timeLimit ? " (time limit exceeded)\n" : "\n";
             str += "objective value: " + this.objectiveValue;
-            str += timeLimitExceeded ? " (not optimal)\n\n" : "\n\n";
+            str += this.timeToSolve > this.timeLimit ? " (not optimal)\n\n" : "\n\n";
             str += "stacks (top to bottom):\n";
 
             int maxStringOffset = getMaximumStringOffset(this.filledStorageArea.length);

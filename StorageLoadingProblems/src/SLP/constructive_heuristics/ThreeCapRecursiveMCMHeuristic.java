@@ -15,11 +15,13 @@ public class ThreeCapRecursiveMCMHeuristic {
     private ArrayList<ArrayList<Integer>> stackAssignments;
     private int previousNumberOfRemainingItems;
     private double startTime;
+    private int timeLimit;
     private ArrayList<ArrayList<MCMEdge>> alreadyUsedEdgeShuffles;
     private boolean firstRecursiveStep;
 
-    public ThreeCapRecursiveMCMHeuristic(Instance instance) {
+    public ThreeCapRecursiveMCMHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
+        this.timeLimit = timeLimit;
         this.stackAssignments = new ArrayList<>();
         this.previousNumberOfRemainingItems = this.instance.getItems().length;
         this.alreadyUsedEdgeShuffles = new ArrayList<>();
@@ -385,7 +387,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             this.recursiveMCMApproach(mcm, this.instance.getStacks().length, items);
             this.completeStackAssignmentsForRecursiveApproach();
 
-            sol = new Solution(0, false, this.instance);
+            sol = new Solution(0, this.timeLimit, this.instance);
             sol.transformStackAssignmentIntoValidSolutionIfPossible();
             System.out.println("sol feasible: " + sol.isFeasible());
             System.out.println(sol.getNumberOfAssignedItems());

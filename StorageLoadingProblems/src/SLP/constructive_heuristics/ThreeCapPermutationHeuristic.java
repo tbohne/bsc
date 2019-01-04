@@ -18,9 +18,11 @@ public class ThreeCapPermutationHeuristic {
     private ArrayList<Integer> additionalUnmatchedItems;
     private ArrayList<List<Integer>> alreadyUsedShuffles;
     private double startTime;
+    private int timeLimit;
 
-    public ThreeCapPermutationHeuristic(Instance instance) {
+    public ThreeCapPermutationHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
+        this.timeLimit = timeLimit;
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
         this.alreadyUsedShuffles = new ArrayList<>();
@@ -409,7 +411,7 @@ public class ThreeCapPermutationHeuristic {
                     this.instance.resetStacks();
                     break;
                 }
-                Solution sol = new Solution(0, false, this.instance);
+                Solution sol = new Solution(0, this.timeLimit, this.instance);
                 if (!optimizeSolution && sol.isFeasible()) { return sol; }
                 if (sol.isFeasible() && sol.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol);
@@ -417,7 +419,7 @@ public class ThreeCapPermutationHeuristic {
                 this.instance.resetStacks();
 
                 if (!this.generateSolWithFlippedItemPair(matchedItems, unmatchedItems)) { break; }
-                Solution flippedPairsSol = new Solution(0, false, this.instance);
+                Solution flippedPairsSol = new Solution(0, this.timeLimit, this.instance);
 
                 if (!optimizeSolution && flippedPairsSol.isFeasible()) {
                     return flippedPairsSol;

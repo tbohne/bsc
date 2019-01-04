@@ -8,6 +8,8 @@ public class ConstructiveHeuristicTest {
 
     // TODO: Should be removed later (for now used as test class)
 
+    public static final int TIME_LIMIT = 300;
+
     public static void main (String[] args) {
 
         // TODO:
@@ -19,7 +21,7 @@ public class ConstructiveHeuristicTest {
         Instance instance = InstanceReader.readInstance("res/instances/slp_instance_400_240_2_5.txt");
         // System.out.println(instance);
 
-        TwoCapHeuristic solver = new TwoCapHeuristic(instance);
+        TwoCapHeuristic solver = new TwoCapHeuristic(instance, TIME_LIMIT);
         Solution sol = solver.solve(false);
 
         System.out.println("feasible: " + sol.isFeasible());
