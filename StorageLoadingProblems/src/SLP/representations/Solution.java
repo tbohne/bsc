@@ -140,7 +140,7 @@ public class Solution {
 
     public boolean stackConstraintsRespected() {
         for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
-            for (int level = 1; level < this.filledStorageArea[stack].length; level++) {
+            for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
 
                 int item = this.filledStorageArea[stack][level];
 

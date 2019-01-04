@@ -105,7 +105,7 @@ public class TwoCapHeuristic {
             int minCosts = Integer.MAX_VALUE;
 
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                if (this.instance.getStacks()[stack][0] == -1) {
+                if (this.instance.getStacks()[stack][0] == -1 && this.instance.getStackConstraints()[item][stack] == 1) {
                     int costs = this.instance.getCosts()[item][stack];
                     if (costs < minCosts) {
                         minCosts = costs;
