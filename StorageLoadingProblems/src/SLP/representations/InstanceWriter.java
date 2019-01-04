@@ -1,4 +1,6 @@
-package SLP;
+package SLP.representations;
+
+import SLP.representations.Instance;
 
 import java.io.*;
 

@@ -1,4 +1,4 @@
-package SLP;
+package SLP.experiments;
 
 import java.io.File;
 

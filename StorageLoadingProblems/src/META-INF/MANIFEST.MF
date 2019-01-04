@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: SLP.SolverComparison3Cap
+Main-Class: SLP.experiments.SolverComparison3Cap
 

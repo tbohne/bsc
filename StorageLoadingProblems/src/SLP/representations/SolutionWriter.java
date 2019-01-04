@@ -1,8 +1,8 @@
-package SLP;
+package SLP.representations;
 
 import java.io.*;
 
-import static SLP.SolverComparison3Cap.*;
+import static SLP.experiments.SolverComparison3Cap.*;
 
 public class SolutionWriter {
 

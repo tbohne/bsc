@@ -1,8 +1,8 @@
 package SLP.constructive_heuristics;
 
-import SLP.Instance;
-import SLP.InstanceReader;
-import SLP.Solution;
+import SLP.representations.Instance;
+import SLP.representations.InstanceReader;
+import SLP.representations.Solution;
 
 public class ConstructiveHeuristicTest {
 

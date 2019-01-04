@@ -1,4 +1,7 @@
-package SLP;
+package SLP.experiments;
+
+import SLP.representations.Instance;
+import SLP.representations.InstanceWriter;
 
 import java.util.Random;
 

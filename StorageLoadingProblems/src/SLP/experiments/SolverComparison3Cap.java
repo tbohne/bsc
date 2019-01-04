@@ -1,9 +1,14 @@
-package SLP;
+package SLP.experiments;
 
 import SLP.constructive_heuristics.ThreeCapPermutationHeuristic;
 import SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic;
+import SLP.experiments.SolverComparison;
 import SLP.mip_formulations.BinPackingFormulation;
 import SLP.mip_formulations.ThreeIndexFormulation;
+import SLP.representations.Instance;
+import SLP.representations.InstanceReader;
+import SLP.representations.Solution;
+import SLP.representations.SolutionWriter;
 
 import java.io.File;
 

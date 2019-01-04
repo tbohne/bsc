@@ -1,8 +1,8 @@
 package SLP.constructive_heuristics;
 
-import SLP.Instance;
-import SLP.MCMEdge;
-import SLP.Solution;
+import SLP.representations.Instance;
+import SLP.representations.MCMEdge;
+import SLP.representations.Solution;
 import SLP.util.HeuristicUtil;
 import SLP.util.MapUtil;
 import com.google.common.collect.Collections2;

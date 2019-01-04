@@ -1,6 +1,6 @@
 package SLP.util;
 
-import SLP.MCMEdge;
+import SLP.representations.MCMEdge;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;

@@ -1,4 +1,4 @@
-package SLP;
+package SLP.representations;
 
 public class Instance {
 
