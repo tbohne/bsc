@@ -56,7 +56,8 @@ public class TestDataGenerator {
                 }
             }
 
-            String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idx;
+            String idxString = idx < 10 ? "0" + idx : String.valueOf(idx);
+            String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idxString;
 
             Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, stackingConstraintMatrix, stackConstraintMatrix, costs, instanceName);
             InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);

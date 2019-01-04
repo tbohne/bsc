@@ -1,7 +1,5 @@
 package SLP.representations;
 
-import SLP.representations.Instance;
-
 import java.io.*;
 
 public class InstanceWriter {
