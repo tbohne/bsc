@@ -96,13 +96,28 @@ public class TwoCapHeuristic {
             this.instance.getStacks()[(int)key][1] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(1);
         }
 
-        // TODO: take costs into account
+        // TODO: improve cost minimization
+        // First naive approach:
+        // Assign each item to the cheapest remaining stack.
         for (int item : this.getUnmatchedItems()) {
-            for (int[] stack : this.instance.getStacks()) {
-                if (stack[0] == -1) {
-                    stack[0] = item;
-                    break;
+
+            int idxOfCheapest = -1;
+            int minCosts = Integer.MAX_VALUE;
+
+            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+                if (this.instance.getStacks()[stack][0] == -1) {
+                    int costs = this.instance.getCosts()[item][stack];
+                    if (costs < minCosts) {
+                        minCosts = costs;
+                        idxOfCheapest = stack;
+                    }
                 }
+            }
+
+            if (idxOfCheapest != -1) {
+                this.instance.getStacks()[idxOfCheapest][0] = item;
+            } else {
+                return new Solution();
             }
         }
 

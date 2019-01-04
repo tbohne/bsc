@@ -18,7 +18,7 @@ public class ConstructiveHeuristicTest {
         //   - solve instance using the heuristic
         //   - print results
 
-        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_400_240_2_2.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/v10/slp_instance_500_300_2_0.txt");
         // System.out.println(instance);
 
         TwoCapHeuristic solver = new TwoCapHeuristic(instance, TIME_LIMIT);
