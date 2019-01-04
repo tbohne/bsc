@@ -55,24 +55,6 @@ public class TwoCapHeuristic {
         return finalMCM;
     }
 
-    public HashMap parseItemPairStackCombination(EdmondsMaximumCardinalityMatching mcm) {
-
-        HashMap<Integer, ArrayList<Integer>> itemPairStackCombination = new HashMap<>();
-
-        for (Object edge : mcm.getMatching().getEdges()) {
-            int firstItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[0].trim());
-            int secondItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[0].replace(")", "").trim());
-            int stack = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[1].replace("stack", "").replace(")", "").trim());
-
-            ArrayList<Integer> items = new ArrayList<>();
-            items.add(firstItem);
-            items.add(secondItem);
-            itemPairStackCombination.put(stack, items);
-        }
-
-        return itemPairStackCombination;
-    }
-
     public void fixOrderInStacks() {
         for (int[] stack : this.instance.getStacks()) {
             if (stack[0] != -1 && stack[1] != -1) {
@@ -91,7 +73,7 @@ public class TwoCapHeuristic {
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         EdmondsMaximumCardinalityMatching finalMCM = this.getMatchingBetweenItemPairsAndStacks(itemPairs);
 
-        HashMap itemPairStackCombinations = this.parseItemPairStackCombination(finalMCM);
+        HashMap itemPairStackCombinations = HeuristicUtil.parseItemPairStackCombination(finalMCM);
 
         for (Object key : itemPairStackCombinations.keySet()) {
             this.instance.getStacks()[(int)key][0] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(0);
