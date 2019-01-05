@@ -212,11 +212,11 @@ public class Solution {
     }
 
     public String getTimeToSolve() {
-        return String.format("%.02f", this.timeToSolve);
+        return String.format("%.02f", this.timeToSolve).replace(",", ".");
     }
 
     public String getObjectiveValue() {
-        return String.format("%.02f", this.objectiveValue);
+        return String.format("%.02f", this.objectiveValue).replace(",", ".");
     }
 
     public String getNameOfSolvedInstance() {

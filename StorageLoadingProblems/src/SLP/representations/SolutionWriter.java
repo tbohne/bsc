@@ -44,7 +44,6 @@ public class SolutionWriter {
         try {
 
             File file = new File(filename);
-
             boolean newFile = false;
 
             if (!file.exists()) {
@@ -70,7 +69,6 @@ public class SolutionWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void writeSolution(String filename, Solution sol, Solver solver) {
