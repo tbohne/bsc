@@ -2,7 +2,6 @@ package SLP.experiments;
 
 import SLP.constructive_heuristics.ThreeCapPermutationHeuristic;
 import SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic;
-import SLP.experiments.SolverComparison;
 import SLP.mip_formulations.BinPackingFormulation;
 import SLP.mip_formulations.ThreeIndexFormulation;
 import SLP.representations.Instance;
@@ -11,6 +10,7 @@ import SLP.representations.Solution;
 import SLP.representations.SolutionWriter;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class SolverComparison3Cap extends SolverComparison {
 
@@ -18,6 +18,7 @@ public class SolverComparison3Cap extends SolverComparison {
 
         File dir = new File(INSTANCE_PREFIX);
         File[] directoryListing = dir.listFiles();
+        Arrays.sort(directoryListing);
 
         String allSol = createStringWithAllSolutionNames();
 
