@@ -1,8 +1,8 @@
 library(ggplot2)
 library(plyr)
 
-input <- read.csv(file = "../../../../res/solutions/v8/solutions.csv", header = TRUE, sep = ",")
-configFile <- read.csv(file = "../../../../res/instances/v8/instance_set_config.csv", header = TRUE, sep = ",")
+input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
+configFile <- read.csv(file = "../../../../res/instances/instance_set_config.csv", header = TRUE, sep = ",")
 numOfInstances <- configFile["numOfInstances"]
 
 print("########## THE ACTUAL RESULTS ############")
@@ -25,7 +25,7 @@ SOLVER <- c("BinP", "3Idx", "3CapPerm", "3CapRec")
 png(file = "solver_instance_coverage.png")
 
 # plot the bar chart
-barplot(SOLUTIONS, names.arg = SOLVER, xlab = "solver", ylab = "instace coverage (%)", col = "red", border = "black")
+barplot(SOLUTIONS, names.arg = SOLVER, xlab = "solver", ylab = "instance coverage (%)", col = "red", border = "black")
 
 # save the file
 dev.off()
