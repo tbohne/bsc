@@ -1,5 +1,11 @@
 package SLP.representations;
 
+import SLP.constructive_heuristics.ThreeCapPermutationHeuristic;
+import SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic;
+import SLP.constructive_heuristics.TwoCapHeuristic;
+import SLP.mip_formulations.BinPackingFormulation;
+import SLP.mip_formulations.ThreeIndexFormulation;
+
 import java.io.*;
 
 import static SLP.experiments.SolverComparison3Cap.*;
@@ -9,15 +15,15 @@ public class SolutionWriter {
     public static String getNameOfSolver(Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
-                return "BinPacking Formulation";
+                return BinPackingFormulation.class.getName();
             case MIP_THREEINDEX:
-                return "ThreeIndex Formulation";
+                return ThreeIndexFormulation.class.getName();
             case CONSTRUCTIVE_TWO_CAP:
-                return "Constructive Heuristic (2Cap)";
+                return TwoCapHeuristic.class.getName();
             case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
-                return "Constructive Permutation Heuristic (3cap)";
+                return ThreeCapPermutationHeuristic.class.getName();
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
-                return "Constructive Recursion Heuristic (3cap)";
+                return ThreeCapRecursiveMCMHeuristic.class.getName();
             default:
                 return "";
         }
