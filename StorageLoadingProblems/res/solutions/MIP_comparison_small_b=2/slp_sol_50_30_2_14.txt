@@ -1,0 +1,75 @@
+solved with: SLP.mip_formulations.BinPackingFormulation
+time limit: 30 s
+time to solve: 0.26 s
+objective value: 62.0
+
+stacks (top to bottom):
+stack  0:    34 45 
+stack  1:    35 
+stack  2:    46 14 
+stack  3:    21 1 
+stack  4:    47 
+stack  5:    13 17 
+stack  6:    16 
+stack  7:    33 30 
+stack  8:    24 29 
+stack  9:    23 
+stack 10:    5 41 
+stack 11:    40 25 
+stack 12:    9 43 
+stack 13:    18 
+stack 14:    31 4 
+stack 15:    26 
+stack 16:    42 37 
+stack 17:    3 36 
+stack 18:    38 
+stack 19:    28 22 
+stack 20:    44 
+stack 21:    10 12 
+stack 22:    19 
+stack 23:    49 15 
+stack 24:    27 20 
+stack 25:    39 0 
+stack 26:    32 48 
+stack 27:    8 7 
+stack 28:    11 2 
+stack 29:    6 
+
+#####################################################
+
+solved with: SLP.mip_formulations.ThreeIndexFormulation
+time limit: 30 s
+time to solve: 0.19 s
+objective value: 62.0
+
+stacks (top to bottom):
+stack  0:    34 45 
+stack  1:    35 
+stack  2:    46 14 
+stack  3:    21 1 
+stack  4:    47 
+stack  5:    13 17 
+stack  6:    16 
+stack  7:    33 30 
+stack  8:    24 29 
+stack  9:    23 
+stack 10:    5 41 
+stack 11:    40 25 
+stack 12:    9 43 
+stack 13:    18 
+stack 14:    31 4 
+stack 15:    26 
+stack 16:    42 37 
+stack 17:    3 36 
+stack 18:    38 
+stack 19:    28 22 
+stack 20:    44 
+stack 21:    10 12 
+stack 22:    19 
+stack 23:    49 15 
+stack 24:    27 20 
+stack 25:    39 0 
+stack 26:    32 48 
+stack 27:    8 7 
+stack 28:    11 2 
+stack 29:    6 
