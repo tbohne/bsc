@@ -14,6 +14,9 @@ import java.util.*;
 
 public class ThreeCapPermutationHeuristic {
 
+    private final int COMPLETE_PERMUTATION_LIMIT = 8;
+    private final int PERMUTATIONS = 40000;
+
     private Instance instance;
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
@@ -72,12 +75,12 @@ public class ThreeCapPermutationHeuristic {
 
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
-        if (initiallyUnmatchedItems.size() < 9) {
+        if (initiallyUnmatchedItems.size() <= COMPLETE_PERMUTATION_LIMIT) {
             for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
                 unmatchedItemPermutations.add(new ArrayList<>(itemList));
             }
         } else {
-            for (int i = 0; i < 40000; i++) {
+            for (int i = 0; i < PERMUTATIONS; i++) {
                 unmatchedItemPermutations.add(new ArrayList<>(initiallyUnmatchedItems));
                 Collections.shuffle(initiallyUnmatchedItems);
 
@@ -373,27 +376,28 @@ public class ThreeCapPermutationHeuristic {
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
 
-        // TODO: Remove hard coded values
-        for (int cnt = 0; cnt < 5000; cnt++) {
-            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
-            if (!itemPairPermutations.contains(tmp)) {
-                itemPairPermutations.add(tmp);
-            }
-        }
-        for (int cnt = 0; cnt < 5000; cnt++) {
-            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
-            if (!itemPairPermutations.contains(tmp)) {
-                itemPairPermutations.add(tmp);
-            }
-        }
-
         // TODO: If all permutations are generated, the edgeExchange part is redundant.
-        if (itemPairs.size() < 9) {
+        if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
             for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
                 itemPairPermutations.add(new ArrayList(edgeList));
             }
         } else {
-            for (int i = 0; i < 400000; i++) {
+
+            // TODO: Remove hard coded values
+            for (int cnt = 0; cnt < 5000; cnt++) {
+                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
+                if (!itemPairPermutations.contains(tmp)) {
+                    itemPairPermutations.add(tmp);
+                }
+            }
+            for (int cnt = 0; cnt < 5000; cnt++) {
+                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
+                if (!itemPairPermutations.contains(tmp)) {
+                    itemPairPermutations.add(tmp);
+                }
+            }
+
+            for (int i = 0; i < PERMUTATIONS; i++) {
                 Collections.shuffle(itemPairs);
                 itemPairPermutations.add(new ArrayList(itemPairs));
             }
@@ -411,8 +415,10 @@ public class ThreeCapPermutationHeuristic {
 
             // TODO: just use one stopping criterion at a time
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
-            // TODO: remove hard coded value
-            if (generatedSolutions > 1000000) { break; }
+//            // TODO: remove hard coded value
+//            if (generatedSolutions > 1000000) { break; }
+
+            System.out.println(itemPairPermutation);
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
                 if (!this.setStacks(itemPairPermutation, unmatchedItems)) {
