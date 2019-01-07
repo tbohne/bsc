@@ -438,22 +438,6 @@ public class ThreeCapPermutationHeuristic {
                     bestSol = new Solution(sol);
                 }
                 this.instance.resetStacks();
-
-                // TODO: remove the whole flipped-item-pair part after improved implementation of col- / row-rating
-
-                if (!this.generateSolWithFlippedItemPair(itemPairPermutation, unmatchedItems)) { break; }
-                Solution flippedPairsSol = new Solution(0, this.timeLimit, this.instance);
-
-                if (!optimizeSolution && flippedPairsSol.isFeasible()) {
-                    return flippedPairsSol;
-                }
-
-                if (flippedPairsSol.isFeasible() && flippedPairsSol.getCost() < bestSol.getCost()) {
-                    bestSol = new Solution(flippedPairsSol);
-                }
-
-                // TODO: adjust after flipped solution is removed
-                this.instance.resetStacks();
             }
         }
 
