@@ -115,6 +115,43 @@ public class HeuristicUtil {
         }
     }
 
+    public static void assignColRatingToEdgesNewWay(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+
+        for (MCMEdge edge : matchedItems) {
+
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            int rating = 0;
+
+            if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
+
+                int ratingOne = 0;
+                for (int i = 0; i < stackingConstraints.length; i++) {
+                    ratingOne += (stackingConstraints[i][itemOne]);
+                }
+                int ratingTwo = 0;
+                for (int i = 0; i < stackingConstraints.length; i++) {
+                    ratingTwo += (stackingConstraints[i][itemTwo]);
+                }
+
+                rating = ratingOne > ratingTwo ? ratingOne : ratingTwo;
+
+            } else if (stackingConstraints[itemOne][itemTwo] == 1) {
+
+                for (int i = 0; i < stackingConstraints.length; i++) {
+                    rating += (stackingConstraints[i][itemOne]);
+                }
+
+            } else if (stackingConstraints[itemTwo][itemOne] == 1) {
+                for (int i = 0; i < stackingConstraints.length; i++) {
+                    rating += (stackingConstraints[i][itemTwo]);
+                }
+            }
+
+            edge.setRating(rating);
+        }
+    }
+
     public static void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
