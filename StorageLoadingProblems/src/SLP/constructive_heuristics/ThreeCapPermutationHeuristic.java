@@ -274,9 +274,20 @@ public class ThreeCapPermutationHeuristic {
 
         // assign to 1st and 2nd level
         if (this.instance.getStacks()[idx][2] == -1) {
-            this.instance.getStacks()[idx][2] = below;
-            this.instance.getStacks()[idx][1] = above;
+
+            // if row rating is better than col rating, it shouldn't be placed on ground level
+            if (HeuristicUtil.computeRowRatingForEdgesNewWay(below, above, this.instance.getStackingConstraints())
+                > HeuristicUtil.computeColRatingForEdgesNewWay(below, above, this.instance.getStackingConstraints())) {
+
+                    this.instance.getStacks()[idx][1] = below;
+                    this.instance.getStacks()[idx][0] = above;
+
+            } else {
+                this.instance.getStacks()[idx][2] = below;
+                this.instance.getStacks()[idx][1] = above;
+            }
             return true;
+
             // assign to 2nd and 3rd level
         } else if (this.instance.getStacks()[idx][1] == -1
                 && this.instance.getStackingConstraints()[below][this.instance.getStacks()[idx][2]] == 1) {
@@ -291,6 +302,7 @@ public class ThreeCapPermutationHeuristic {
     public boolean assignEdgeToFirstPossiblePosition(MCMEdge edge) {
 
         for (int i = 0; i < this.instance.getStacks().length; i++) {
+
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
@@ -360,8 +372,9 @@ public class ThreeCapPermutationHeuristic {
             itemPairsCopy.add(new MCMEdge(e));
         }
 
-        HeuristicUtil.assignRowRatingToEdges(itemPairs, this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdges(itemPairsCopy, this.instance.getStackingConstraints());
+        HeuristicUtil.assignRowRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairsCopy, this.instance.getStackingConstraints());
+
         // The edges get sorted based on their ratings.
         Collections.sort(itemPairs);
         Collections.sort(itemPairsCopy);
@@ -409,16 +422,10 @@ public class ThreeCapPermutationHeuristic {
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = this.getItemPairPermutations(mcm);
         Solution bestSol = new Solution();
-        int generatedSolutions = 0;
 
         for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
 
-            // TODO: just use one stopping criterion at a time
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
-//            // TODO: remove hard coded value
-//            if (generatedSolutions > 1000000) { break; }
-
-            System.out.println(itemPairPermutation);
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
                 if (!this.setStacks(itemPairPermutation, unmatchedItems)) {
@@ -446,12 +453,10 @@ public class ThreeCapPermutationHeuristic {
                 }
 
                 // TODO: adjust after flipped solution is removed
-                generatedSolutions += 2;
                 this.instance.resetStacks();
             }
         }
 
-        System.out.println("number of generated solutions: " + generatedSolutions);
         return bestSol;
     }
 
