@@ -29,7 +29,11 @@ public class ThreeCapPermutationHeuristic {
         this.alreadyUsedShuffles = new ArrayList<>();
     }
 
-    public ArrayList<List<Integer>> getUnmatchedPermutations(ArrayList<MCMEdge> matchedItems) {
+    public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
+
+        // TODO: question to ask: is it going to be placed above or below the pair?
+        //                        --> compute rating accordingly
+        //                        --> dynamic decision for each stack completion
 
         ArrayList<Integer> initiallyUnmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
@@ -344,71 +348,74 @@ public class ThreeCapPermutationHeuristic {
         return new ArrayList(tmpEdges);
     }
 
-    public ArrayList<ArrayList<MCMEdge>> getInitialStackAssignmentsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
+    public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-        ArrayList<MCMEdge> edgesCopy = new ArrayList<>();
+        ArrayList<MCMEdge> itemPairsCopy = new ArrayList<>();
         for (MCMEdge e : itemPairs) {
-            edgesCopy.add(new MCMEdge(e));
+            itemPairsCopy.add(new MCMEdge(e));
         }
 
         HeuristicUtil.assignRowRatingToEdges(itemPairs, this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdges(edgesCopy, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdges(itemPairsCopy, this.instance.getStackingConstraints());
         // The edges get sorted based on their ratings.
         Collections.sort(itemPairs);
-        Collections.sort(edgesCopy);
+        Collections.sort(itemPairsCopy);
 
-        ArrayList<ArrayList<MCMEdge>> edgePermutations = new ArrayList<>();
+        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         // The first permutation that is added is the one based on the sorting
         // which should be the most promising stack assignment.
-        edgePermutations.add(new ArrayList(itemPairs));
-        edgePermutations.add(new ArrayList(edgesCopy));
-        edgePermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
-        edgePermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(edgesCopy));
+        itemPairPermutations.add(new ArrayList(itemPairs));
+        itemPairPermutations.add(new ArrayList(itemPairsCopy));
+
+        // TODO: The reversed sequence shouldn't be reasonable.
+        itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
+        itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
 
         // TODO: Remove hard coded values
         for (int cnt = 0; cnt < 5000; cnt++) {
             ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
-            if (!edgePermutations.contains(tmp)) {
-                edgePermutations.add(tmp);
+            if (!itemPairPermutations.contains(tmp)) {
+                itemPairPermutations.add(tmp);
             }
         }
         for (int cnt = 0; cnt < 5000; cnt++) {
-            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(edgesCopy));
-            if (!edgePermutations.contains(tmp)) {
-                edgePermutations.add(tmp);
+            ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
+            if (!itemPairPermutations.contains(tmp)) {
+                itemPairPermutations.add(tmp);
             }
         }
 
+        // TODO: If all permutations are generated, the edgeExchange part is redundant.
         if (itemPairs.size() < 9) {
             for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
-                edgePermutations.add(new ArrayList(edgeList));
+                itemPairPermutations.add(new ArrayList(edgeList));
             }
         } else {
             for (int i = 0; i < 400000; i++) {
                 Collections.shuffle(itemPairs);
-                edgePermutations.add(new ArrayList(itemPairs));
+                itemPairPermutations.add(new ArrayList(itemPairs));
             }
         }
-        return edgePermutations;
+        return itemPairPermutations;
     }
 
     public Solution permutationApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm, boolean optimizeSolution) {
 
-        ArrayList<ArrayList<MCMEdge>> itemPairSubsets = this.getInitialStackAssignmentsFromMCM(mcm);
+        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = this.getItemPairPermutations(mcm);
         Solution bestSol = new Solution();
         int generatedSolutions = 0;
 
-        for (ArrayList<MCMEdge> matchedItems : itemPairSubsets) {
+        for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
 
-            // time limit of 5 minutes
-            if ((System.currentTimeMillis() - startTime) / 1000.0 >= 300) { break; }
-            // limits the number of generated solutions to ~1 mio.
+            // TODO: just use one stopping criterion at a time
+            if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
+            // TODO: remove hard coded value
             if (generatedSolutions > 1000000) { break; }
 
-            for (List<Integer> unmatchedItems : this.getUnmatchedPermutations(matchedItems)) {
-                if (!this.setStacks(matchedItems, unmatchedItems)) {
+            for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
+                if (!this.setStacks(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
                     break;
                 }
@@ -419,7 +426,9 @@ public class ThreeCapPermutationHeuristic {
                 }
                 this.instance.resetStacks();
 
-                if (!this.generateSolWithFlippedItemPair(matchedItems, unmatchedItems)) { break; }
+                // TODO: remove the whole flipped-item-pair part after improved implementation of col- / row-rating
+
+                if (!this.generateSolWithFlippedItemPair(itemPairPermutation, unmatchedItems)) { break; }
                 Solution flippedPairsSol = new Solution(0, this.timeLimit, this.instance);
 
                 if (!optimizeSolution && flippedPairsSol.isFeasible()) {
@@ -430,6 +439,7 @@ public class ThreeCapPermutationHeuristic {
                     bestSol = new Solution(flippedPairsSol);
                 }
 
+                // TODO: adjust after flipped solution is removed
                 generatedSolutions += 2;
                 this.instance.resetStacks();
             }
