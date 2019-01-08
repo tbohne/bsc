@@ -115,22 +115,37 @@ public class ThreeCapPermutationHeuristic {
     }
     /******************************************************************************************/
 
-    public ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> initialListOfUnmatchedItems) {
+    /**
+     * Returns the list of unmatched items increasingly sorted by row rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems) {
+
         HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
-        for (int item : initialListOfUnmatchedItems) {
-            unmatchedItemRowRatings.put(item, HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
+        for (int item : unmatchedItems) {
+            int rating = HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints());
+            unmatchedItemRowRatings.put(item, rating);
         }
         ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
         Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
         for (int item : sortedItemRowRatings.keySet()) {
             unmatchedItemsSortedByRowRating.add(item);
         }
+
         return unmatchedItemsSortedByRowRating;
     }
 
-    public ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> initialListOfUnmatchedItems) {
+    /**
+     * Returns the list of unmatched items increasingly sorted by col rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems) {
         HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
-        for (int item : initialListOfUnmatchedItems) {
+        for (int item : unmatchedItems) {
             unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
         }
         Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
@@ -504,6 +519,7 @@ public class ThreeCapPermutationHeuristic {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
+
         ArrayList<MCMEdge> itemPairsCopy = new ArrayList<>();
         for (MCMEdge e : itemPairs) {
             itemPairsCopy.add(new MCMEdge(e));
