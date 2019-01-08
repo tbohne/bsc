@@ -263,7 +263,7 @@ public class ThreeCapPermutationHeuristic {
         this.processMatchedItems(matchedItems, prioritizedEdges);
 
         ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
-        if (!this.updateUnmatchedItems(stillUnmatchedItems)) { return false; }
+        this.updateUnmatchedItems(stillUnmatchedItems);
         this.assignUnmatchedItemsInGivenOrder(stillUnmatchedItems);
         return true;
     }
@@ -310,14 +310,13 @@ public class ThreeCapPermutationHeuristic {
                 }
             }
         }
-
         for (int item : toBeRemoved) {
             unmatchedItems.remove(unmatchedItems.indexOf(item));
         }
     }
 
     /**
-     * Assigns the items that are finally unstackable to its own stacks.
+     * Assigns as many of the finally unmatched items as possible to the remaining free positions in the stacks.
      *
      * @param unmatchedItems
      */
@@ -356,7 +355,12 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public boolean updateUnmatchedItems(ArrayList<Integer> unmatchedItems) {
+    /**
+     * Updates the list of unmatched items.
+     *
+     * @param unmatchedItems - the list to be updated
+     */
+    public void updateUnmatchedItems(ArrayList<Integer> unmatchedItems) {
 
         unmatchedItems.addAll(this.additionalUnmatchedItems);
 
@@ -371,15 +375,6 @@ public class ThreeCapPermutationHeuristic {
             unmatchedItems.remove(idx);
             toBeRemoved.remove(0);
         }
-
-        // TODO: Check - could cause problems
-        for (int item : unmatchedItems) {
-            // If we still have a one here, we have a problem.
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) == 1) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public boolean assignItemsInGivenOrder(int idx, int below, int above) {
