@@ -377,44 +377,54 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public boolean assignItemsInGivenOrder(int idx, int below, int above) {
+    /**
+     * Assigns the given item pair to the specified stack.
+     *
+     * @param stackIdx - specifies the stack, the items are placed in
+     * @param below - the item that is placed below
+     * @param above - the item that is placed above
+     * @return whether or not the assignment was successful
+     */
+    public boolean assignItemPairToStack(int stackIdx, int below, int above) {
 
         // at least one of the items is not compatible with the stack
-        if (this.instance.getStackConstraints()[below][idx] != 1 || this.instance.getStackConstraints()[above][idx] != 1) {
+        if (this.instance.getStackConstraints()[below][stackIdx] != 1 || this.instance.getStackConstraints()[above][stackIdx] != 1) {
             return false;
         }
 
         // assign to 1st and 2nd level
-        if (this.instance.getStacks()[idx][2] == -1 && this.instance.getStacks()[idx][1] == -1) {
-            this.instance.getStacks()[idx][2] = below;
-            this.instance.getStacks()[idx][1] = above;
+        if (this.instance.getStacks()[stackIdx][2] == -1 && this.instance.getStacks()[stackIdx][1] == -1) {
+            this.instance.getStacks()[stackIdx][2] = below;
+            this.instance.getStacks()[stackIdx][1] = above;
             return true;
         // assign to 2nd and 3rd level
-        } else if (this.instance.getStacks()[idx][1] == -1 && this.instance.getStacks()[idx][0] == -1
-                && this.instance.getStackingConstraints()[below][this.instance.getStacks()[idx][2]] == 1) {
-            this.instance.getStacks()[idx][1] = below;
-            this.instance.getStacks()[idx][0] = above;
+        } else if (this.instance.getStacks()[stackIdx][1] == -1 && this.instance.getStacks()[stackIdx][0] == -1
+                && this.instance.getStackingConstraints()[below][this.instance.getStacks()[stackIdx][2]] == 1) {
+            this.instance.getStacks()[stackIdx][1] = below;
+            this.instance.getStacks()[stackIdx][0] = above;
             return true;
         }
         // no two free positions
         return false;
     }
 
-    public boolean assignEdgeToFirstPossiblePosition(MCMEdge edge) {
+    /**
+     * Handles the assignment of the items connected by the given edge.
+     *
+     * @param edge - the edge connecting the item pair
+     * @return whether the assignment was successful
+     */
+    public boolean handleItemPairAssignmentForEdge(MCMEdge edge) {
 
         for (int i = 0; i < this.instance.getStacks().length; i++) {
 
-            int vertexOne = edge.getVertexOne();
-            int vertexTwo = edge.getVertexTwo();
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
 
-            if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
-                if (this.assignItemsInGivenOrder(i, vertexOne, vertexTwo)) {
-                    return true;
-                }
+            if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1) {
+                if (this.assignItemPairToStack(i, itemOne, itemTwo)) { return true; }
             } else {
-                if (this.assignItemsInGivenOrder(i, vertexTwo, vertexOne)) {
-                    return true;
-                }
+                if (this.assignItemPairToStack(i, itemTwo, itemOne)) { return true; }
             }
         }
         return false;
@@ -431,7 +441,7 @@ public class ThreeCapPermutationHeuristic {
             }
             if (continueOuterLoop) { continue; }
 
-            if (!this.assignEdgeToFirstPossiblePosition(edge)) {
+            if (!this.handleItemPairAssignmentForEdge(edge)) {
                 this.additionalUnmatchedItems.add(edge.getVertexOne());
                 this.additionalUnmatchedItems.add(edge.getVertexTwo());
             }
