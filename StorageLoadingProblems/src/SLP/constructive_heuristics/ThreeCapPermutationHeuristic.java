@@ -33,6 +33,35 @@ public class ThreeCapPermutationHeuristic {
         this.alreadyUsedShuffles = new ArrayList<>();
     }
 
+    /************************************ TODO: UNUSED ATM ************************************/
+    public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations, ArrayList<MCMEdge> itemPairsCopy) {
+        if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
+            for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
+                itemPairPermutations.add(new ArrayList(edgeList));
+            }
+        } else {
+
+            // TODO: Remove hard coded values
+            for (int cnt = 0; cnt < 5000; cnt++) {
+                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
+                if (!itemPairPermutations.contains(tmp)) {
+                    itemPairPermutations.add(tmp);
+                }
+            }
+            for (int cnt = 0; cnt < 5000; cnt++) {
+                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
+                if (!itemPairPermutations.contains(tmp)) {
+                    itemPairPermutations.add(tmp);
+                }
+            }
+
+            for (int i = 0; i < ITEM_PAIR_PERMUTATIONS; i++) {
+                Collections.shuffle(itemPairs);
+                itemPairPermutations.add(new ArrayList(itemPairs));
+            }
+        }
+    }
+
     public void addUnmatchedItemPermutations(ArrayList<Integer> initialListOfUnmatchedItems, ArrayList<List<Integer>> unmatchedItemPermutations) {
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
@@ -58,6 +87,7 @@ public class ThreeCapPermutationHeuristic {
             }
         }
     }
+    /******************************************************************************************/
 
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
 
@@ -84,9 +114,6 @@ public class ThreeCapPermutationHeuristic {
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
         Collections.reverse(unmatchedItemsSortedByRating);
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
-
-        // TODO: this approach is not that useful at all (to be removed / replaced)
-        // this.addUnmatchedItemPermutations(initialListOfUnmatchedItems, unmatchedItemPermutations);
 
         return unmatchedItemPermutations;
     }
@@ -343,34 +370,6 @@ public class ThreeCapPermutationHeuristic {
         return new ArrayList(tmpEdges);
     }
 
-    public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations, ArrayList<MCMEdge> itemPairsCopy) {
-        if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
-            for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
-                itemPairPermutations.add(new ArrayList(edgeList));
-            }
-        } else {
-
-            // TODO: Remove hard coded values
-            for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
-                if (!itemPairPermutations.contains(tmp)) {
-                    itemPairPermutations.add(tmp);
-                }
-            }
-            for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
-                if (!itemPairPermutations.contains(tmp)) {
-                    itemPairPermutations.add(tmp);
-                }
-            }
-
-            for (int i = 0; i < ITEM_PAIR_PERMUTATIONS; i++) {
-                Collections.shuffle(itemPairs);
-                itemPairPermutations.add(new ArrayList(itemPairs));
-            }
-        }
-    }
-
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
@@ -396,9 +395,7 @@ public class ThreeCapPermutationHeuristic {
         // TODO: The reversed sequence shouldn't be reasonable.
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
-
-        // TODO: this approach is not that useful at all (to be removed / replaced)
-        // this.addItemPairPermutations(itemPairs, itemPairPermutations, itemPairsCopy);
+        
         return itemPairPermutations;
     }
 
