@@ -111,8 +111,8 @@ public class ThreeCapPermutationHeuristic {
             int vertexOne = edge.getVertexOne();
             int vertexTwo = edge.getVertexTwo();
 
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(vertexOne, this.instance.getStackingConstraints()) <= 10
-                    || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= 10) {
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(vertexOne, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50
+                    || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50) {
 
                 while (cnt < this.instance.getStacks().length
                     && (this.instance.getStackConstraints()[vertexOne][cnt] != 1 || this.instance.getStackConstraints()[vertexTwo][cnt] != 1)) {
@@ -273,23 +273,12 @@ public class ThreeCapPermutationHeuristic {
         }
 
         // assign to 1st and 2nd level
-        if (this.instance.getStacks()[idx][2] == -1) {
-
-            // if row rating is better than col rating, it shouldn't be placed on ground level
-            if (HeuristicUtil.computeRowRatingForEdgesNewWay(below, above, this.instance.getStackingConstraints())
-                > HeuristicUtil.computeColRatingForEdgesNewWay(below, above, this.instance.getStackingConstraints())) {
-
-                    this.instance.getStacks()[idx][1] = below;
-                    this.instance.getStacks()[idx][0] = above;
-
-            } else {
-                this.instance.getStacks()[idx][2] = below;
-                this.instance.getStacks()[idx][1] = above;
-            }
+        if (this.instance.getStacks()[idx][2] == -1 && this.instance.getStacks()[idx][1] == -1) {
+            this.instance.getStacks()[idx][2] = below;
+            this.instance.getStacks()[idx][1] = above;
             return true;
-
-            // assign to 2nd and 3rd level
-        } else if (this.instance.getStacks()[idx][1] == -1
+        // assign to 2nd and 3rd level
+        } else if (this.instance.getStacks()[idx][1] == -1 && this.instance.getStacks()[idx][0] == -1
                 && this.instance.getStackingConstraints()[below][this.instance.getStacks()[idx][2]] == 1) {
             this.instance.getStacks()[idx][1] = below;
             this.instance.getStacks()[idx][0] = above;
@@ -372,8 +361,8 @@ public class ThreeCapPermutationHeuristic {
             itemPairsCopy.add(new MCMEdge(e));
         }
 
-        HeuristicUtil.assignRowRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairsCopy, this.instance.getStackingConstraints());
+        HeuristicUtil.assignRowRatingToEdges(itemPairs, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdges(itemPairsCopy, this.instance.getStackingConstraints());
 
         // The edges get sorted based on their ratings.
         Collections.sort(itemPairs);
@@ -428,16 +417,32 @@ public class ThreeCapPermutationHeuristic {
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
+
                 if (!this.setStacks(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
                     break;
                 }
+
                 Solution sol = new Solution(0, this.timeLimit, this.instance);
                 if (!optimizeSolution && sol.isFeasible()) { return sol; }
                 if (sol.isFeasible() && sol.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol);
                 }
                 this.instance.resetStacks();
+
+                if (!this.generateSolWithFlippedItemPair(itemPairPermutation, unmatchedItems)) { break; }
+                Solution flippedPairsSol = new Solution(0, this.timeLimit, this.instance);
+
+                if (!optimizeSolution && flippedPairsSol.isFeasible()) {
+                    return flippedPairsSol;
+                }
+
+                if (flippedPairsSol.isFeasible() && flippedPairsSol.getCost() < bestSol.getCost()) {
+                    bestSol = new Solution(flippedPairsSol);
+                }
+
+                this.instance.resetStacks();
+
             }
         }
 
