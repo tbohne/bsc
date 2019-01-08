@@ -34,6 +34,32 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /************************************ TODO: UNUSED ATM ************************************/
+    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
+    // IDEA:
+    // - choose a number n (20%) of random elements to be replaced
+    // - choose the next n unused elements from the ordered list
+    // - exchange the elements
+    public ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges) {
+
+        ArrayList tmpEdges = new ArrayList(edges);
+
+        int numberOfEdgesToBeReplaced = (int) (0.3 * this.instance.getStacks().length);
+        if (numberOfEdgesToBeReplaced > (edges.size() - this.instance.getStacks().length)) {
+            numberOfEdgesToBeReplaced = edges.size() - this.instance.getStacks().length;
+        }
+
+        ArrayList<Integer> toBeReplaced = new ArrayList<>();
+
+        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
+            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
+        }
+        for (int i = 0; i < toBeReplaced.size(); i++) {
+            Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
+        }
+
+        return new ArrayList(tmpEdges);
+    }
+
     public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations, ArrayList<MCMEdge> itemPairsCopy) {
         if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
             for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
@@ -149,7 +175,7 @@ public class ThreeCapPermutationHeuristic {
             int vertexTwo = edge.getVertexTwo();
 
             if (HeuristicUtil.computeRowRatingForUnmatchedItem(vertexOne, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50
-                    || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50) {
+                || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50) {
 
                 while (cnt < this.instance.getStacks().length
                     && (this.instance.getStackConstraints()[vertexOne][cnt] != 1 || this.instance.getStackConstraints()[vertexTwo][cnt] != 1)) {
@@ -242,23 +268,77 @@ public class ThreeCapPermutationHeuristic {
         return true;
     }
 
+    public void tryToAssignRemainingItemsAsPairs(List<Integer> unmatchedItems) {
+
+        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
+        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+
+        ArrayList<Integer> toBeRemoved = new ArrayList<>();
+
+        for (MCMEdge itemPair : itemPairs) {
+            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+                if (this.instance.getStacks()[stack][2] == -1) {
+                    if (this.instance.getStackingConstraints()[itemPair.getVertexOne()][itemPair.getVertexTwo()] == 1) {
+                        this.instance.getStacks()[stack][2] = itemPair.getVertexTwo();
+                        this.instance.getStacks()[stack][1] = itemPair.getVertexOne();
+                    } else {
+                        this.instance.getStacks()[stack][2] = itemPair.getVertexOne();
+                        this.instance.getStacks()[stack][1] = itemPair.getVertexTwo();
+                    }
+                    toBeRemoved.add(itemPair.getVertexOne());
+                    toBeRemoved.add(itemPair.getVertexTwo());
+                    break;
+                } else if (this.instance.getStacks()[stack][1] == -1 && this.instance.getStacks()[stack][0] == -1) {
+                    if (this.instance.getStackingConstraints()[itemPair.getVertexOne()][itemPair.getVertexTwo()] == 1) {
+                        if (this.instance.getStackingConstraints()[itemPair.getVertexTwo()][this.instance.getStacks()[stack][2]] == 1) {
+                            this.instance.getStacks()[stack][1] = itemPair.getVertexTwo();
+                            this.instance.getStacks()[stack][0] = itemPair.getVertexOne();
+                            toBeRemoved.add(itemPair.getVertexOne());
+                            toBeRemoved.add(itemPair.getVertexTwo());
+                            break;
+                        }
+                    } else {
+                        if (this.instance.getStackingConstraints()[itemPair.getVertexOne()][this.instance.getStacks()[stack][2]] == 1) {
+                            this.instance.getStacks()[stack][1] = itemPair.getVertexOne();
+                            this.instance.getStacks()[stack][0] = itemPair.getVertexTwo();
+                            toBeRemoved.add(itemPair.getVertexOne());
+                            toBeRemoved.add(itemPair.getVertexTwo());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int item : toBeRemoved) {
+            unmatchedItems.remove(unmatchedItems.indexOf(item));
+        }
+    }
+
+    /**
+     * Assigns the items that are finally unstackable to its own stacks.
+     *
+     * @param unmatchedItems
+     */
     public void assignUnmatchedItemsInGivenOrder(List<Integer> unmatchedItems) {
+
+        this.tryToAssignRemainingItemsAsPairs(unmatchedItems);
 
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
-                if (this.instance.getStackConstraints()[item][stack] != 1) {
-                    continue;
-                }
+                // item and stack incompatible
+                if (this.instance.getStackConstraints()[item][stack] != 1) { continue; }
 
-                int levelOfCurrentTopMostItem = -99;
+                int levelOfCurrentTopMostItem = -1;
                 for (int level = 2; level >= 0; level--) {
                     if (this.instance.getStacks()[stack][level] != -1) {
                         levelOfCurrentTopMostItem = level;
                     }
                 }
 
-                if (levelOfCurrentTopMostItem == -99) {
+                if (levelOfCurrentTopMostItem == -1) {
                     // assign to ground level
                     this.instance.getStacks()[stack][2] = item;
                     break;
@@ -363,32 +443,6 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
-    // IDEA:
-    // - choose a number n (20%) of random elements to be replaced
-    // - choose the next n unused elements from the ordered list
-    // - exchange the elements
-    public ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges) {
-
-        ArrayList tmpEdges = new ArrayList(edges);
-
-        int numberOfEdgesToBeReplaced = (int) (0.3 * this.instance.getStacks().length);
-        if (numberOfEdgesToBeReplaced > (edges.size() - this.instance.getStacks().length)) {
-            numberOfEdgesToBeReplaced = edges.size() - this.instance.getStacks().length;
-        }
-
-        ArrayList<Integer> toBeReplaced = new ArrayList<>();
-
-        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
-        }
-        for (int i = 0; i < toBeReplaced.size(); i++) {
-            Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
-        }
-
-        return new ArrayList(tmpEdges);
-    }
-
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
@@ -441,6 +495,7 @@ public class ThreeCapPermutationHeuristic {
                 if (sol.isFeasible() && sol.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol);
                 }
+
                 this.instance.resetStacks();
 
                 if (!this.generateSolWithFlippedItemPair(itemPairPermutation, unmatchedItems)) { break; }
