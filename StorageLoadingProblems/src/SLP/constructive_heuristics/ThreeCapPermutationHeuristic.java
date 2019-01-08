@@ -15,7 +15,8 @@ import java.util.*;
 public class ThreeCapPermutationHeuristic {
 
     private final int COMPLETE_PERMUTATION_LIMIT = 8;
-    private final int PERMUTATIONS = 40000;
+    private final int ITEM_PAIR_PERMUTATIONS = 40000;
+    private final int ITEM_PERMUTATIONS = 500;
 
     private Instance instance;
     private ArrayList<Integer> unstackableItems;
@@ -38,62 +39,47 @@ public class ThreeCapPermutationHeuristic {
         //                        --> compute rating accordingly
         //                        --> dynamic decision for each stack completion
 
-        ArrayList<Integer> initiallyUnmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
-        ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
+        ArrayList<Integer> initialListOfUnmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
 
         HashMap<Integer, Integer> unmatchedItemRatings = new HashMap<>();
-        for (int item : initiallyUnmatchedItems) {
+        for (int item : initialListOfUnmatchedItems) {
             unmatchedItemRatings.put(item, HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
         }
 
         // ordered by rating - hardest cases first
         Map<Integer, Integer> sortedItemRatings = MapUtil.sortByValue(unmatchedItemRatings);
         ArrayList<Integer> unmatchedItemsSortedByRating = new ArrayList<>();
-
         for (int item : sortedItemRatings.keySet()) {
             unmatchedItemsSortedByRating.add(item);
         }
+
+        ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
         Collections.reverse(unmatchedItemsSortedByRating);
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
 
-        ///////////////////////// TODO: Complete idea
-//        // restore
-//        Collections.reverse(unmatchedItemsSortedByRating);
-//        for (int i = 0; i < 10000; i++) {
-//            Random r = new Random();
-//            int low = 0;
-//            int high = unmatchedItemsSortedByRating.size() - 1;
-//            int res1 = r.nextInt(high - low) + low;
-//            int res2 = r.nextInt(high - low) + low;
-//            ArrayList<Integer> tmp = new ArrayList<>(unmatchedItemsSortedByRating);
-//            Collections.swap(tmp, res1, res2);
-//            unmatchedItemPermutations.add(new ArrayList<>(tmp));
-//        }
-        //////////////////////////////////
-
         // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
         // after that 40k random shuffles are used instead.
-        if (initiallyUnmatchedItems.size() <= COMPLETE_PERMUTATION_LIMIT) {
-            for (List<Integer> itemList : Collections2.permutations(initiallyUnmatchedItems)) {
+        if (initialListOfUnmatchedItems.size() <= COMPLETE_PERMUTATION_LIMIT) {
+            for (List<Integer> itemList : Collections2.permutations(initialListOfUnmatchedItems)) {
                 unmatchedItemPermutations.add(new ArrayList<>(itemList));
             }
         } else {
-            for (int i = 0; i < PERMUTATIONS; i++) {
-                unmatchedItemPermutations.add(new ArrayList<>(initiallyUnmatchedItems));
-                Collections.shuffle(initiallyUnmatchedItems);
+            for (int i = 0; i < ITEM_PERMUTATIONS; i++) {
+                unmatchedItemPermutations.add(new ArrayList<>(initialListOfUnmatchedItems));
+                Collections.shuffle(initialListOfUnmatchedItems);
 
                 int unsuccessfulShuffleAttempts = 0;
-                while (HeuristicUtil.isAlreadyUsedShuffle(initiallyUnmatchedItems, this.alreadyUsedShuffles)) {
+                while (HeuristicUtil.isAlreadyUsedShuffle(initialListOfUnmatchedItems, this.alreadyUsedShuffles)) {
                     System.out.println("already");
-                    Collections.shuffle(initiallyUnmatchedItems);
+                    Collections.shuffle(initialListOfUnmatchedItems);
                     if (unsuccessfulShuffleAttempts == 10) {
                         return unmatchedItemPermutations;
                     }
                     unsuccessfulShuffleAttempts++;
                 }
-                this.alreadyUsedShuffles.add(new ArrayList<>(initiallyUnmatchedItems));
+                this.alreadyUsedShuffles.add(new ArrayList<>(initialListOfUnmatchedItems));
             }
         }
 
@@ -399,7 +385,7 @@ public class ThreeCapPermutationHeuristic {
                 }
             }
 
-            for (int i = 0; i < PERMUTATIONS; i++) {
+            for (int i = 0; i < ITEM_PAIR_PERMUTATIONS; i++) {
                 Collections.shuffle(itemPairs);
                 itemPairPermutations.add(new ArrayList(itemPairs));
             }
@@ -414,7 +400,9 @@ public class ThreeCapPermutationHeuristic {
 
         for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
 
-            if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
+            // TODO: change back to actual time limit
+            // if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
+            if ((System.currentTimeMillis() - startTime) / 1000.0 >= 20) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
 
@@ -442,7 +430,6 @@ public class ThreeCapPermutationHeuristic {
                 }
 
                 this.instance.resetStacks();
-
             }
         }
 
