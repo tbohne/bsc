@@ -141,6 +141,14 @@ public class ThreeCapPermutationHeuristic {
         return unmatchedItemsSortedByColRating;
     }
 
+    /**
+     * Returns a list of permutations of the unmatched items.
+     * These permutations are generated according to several strategies.
+     * TODO: describe strategies
+     *
+     * @param matchedItems - the items that are already matched
+     * @return list of of permutations of the unmatched items
+     */
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
 
         // TODO: question to ask: is it going to be placed above or below the pair?
@@ -163,6 +171,12 @@ public class ThreeCapPermutationHeuristic {
         return unmatchedItemPermutations;
     }
 
+    /**
+     * Prioritizes the assignment of edges that are inflexible in terms of the used rating system (row / col).
+     *
+     * @param matchedItems - the list of item pairs
+     * @param prioritizedEdges - the list of edges that are prioritized
+     */
     public void prioritizeInflexibleEdges(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
 
         int cnt = 0;
@@ -171,32 +185,37 @@ public class ThreeCapPermutationHeuristic {
 
             if (cnt >= this.instance.getStacks().length) { break; }
 
-            int vertexOne = edge.getVertexOne();
-            int vertexTwo = edge.getVertexTwo();
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
 
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(vertexOne, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50
-                || HeuristicUtil.computeRowRatingForUnmatchedItem(vertexTwo, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50) {
+            if (edge.getRating() <= this.instance.getItems().length / 50) {
 
                 while (cnt < this.instance.getStacks().length
-                    && (this.instance.getStackConstraints()[vertexOne][cnt] != 1 || this.instance.getStackConstraints()[vertexTwo][cnt] != 1)) {
+                    && (this.instance.getStackConstraints()[itemOne][cnt] != 1 || this.instance.getStackConstraints()[itemTwo][cnt] != 1)) {
                         cnt++;
                 }
                 if (cnt >= this.instance.getStacks().length) { break; }
 
-                prioritizedEdges.add(new MCMEdge(vertexOne, vertexTwo, 0));
+                prioritizedEdges.add(new MCMEdge(itemOne, itemTwo, 0));
 
-                if (this.instance.getStackingConstraints()[vertexTwo][vertexOne] == 1) {
-                    this.instance.getStacks()[cnt][2] = vertexOne;
-                    this.instance.getStacks()[cnt][1] = vertexTwo;
+                if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1) {
+                    this.instance.getStacks()[cnt][2] = itemOne;
+                    this.instance.getStacks()[cnt][1] = itemTwo;
                 } else {
-                    this.instance.getStacks()[cnt][2] = vertexTwo;
-                    this.instance.getStacks()[cnt][1] = vertexOne;
+                    this.instance.getStacks()[cnt][2] = itemTwo;
+                    this.instance.getStacks()[cnt][1] = itemOne;
                 }
                 cnt++;
             }
         }
     }
 
+    /**
+     * Assigns the given item to the first position it is feasibly assignable to.
+     *
+     * @param item - the item that is going to be assigned
+     * @return whether or not the assignment of the item was successful
+     */
     public boolean assignItemToFirstPossiblePosition(int item) {
 
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
@@ -235,9 +254,15 @@ public class ThreeCapPermutationHeuristic {
         return false;
     }
 
+    /**
+     * Prioritizes the assignment of items that are inflexible in terms of the number of items they can be placed upon.
+     *
+     * @param unmatchedItems - the items that aren't paired
+     * @return whether or not the assignment of the inflexible items was successful
+     */
     public boolean prioritizeInflexibleItem(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= 10) {
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50) {
                 this.unstackableItems.add(item);
                 if (!this.assignItemToFirstPossiblePosition(item)) {
                     return false;
@@ -247,7 +272,14 @@ public class ThreeCapPermutationHeuristic {
         return true;
     }
 
-    public boolean setStacks(ArrayList<MCMEdge> matchedItems, List<Integer> unmatchedItems) {
+    /**
+     * Fills the storage area with the item pairs and the remaining unmatched items.
+     *
+     * @param matchedItems - the items that are grouped together in pairs
+     * @param unmatchedItems - the items that are't paired together
+     * @return whether or not the storing procedure was successful
+     */
+    public boolean fillStorageArea(ArrayList<MCMEdge> matchedItems, List<Integer> unmatchedItems) {
 
         if (matchedItems.size() * 2 + unmatchedItems.size() != this.instance.getItems().length) {
             System.out.println("PROBLEM: number of matched items + number of unmatched items != number of items");
@@ -268,6 +300,12 @@ public class ThreeCapPermutationHeuristic {
         return true;
     }
 
+    /**
+     * Generates a maximum cardinality matching for the remaining unmatched item and tries to assign
+     * these items as pairs to the remaining free stack positions.
+     *
+     * @param unmatchedItems - the remaining unmatched items
+     */
     public void tryToAssignRemainingItemsAsPairs(List<Integer> unmatchedItems) {
 
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
@@ -318,7 +356,7 @@ public class ThreeCapPermutationHeuristic {
     /**
      * Assigns as many of the finally unmatched items as possible to the remaining free positions in the stacks.
      *
-     * @param unmatchedItems
+     * @param unmatchedItems - the unmatched items that are going to be assigned
      */
     public void assignUnmatchedItemsInGivenOrder(List<Integer> unmatchedItems) {
 
@@ -501,12 +539,12 @@ public class ThreeCapPermutationHeuristic {
         Solution bestSol = new Solution();
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
-            
+
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
 
-                if (!this.setStacks(itemPairPermutation, unmatchedItems)) {
+                if (!this.fillStorageArea(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
                     break;
                 }
@@ -537,6 +575,13 @@ public class ThreeCapPermutationHeuristic {
         return bestSol;
     }
 
+    /**
+     * Generates a stack assignment with a flipped version of the matched items.
+     *
+     * @param matchedItems - the item pairs
+     * @param unmatchedItems - the items that are not paired
+     * @return whether or not the assignment was successful
+     */
     public boolean generateSolWithFlippedItemPair(ArrayList<MCMEdge> matchedItems, List<Integer> unmatchedItems) {
         ArrayList<MCMEdge> copyMatchedItems = new ArrayList<>();
 
@@ -547,7 +592,7 @@ public class ThreeCapPermutationHeuristic {
             e.flipVertices();
         }
 
-        if (!this.setStacks(copyMatchedItems, unmatchedItems)) {
+        if (!this.fillStorageArea(copyMatchedItems, unmatchedItems)) {
             this.instance.resetStacks();
             return false;
         }
@@ -555,9 +600,11 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /**
+     * Solves the SLP witch an approach that uses maximum cardinality matchings and several permutations of items that
+     * are generated according to a number of different strategies.
      *
-     * @param optimizeSolution - specifies whether the solution should be optimized or just valid
-     * @return
+     * @param optimizeSolution - specifies whether the solution should be optimized (otherwise the first feasible solution gets returned)
+     * @return the solution generated by the heuristic
      */
     public Solution solve(boolean optimizeSolution) {
 
@@ -565,12 +612,12 @@ public class ThreeCapPermutationHeuristic {
 
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
-            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
-            HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+            HeuristicUtil.generateStackingConstraintGraph(stackingConstraintGraph, this.instance.getItems(), this.instance.getStackingConstraints());
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
 
-            sol = permutationApproach(mcm, optimizeSolution);
+            sol = permutationApproach(itemMatching, optimizeSolution);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         } else {
             System.out.println("This heuristic is designed to solve SLP with a stack capacity of 3.");
