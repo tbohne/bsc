@@ -89,6 +89,32 @@ public class ThreeCapPermutationHeuristic {
     }
     /******************************************************************************************/
 
+    public ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> initialListOfUnmatchedItems) {
+        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
+        for (int item : initialListOfUnmatchedItems) {
+            unmatchedItemRowRatings.put(item, HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
+        }
+        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
+        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
+        for (int item : sortedItemRowRatings.keySet()) {
+            unmatchedItemsSortedByRowRating.add(item);
+        }
+        return unmatchedItemsSortedByRowRating;
+    }
+
+    public ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> initialListOfUnmatchedItems) {
+        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
+        for (int item : initialListOfUnmatchedItems) {
+            unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
+        }
+        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
+        for (int item : sortedItemColRatings.keySet()) {
+            unmatchedItemsSortedByColRating.add(item);
+        }
+        return unmatchedItemsSortedByColRating;
+    }
+
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
 
         // TODO: question to ask: is it going to be placed above or below the pair?
@@ -96,24 +122,17 @@ public class ThreeCapPermutationHeuristic {
         //                        --> dynamic decision for each stack completion
 
         ArrayList<Integer> initialListOfUnmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
-
-        HashMap<Integer, Integer> unmatchedItemRatings = new HashMap<>();
-        for (int item : initialListOfUnmatchedItems) {
-            unmatchedItemRatings.put(item, HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
-        }
-
-        // ordered by rating - hardest cases first
-        Map<Integer, Integer> sortedItemRatings = MapUtil.sortByValue(unmatchedItemRatings);
-        ArrayList<Integer> unmatchedItemsSortedByRating = new ArrayList<>();
-        for (int item : sortedItemRatings.keySet()) {
-            unmatchedItemsSortedByRating.add(item);
-        }
+        ArrayList<Integer> unmatchedItemsSortedByRowRating = this.getUnmatchedItemsSortedByRowRating(initialListOfUnmatchedItems);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = this.getUnmatchedItemsSortedByColRating(initialListOfUnmatchedItems);
 
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
-        Collections.reverse(unmatchedItemsSortedByRating);
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
+        Collections.reverse(unmatchedItemsSortedByRowRating);
+        Collections.reverse(unmatchedItemsSortedByColRating);
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
 
         return unmatchedItemPermutations;
     }
@@ -395,7 +414,7 @@ public class ThreeCapPermutationHeuristic {
         // TODO: The reversed sequence shouldn't be reasonable.
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
-        
+
         return itemPairPermutations;
     }
 
