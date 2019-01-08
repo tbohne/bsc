@@ -343,6 +343,34 @@ public class ThreeCapPermutationHeuristic {
         return new ArrayList(tmpEdges);
     }
 
+    public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations, ArrayList<MCMEdge> itemPairsCopy) {
+        if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
+            for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
+                itemPairPermutations.add(new ArrayList(edgeList));
+            }
+        } else {
+
+            // TODO: Remove hard coded values
+            for (int cnt = 0; cnt < 5000; cnt++) {
+                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
+                if (!itemPairPermutations.contains(tmp)) {
+                    itemPairPermutations.add(tmp);
+                }
+            }
+            for (int cnt = 0; cnt < 5000; cnt++) {
+                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
+                if (!itemPairPermutations.contains(tmp)) {
+                    itemPairPermutations.add(tmp);
+                }
+            }
+
+            for (int i = 0; i < ITEM_PAIR_PERMUTATIONS; i++) {
+                Collections.shuffle(itemPairs);
+                itemPairPermutations.add(new ArrayList(itemPairs));
+            }
+        }
+    }
+
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
@@ -369,32 +397,8 @@ public class ThreeCapPermutationHeuristic {
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
 
-        // TODO: If all permutations are generated, the edgeExchange part is redundant.
-        if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
-            for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
-                itemPairPermutations.add(new ArrayList(edgeList));
-            }
-        } else {
-
-            // TODO: Remove hard coded values
-            for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
-                if (!itemPairPermutations.contains(tmp)) {
-                    itemPairPermutations.add(tmp);
-                }
-            }
-            for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
-                if (!itemPairPermutations.contains(tmp)) {
-                    itemPairPermutations.add(tmp);
-                }
-            }
-
-            for (int i = 0; i < ITEM_PAIR_PERMUTATIONS; i++) {
-                Collections.shuffle(itemPairs);
-                itemPairPermutations.add(new ArrayList(itemPairs));
-            }
-        }
+        // TODO: this approach is not that useful at all (to be removed / replaced)
+        // this.addItemPairPermutations(itemPairs, itemPairPermutations, itemPairsCopy);
         return itemPairPermutations;
     }
 
