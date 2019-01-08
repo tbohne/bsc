@@ -430,6 +430,12 @@ public class ThreeCapPermutationHeuristic {
         return false;
     }
 
+    /**
+     * Processes the list of matched items.
+     *
+     * @param matchedItems - the edges connecting pairs of items
+     * @param prioritizedEdges - the list of edges that are prioritized
+     */
     public void processMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
         for (MCMEdge edge : matchedItems) {
             boolean continueOuterLoop = false;
@@ -448,10 +454,18 @@ public class ThreeCapPermutationHeuristic {
         }
     }
 
-    public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching mcm) {
+    /**
+     * Returns a list of permutations of the item pairs.
+     * The permutations are computed using different strategies.
+     * // TODO: describe strategies
+     *
+     * @param itemMatching - matching containing the item pairs
+     * @return list of item pair permutations
+     */
+    public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
         ArrayList<MCMEdge> itemPairsCopy = new ArrayList<>();
         for (MCMEdge e : itemPairs) {
             itemPairsCopy.add(new MCMEdge(e));
@@ -465,8 +479,6 @@ public class ThreeCapPermutationHeuristic {
         Collections.sort(itemPairsCopy);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
-        // The first permutation that is added is the one based on the sorting
-        // which should be the most promising stack assignment.
         itemPairPermutations.add(new ArrayList(itemPairs));
         itemPairPermutations.add(new ArrayList(itemPairsCopy));
 
@@ -477,16 +489,20 @@ public class ThreeCapPermutationHeuristic {
         return itemPairPermutations;
     }
 
-    public Solution permutationApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm, boolean optimizeSolution) {
+    /**
+     * Generates the solution to the given instance of the SLP.
+     *
+     * @param itemMatching - matching containing the item pairs
+     * @param optimizeSolution - indicates whether the solution should be optimized (otherwise the first feasible sol gets returned)
+     * @return the generated solution
+     */
+    public Solution permutationApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching, boolean optimizeSolution) {
 
-        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = this.getItemPairPermutations(mcm);
         Solution bestSol = new Solution();
 
-        for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
-
-            // TODO: change back to actual time limit
-            // if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
-            if ((System.currentTimeMillis() - startTime) / 1000.0 >= 20) { break; }
+        for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
+            
+            if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
 
