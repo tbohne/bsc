@@ -33,6 +33,32 @@ public class ThreeCapPermutationHeuristic {
         this.alreadyUsedShuffles = new ArrayList<>();
     }
 
+    public void addUnmatchedItemPermutations(ArrayList<Integer> initialListOfUnmatchedItems, ArrayList<List<Integer>> unmatchedItemPermutations) {
+        // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
+        // after that 40k random shuffles are used instead.
+        if (initialListOfUnmatchedItems.size() <= COMPLETE_PERMUTATION_LIMIT) {
+            for (List<Integer> itemList : Collections2.permutations(initialListOfUnmatchedItems)) {
+                unmatchedItemPermutations.add(new ArrayList<>(itemList));
+            }
+        } else {
+            for (int i = 0; i < ITEM_PERMUTATIONS; i++) {
+                unmatchedItemPermutations.add(new ArrayList<>(initialListOfUnmatchedItems));
+                Collections.shuffle(initialListOfUnmatchedItems);
+
+                int unsuccessfulShuffleAttempts = 0;
+                while (HeuristicUtil.isAlreadyUsedShuffle(initialListOfUnmatchedItems, this.alreadyUsedShuffles)) {
+                    System.out.println("already");
+                    Collections.shuffle(initialListOfUnmatchedItems);
+                    if (unsuccessfulShuffleAttempts == 10) {
+                        return;
+                    }
+                    unsuccessfulShuffleAttempts++;
+                }
+                this.alreadyUsedShuffles.add(new ArrayList<>(initialListOfUnmatchedItems));
+            }
+        }
+    }
+
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
 
         // TODO: question to ask: is it going to be placed above or below the pair?
@@ -59,29 +85,8 @@ public class ThreeCapPermutationHeuristic {
         Collections.reverse(unmatchedItemsSortedByRating);
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRating));
 
-        // For up to 8 items, the computation of permutations is possible in a reasonable time frame,
-        // after that 40k random shuffles are used instead.
-        if (initialListOfUnmatchedItems.size() <= COMPLETE_PERMUTATION_LIMIT) {
-            for (List<Integer> itemList : Collections2.permutations(initialListOfUnmatchedItems)) {
-                unmatchedItemPermutations.add(new ArrayList<>(itemList));
-            }
-        } else {
-            for (int i = 0; i < ITEM_PERMUTATIONS; i++) {
-                unmatchedItemPermutations.add(new ArrayList<>(initialListOfUnmatchedItems));
-                Collections.shuffle(initialListOfUnmatchedItems);
-
-                int unsuccessfulShuffleAttempts = 0;
-                while (HeuristicUtil.isAlreadyUsedShuffle(initialListOfUnmatchedItems, this.alreadyUsedShuffles)) {
-                    System.out.println("already");
-                    Collections.shuffle(initialListOfUnmatchedItems);
-                    if (unsuccessfulShuffleAttempts == 10) {
-                        return unmatchedItemPermutations;
-                    }
-                    unsuccessfulShuffleAttempts++;
-                }
-                this.alreadyUsedShuffles.add(new ArrayList<>(initialListOfUnmatchedItems));
-            }
-        }
+        // TODO: this approach is not that useful at all (to be removed / replaced)
+        // this.addUnmatchedItemPermutations(initialListOfUnmatchedItems, unmatchedItemPermutations);
 
         return unmatchedItemPermutations;
     }
