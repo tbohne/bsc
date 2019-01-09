@@ -24,6 +24,7 @@ public class ThreeCapPermutationHeuristic {
     private ArrayList<List<Integer>> alreadyUsedShuffles;
     private double startTime;
     private int timeLimit;
+    private int priorizationFactor;
 
     public ThreeCapPermutationHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
@@ -31,6 +32,7 @@ public class ThreeCapPermutationHeuristic {
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
         this.alreadyUsedShuffles = new ArrayList<>();
+        this.priorizationFactor = instance.getItems().length / 50;
     }
 
     /************************************ TODO: UNUSED ATM ************************************/
@@ -170,9 +172,10 @@ public class ThreeCapPermutationHeuristic {
         //                        --> compute rating accordingly
         //                        --> dynamic decision for each stack completion
 
-        ArrayList<Integer> initialListOfUnmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
-        ArrayList<Integer> unmatchedItemsSortedByRowRating = this.getUnmatchedItemsSortedByRowRating(initialListOfUnmatchedItems);
-        ArrayList<Integer> unmatchedItemsSortedByColRating = this.getUnmatchedItemsSortedByColRating(initialListOfUnmatchedItems);
+        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
+        // lowest rating first --> inflexible item first
+        ArrayList<Integer> unmatchedItemsSortedByRowRating = this.getUnmatchedItemsSortedByRowRating(unmatchedItems);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = this.getUnmatchedItemsSortedByColRating(unmatchedItems);
 
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
@@ -203,7 +206,7 @@ public class ThreeCapPermutationHeuristic {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
 
-            if (edge.getRating() <= this.instance.getItems().length / 50) {
+            if (edge.getRating() <= this.priorizationFactor) {
 
                 while (cnt < this.instance.getStacks().length
                     && (this.instance.getStackConstraints()[itemOne][cnt] != 1 || this.instance.getStackConstraints()[itemTwo][cnt] != 1)) {
@@ -277,7 +280,7 @@ public class ThreeCapPermutationHeuristic {
      */
     public boolean prioritizeInflexibleItem(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.instance.getItems().length / 50) {
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
                 this.unstackableItems.add(item);
                 if (!this.assignItemToFirstPossiblePosition(item)) {
                     return false;
@@ -331,6 +334,12 @@ public class ThreeCapPermutationHeuristic {
 
         for (MCMEdge itemPair : itemPairs) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+
+                if (this.instance.getStackConstraints()[itemPair.getVertexOne()][stack] != 1
+                    || this.instance.getStackConstraints()[itemPair.getVertexTwo()][stack] != 1) {
+                        continue;
+                }
+
                 if (this.instance.getStacks()[stack][2] == -1) {
                     if (this.instance.getStackingConstraints()[itemPair.getVertexOne()][itemPair.getVertexTwo()] == 1) {
                         this.instance.getStacks()[stack][2] = itemPair.getVertexTwo();
@@ -567,6 +576,14 @@ public class ThreeCapPermutationHeuristic {
 
                 Solution sol = new Solution(0, this.timeLimit, this.instance);
                 if (!optimizeSolution && sol.isFeasible()) { return sol; }
+
+//                for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
+//                    for (int j = 0; j < sol.getFilledStorageArea()[i].length; j++) {
+//                        System.out.print(sol.getFilledStorageArea()[i][j] + " ");
+//                    }
+//                    System.out.println();
+//                }
+
                 if (sol.isFeasible() && sol.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol);
                 }
