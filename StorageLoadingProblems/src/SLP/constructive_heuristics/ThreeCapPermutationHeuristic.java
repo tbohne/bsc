@@ -197,33 +197,22 @@ public class ThreeCapPermutationHeuristic {
      */
     public void prioritizeInflexibleEdges(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
 
-        int cnt = 0;
-
         for (MCMEdge edge : matchedItems) {
-
-            if (cnt >= this.instance.getStacks().length) { break; }
 
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
 
             if (edge.getRating() <= this.priorizationFactor) {
 
-                while (cnt < this.instance.getStacks().length
-                    && (this.instance.getStackConstraints()[itemOne][cnt] != 1 || this.instance.getStackConstraints()[itemTwo][cnt] != 1)) { cnt++; }
+                for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
-                if (cnt >= this.instance.getStacks().length) { break; }
+                    if (!HeuristicUtil.isStackEmpty(stack, this.instance.getStacks())) { continue; }
 
-                prioritizedEdges.add(new MCMEdge(itemOne, itemTwo, 0));
-
-                // TODO: if both directions are possible, the better direction should be chosen, not always the first one
-                if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1) {
-                    this.instance.getStacks()[cnt][2] = itemOne;
-                    this.instance.getStacks()[cnt][1] = itemTwo;
-                } else {
-                    this.instance.getStacks()[cnt][2] = itemTwo;
-                    this.instance.getStacks()[cnt][1] = itemOne;
+                    if (this.instance.getStackConstraints()[itemOne][stack] != 1 || this.instance.getStackConstraints()[itemTwo][stack] != 1) { continue; }
+                    prioritizedEdges.add(new MCMEdge(itemOne, itemTwo, 0));
+                    this.assignPairInReasonableOrder(stack, itemOne, itemTwo);
+                    break;
                 }
-                cnt++;
             }
         }
     }
@@ -516,6 +505,59 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /**
+     *
+     *
+     * @param stack
+     * @param itemOne
+     * @param itemTwo
+     * @return
+     */
+    public boolean assignPairInReasonableOrder(int stack, int itemOne, int itemTwo) {
+        if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1 && this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
+            // both possible --> choose most reasonable
+            HashMap<Integer, String> itemRatings = new HashMap<>();
+            itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneRow");
+            itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneCol");
+            itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoRow");
+            itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoCol");
+
+            ArrayList<Integer> ratings = new ArrayList<>();
+            for (int key : itemRatings.keySet()) {
+                ratings.add(key);
+            }
+
+            String toChoose = itemRatings.get(Collections.max(ratings));
+
+            switch (toChoose) {
+                case "itemOneRow":
+                    // not ground - item one below
+                    if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
+                    break;
+                case "itemOneCol":
+                    // ground - item one above
+                    if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
+                    break;
+                case "itemTwoRow":
+                    // not ground - item two below
+                    if (this.assignItemPairToStack(stack, itemTwo, itemOne, false)) { return true; }
+                    break;
+                case "itemTwoCol":
+                    // ground - item two above
+                    if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
+            }
+
+        } else {
+
+            if (this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
+                if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
+            } else {
+                if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Handles the assignment of the items connected by the given edge.
      *
      * @param edge - the edge connecting the item pair
@@ -528,46 +570,8 @@ public class ThreeCapPermutationHeuristic {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
 
-            if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1 && this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
-                // both possible --> choose most reasonable
-                HashMap<Integer, String> itemRatings = new HashMap<>();
-                itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneRow");
-                itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneCol");
-                itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoRow");
-                itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoCol");
-
-                ArrayList<Integer> ratings = new ArrayList<>();
-                for (int key : itemRatings.keySet()) {
-                    ratings.add(key);
-                }
-
-                String toChoose = itemRatings.get(Collections.max(ratings));
-
-                switch (toChoose) {
-                    case "itemOneRow":
-                        // not ground - item one below
-                        if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
-                        break;
-                    case "itemOneCol":
-                        // ground - item one above
-                        if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
-                        break;
-                    case "itemTwoRow":
-                        // not ground - item two below
-                        if (this.assignItemPairToStack(stack, itemTwo, itemOne, false)) { return true; }
-                        break;
-                    case "itemTwoCol":
-                        // ground - item two above
-                        if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
-                }
-
-            } else {
-
-                if (this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
-                    if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
-                } else {
-                    if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
-                }
+            if (this.assignPairInReasonableOrder(stack, itemOne, itemTwo)) {
+                return true;
             }
         }
         return false;
