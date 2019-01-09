@@ -60,12 +60,16 @@ public class HeuristicUtil {
         return rating;
     }
 
-    public int computeColRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
+    public static int computeColRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
         int rating = 0;
         for (int i = 0; i < stackingConstraints.length; i++) {
             rating += stackingConstraints[i][item];
         }
         return rating;
+    }
+
+    public static boolean isStackEmpty(int stackIdx, int[][] storageArea) {
+        return storageArea[stackIdx][2] == -1 && storageArea[stackIdx][1] == -1 && storageArea[stackIdx][0] == -1;
     }
 
     public static int computeRowRatingForEdgesNewWay(int itemOne, int itemTwo, int[][] stackingConstraints) {
@@ -77,7 +81,7 @@ public class HeuristicUtil {
                 ratingOne += entry;
             }
             int ratingTwo = 0;
-            for (int entry : stackingConstraints[itemOne) {
+            for (int entry : stackingConstraints[itemOne]) {
                 ratingTwo += entry;
             }
             rating = ratingOne > ratingTwo ? ratingOne : ratingTwo;
@@ -100,7 +104,7 @@ public class HeuristicUtil {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
-            edge.setRating(HeuristicUtil.computeRowRatingForEdgesNewWay(itemOne, itemTwo, stackingConstraints););
+            edge.setRating(HeuristicUtil.computeRowRatingForEdgesNewWay(itemOne, itemTwo, stackingConstraints));
         }
     }
 
