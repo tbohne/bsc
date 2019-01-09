@@ -76,8 +76,28 @@ public class HeuristicUtil {
         return stackConstraints[itemOne][stackIdx] == 1 && stackConstraints[itemTwo][stackIdx] == 1;
     }
 
+    public static String determineRatingToUseForPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
+
+        HashMap<Integer, String> itemRatings = new HashMap<>();
+        itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneRow");
+        itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneCol");
+        itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoRow");
+        itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoCol");
+
+        ArrayList<Integer> ratings = new ArrayList<>();
+        for (int key : itemRatings.keySet()) {
+            ratings.add(key);
+        }
+
+        return itemRatings.get(Collections.max(ratings));
+    }
+
     public static int computeRowRatingForEdgesNewWay(int itemOne, int itemTwo, int[][] stackingConstraints) {
         int rating = 0;
+
+        // - determine the order of the items
+        // - determine whether or not placed on ground level
+        // - compute row / col rating accordingly
 
         if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
             int ratingOne = 0;
@@ -93,7 +113,7 @@ public class HeuristicUtil {
             for (int entry : stackingConstraints[itemTwo]) {
                 rating += entry;
             }
-        } else if (stackingConstraints[itemTwo][itemOne] == 1) {
+        } else {
             for (int entry : stackingConstraints[itemOne]) {
                 rating += entry;
             }
