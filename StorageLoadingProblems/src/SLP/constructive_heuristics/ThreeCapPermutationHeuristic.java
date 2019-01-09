@@ -209,13 +209,13 @@ public class ThreeCapPermutationHeuristic {
             if (edge.getRating() <= this.priorizationFactor) {
 
                 while (cnt < this.instance.getStacks().length
-                    && (this.instance.getStackConstraints()[itemOne][cnt] != 1 || this.instance.getStackConstraints()[itemTwo][cnt] != 1)) {
-                        cnt++;
-                }
+                    && (this.instance.getStackConstraints()[itemOne][cnt] != 1 || this.instance.getStackConstraints()[itemTwo][cnt] != 1)) { cnt++; }
+
                 if (cnt >= this.instance.getStacks().length) { break; }
 
                 prioritizedEdges.add(new MCMEdge(itemOne, itemTwo, 0));
 
+                // TODO: if both directions are possible, the better direction should be chosen, not always the first one
                 if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1) {
                     this.instance.getStacks()[cnt][2] = itemOne;
                     this.instance.getStacks()[cnt][1] = itemTwo;
@@ -239,9 +239,7 @@ public class ThreeCapPermutationHeuristic {
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
             // item and stack are incompatible
-            if (this.instance.getStackConstraints()[item][stack] != 1) {
-                continue;
-            }
+            if (this.instance.getStackConstraints()[item][stack] != 1) { continue; }
 
             for (int level = 2; level > 0; level--) {
 
@@ -314,7 +312,7 @@ public class ThreeCapPermutationHeuristic {
 
         ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
         this.updateUnmatchedItems(stillUnmatchedItems);
-        this.assignUnmatchedItemsInGivenOrder(stillUnmatchedItems);
+        this.assignUnmatchedItems(stillUnmatchedItems);
         return true;
     }
 
@@ -382,7 +380,7 @@ public class ThreeCapPermutationHeuristic {
      *
      * @param unmatchedItems - the unmatched items that are going to be assigned
      */
-    public void assignUnmatchedItemsInGivenOrder(List<Integer> unmatchedItems) {
+    public void assignUnmatchedItems(List<Integer> unmatchedItems) {
 
         // the most inflexible items should be tried first
         unmatchedItems = this.getUnmatchedItemsSortedByRowRating((ArrayList<Integer>) unmatchedItems);
@@ -485,15 +483,16 @@ public class ThreeCapPermutationHeuristic {
      */
     public boolean handleItemPairAssignmentForEdge(MCMEdge edge) {
 
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
+        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
 
+            // TODO: choose most reasonable direction
             if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1) {
-                if (this.assignItemPairToStack(i, itemOne, itemTwo)) { return true; }
+                if (this.assignItemPairToStack(stack, itemOne, itemTwo)) { return true; }
             } else {
-                if (this.assignItemPairToStack(i, itemTwo, itemOne)) { return true; }
+                if (this.assignItemPairToStack(stack, itemTwo, itemOne)) { return true; }
             }
         }
         return false;
