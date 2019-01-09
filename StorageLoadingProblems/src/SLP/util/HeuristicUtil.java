@@ -76,59 +76,77 @@ public class HeuristicUtil {
         return stackConstraints[itemOne][stackIdx] == 1 && stackConstraints[itemTwo][stackIdx] == 1;
     }
 
-    public static String determineRatingToUseForPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
-
+    public static HashMap<Integer, String> getRatingsMapForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
         HashMap<Integer, String> itemRatings = new HashMap<>();
         itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneRow");
         itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneCol");
         itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoRow");
         itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoCol");
+        return itemRatings;
+    }
 
+    public static ArrayList<Integer> getItemRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
+        HashMap<Integer, String> itemRatings = getRatingsMapForItemPair(itemOne, itemTwo, stackingConstraints);
         ArrayList<Integer> ratings = new ArrayList<>();
         for (int key : itemRatings.keySet()) {
             ratings.add(key);
         }
-
-        return itemRatings.get(Collections.max(ratings));
+        return ratings;
     }
 
-    public static int computeRowRatingForEdgesNewWay(int itemOne, int itemTwo, int[][] stackingConstraints) {
-        int rating = 0;
-
-        // - determine the order of the items
-        // - determine whether or not placed on ground level
-        // - compute row / col rating accordingly
+    public static int getSumOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
 
         if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
-            int ratingOne = 0;
-            for (int entry : stackingConstraints[itemOne]) {
-                ratingOne += entry;
-            }
-            int ratingTwo = 0;
-            for (int entry : stackingConstraints[itemOne]) {
-                ratingTwo += entry;
-            }
-            rating = ratingOne > ratingTwo ? ratingOne : ratingTwo;
-        } else if (stackingConstraints[itemOne][itemTwo] == 1) {
-            for (int entry : stackingConstraints[itemTwo]) {
-                rating += entry;
-            }
-        } else {
-            for (int entry : stackingConstraints[itemOne]) {
-                rating += entry;
-            }
-        }
 
-        return rating;
+            // stackable in both directions
+            return computeRowRatingForUnmatchedItem(itemOne, stackingConstraints)
+                + computeColRatingForUnmatchedItem(itemOne, stackingConstraints)
+                + computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints)
+                + computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
+
+        } else if (stackingConstraints[itemOne][itemTwo] == 1) {
+            // item one upon item two
+            int colItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
+            int rowItemTwo = computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints);
+            return colItemOne + rowItemTwo;
+
+        } else {
+            // item two upon item one
+            int colItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
+            int rowItemOne = computeRowRatingForUnmatchedItem(itemOne, stackingConstraints);
+            return colItemTwo + rowItemOne;
+        }
     }
 
-    public static void assignRowRatingToEdgesNewWay(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
-        // determine the item that is below the other one
-        // if both ways are possible, the item that is more flexible is chosen
-        for (MCMEdge edge : matchedItems) {
-            int itemOne = edge.getVertexOne();
-            int itemTwo = edge.getVertexTwo();
-            edge.setRating(HeuristicUtil.computeRowRatingForEdgesNewWay(itemOne, itemTwo, stackingConstraints));
+    public static int getMinOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
+
+        // both directions possible?
+        if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
+            if (min) {
+                return Collections.min(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
+            } else {
+                return Collections.max(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
+            }
+        } else if (stackingConstraints[itemOne][itemTwo] == 1) {
+            // item one upon item two
+            // min(col rating item one, row rating item two)
+            int colItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
+            int rowItemTwo = computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints);
+            if (min) {
+                return colItemOne < rowItemTwo ? colItemOne : rowItemTwo;
+            } else {
+                return colItemOne > rowItemTwo ? colItemOne : rowItemTwo;
+            }
+        } else {
+            // item two upon item one
+            // min(col rating item two, row rating item one)
+            int colItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
+            int rowItemOne = computeRowRatingForUnmatchedItem(itemOne, stackingConstraints);
+            if (min) {
+                return colItemTwo < rowItemOne ? colItemTwo : rowItemOne;
+            } else {
+                return colItemTwo > rowItemOne ? colItemTwo : rowItemOne;
+            }
         }
     }
 
@@ -143,45 +161,6 @@ public class HeuristicUtil {
                 rating += entry;
             }
             edge.setRating(rating);
-        }
-    }
-
-    public static int computeColRatingForEdgesNewWay(int itemOne, int itemTwo, int[][] stackingConstraints) {
-        int rating = 0;
-
-        if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
-
-            int ratingOne = 0;
-            for (int i = 0; i < stackingConstraints.length; i++) {
-                ratingOne += (stackingConstraints[i][itemOne]);
-            }
-            int ratingTwo = 0;
-            for (int i = 0; i < stackingConstraints.length; i++) {
-                ratingTwo += (stackingConstraints[i][itemTwo]);
-            }
-
-            rating = ratingOne > ratingTwo ? ratingOne : ratingTwo;
-
-        } else if (stackingConstraints[itemOne][itemTwo] == 1) {
-
-            for (int i = 0; i < stackingConstraints.length; i++) {
-                rating += (stackingConstraints[i][itemOne]);
-            }
-
-        } else if (stackingConstraints[itemTwo][itemOne] == 1) {
-            for (int i = 0; i < stackingConstraints.length; i++) {
-                rating += (stackingConstraints[i][itemTwo]);
-            }
-        }
-
-        return rating;
-    }
-
-    public static void assignColRatingToEdgesNewWay(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
-        for (MCMEdge edge : matchedItems) {
-            int itemOne = edge.getVertexOne();
-            int itemTwo = edge.getVertexTwo();
-            edge.setRating(HeuristicUtil.computeColRatingForEdgesNewWay(itemOne, itemTwo, stackingConstraints));
         }
     }
 
