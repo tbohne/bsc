@@ -68,8 +68,12 @@ public class HeuristicUtil {
         return rating;
     }
 
-    public static boolean isStackEmpty(int stackIdx, int[][] storageArea) {
+    public static boolean stackEmpty(int stackIdx, int[][] storageArea) {
         return storageArea[stackIdx][2] == -1 && storageArea[stackIdx][1] == -1 && storageArea[stackIdx][0] == -1;
+    }
+
+    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] stackConstraints) {
+        return stackConstraints[itemOne][stackIdx] == 1 && stackConstraints[itemTwo][stackIdx] == 1;
     }
 
     public static int computeRowRatingForEdgesNewWay(int itemOne, int itemTwo, int[][] stackingConstraints) {
