@@ -150,6 +150,14 @@ public class HeuristicUtil {
         }
     }
 
+    public static void assignSumRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            edge.setRating(getSumOfRelevantRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
+        }
+    }
+
     public static void assignMinRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
