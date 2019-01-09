@@ -118,7 +118,7 @@ public class HeuristicUtil {
         }
     }
 
-    public static int getMinOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
+    public static int getExtremeOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
 
         // both directions possible?
         if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
@@ -147,6 +147,22 @@ public class HeuristicUtil {
             } else {
                 return colItemTwo > rowItemOne ? colItemTwo : rowItemOne;
             }
+        }
+    }
+
+    public static void assignMinRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            edge.setRating(getExtremeOfRelevantRatingsForItemPair(itemOne, itemTwo, stackingConstraints, true));
+        }
+    }
+
+    public static void assignMaxRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            edge.setRating(getExtremeOfRelevantRatingsForItemPair(itemOne, itemTwo, stackingConstraints, false));
         }
     }
 
