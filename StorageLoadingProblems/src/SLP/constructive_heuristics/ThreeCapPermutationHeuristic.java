@@ -230,29 +230,27 @@ public class ThreeCapPermutationHeuristic {
             // item and stack are incompatible
             if (this.instance.getStackConstraints()[item][stack] != 1) { continue; }
 
-            for (int level = 2; level > 0; level--) {
-
-                // TODO: generalize steps
-
-                // GROUND LEVEL CASE
-                if (level == 2 && this.instance.getStacks()[stack][level] == -1) {
-                    this.instance.getStacks()[stack][level] = item;
+            // empty stack
+            if (HeuristicUtil.stackEmpty(stack, this.instance.getStacks())) {
+                this.instance.getStacks()[stack][2] = item;
+                return true;
+            // items at 2nd and 3rd level
+            } else if (this.instance.getStacks()[stack][2] == -1) {
+                if (this.instance.getStackingConstraints()[this.instance.getStacks()[stack][1]][item] == 1) {
+                    this.instance.getStacks()[stack][2] = item;
                     return true;
-                } else if (level == 2 && this.instance.getStacks()[stack][level] != -1) {
-                    if (this.instance.getStacks()[stack][level - 1] == -1 && this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][level]] == 1) {
-                        this.instance.getStacks()[stack][level - 1] = item;
-                        return true;
-                    }
-                } else if (level == 1 && this.instance.getStacks()[stack][level] == -1) {
-                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][level + 1]] == 1) {
-                        this.instance.getStacks()[stack][level] = item;
-                        return true;
-                    }
-                } else if (level == 1 && this.instance.getStacks()[stack][level] != -1) {
-                    if (this.instance.getStacks()[stack][level - 1] == -1 && this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][level]] == 1) {
-                        this.instance.getStacks()[stack][level - 1] = item;
-                        return true;
-                    }
+                }
+            // items at 1st and 2nd level
+            } else if (this.instance.getStacks()[stack][2] != -1 && this.instance.getStacks()[stack][1] != -1) {
+                if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][1]] == 1) {
+                    this.instance.getStacks()[stack][0] = item;
+                    return true;
+                }
+            // only one item at ground level
+            } else {
+                if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][2]] == 1) {
+                    this.instance.getStacks()[stack][1] = item;
+                    return true;
                 }
             }
         }
