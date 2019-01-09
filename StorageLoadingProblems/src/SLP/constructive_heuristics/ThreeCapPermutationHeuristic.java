@@ -293,6 +293,9 @@ public class ThreeCapPermutationHeuristic {
         this.additionalUnmatchedItems = new ArrayList<>();
         ArrayList<MCMEdge> prioritizedEdges = new ArrayList<>();
 
+        // TODO: Check if necessary here
+        // HeuristicUtil.assignEdgeRating(matchedItems, this.instance.getStackingConstraints());
+
         this.prioritizeInflexibleEdges(matchedItems, prioritizedEdges);
         if (!this.prioritizeInflexibleItem(unmatchedItems)) { return false; }
         this.processMatchedItems(matchedItems, prioritizedEdges);
@@ -513,22 +516,24 @@ public class ThreeCapPermutationHeuristic {
     public boolean assignPairInReasonableOrder(int stack, int itemOne, int itemTwo) {
         if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1 && this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
 
-            switch (HeuristicUtil.determineRatingToUseForPair(itemOne, itemTwo, this.instance.getStackingConstraints())) {
-                case "itemOneRow":
-                    // not ground - item one below
-                    if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
-                    break;
-                case "itemOneCol":
-                    // ground - item one above
-                    if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
-                    break;
-                case "itemTwoRow":
-                    // not ground - item two below
-                    if (this.assignItemPairToStack(stack, itemTwo, itemOne, false)) { return true; }
-                    break;
-                case "itemTwoCol":
-                    // ground - item two above
-                    if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
+            switch (HeuristicUtil.getRatingsMapForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints()).get(
+                HeuristicUtil.getExtremeOfRelevantRatingsForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints(), false))) {
+
+                    case "itemOneRow":
+                        // not ground - item one below
+                        if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
+                        break;
+                    case "itemOneCol":
+                        // ground - item one above
+                        if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
+                        break;
+                    case "itemTwoRow":
+                        // not ground - item two below
+                        if (this.assignItemPairToStack(stack, itemTwo, itemOne, false)) { return true; }
+                        break;
+                    case "itemTwoCol":
+                        // ground - item two above
+                        if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
             }
 
         } else {
@@ -605,19 +610,19 @@ public class ThreeCapPermutationHeuristic {
         }
 
         HeuristicUtil.assignRowRatingToEdges(itemPairs, this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdges(itemPairsCopy, this.instance.getStackingConstraints());
+//        HeuristicUtil.assignEdgeRatingMax(itemPairsCopy, this.instance.getStackingConstraints());
 
         // The edges get sorted based on their ratings.
         Collections.sort(itemPairs);
-        Collections.sort(itemPairsCopy);
+//        Collections.sort(itemPairsCopy);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         itemPairPermutations.add(new ArrayList(itemPairs));
-        itemPairPermutations.add(new ArrayList(itemPairsCopy));
+//        itemPairPermutations.add(new ArrayList(itemPairsCopy));
 
         // TODO: The reversed sequence shouldn't be reasonable.
         itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
-        itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
+//        itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
 
         return itemPairPermutations;
     }
