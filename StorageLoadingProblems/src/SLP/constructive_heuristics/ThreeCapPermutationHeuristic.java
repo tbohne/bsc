@@ -374,12 +374,9 @@ public class ThreeCapPermutationHeuristic {
 
         this.tryToAssignRemainingItemsAsPairs(unmatchedItems);
 
+        // TODO: row rating no longer sufficient
         // the most inflexible items should be tried first
         unmatchedItems = this.getUnmatchedItemsSortedByRowRating((ArrayList<Integer>) unmatchedItems);
-
-        for (int item : unmatchedItems) {
-            System.out.println("rating: " + HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
-        }
 
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
@@ -604,25 +601,22 @@ public class ThreeCapPermutationHeuristic {
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
 
-        ArrayList<MCMEdge> itemPairsCopy = new ArrayList<>();
-        for (MCMEdge e : itemPairs) {
-            itemPairsCopy.add(new MCMEdge(e));
+        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
+            itemPairPermutations.add(tmpItemPairs);
         }
 
-        HeuristicUtil.assignRowRatingToEdges(itemPairs, this.instance.getStackingConstraints());
-//        HeuristicUtil.assignEdgeRatingMax(itemPairsCopy, this.instance.getStackingConstraints());
+        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(0), this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(1), this.instance.getStackingConstraints());
+        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(2), this.instance.getStackingConstraints());
+        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(3), this.instance.getStackingConstraints());
+        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(4), this.instance.getStackingConstraints());
 
-        // The edges get sorted based on their ratings.
-        Collections.sort(itemPairs);
-//        Collections.sort(itemPairsCopy);
-
-        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
-        itemPairPermutations.add(new ArrayList(itemPairs));
-//        itemPairPermutations.add(new ArrayList(itemPairsCopy));
-
-        // TODO: The reversed sequence shouldn't be reasonable.
-        itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairs));
-//        itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairsCopy));
+        for (int i = 0; i < 5; i++) {
+            Collections.sort(itemPairPermutations.get(i));
+            itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairPermutations.get(i)));
+        }
 
         return itemPairPermutations;
     }
@@ -639,6 +633,8 @@ public class ThreeCapPermutationHeuristic {
         Solution bestSol = new Solution();
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
+
+            System.out.println("-->      " + itemPairPermutation);
 
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
 
