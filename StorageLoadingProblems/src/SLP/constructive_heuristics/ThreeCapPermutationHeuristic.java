@@ -382,6 +382,8 @@ public class ThreeCapPermutationHeuristic {
      */
     public void assignUnmatchedItems(List<Integer> unmatchedItems) {
 
+        this.tryToAssignRemainingItemsAsPairs(unmatchedItems);
+
         // the most inflexible items should be tried first
         unmatchedItems = this.getUnmatchedItemsSortedByRowRating((ArrayList<Integer>) unmatchedItems);
 
@@ -389,35 +391,57 @@ public class ThreeCapPermutationHeuristic {
             System.out.println("rating: " + HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
         }
 
-        this.tryToAssignRemainingItemsAsPairs(unmatchedItems);
-
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
                 // item and stack incompatible
                 if (this.instance.getStackConstraints()[item][stack] != 1) { continue; }
 
-                int levelOfCurrentTopMostItem = -1;
-                for (int level = 2; level >= 0; level--) {
-                    if (this.instance.getStacks()[stack][level] != -1) {
-                        levelOfCurrentTopMostItem = level;
+                // completely free
+                if (this.instance.getStacks()[stack][2] == -1 && this.instance.getStacks()[stack][1] == -1 && this.instance.getStacks()[stack][0] == -1) {
+                    this.instance.getStacks()[stack][2] = item;
+                    break;
+                // only ground free
+                } else if (this.instance.getStacks()[stack][2] == -1 && this.instance.getStacks()[stack][1] != -1) {
+                    if (this.instance.getStackingConstraints()[this.instance.getStacks()[stack][1]][item] == 1) {
+                        this.instance.getStacks()[stack][2] = item;
+                        break;
+                    }
+                // only top level free
+                } else if (this.instance.getStacks()[stack][0] == -1 && this.instance.getStacks()[stack][1] != -1) {
+                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][1]] == 1) {
+                        this.instance.getStacks()[stack][0] = item;
+                        break;
+                    }
+                // only ground level blocked
+                } else if (this.instance.getStacks()[stack][2] != -1 && this.instance.getStacks()[stack][1] == -1) {
+                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][2]] == 1) {
+                        this.instance.getStacks()[stack][1] = item;
+                        break;
                     }
                 }
 
-                if (levelOfCurrentTopMostItem == -1) {
-                    // assign to ground level
-                    this.instance.getStacks()[stack][2] = item;
-                    break;
-                } else {
-                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][levelOfCurrentTopMostItem]] == 1) {
-                        if (levelOfCurrentTopMostItem > 0) {
-                            if (this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] == -1) {
-                                this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] = item;
-                                break;
-                            }
-                        }
-                    }
-                }
+//                int levelOfCurrentTopMostItem = -1;
+//                for (int level = 2; level >= 0; level--) {
+//                    if (this.instance.getStacks()[stack][level] != -1) {
+//                        levelOfCurrentTopMostItem = level;
+//                    }
+//                }
+//
+//                if (levelOfCurrentTopMostItem == -1) {
+//                    // assign to ground level
+//                    this.instance.getStacks()[stack][2] = item;
+//                    break;
+//                } else {
+//                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][levelOfCurrentTopMostItem]] == 1) {
+//                        if (levelOfCurrentTopMostItem > 0) {
+//                            if (this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] == -1) {
+//                                this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] = item;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -452,15 +476,31 @@ public class ThreeCapPermutationHeuristic {
      * @param above - the item that is placed above
      * @return whether or not the assignment was successful
      */
-    public boolean assignItemPairToStack(int stackIdx, int below, int above) {
+    public boolean assignItemPairToStack(int stackIdx, int below, int above, boolean ground) {
 
         // at least one of the items is not compatible with the stack
         if (this.instance.getStackConstraints()[below][stackIdx] != 1 || this.instance.getStackConstraints()[above][stackIdx] != 1) {
             return false;
         }
 
+        if (this.instance.getStacks()[stackIdx][2] == -1 && this.instance.getStacks()[stackIdx][1] == -1 && this.instance.getStacks()[stackIdx][0] == -1) {
+
+            if (ground) {
+                // place on ground level
+                this.instance.getStacks()[stackIdx][2] = below;
+                this.instance.getStacks()[stackIdx][1] = above;
+                return true;
+            } else {
+                // don't place on ground level
+                this.instance.getStacks()[stackIdx][1] = below;
+                this.instance.getStacks()[stackIdx][0] = above;
+                return true;
+            }
+        }
+
         // assign to 1st and 2nd level
-        if (this.instance.getStacks()[stackIdx][2] == -1 && this.instance.getStacks()[stackIdx][1] == -1) {
+        else if (this.instance.getStacks()[stackIdx][2] == -1 && this.instance.getStacks()[stackIdx][1] == -1) {
+            // TODO: this case is no longer possible
             this.instance.getStacks()[stackIdx][2] = below;
             this.instance.getStacks()[stackIdx][1] = above;
             return true;
@@ -488,11 +528,46 @@ public class ThreeCapPermutationHeuristic {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
 
-            // TODO: choose most reasonable direction
-            if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1) {
-                if (this.assignItemPairToStack(stack, itemOne, itemTwo)) { return true; }
+            if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1 && this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
+                // both possible --> choose most reasonable
+                HashMap<Integer, String> itemRatings = new HashMap<>();
+                itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneRow");
+                itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneCol");
+                itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoRow");
+                itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoCol");
+
+                ArrayList<Integer> ratings = new ArrayList<>();
+                for (int key : itemRatings.keySet()) {
+                    ratings.add(key);
+                }
+
+                String toChoose = itemRatings.get(Collections.max(ratings));
+
+                switch (toChoose) {
+                    case "itemOneRow":
+                        // not ground - item one below
+                        if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
+                        break;
+                    case "itemOneCol":
+                        // ground - item one above
+                        if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
+                        break;
+                    case "itemTwoRow":
+                        // not ground - item two below
+                        if (this.assignItemPairToStack(stack, itemTwo, itemOne, false)) { return true; }
+                        break;
+                    case "itemTwoCol":
+                        // ground - item two above
+                        if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
+                }
+
             } else {
-                if (this.assignItemPairToStack(stack, itemTwo, itemOne)) { return true; }
+
+                if (this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
+                    if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
+                } else {
+                    if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
+                }
             }
         }
         return false;
