@@ -512,21 +512,8 @@ public class ThreeCapPermutationHeuristic {
      */
     public boolean assignPairInReasonableOrder(int stack, int itemOne, int itemTwo) {
         if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1 && this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
-            // both possible --> choose most reasonable
-            HashMap<Integer, String> itemRatings = new HashMap<>();
-            itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneRow");
-            itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, this.instance.getStackingConstraints()), "itemOneCol");
-            itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoRow");
-            itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, this.instance.getStackingConstraints()), "itemTwoCol");
 
-            ArrayList<Integer> ratings = new ArrayList<>();
-            for (int key : itemRatings.keySet()) {
-                ratings.add(key);
-            }
-
-            String toChoose = itemRatings.get(Collections.max(ratings));
-
-            switch (toChoose) {
+            switch (HeuristicUtil.determineRatingToUseForPair(itemOne, itemTwo, this.instance.getStackingConstraints())) {
                 case "itemOneRow":
                     // not ground - item one below
                     if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
