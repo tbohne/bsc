@@ -384,6 +384,13 @@ public class ThreeCapPermutationHeuristic {
      */
     public void assignUnmatchedItemsInGivenOrder(List<Integer> unmatchedItems) {
 
+        // the most inflexible items should be tried first
+        unmatchedItems = this.getUnmatchedItemsSortedByRowRating((ArrayList<Integer>) unmatchedItems);
+
+        for (int item : unmatchedItems) {
+            System.out.println("rating: " + HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
+        }
+
         this.tryToAssignRemainingItemsAsPairs(unmatchedItems);
 
         for (int item : unmatchedItems) {
