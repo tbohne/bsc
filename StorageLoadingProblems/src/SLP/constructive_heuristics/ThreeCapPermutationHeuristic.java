@@ -206,9 +206,9 @@ public class ThreeCapPermutationHeuristic {
 
                 for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
-                    if (!HeuristicUtil.isStackEmpty(stack, this.instance.getStacks())) { continue; }
+                    if (!HeuristicUtil.stackEmpty(stack, this.instance.getStacks())
+                        || !HeuristicUtil.itemPairAndStackCompatible(stack, itemOne, itemTwo, this.instance.getStackConstraints())) { continue; }
 
-                    if (this.instance.getStackConstraints()[itemOne][stack] != 1 || this.instance.getStackConstraints()[itemTwo][stack] != 1) { continue; }
                     prioritizedEdges.add(new MCMEdge(itemOne, itemTwo, 0));
                     this.assignPairInReasonableOrder(stack, itemOne, itemTwo);
                     break;
