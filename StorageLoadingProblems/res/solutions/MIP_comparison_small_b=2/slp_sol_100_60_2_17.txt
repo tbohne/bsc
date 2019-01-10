@@ -1,0 +1,135 @@
+solved with: SLP.mip_formulations.BinPackingFormulation
+time limit: 30 s
+time to solve: 9.64 s
+objective value: 111.0
+
+stacks (top to bottom):
+stack  0:    7 
+stack  1:    22 
+stack  2:    65 
+stack  3:    0 57 
+stack  4:    23 
+stack  5:    11 85 
+stack  6:    42 4 
+stack  7:    49 
+stack  8:    10 62 
+stack  9:    47 77 
+stack 10:    1 6 
+stack 11:    19 48 
+stack 12:    35 
+stack 13:    63 
+stack 14:    80 84 
+stack 15:    74 
+stack 16:    96 
+stack 17:    37 33 
+stack 18:    24 
+stack 19:    2 91 
+stack 20:    82 
+stack 21:    76 
+stack 22:    36 32 
+stack 23:    59 69 
+stack 24:    94 
+stack 25:    30 61 
+stack 26:    43 26 
+stack 27:    83 45 
+stack 28:    3 89 
+stack 29:    64 31 
+stack 30:    51 40 
+stack 31:    71 97 
+stack 32:    98 55 
+stack 33:    8 52 
+stack 34:    90 73 
+stack 35:    16 
+stack 36:    68 9 
+stack 37:    17 95 
+stack 38:    67 72 
+stack 39:    46 56 
+stack 40:    87 
+stack 41:    18 54 
+stack 42:    66 38 
+stack 43:    5 34 
+stack 44:    12 93 
+stack 45:    29 27 
+stack 46:    79 75 
+stack 47:    70 88 
+stack 48:    53 
+stack 49:    81 58 
+stack 50:    20 
+stack 51:    13 50 
+stack 52:    41 
+stack 53:    14 
+stack 54:    99 92 
+stack 55:    44 39 
+stack 56:    60 15 
+stack 57:    78 25 
+stack 58:    28 21 
+stack 59:    86 
+
+#####################################################
+
+solved with: SLP.mip_formulations.ThreeIndexFormulation
+time limit: 30 s
+time to solve: 5.15 s
+objective value: 111.0
+
+stacks (top to bottom):
+stack  0:    7 
+stack  1:    22 
+stack  2:    16 
+stack  3:    0 57 
+stack  4:    23 
+stack  5:    11 85 
+stack  6:    42 4 
+stack  7:    49 
+stack  8:    10 62 
+stack  9:    47 77 
+stack 10:    1 6 
+stack 11:    19 48 
+stack 12:    65 
+stack 13:    63 
+stack 14:    68 
+stack 15:    74 
+stack 16:    96 
+stack 17:    37 51 
+stack 18:    95 69 
+stack 19:    91 44 
+stack 20:    82 
+stack 21:    76 
+stack 22:    2 73 
+stack 23:    59 56 
+stack 24:    94 
+stack 25:    30 61 
+stack 26:    43 52 
+stack 27:    83 45 
+stack 28:    3 89 
+stack 29:    64 31 
+stack 30:    17 9 
+stack 31:    71 97 
+stack 32:    80 26 
+stack 33:    13 50 
+stack 34:    20 
+stack 35:    46 88 
+stack 36:    90 55 
+stack 37:    84 35 
+stack 38:    67 72 
+stack 39:    12 15 
+stack 40:    98 8 
+stack 41:    18 54 
+stack 42:    66 38 
+stack 43:    5 34 
+stack 44:    33 93 
+stack 45:    29 27 
+stack 46:    79 75 
+stack 47:    87 
+stack 48:    53 
+stack 49:    81 58 
+stack 50:    40 60 
+stack 51:    36 24 
+stack 52:    41 
+stack 53:    14 
+stack 54:    99 92 
+stack 55:    39 
+stack 56:    70 32 
+stack 57:    78 25 
+stack 58:    28 21 
+stack 59:    86 

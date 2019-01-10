@@ -1,7 +1,0 @@
-solved with: SLP.mip_formulations.BinPackingFormulation
-Problem not solved.
-
-#####################################################
-
-solved with: SLP.mip_formulations.ThreeIndexFormulation
-Problem not solved.
