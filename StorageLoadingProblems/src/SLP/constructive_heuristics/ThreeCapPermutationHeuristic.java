@@ -263,7 +263,7 @@ public class ThreeCapPermutationHeuristic {
      * @param unmatchedItems - the items that aren't paired
      * @return whether or not the assignment of the inflexible items was successful
      */
-    public boolean prioritizeInflexibleItem(List<Integer> unmatchedItems) {
+    public boolean prioritizeInflexibleItems(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
             if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
                 this.unstackableItems.add(item);
@@ -342,7 +342,7 @@ public class ThreeCapPermutationHeuristic {
         ArrayList<MCMEdge> prioritizedEdges = new ArrayList<>();
 
         this.prioritizeInflexibleEdges(matchedItems, prioritizedEdges);
-        if (!this.prioritizeInflexibleItem(unmatchedItems)) { return false; }
+        if (!this.prioritizeInflexibleItems(unmatchedItems)) { return false; }
         this.processMatchedItems(matchedItems, prioritizedEdges);
 
         ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
