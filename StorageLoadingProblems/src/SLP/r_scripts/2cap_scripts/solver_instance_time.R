@@ -1,7 +1,18 @@
 library(ggplot2)
+library(plyr)
 
 input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
 solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "2Cap")
-plotPointsPre <- ggplot(data = solverEntries, aes(x = time, y = instance, color = solver, group = solver)) + geom_point() + xlab("time (s)") + ylab("instance")
+plotPointsPre <- ggplot(data = solverEntries, aes(x = time, y = instance, color = solver, group = solver)) + geom_point() + xlab("time (s)") + ylab("instances")
 
-ggsave(plotPointsPre, file="solver_instance_time.png", width=8, height=8)
+##############################################################################
+binpData <- subset(input, solver == "BinP")
+binpRuntime <- subset(binpData, select = c(time))
+paste("avg runtime of BinP: ", mean(binpRuntime[["time"]]))
+
+threeidxData <- subset(input, solver == "3Idx")
+threeidxRuntime <- subset(threeidxData, select = c(time))
+paste("avg runtime of 3Idx: ", mean(threeidxRuntime[["time"]]))
+##############################################################################
+
+ggsave(plotPointsPre, file="solver_instance_time.png", width = 6, height = 4)
