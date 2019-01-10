@@ -407,28 +407,6 @@ public class ThreeCapPermutationHeuristic {
                         break;
                     }
                 }
-
-//                int levelOfCurrentTopMostItem = -1;
-//                for (int level = 2; level >= 0; level--) {
-//                    if (this.instance.getStacks()[stack][level] != -1) {
-//                        levelOfCurrentTopMostItem = level;
-//                    }
-//                }
-//
-//                if (levelOfCurrentTopMostItem == -1) {
-//                    // assign to ground level
-//                    this.instance.getStacks()[stack][2] = item;
-//                    break;
-//                } else {
-//                    if (this.instance.getStackingConstraints()[item][this.instance.getStacks()[stack][levelOfCurrentTopMostItem]] == 1) {
-//                        if (levelOfCurrentTopMostItem > 0) {
-//                            if (this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] == -1) {
-//                                this.instance.getStacks()[stack][levelOfCurrentTopMostItem - 1] = item;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
     }
