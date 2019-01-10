@@ -1,5 +1,7 @@
 package SLP.representations;
 
+import java.util.ArrayList;
+
 public class Solution {
 
     private double timeToSolve;
@@ -154,6 +156,21 @@ public class Solution {
         return true;
     }
 
+    public boolean containsDuplicates() {
+        ArrayList<Integer> assignedItems = new ArrayList<>();
+        for (int i = 0; i < this.filledStorageArea.length; i++) {
+            for (int j = 0; j < this.filledStorageArea[i].length; j++) {
+                if (this.filledStorageArea[i][j] != -1) {
+                    if (assignedItems.contains(this.filledStorageArea[i][j])) {
+                        return true;
+                    }
+                    assignedItems.add(this.filledStorageArea[i][j]);
+                }
+            }
+        }
+        return false;
+    }
+
     public void setTimeToSolve(double duration) {
         this.timeToSolve = duration;
     }
@@ -168,9 +185,11 @@ public class Solution {
             System.out.println("all items: " + this.allItemsAssigned());
             System.out.println("stacking: " + this.stackingConstraintsRespected());
             System.out.println("stack: " + this.stackConstraintsRespected());
+            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
+            System.out.println("contains duplicates: " + this.containsDuplicates());
         }
 
-        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() && this.stackConstraintsRespected();
+        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() && this.stackConstraintsRespected() && !this.containsDuplicates();
     }
 
     public int getNumberOfAssignedItems() {
