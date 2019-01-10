@@ -275,6 +275,54 @@ public class ThreeCapPermutationHeuristic {
         return true;
     }
 
+    public void removeItemListFromStorageArea(ArrayList<Integer> items) {
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
+                if (items.contains(this.instance.getStacks()[i][j])) {
+                    this.instance.getStacks()[i][j] = -1;
+                }
+            }
+        }
+    }
+
+    public boolean assignFinallyUnmatchedItemsInDifferentOrders(ArrayList<Integer> stillUnmatchedItems) {
+
+        ArrayList<Integer> stillUnmatchedBackup = new ArrayList<>(stillUnmatchedItems);
+
+        // ROW RATING
+        stillUnmatchedItems = this.getUnmatchedItemsSortedByRowRating(stillUnmatchedItems);
+        this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+
+        this.removeItemListFromStorageArea(stillUnmatchedItems);
+
+        // COL RATING
+        stillUnmatchedItems = this.getUnmatchedItemsSortedByColRating(stillUnmatchedBackup);
+        this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
+
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+
+        this.removeItemListFromStorageArea(stillUnmatchedItems);
+
+        // ROW RATING REVERSED
+        stillUnmatchedItems = this.getUnmatchedItemsSortedByRowRating(stillUnmatchedBackup);
+        Collections.reverse(stillUnmatchedItems);
+        this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
+
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+
+        this.removeItemListFromStorageArea(stillUnmatchedItems);
+
+        // COL RATING REVERSED
+        stillUnmatchedItems = this.getUnmatchedItemsSortedByColRating(stillUnmatchedBackup);
+        Collections.reverse(stillUnmatchedItems);
+        this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
+
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+
+        return false;
+    }
+
     /**
      * Fills the storage area with the item pairs and the remaining unmatched items.
      *
@@ -293,16 +341,14 @@ public class ThreeCapPermutationHeuristic {
         this.additionalUnmatchedItems = new ArrayList<>();
         ArrayList<MCMEdge> prioritizedEdges = new ArrayList<>();
 
-        // TODO: Check if necessary here
-        // HeuristicUtil.assignEdgeRating(matchedItems, this.instance.getStackingConstraints());
-
         this.prioritizeInflexibleEdges(matchedItems, prioritizedEdges);
         if (!this.prioritizeInflexibleItem(unmatchedItems)) { return false; }
         this.processMatchedItems(matchedItems, prioritizedEdges);
 
         ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
         this.updateUnmatchedItems(stillUnmatchedItems);
-        this.assignUnmatchedItems(stillUnmatchedItems);
+
+        this.assignFinallyUnmatchedItemsInDifferentOrders(stillUnmatchedItems);
         return true;
     }
 
@@ -370,13 +416,9 @@ public class ThreeCapPermutationHeuristic {
      *
      * @param unmatchedItems - the unmatched items that are going to be assigned
      */
-    public void assignUnmatchedItems(List<Integer> unmatchedItems) {
+    public void assignSortedListOfUnmatchedItems(List<Integer> unmatchedItems) {
 
         this.tryToAssignRemainingItemsAsPairs(unmatchedItems);
-
-        // TODO: row rating no longer sufficient
-        // the most inflexible items should be tried first
-        unmatchedItems = this.getUnmatchedItemsSortedByRowRating((ArrayList<Integer>) unmatchedItems);
 
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
@@ -611,8 +653,6 @@ public class ThreeCapPermutationHeuristic {
         Solution bestSol = new Solution();
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
-
-            System.out.println("-->      " + itemPairPermutation);
 
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
 
