@@ -118,6 +118,14 @@ public class HeuristicUtil {
         }
     }
 
+    public static ArrayList<MCMEdge> getCopyOfEdgeList(ArrayList<MCMEdge> edgeList) {
+        ArrayList<MCMEdge> edgeListCopy = new ArrayList<>();
+        for (MCMEdge edge : edgeList) {
+            edgeListCopy.add(new MCMEdge(edge));
+        }
+        return edgeListCopy;
+    }
+
     public static int getExtremeOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
 
         // both directions possible?
@@ -286,6 +294,18 @@ public class HeuristicUtil {
                 copy[i][j] = init[i][j];
             }
         }
+    }
+
+    public static int getNumberOfItemsInStacks(int[][] stacks) {
+        int numberOfItems = 0;
+        for (int i = 0; i < stacks.length; i++) {
+            for (int j = 0; j < stacks[i].length; j++) {
+                if (stacks[i][j] != -1) {
+                    numberOfItems++;
+                }
+            }
+        }
+        return numberOfItems;
     }
 
     public static boolean listContainsDuplicates(List<Integer> items) {
