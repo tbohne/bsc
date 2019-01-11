@@ -1,5 +1,7 @@
 package SLP.representations;
 
+import java.util.ArrayList;
+
 public class Instance {
 
     private int[] items;
@@ -77,6 +79,16 @@ public class Instance {
         for (int i = 0; i < numberOfStacks; i++) {
             for (int j = 0; j < stackCapacity; j++) {
                 this.stacks[i][j] = -1;
+            }
+        }
+    }
+
+    public void removeItemListFromStorageArea(ArrayList<Integer> items) {
+        for (int i = 0; i < this.getStacks().length; i++) {
+            for (int j = 0; j < this.getStacks()[i].length; j++) {
+                if (items.contains(this.getStacks()[i][j])) {
+                    this.getStacks()[i][j] = -1;
+                }
             }
         }
     }
