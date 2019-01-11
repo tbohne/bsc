@@ -1,6 +1,6 @@
 solved with: SLP.mip_formulations.BinPackingFormulation
 time limit: 30 s
-time to solve: 2.21 s
+time to solve: 2.02 s
 objective value: 100.0
 
 stacks (top to bottom):
@@ -69,7 +69,7 @@ stack 59:    63
 
 solved with: SLP.mip_formulations.ThreeIndexFormulation
 time limit: 30 s
-time to solve: 0.97 s
+time to solve: 0.99 s
 objective value: 100.0
 
 stacks (top to bottom):
@@ -133,3 +133,72 @@ stack 56:    40 92
 stack 57:    77 
 stack 58:    57 
 stack 59:    63 
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.TwoCapHeuristic
+time limit: 30 s
+time to solve: 0.01 s
+objective value: 476.0
+
+stacks (top to bottom):
+stack  0:    11 6 
+stack  1:    1 0 
+stack  2:    2 3 
+stack  3:    4 7 
+stack  4:    95 10 
+stack  5:    24 25 
+stack  6:    8 9 
+stack  7:    77 15 
+stack  8:    23 5 
+stack  9:    12 14 
+stack 10:    17 97 
+stack 11:    13 98 
+stack 12:    40 18 
+stack 13:    16 84 
+stack 14:    58 21 
+stack 15:    20 22 
+stack 16:    26 27 
+stack 17:    31 30 
+stack 18:    28 29 
+stack 19:    71 19 
+stack 20:    34 32 
+stack 21:    36 33 
+stack 22:    37 64 
+stack 23:    39 99 
+stack 24:    35 38 
+stack 25:    44 42 
+stack 26:    43 41 
+stack 27:    49 46 
+stack 28:    47 68 
+stack 29:    45 48 
+stack 30:    72 65 
+stack 31:    57 80 
+stack 32:    50 87 
+stack 33:    51 52 
+stack 34:    53 55 
+stack 35:    54 56 
+stack 36:    66 70 
+stack 37:    60 59 
+stack 38:    76 67 
+stack 39:    62 61 
+stack 40:    78 83 
+stack 41:    81 69 
+stack 42:    82 86 
+stack 43:    73 74 
+stack 44:    88 79 
+stack 45:    
+stack 46:    
+stack 47:    94 96 
+stack 48:    90 91 
+stack 49:    
+stack 50:    93 92 
+stack 51:    85 89 
+stack 52:    
+stack 53:    75 
+stack 54:    
+stack 55:    
+stack 56:    63 
+stack 57:    
+stack 58:    
+stack 59:    
