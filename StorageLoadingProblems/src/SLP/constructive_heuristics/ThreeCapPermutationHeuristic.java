@@ -32,7 +32,7 @@ public class ThreeCapPermutationHeuristic {
         this.unstackableItems = new ArrayList<>();
         this.additionalUnmatchedItems = new ArrayList<>();
         this.alreadyUsedShuffles = new ArrayList<>();
-        this.priorizationFactor = instance.getItems().length / 50;
+        this.priorizationFactor = (int)Math.ceil((double)(instance.getItems().length) / 50.0);
     }
 
     /************************************ TODO: UNUSED ATM ************************************/
@@ -172,7 +172,24 @@ public class ThreeCapPermutationHeuristic {
         //                        --> compute rating accordingly
         //                        --> dynamic decision for each stack completion
 
+        // add the item pairs that exceed the number of stacks to the unmatched items here already
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
+
+        ArrayList<MCMEdge> toBeRemoved = new ArrayList<>();
+        for (int i = this.instance.getStacks().length; i < matchedItems.size(); i++) {
+            int itemOne = matchedItems.get(i).getVertexOne();
+            int itemTwo = matchedItems.get(i).getVertexTwo();
+            unmatchedItems.add(itemOne);
+            unmatchedItems.add(itemTwo);
+            toBeRemoved.add(matchedItems.get(i));
+        }
+
+        System.out.println("degraded: " + toBeRemoved);
+
+        for (MCMEdge e : toBeRemoved) {
+            matchedItems.remove(matchedItems.indexOf(e));
+        }
+
         // lowest rating first --> inflexible item first
         ArrayList<Integer> unmatchedItemsSortedByRowRating = this.getUnmatchedItemsSortedByRowRating(unmatchedItems);
         ArrayList<Integer> unmatchedItemsSortedByColRating = this.getUnmatchedItemsSortedByColRating(unmatchedItems);
@@ -181,10 +198,10 @@ public class ThreeCapPermutationHeuristic {
 
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
-        Collections.reverse(unmatchedItemsSortedByRowRating);
-        Collections.reverse(unmatchedItemsSortedByColRating);
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
+//        Collections.reverse(unmatchedItemsSortedByRowRating);
+//        Collections.reverse(unmatchedItemsSortedByColRating);
+//        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
+//        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
 
         return unmatchedItemPermutations;
     }
@@ -209,6 +226,8 @@ public class ThreeCapPermutationHeuristic {
                     if (!HeuristicUtil.stackEmpty(stack, this.instance.getStacks())
                         || !HeuristicUtil.itemPairAndStackCompatible(stack, itemOne, itemTwo, this.instance.getStackConstraints())) { continue; }
 
+
+//                    System.out.println("prioritizing: " + itemOne + ", " + itemTwo);
                     prioritizedEdges.add(new MCMEdge(itemOne, itemTwo, 0));
                     this.assignPairInReasonableOrder(stack, itemOne, itemTwo);
                     break;
@@ -265,60 +284,59 @@ public class ThreeCapPermutationHeuristic {
      */
     public boolean prioritizeInflexibleItems(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
-                this.unstackableItems.add(item);
-                if (!this.assignItemToFirstPossiblePosition(item)) {
-                    return false;
-                }
+
+            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor
+                && HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
+                    System.out.println("prioritizing: " + item);
+                    this.unstackableItems.add(item);
+                    if (!this.assignItemToFirstPossiblePosition(item)) {
+                        return false;
+                    }
             }
         }
         return true;
     }
 
-    public void removeItemListFromStorageArea(ArrayList<Integer> items) {
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-                if (items.contains(this.instance.getStacks()[i][j])) {
-                    this.instance.getStacks()[i][j] = -1;
-                }
-            }
-        }
-    }
-
     public boolean assignFinallyUnmatchedItemsInDifferentOrders(ArrayList<Integer> stillUnmatchedItems) {
 
+        System.out.println("finally unmatched: " + stillUnmatchedItems);
+
         ArrayList<Integer> stillUnmatchedBackup = new ArrayList<>(stillUnmatchedItems);
+        ArrayList<Integer> toRemoveAgain;
 
         // ROW RATING
         stillUnmatchedItems = this.getUnmatchedItemsSortedByRowRating(stillUnmatchedItems);
+        toRemoveAgain = new ArrayList<>(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
-        this.removeItemListFromStorageArea(stillUnmatchedItems);
+        this.instance.removeItemListFromStorageArea(toRemoveAgain);
 
         // COL RATING
         stillUnmatchedItems = this.getUnmatchedItemsSortedByColRating(stillUnmatchedBackup);
+        toRemoveAgain = new ArrayList<>(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
 
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
-        this.removeItemListFromStorageArea(stillUnmatchedItems);
+        this.instance.removeItemListFromStorageArea(toRemoveAgain);
 
         // ROW RATING REVERSED
         stillUnmatchedItems = this.getUnmatchedItemsSortedByRowRating(stillUnmatchedBackup);
+        toRemoveAgain = new ArrayList<>(stillUnmatchedItems);
         Collections.reverse(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
 
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
-        this.removeItemListFromStorageArea(stillUnmatchedItems);
+        this.instance.removeItemListFromStorageArea(toRemoveAgain);
 
         // COL RATING REVERSED
         stillUnmatchedItems = this.getUnmatchedItemsSortedByColRating(stillUnmatchedBackup);
         Collections.reverse(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
 
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == 400) { return true; }
+        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
         return false;
     }
@@ -468,6 +486,7 @@ public class ThreeCapPermutationHeuristic {
                 toBeRemoved.add(item);
             }
         }
+
         while (toBeRemoved.size() > 0) {
             int idx = unmatchedItems.indexOf(toBeRemoved.get(0));
             unmatchedItems.remove(idx);
@@ -592,6 +611,7 @@ public class ThreeCapPermutationHeuristic {
      */
     public void processMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<MCMEdge> prioritizedEdges) {
         for (MCMEdge edge : matchedItems) {
+
             boolean continueOuterLoop = false;
             for (MCMEdge e : prioritizedEdges) {
                 if (e.getVertexOne() == edge.getVertexOne() && e.getVertexTwo() == edge.getVertexTwo()) {
@@ -618,24 +638,34 @@ public class ThreeCapPermutationHeuristic {
      */
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
 
+        // Orders the item pairs in 5 different ways based on different rating systems.
+        // Each order is added in reverse as well.
+
+        System.out.println("MATCHING SIZE: " + itemMatching.getMatching().getEdges().size());
+        System.out.println("STACKS: " + this.instance.getStacks().length);
+
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
             itemPairPermutations.add(tmpItemPairs);
         }
 
         HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(0), this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(1), this.instance.getStackingConstraints());
-        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(2), this.instance.getStackingConstraints());
-        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(3), this.instance.getStackingConstraints());
-        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(4), this.instance.getStackingConstraints());
+//        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(1), this.instance.getStackingConstraints());
+//        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(2), this.instance.getStackingConstraints());
+//        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(3), this.instance.getStackingConstraints());
+//        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(4), this.instance.getStackingConstraints());
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             Collections.sort(itemPairPermutations.get(i));
-            itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairPermutations.get(i)));
+//            itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairPermutations.get(i)));
+        }
+
+        for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
+            System.out.println(itemPairPermutation);
         }
 
         return itemPairPermutations;
@@ -654,9 +684,14 @@ public class ThreeCapPermutationHeuristic {
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
 
+            // the itemPairPermutation is longer than the number of stacks
+
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
 
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
+
+                System.out.println("itemPairs: " + itemPairPermutation);
+                System.out.println("unmatched: " + unmatchedItems);
 
                 if (!this.fillStorageArea(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
@@ -664,14 +699,17 @@ public class ThreeCapPermutationHeuristic {
                 }
 
                 Solution sol = new Solution(0, this.timeLimit, this.instance);
+
                 if (!optimizeSolution && sol.isFeasible()) { return sol; }
 
-//                for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
-//                    for (int j = 0; j < sol.getFilledStorageArea()[i].length; j++) {
-//                        System.out.print(sol.getFilledStorageArea()[i][j] + " ");
-//                    }
-//                    System.out.println();
-//                }
+                for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
+                    for (int j = 0; j < sol.getFilledStorageArea()[i].length; j++) {
+                        System.out.print(sol.getFilledStorageArea()[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                System.out.println("assigned: " + sol.getNumberOfAssignedItems());
 
                 if (sol.isFeasible() && sol.getCost() < bestSol.getCost()) {
                     bestSol = new Solution(sol);
@@ -736,7 +774,13 @@ public class ThreeCapPermutationHeuristic {
             this.startTime = System.currentTimeMillis();
 
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-            HeuristicUtil.generateStackingConstraintGraph(stackingConstraintGraph, this.instance.getItems(), this.instance.getStackingConstraints());
+            HeuristicUtil.generateStackingConstraintGraphNewWay(
+                stackingConstraintGraph,
+                this.instance.getItems(),
+                this.instance.getStackingConstraints(),
+                this.instance.getStacks(),
+                this.instance.getStackConstraints()
+            );
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
 
             sol = permutationApproach(itemMatching, optimizeSolution);
