@@ -18,6 +18,8 @@ public class ThreeCapPermutationHeuristic {
     private final int ITEM_PAIR_PERMUTATIONS = 40000;
     private final int ITEM_PERMUTATIONS = 500;
 
+    private final int NUMER_OF_USED_EDGE_RATING_SYSTEMS = 5;
+
     private Instance instance;
     private ArrayList<Integer> unstackableItems;
     private ArrayList<Integer> additionalUnmatchedItems;
@@ -629,9 +631,34 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /**
+     * Sorts each item pair permutation based on the assigned edge ratings.
+     *
+     * @param itemPairPermutations - the list of item pair permutations
+     */
+    public void sortItemPairPermutationsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
+        for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
+            Collections.sort(itemPairPermutations.get(i));
+            // itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairPermutations.get(i)));
+        }
+    }
+
+    /**
+     * Applies each edge rating system to a copy of the item pair list.
+     *
+     * @param itemPairPermutations - the list of item pair permutations
+     */
+    public void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
+        int idx = 0;
+        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+    }
+
+    /**
      * Returns a list of permutations of the item pairs.
-     * The permutations are computed using different strategies.
-     * // TODO: describe strategies
+     * The permutations are generated using different rating systems as basis for the sorting procedure.
      *
      * @param itemMatching - matching containing the item pairs
      * @return list of item pair permutations
@@ -648,21 +675,12 @@ public class ThreeCapPermutationHeuristic {
         HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
             ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
             itemPairPermutations.add(tmpItemPairs);
         }
-
-        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(0), this.instance.getStackingConstraints());
-//        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(1), this.instance.getStackingConstraints());
-//        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(2), this.instance.getStackingConstraints());
-//        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(3), this.instance.getStackingConstraints());
-//        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(4), this.instance.getStackingConstraints());
-
-        for (int i = 0; i < 1; i++) {
-            Collections.sort(itemPairPermutations.get(i));
-//            itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairPermutations.get(i)));
-        }
+        this.applyRatingSystemsToItemPairPermutations(itemPairPermutations);
+        this.sortItemPairPermutationsBasedOnRatings(itemPairPermutations);
 
         for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
             System.out.println(itemPairPermutation);
