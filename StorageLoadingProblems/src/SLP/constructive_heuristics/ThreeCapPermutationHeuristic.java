@@ -161,22 +161,12 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /**
-     * Returns a list of permutations of the unmatched items.
-     * These permutations are generated according to several strategies.
-     * TODO: describe strategies
+     * Adds the item pairs that exceed the number of stacks to the unmatched items.
      *
-     * @param matchedItems - the items that are already matched
-     * @return list of of permutations of the unmatched items
+     * @param matchedItems - the list of matched item pairs
+     * @param unmatchedItems - the list of unmatched items
      */
-    public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
-
-        // TODO: question to ask: is it going to be placed above or below the pair?
-        //                        --> compute rating accordingly
-        //                        --> dynamic decision for each stack completion
-
-        // add the item pairs that exceed the number of stacks to the unmatched items here already
-        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
-
+    public void removeExceedingItemPairsFromMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<Integer> unmatchedItems) {
         ArrayList<MCMEdge> toBeRemoved = new ArrayList<>();
         for (int i = this.instance.getStacks().length; i < matchedItems.size(); i++) {
             int itemOne = matchedItems.get(i).getVertexOne();
@@ -191,6 +181,24 @@ public class ThreeCapPermutationHeuristic {
         for (MCMEdge e : toBeRemoved) {
             matchedItems.remove(matchedItems.indexOf(e));
         }
+    }
+
+    /**
+     * Returns a list of permutations of the unmatched items.
+     * These permutations are generated according to several strategies.
+     * TODO: describe strategies
+     *
+     * @param matchedItems - the items that are already matched
+     * @return list of of permutations of the unmatched items
+     */
+    public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
+
+        // TODO: question to ask: is it going to be placed above or below the pair?
+        //                        --> compute rating accordingly
+        //                        --> dynamic decision for each stack completion
+
+        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
+        this.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems);
 
         // lowest rating first --> inflexible item first
         ArrayList<Integer> unmatchedItemsSortedByRowRating = this.getUnmatchedItemsSortedByRowRating(unmatchedItems);
