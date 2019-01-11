@@ -649,7 +649,6 @@ public class ThreeCapPermutationHeuristic {
     public void sortItemPairPermutationsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
         for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
             Collections.sort(itemPairPermutations.get(i));
-            // itemPairPermutations.add(HeuristicUtil.getReversedCopyOfEdgeList(itemPairPermutations.get(i)));
         }
     }
 
@@ -676,12 +675,6 @@ public class ThreeCapPermutationHeuristic {
      */
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
 
-        // Orders the item pairs in 5 different ways based on different rating systems.
-        // Each order is added in reverse as well.
-
-        System.out.println("MATCHING SIZE: " + itemMatching.getMatching().getEdges().size());
-        System.out.println("STACKS: " + this.instance.getStacks().length);
-
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
 
@@ -693,19 +686,26 @@ public class ThreeCapPermutationHeuristic {
         this.applyRatingSystemsToItemPairPermutations(itemPairPermutations);
         this.sortItemPairPermutationsBasedOnRatings(itemPairPermutations);
 
-        for (ArrayList<MCMEdge> itemPairPermutation : itemPairPermutations) {
-            System.out.println(itemPairPermutation);
-        }
-
         return itemPairPermutations;
     }
 
+    /**
+     * Updates the best solution if a better one is found.
+     *
+     * @param sol - the solution to be checked
+     */
     public void updateBestSolution(Solution sol) {
         if (sol.isFeasible() && sol.getCost() < this.bestSolution.getCost()) {
             this.bestSolution = new Solution(sol);
         }
     }
 
+    /**
+     * Generates a solution with the current stack assignments.
+     *
+     * @param optimizeSolution - determines whether or not the solution is optimized
+     * @return whether or not the generated solution should be returned
+     */
     public boolean generateSolution(boolean optimizeSolution) {
         Solution sol = new Solution(0, this.timeLimit, this.instance);
         sol.printStorageArea();
