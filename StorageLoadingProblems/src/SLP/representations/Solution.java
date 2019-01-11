@@ -182,14 +182,23 @@ public class Solution {
         //      - stacking constraints respected
 
         if (!this.empty) {
-            System.out.println("all items: " + this.allItemsAssigned());
-            System.out.println("stacking: " + this.stackingConstraintsRespected());
-            System.out.println("stack: " + this.stackConstraintsRespected());
-            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
-            System.out.println("contains duplicates: " + this.containsDuplicates());
+//            System.out.println("all items: " + this.allItemsAssigned());
+//            System.out.println("stacking: " + this.stackingConstraintsRespected());
+//            System.out.println("stack: " + this.stackConstraintsRespected());
+//            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
+//            System.out.println("contains duplicates: " + this.containsDuplicates());
         }
 
         return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() && this.stackConstraintsRespected() && !this.containsDuplicates();
+    }
+
+    public void printStorageArea() {
+        for (int i = 0; i < this.getFilledStorageArea().length; i++) {
+            for (int j = 0; j < this.getFilledStorageArea()[i].length; j++) {
+                System.out.print(this.getFilledStorageArea()[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
     public int getNumberOfAssignedItems() {
