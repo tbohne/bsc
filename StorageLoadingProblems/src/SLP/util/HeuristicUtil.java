@@ -116,12 +116,20 @@ public class HeuristicUtil {
         return stackingConstraints[itemTwo][itemOne] == 1 && stackingConstraints[itemOne][itemTwo] == 1;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public static HashMap<Integer, String> getRatingsMapForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
         HashMap<Integer, String> itemRatings = new HashMap<>();
         itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneRow");
         itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneCol");
         itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoRow");
-        itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoCol");
+        itemRatings.put(HeuristicUtil.computeColRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoCol");
         return itemRatings;
     }
 
@@ -169,13 +177,14 @@ public class HeuristicUtil {
     public static int getExtremeOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
 
         // both directions possible?
-        if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
+        if (itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
             if (min) {
                 return Collections.min(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
             } else {
                 return Collections.max(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
             }
         } else if (stackingConstraints[itemOne][itemTwo] == 1) {
+
             // item one upon item two
             // min(col rating item one, row rating item two)
             int colItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
@@ -185,7 +194,9 @@ public class HeuristicUtil {
             } else {
                 return colItemOne > rowItemTwo ? colItemOne : rowItemTwo;
             }
+
         } else {
+
             // item two upon item one
             // min(col rating item two, row rating item one)
             int colItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
@@ -195,6 +206,7 @@ public class HeuristicUtil {
             } else {
                 return colItemTwo > rowItemOne ? colItemTwo : rowItemOne;
             }
+
         }
     }
 
@@ -248,6 +260,13 @@ public class HeuristicUtil {
             edge.setRating(rating);
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs, int[] items) {
 
