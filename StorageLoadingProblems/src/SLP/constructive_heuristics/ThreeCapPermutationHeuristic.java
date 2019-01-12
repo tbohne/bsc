@@ -67,7 +67,7 @@ public class ThreeCapPermutationHeuristic {
         return new ArrayList(tmpEdges);
     }
 
-    public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations, ArrayList<MCMEdge> itemPairsCopy) {
+    public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
         if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
             for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
                 itemPairPermutations.add(new ArrayList(edgeList));
@@ -77,12 +77,6 @@ public class ThreeCapPermutationHeuristic {
             // TODO: Remove hard coded values
             for (int cnt = 0; cnt < 5000; cnt++) {
                 ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
-                if (!itemPairPermutations.contains(tmp)) {
-                    itemPairPermutations.add(tmp);
-                }
-            }
-            for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairsCopy));
                 if (!itemPairPermutations.contains(tmp)) {
                     itemPairPermutations.add(tmp);
                 }
@@ -179,8 +173,6 @@ public class ThreeCapPermutationHeuristic {
             toBeRemoved.add(matchedItems.get(i));
         }
 
-        System.out.println("degraded: " + toBeRemoved);
-
         for (MCMEdge e : toBeRemoved) {
             matchedItems.remove(matchedItems.indexOf(e));
         }
@@ -189,16 +181,11 @@ public class ThreeCapPermutationHeuristic {
     /**
      * Returns a list of permutations of the unmatched items.
      * These permutations are generated according to several strategies.
-     * TODO: describe strategies
      *
      * @param matchedItems - the items that are already matched
      * @return list of of permutations of the unmatched items
      */
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
-
-        // TODO: question to ask: is it going to be placed above or below the pair?
-        //                        --> compute rating accordingly
-        //                        --> dynamic decision for each stack completion
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
         this.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems);
@@ -211,10 +198,12 @@ public class ThreeCapPermutationHeuristic {
 
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
-//        Collections.reverse(unmatchedItemsSortedByRowRating);
-//        Collections.reverse(unmatchedItemsSortedByColRating);
-//        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
-//        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
+
+        // TODO: probably not really useful
+        Collections.reverse(unmatchedItemsSortedByRowRating);
+        Collections.reverse(unmatchedItemsSortedByColRating);
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
+        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
 
         return unmatchedItemPermutations;
     }
@@ -231,6 +220,9 @@ public class ThreeCapPermutationHeuristic {
 
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
+
+//            System.out.println("edge rating: " + edge.getRating());
+//            System.out.println("prio: " + this.priorizationFactor);
 
             if (edge.getRating() <= this.priorizationFactor) {
 
@@ -300,7 +292,7 @@ public class ThreeCapPermutationHeuristic {
 
             if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor
                 && HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
-                    System.out.println("prioritizing: " + item);
+//                    System.out.println("prioritizing: " + item);
                     this.unstackableItems.add(item);
                     if (!this.assignItemToFirstPossiblePosition(item)) {
                         return false;
@@ -312,7 +304,7 @@ public class ThreeCapPermutationHeuristic {
 
     public boolean assignFinallyUnmatchedItemsInDifferentOrders(ArrayList<Integer> stillUnmatchedItems) {
 
-        System.out.println("finally unmatched: " + stillUnmatchedItems);
+//        System.out.println("finally unmatched: " + stillUnmatchedItems);
 
         ArrayList<Integer> stillUnmatchedBackup = new ArrayList<>(stillUnmatchedItems);
         ArrayList<Integer> toRemoveAgain;
@@ -555,38 +547,39 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /**
+     * Assigns the given pair of items in a reasonable order to the specified stack.
      *
-     *
-     * @param stack
-     * @param itemOne
-     * @param itemTwo
-     * @return
+     * @param stack - the stack, the items get assigned to
+     * @param itemOne - the first item of the pair
+     * @param itemTwo - the second item of the pair
+     * @return whether or not the assignment was successful
      */
     public boolean assignPairInReasonableOrder(int stack, int itemOne, int itemTwo) {
-        if (this.instance.getStackingConstraints()[itemTwo][itemOne] == 1 && this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
 
+        if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, this.instance.getStackingConstraints())) {
+
+            // The maximum is the most promising order.
             switch (HeuristicUtil.getRatingsMapForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints()).get(
                 HeuristicUtil.getExtremeOfRelevantRatingsForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints(), false))) {
 
                     case "itemOneRow":
-                        // not ground - item one below
+                        // not ground - item one below - desirable: good row rating for item one
                         if (this.assignItemPairToStack(stack, itemOne, itemTwo, false)) { return true; }
                         break;
                     case "itemOneCol":
-                        // ground - item one above
+                        // ground - item one above - desirable: good col rating for item one
                         if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
                         break;
                     case "itemTwoRow":
-                        // not ground - item two below
+                        // not ground - item one above - desirable: good good row rating item two
                         if (this.assignItemPairToStack(stack, itemTwo, itemOne, false)) { return true; }
                         break;
                     case "itemTwoCol":
-                        // ground - item two above
+                        // ground - item one below - desirable: good col rating item two
                         if (this.assignItemPairToStack(stack, itemOne, itemTwo, true)) { return true; }
             }
 
         } else {
-
             if (this.instance.getStackingConstraints()[itemOne][itemTwo] == 1) {
                 if (this.assignItemPairToStack(stack, itemTwo, itemOne, true)) { return true; }
             } else {
@@ -686,6 +679,9 @@ public class ThreeCapPermutationHeuristic {
         this.applyRatingSystemsToItemPairPermutations(itemPairPermutations);
         this.sortItemPairPermutationsBasedOnRatings(itemPairPermutations);
 
+        // TODO: experiment
+        this.addItemPairPermutations(itemPairs, itemPairPermutations);
+
         return itemPairPermutations;
     }
 
@@ -708,8 +704,8 @@ public class ThreeCapPermutationHeuristic {
      */
     public boolean generateSolution(boolean optimizeSolution) {
         Solution sol = new Solution(0, this.timeLimit, this.instance);
-        sol.printStorageArea();
-        System.out.println("assigned: " + sol.getNumberOfAssignedItems());
+//        sol.printStorageArea();
+//        System.out.println("assigned: " + sol.getNumberOfAssignedItems());
         this.updateBestSolution(sol);
         if (!optimizeSolution && sol.isFeasible()) { return true; }
         this.instance.resetStacks();
@@ -728,11 +724,14 @@ public class ThreeCapPermutationHeuristic {
         this.bestSolution = new Solution();
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
+
+            System.out.println(itemPairPermutation);
+
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
 
-                System.out.println("itemPairs: " + itemPairPermutation);
-                System.out.println("unmatched: " + unmatchedItems);
+//                System.out.println("itemPairs: " + itemPairPermutation);
+//                System.out.println("unmatched: " + unmatchedItems);
 
                 if (!this.fillStorageArea(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
