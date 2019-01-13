@@ -52,17 +52,7 @@ public class TestDataGenerator {
                 stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS);
             }
 
-            //////////////////////////////////////////////////
-            int numOfEntries = NUMBER_OF_ITEMS * NUMBER_OF_ITEMS;
-            int numOfOnes = 0;
-            for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-                for (int j = 0; j < NUMBER_OF_ITEMS; j++) {
-                    numOfOnes += stackingConstraintMatrix[i][j];
-                }
-            }
-            System.out.println("ONE-PERCENTAGE: " + ((float)numOfOnes / (float)numOfEntries) * 100);
-            avgPercentage += ((float)numOfOnes / (float)numOfEntries) * 100;
-            //////////////////////////////////////////////////
+            avgPercentage += getPercentageOfOneEntries(stackingConstraintMatrix);
 
             int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
@@ -85,29 +75,52 @@ public class TestDataGenerator {
 
             String idxString = idx < 10 ? "0" + idx : String.valueOf(idx);
             String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idxString;
-
-            Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, stackingConstraintMatrix, stackConstraintMatrix, costs, instanceName);
+            Instance instance = new Instance(
+                NUMBER_OF_ITEMS,
+                numOfStacks,
+                STACK_CAPACITY,
+                stackingConstraintMatrix,
+                stackConstraintMatrix,
+                costs,
+                instanceName
+            );
             InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
 
             InstanceWriter.writeConfig(
-                    INSTANCE_PREFIX + "instance_set_config.csv",
-                    NUMBER_OF_INSTANCES,
-                    NUMBER_OF_ITEMS,
-                    STACK_CAPACITY,
-                    ADDITIONAL_STACK_PERCENTAGE,
-                    CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
-                    CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS,
-                    COSTS_INCLUSIVE_LOWER_BOUND,
-                    COSTS_EXCLUSIVE_UPPER_BOUND,
-                    USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE,
-                    ITEM_LENGTH_LB,
-                    ITEM_LENGTH_UB,
-                    ITEM_WIDTH_LB,
-                    ITEM_WIDTH_UB
+                INSTANCE_PREFIX + "instance_set_config.csv",
+                NUMBER_OF_INSTANCES,
+                NUMBER_OF_ITEMS,
+                STACK_CAPACITY,
+                ADDITIONAL_STACK_PERCENTAGE,
+                CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
+                CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS,
+                COSTS_INCLUSIVE_LOWER_BOUND,
+                COSTS_EXCLUSIVE_UPPER_BOUND,
+                USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE,
+                ITEM_LENGTH_LB,
+                ITEM_LENGTH_UB,
+                ITEM_WIDTH_LB,
+                ITEM_WIDTH_UB
             );
         }
+        System.out.println("AVG PERCENTAGE OF ONE-ENTRIES: " + avgPercentage / NUMBER_OF_INSTANCES);
+    }
 
-        System.out.println("AVG PERCENTAGE: " + avgPercentage / NUMBER_OF_INSTANCES);
+    /**
+     * Returns the percentage of one-entries.
+     *
+     * @param stackingConstraintMatrix - the matrix to be considered
+     * @return the percentage of one-entries
+     */
+    public static float getPercentageOfOneEntries(int[][] stackingConstraintMatrix) {
+        int numOfEntries = NUMBER_OF_ITEMS * NUMBER_OF_ITEMS;
+        int numOfOnes = 0;
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < NUMBER_OF_ITEMS; j++) {
+                numOfOnes += stackingConstraintMatrix[i][j];
+            }
+        }
+        return ((float)numOfOnes / (float)numOfEntries) * 100;
     }
 
     /**
