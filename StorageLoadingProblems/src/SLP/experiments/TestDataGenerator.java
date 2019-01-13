@@ -51,7 +51,7 @@ public class TestDataGenerator {
             } else {
                 stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS);
             }
-            
+
             //////////////////////////////////////////////////
             int numOfEntries = NUMBER_OF_ITEMS * NUMBER_OF_ITEMS;
             int numOfOnes = 0;
@@ -88,6 +88,7 @@ public class TestDataGenerator {
 
             Instance instance = new Instance(NUMBER_OF_ITEMS, numOfStacks, STACK_CAPACITY, stackingConstraintMatrix, stackConstraintMatrix, costs, instanceName);
             InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
+
             InstanceWriter.writeConfig(
                     INSTANCE_PREFIX + "instance_set_config.csv",
                     NUMBER_OF_INSTANCES,
@@ -97,7 +98,12 @@ public class TestDataGenerator {
                     CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
                     CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS,
                     COSTS_INCLUSIVE_LOWER_BOUND,
-                    COSTS_EXCLUSIVE_UPPER_BOUND
+                    COSTS_EXCLUSIVE_UPPER_BOUND,
+                    USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE,
+                    ITEM_LENGTH_LB,
+                    ITEM_LENGTH_UB,
+                    ITEM_WIDTH_LB,
+                    ITEM_WIDTH_UB
             );
         }
 
