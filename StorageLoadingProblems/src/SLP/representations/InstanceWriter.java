@@ -57,7 +57,12 @@ public class InstanceWriter {
             float chanceForOneInStackingConstraints,
             float chanceForOneInStackConstraints,
             int costsInclusiveLowerBound,
-            int costsExclusiveUpperBound
+            int costsExclusiveUpperBound,
+            boolean usingStackingConstraintGenerationApproachOne,
+            int itemLengthLB,
+            int itemLenghUB,
+            int itemWidthLB,
+            int itemWidthUB
     ) {
 
         File file = new File(filename);
@@ -67,9 +72,11 @@ public class InstanceWriter {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
             bw.write("numOfInstances,numOfItems,stackCapacity,additionalStackPercentage,chanceForOneInStackingConstraints,"
-                    + "chanceForOneInStackConstraints,costsInclusiveLB,costsExclusiveUB\n");
+                    + "chanceForOneInStackConstraints,costsInclusiveLB,costsExclusiveUB,"
+                    + "usingStackingConstraintGenerationApproachOne,itemLengthLB,itemLengthUB,itemWidthLB,itemWidthUB\n");
             bw.write(numOfInstances + "," + numOfItems + "," + stackCap + "," + additionalStackPercentage + ","
-                + chanceForOneInStackingConstraints + "," + chanceForOneInStackConstraints + "," + costsInclusiveLowerBound + "," + costsExclusiveUpperBound);
+                + chanceForOneInStackingConstraints + "," + chanceForOneInStackConstraints + "," + costsInclusiveLowerBound + "," + costsExclusiveUpperBound + ","
+                + usingStackingConstraintGenerationApproachOne + "," + itemLengthLB + "," + itemLenghUB + "," + itemWidthLB + "," + itemWidthUB);
 
             bw.close();
 
