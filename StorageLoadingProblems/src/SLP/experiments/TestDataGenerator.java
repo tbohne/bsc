@@ -110,13 +110,22 @@ public class TestDataGenerator {
         System.out.println("AVG PERCENTAGE: " + avgPercentage / NUMBER_OF_INSTANCES);
     }
 
-    // the transitivity should be induced by the generation already
+    /**
+     * Generates the stacking constraint matrix. In this approach, an item is stackable on top of another item
+     * if its length and width values are less than or equal to the length and width of the other item.
+     * The length and width per item is a random value from a given range. Two items are stackable in both
+     * directions if they share the same values.
+     *
+     * The transitivity is already given in this approach.
+     *
+     * @param dimOne - the first dimension of the matrix
+     * @param dimTwo - the second dimension of the matrix
+     * @return the generated matrix
+     */
     public static int[][] generateStackingConstraintMatrixApproachTwo(int dimOne, int dimTwo) {
 
-        // generate n items with a random length and width from a range
-
+        // Generates n items with a random length and width from a given range.
         ArrayList<Item> items = new ArrayList<>();
-
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             int length = HeuristicUtil.getRandomValueInBetween(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
             int width = HeuristicUtil.getRandomValueInBetween(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
@@ -124,32 +133,26 @@ public class TestDataGenerator {
             items.add(item);
         }
 
-        // both values <= other item's values --> 1 in matrix
-
         int[][] matrix = new int[dimOne][dimTwo];
 
         for (int i = 0; i < dimOne; i++) {
             for (int j = 0; j < dimTwo; j++) {
 
-                if (i == j) {
-                    matrix[i][j] = 1;
-                }
+                if (i == j) { matrix[i][j] = 1; }
 
+                // If the items share the same values, they're stackable in both directions.
                 if (items.get(i).getLength() == items.get(j).getLength()
                     && items.get(i).getWidth() == items.get(j).getWidth()) {
                         matrix[i][j] = 1;
                         matrix[j][i] = 1;
-                } else if (items.get(i).getLength() < items.get(j).getLength()
-                    && items.get(i).getWidth() < items.get(j).getWidth()) {
+                } else if (items.get(i).getLength() <= items.get(j).getLength()
+                    && items.get(i).getWidth() <= items.get(j).getWidth()) {
                         matrix[i][j] = 1;
                 } else {
                     matrix[i][j] = 0;
                 }
             }
         }
-//        if (transitiveStackingConstraints) {
-//            matrix = makeMatrixTransitive(matrix);
-//        }
         return matrix;
     }
 
