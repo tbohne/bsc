@@ -153,6 +153,14 @@ public class TestDataGenerator {
         return matrix;
     }
 
+    /**
+     * Generates the stacking constraint matrix with "random" 0/1 entries based on a given chance.
+     *
+     * @param dimOne - the first dimension of the matrix
+     * @param dimTwo - the second dimension of the matrix
+     * @param transitiveStackingConstraints - specifies whether or not the stacking constraints should be transitive
+     * @return the generated matrix
+     */
     public static int[][] generateStackingConstraintMatrixApproachOne(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
 
         int[][] matrix = new int[dimOne][dimTwo];
@@ -171,31 +179,35 @@ public class TestDataGenerator {
                 }
             }
         }
-
         if (transitiveStackingConstraints) {
             matrix = makeMatrixTransitive(matrix);
         }
         return matrix;
     }
 
+    /**
+     * Adds the one-entries in the stacking constraint matrix that follow from transitivity.
+     *
+     * @param matrix - the matrix to be extended
+     * @return the extended matrix
+     */
     public static int[][] makeMatrixTransitive(int[][] matrix) {
 
         // The ones that are added can then induce new ones in other rows,
-        // therefore we have to repeat the process as long as there are changes.
+        // therefore the process has to be repeated as long as there are changes.
 
-        boolean somethingChanged = true;
+        boolean oneEntryAdded = true;
 
-        while (somethingChanged) {
-            somethingChanged = false;
+        while (oneEntryAdded) {
+            oneEntryAdded = false;
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[0].length; j++) {
-                    // we only have to add the ones that follow from transitivity
                     if (i != j && matrix[i][j] == 0) {
                         for (int k = 0; k < matrix[0].length; k++) {
                             if (matrix[i][k] == 1 && i != k && j != k) {
                                 if (matrix[k][j] == 1) {
                                     matrix[i][j] = 1;
-                                    somethingChanged = true;
+                                    oneEntryAdded = true;
                                     break;
                                 }
                             }
