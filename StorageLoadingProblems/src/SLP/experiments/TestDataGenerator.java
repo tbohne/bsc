@@ -26,6 +26,13 @@ public class TestDataGenerator {
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 1;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
+
+    // Configuration of 2nd approach to stacking constraint generation:
+    public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
+    public static final int ITEM_LENGTH_LB = 1;
+    public static final int ITEM_LENGTH_UB = 30;
+    public static final int ITEM_WIDTH_LB = 1;
+    public static final int ITEM_WIDTH_UB = 30;
     /***************************************************************************/
 
     public static void main(String[] args) {
@@ -38,9 +45,13 @@ public class TestDataGenerator {
         float avgPercentage = 0;
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
-            // int[][] stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrix(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
-            int[][] stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS);
-
+            int[][] stackingConstraintMatrix;
+            if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
+                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
+            } else {
+                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS);
+            }
+            
             //////////////////////////////////////////////////
             int numOfEntries = NUMBER_OF_ITEMS * NUMBER_OF_ITEMS;
             int numOfOnes = 0;
@@ -98,16 +109,11 @@ public class TestDataGenerator {
 
         // generate n items with a random length and width from a range
 
-        int lengthLB = 1;
-        int lengthUB = 30;
-        int widthLB = 1;
-        int widthUB = 30;
-
         ArrayList<Item> items = new ArrayList<>();
 
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            int length = HeuristicUtil.getRandomValueInBetween(lengthLB, lengthUB);
-            int width = HeuristicUtil.getRandomValueInBetween(widthLB, widthUB);
+            int length = HeuristicUtil.getRandomValueInBetween(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
+            int width = HeuristicUtil.getRandomValueInBetween(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
             Item item = new Item(i, length, width);
             items.add(item);
         }
