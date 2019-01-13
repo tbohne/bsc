@@ -80,7 +80,7 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     public ArrayList<Integer> getCurrentListOfUnmatchedItems(int length, ArrayList<MCMEdge> edges, ArrayList<Integer> unassignedItems) {
 
-        HeuristicUtil.assignColRatingToEdges(edges, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
         Collections.sort(edges);
 
         if (length > edges.size()) {
@@ -122,26 +122,36 @@ public class ThreeCapRecursiveMCMHeuristic {
         return unassignedItems;
     }
 
+    /**
+     * Recursively generates maximum cardinality matchings for the given items as long as either there is no
+     * item remaining or the number of remaining items didn't change between two recursion steps.
+     *
+     * @param mcm - the matching to start with
+     * @param numberOfEdgesToBeUsed - the number of edges form the mcm to be used
+     * @param remainingItems - the items that are remaining
+     */
     public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm, int numberOfEdgesToBeUsed, ArrayList<Integer> remainingItems) {
 
         // base case
         if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
             if (!this.firstRecursiveStep) { return; }
         }
-
         this.firstRecursiveStep = false;
 
         this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-        HeuristicUtil.assignColRatingToEdges(itemPairs, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
+
         Collections.sort(itemPairs);
 
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
         ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(numberOfEdgesToBeUsed, itemPairs, remainingItems);
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+
         this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
+
         ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
         HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
 
@@ -165,7 +175,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             ArrayList<ArrayList<Integer>> listsOfRemainingItems
     ) {
 
-        HeuristicUtil.assignColRatingToEdges(edges, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
         Collections.sort(edges);
 
         for (int i = 0; i < 1000; i++) {
@@ -341,7 +351,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         this.updateRemainingItems(itemPairs, remainingItems);
 
-        HeuristicUtil.assignColRatingToEdges(itemPairs, this.instance.getStackingConstraints());
+        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         // TODO: search for reasonable way to compute the number of used item pairs
         int numberOfUsedItemPairs = itemPairs.size() - (int)Math.ceil(itemPairs.size() / 2) + 10;
