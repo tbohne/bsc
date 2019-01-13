@@ -2,7 +2,10 @@ package SLP.experiments;
 
 import SLP.representations.Instance;
 import SLP.representations.InstanceWriter;
+import SLP.representations.Item;
+import SLP.util.HeuristicUtil;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class TestDataGenerator {
@@ -10,16 +13,16 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int NUMBER_OF_INSTANCES = 50;
+    public static final int NUMBER_OF_INSTANCES = 200;
     public static final int NUMBER_OF_ITEMS = 500;
-    public static final int STACK_CAPACITY = 2;
+    public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.
-    public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
+    public static final int ADDITIONAL_STACK_PERCENTAGE = 50;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0035F;
-    public static final float CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS = 0.75F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0055F;
+    public static final float CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS = 0.7F;
 
     public static final int COSTS_INCLUSIVE_LOWER_BOUND = 1;
     public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
@@ -28,14 +31,27 @@ public class TestDataGenerator {
     public static void main(String[] args) {
 
         int numOfStacks = (NUMBER_OF_ITEMS / STACK_CAPACITY);
-
         if (ADDITIONAL_STACK_PERCENTAGE > 0) {
-            numOfStacks = (int)(Math.ceil(numOfStacks + numOfStacks * 0.2));
+            numOfStacks = (int)(Math.ceil(numOfStacks + numOfStacks * ((float)ADDITIONAL_STACK_PERCENTAGE / 100.0)));
         }
 
-        for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
+        float avgPercentage = 0;
 
-            int[][] stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrix(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
+        for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
+            // int[][] stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrix(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
+            int[][] stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS);
+
+            //////////////////////////////////////////////////
+            int numOfEntries = NUMBER_OF_ITEMS * NUMBER_OF_ITEMS;
+            int numOfOnes = 0;
+            for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+                for (int j = 0; j < NUMBER_OF_ITEMS; j++) {
+                    numOfOnes += stackingConstraintMatrix[i][j];
+                }
+            }
+            System.out.println("ONE-PERCENTAGE: " + ((float)numOfOnes / (float)numOfEntries) * 100);
+            avgPercentage += ((float)numOfOnes / (float)numOfEntries) * 100;
+            //////////////////////////////////////////////////
 
             int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
@@ -73,9 +89,59 @@ public class TestDataGenerator {
                     COSTS_EXCLUSIVE_UPPER_BOUND
             );
         }
+
+        System.out.println("AVG PERCENTAGE: " + avgPercentage / NUMBER_OF_INSTANCES);
     }
 
-    public static int[][] generateStackingConstraintMatrix(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
+    // the transitivity should be induced by the generation already
+    public static int[][] generateStackingConstraintMatrixApproachTwo(int dimOne, int dimTwo) {
+
+        // generate n items with a random length and width from a range
+
+        int lengthLB = 1;
+        int lengthUB = 30;
+        int widthLB = 1;
+        int widthUB = 30;
+
+        ArrayList<Item> items = new ArrayList<>();
+
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            int length = HeuristicUtil.getRandomValueInBetween(lengthLB, lengthUB);
+            int width = HeuristicUtil.getRandomValueInBetween(widthLB, widthUB);
+            Item item = new Item(i, length, width);
+            items.add(item);
+        }
+
+        // both values <= other item's values --> 1 in matrix
+
+        int[][] matrix = new int[dimOne][dimTwo];
+
+        for (int i = 0; i < dimOne; i++) {
+            for (int j = 0; j < dimTwo; j++) {
+
+                if (i == j) {
+                    matrix[i][j] = 1;
+                }
+
+                if (items.get(i).getLength() == items.get(j).getLength()
+                    && items.get(i).getWidth() == items.get(j).getWidth()) {
+                        matrix[i][j] = 1;
+                        matrix[j][i] = 1;
+                } else if (items.get(i).getLength() < items.get(j).getLength()
+                    && items.get(i).getWidth() < items.get(j).getWidth()) {
+                        matrix[i][j] = 1;
+                } else {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+//        if (transitiveStackingConstraints) {
+//            matrix = makeMatrixTransitive(matrix);
+//        }
+        return matrix;
+    }
+
+    public static int[][] generateStackingConstraintMatrixApproachOne(int dimOne, int dimTwo, boolean transitiveStackingConstraints) {
 
         int[][] matrix = new int[dimOne][dimTwo];
 
