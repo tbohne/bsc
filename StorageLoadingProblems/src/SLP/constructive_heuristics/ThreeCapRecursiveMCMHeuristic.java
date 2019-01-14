@@ -142,6 +142,14 @@ public class ThreeCapRecursiveMCMHeuristic {
         return unassignedItems;
     }
 
+    /**
+     * Returns whether the given item is validly assignable to the given pair.
+     *
+     * @param item - the item to be checked
+     * @param pairItemOne - the first item of the pair
+     * @param pairItemTwo - the second item of the pair
+     * @return whether or not the item is assignable to the pair
+     */
     public boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo) {
 
         // pair stackable in both directions
@@ -177,59 +185,88 @@ public class ThreeCapRecursiveMCMHeuristic {
         return false;
     }
 
+    /**
+     * Updates the list of completely filled stacks and prepares the corresponding items to be removed from the remaining item pairs.
+     *
+     * @param itemPairRemovalList - the list to keep track of the items that should be removed form the remaining item pairs
+     * @param itemOneEdge - the edge (item pair), the first item is assigned to
+     * @param itemTwoEdge - the edge (item pair), the second item is assigned to
+     * @param startingPair - the pair that is going to be assigned
+     * @param itemOne - the first item to be assigned
+     * @param itemTwo - the second item to be assigned
+     * @param completelyFilledStacks - the list of completely filled stacks
+     */
+    public void updateCompletelyFilledStacks(
+            ArrayList<MCMEdge> itemPairRemovalList,
+            MCMEdge itemOneEdge,
+            MCMEdge itemTwoEdge,
+            MCMEdge startingPair,
+            int itemOne,
+            int itemTwo,
+            ArrayList<ArrayList<Integer>> completelyFilledStacks
+    ) {
+
+        itemPairRemovalList.add(itemOneEdge);
+        itemPairRemovalList.add(itemTwoEdge);
+        itemPairRemovalList.add(startingPair);
+
+        ArrayList<Integer> itemOneStack = new ArrayList<>();
+        itemOneStack.add(itemOne);
+        itemOneStack.add(itemOneEdge.getVertexOne());
+        itemOneStack.add(itemOneEdge.getVertexTwo());
+
+        ArrayList<Integer> itemTwoStack = new ArrayList<>();
+        itemTwoStack.add(itemTwo);
+        itemTwoStack.add(itemTwoEdge.getVertexOne());
+        itemTwoStack.add(itemTwoEdge.getVertexTwo());
+
+        completelyFilledStacks.add(itemOneStack);
+        completelyFilledStacks.add(itemTwoStack);
+    }
+
+    /**
+     * Generates completely filled stacks from the list of item pairs.
+     * (Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks).
+     *
+     * @param itemPairs - the list of item pairs
+     * @param itemPairRemovalList - the list of edges (item pairs) to be removed
+     * @param completelyFilledStacks - list to store the completely filled stacks
+     */
     public void generateCompletelyFilledStacks(ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
-        for (MCMEdge pair : itemPairs) {
+        for (MCMEdge startingPair : itemPairs) {
 
-            if (itemPairRemovalList.contains(pair)) { continue; }
+            if (itemPairRemovalList.contains(startingPair)) { continue; }
 
-            int itemOne = pair.getVertexOne();
-            int itemTwo = pair.getVertexTwo();
+            int itemOne = startingPair.getVertexOne();
+            int itemTwo = startingPair.getVertexTwo();
             boolean itemOneAssigned = false;
             boolean itemTwoAssigned = false;
             MCMEdge itemOneEdge = new MCMEdge(0, 0, 0);
             MCMEdge itemTwoEdge = new MCMEdge(0, 0, 0);
 
-            for (MCMEdge pair2 : itemPairs) {
-
-                if (itemPairRemovalList.contains(pair2)) { continue; }
+            for (MCMEdge potentialTargetPair : itemPairs) {
+                if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
                 if (itemOneAssigned && itemTwoAssigned) { break; }
 
-                if (pair != pair2) {
+                if (startingPair != potentialTargetPair) {
+                    int potentialTargetPairItemOne = potentialTargetPair.getVertexOne();
+                    int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
 
-                    int pairItemOne = pair2.getVertexOne();
-                    int pairItemTwo = pair2.getVertexTwo();
-
-                    if (!itemOneAssigned && this.itemAssignableToPair(itemOne, pairItemOne, pairItemTwo)) {
+                    if (!itemOneAssigned && this.itemAssignableToPair(itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo)) {
                         itemOneAssigned = true;
-                        itemOneEdge = pair2;
+                        itemOneEdge = potentialTargetPair;
                         continue;
                     }
-
-                    if (!itemTwoAssigned && this.itemAssignableToPair(itemTwo, pairItemOne, pairItemTwo)) {
+                    if (!itemTwoAssigned && this.itemAssignableToPair(itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo)) {
                         itemTwoAssigned = true;
-                        itemTwoEdge = pair2;
+                        itemTwoEdge = potentialTargetPair;
                         continue;
                     }
                 }
             }
 
             if (itemOneAssigned && itemTwoAssigned) {
-                itemPairRemovalList.add(itemOneEdge);
-                itemPairRemovalList.add(itemTwoEdge);
-                itemPairRemovalList.add(pair);
-
-                ArrayList<Integer> itemOneStack = new ArrayList<>();
-                itemOneStack.add(itemOne);
-                itemOneStack.add(itemOneEdge.getVertexOne());
-                itemOneStack.add(itemOneEdge.getVertexTwo());
-
-                ArrayList<Integer> itemTwoStack = new ArrayList<>();
-                itemTwoStack.add(itemTwo);
-                itemTwoStack.add(itemTwoEdge.getVertexOne());
-                itemTwoStack.add(itemTwoEdge.getVertexTwo());
-
-                completelyFilledStacks.add(itemOneStack);
-                completelyFilledStacks.add(itemTwoStack);
+                this.updateCompletelyFilledStacks(itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair, itemOne, itemTwo, completelyFilledStacks);
             }
         }
     }
