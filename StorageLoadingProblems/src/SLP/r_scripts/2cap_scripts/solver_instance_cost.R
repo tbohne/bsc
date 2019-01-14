@@ -12,6 +12,10 @@ paste("avg costs of BinP: ", mean(binpCosts[["val"]]))
 threeidxData <- subset(input, solver == "3Idx")
 threeidxCosts <- subset(threeidxData, select = c(val))
 paste("avg costs of 3Idx: ", mean(threeidxCosts[["val"]]))
+
+twoCapData <- subset(input, solver == "2Cap")
+twoCapCosts <- subset(twoCapData, select = c(val))
+paste("avg costs of 2Cap: ", mean(twoCapCosts[["val"]]))
 ##############################################################################
 
 ggsave(plotPointsPre, file = "solver_instance_cost.png", width = 6, height = 4)

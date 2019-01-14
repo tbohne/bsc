@@ -13,6 +13,10 @@ paste("avg runtime of BinP: ", mean(binpRuntime[["time"]]))
 threeidxData <- subset(input, solver == "3Idx")
 threeidxRuntime <- subset(threeidxData, select = c(time))
 paste("avg runtime of 3Idx: ", mean(threeidxRuntime[["time"]]))
+
+twoCapData <- subset(input, solver == "2Cap")
+twoCapRuntime <- subset(twoCapData, select = c(time))
+paste("avg runtime of 2Cap: ", mean(twoCapRuntime[["time"]]))
 ##############################################################################
 
 ggsave(plotPointsPre, file="solver_instance_time.png", width = 6, height = 4)
