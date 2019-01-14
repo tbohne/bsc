@@ -45,18 +45,23 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * Generates the bipartite graph between item pairs and unmatched items.
+     *
+     * @param graph - the graph to be generated
+     * @param itemPairs - the item pairs
+     * @param unmatchedItems - the unmatched items
+     */
     public void generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
-            DefaultUndirectedGraph<String, DefaultEdge> graph,
-            ArrayList<MCMEdge> itemPairs,
-            ArrayList<Integer> unmatchedItems
+            DefaultUndirectedGraph<String, DefaultEdge> graph, ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems
     ) {
 
-        // adding the specified number of item pairs as nodes to the graph
+        // adding the item pairs as nodes to the graph
         for (int i = 0; i < itemPairs.size(); i++) {
             graph.addVertex("edge" + itemPairs.get(i));
         }
 
-        // adding all unmatched items as nodes to the graph
+        // adding the unmatched items as nodes to the graph
         for (int i : unmatchedItems) {
             graph.addVertex("v" + i);
         }
@@ -78,6 +83,14 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * TODO: Not used atm
+     *
+     * @param length
+     * @param edges
+     * @param unassignedItems
+     * @return
+     */
     public ArrayList<Integer> getCurrentListOfUnmatchedItems(int length, ArrayList<MCMEdge> edges, ArrayList<Integer> unassignedItems) {
 
         HeuristicUtil.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
@@ -101,6 +114,13 @@ public class ThreeCapRecursiveMCMHeuristic {
         return unmatchedItems;
     }
 
+    /**
+     * Returns the unassigned items based on the items that are assigned so far.
+     * TODO: just using stack assignments?
+     *
+     * @param storageArea - the storage area
+     * @return the list of unassigned items
+     */
     public ArrayList<Integer> getUnassignedItemsFromStorageAreaSnapshot(ArrayList<ArrayList<Integer>> storageArea) {
         ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
         for (ArrayList<Integer> stack : storageArea) {
