@@ -43,16 +43,11 @@ public class ThreeCapRecursiveMCMHeuristic {
     public void generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
             DefaultUndirectedGraph<String, DefaultEdge> graph,
             ArrayList<MCMEdge> itemPairs,
-            ArrayList<Integer> unmatchedItems,
-            int numberOfUsedItemPairs
+            ArrayList<Integer> unmatchedItems
     ) {
 
-        if (numberOfUsedItemPairs > itemPairs.size()) {
-            numberOfUsedItemPairs = itemPairs.size();
-        }
-
         // adding the specified number of item pairs as nodes to the graph
-        for (int i = 0; i < numberOfUsedItemPairs; i++) {
+        for (int i = 0; i < itemPairs.size(); i++) {
             graph.addVertex("edge" + itemPairs.get(i));
         }
 
@@ -61,7 +56,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             graph.addVertex("v" + i);
         }
 
-        for (int i = 0; i < numberOfUsedItemPairs; i++) {
+        for (int i = 0; i < itemPairs.size(); i++) {
             for (int j = 0; j < unmatchedItems.size(); j++) {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
@@ -157,39 +152,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         return false;
     }
 
-    /**
-     * Recursively generates maximum cardinality matchings for the given items as long as either there is no
-     * item remaining or the number of remaining items didn't change between two recursion steps.
-     *
-     * @param mcm - the matching to start with
-     * @param numberOfEdgesToBeUsed - the number of edges form the mcm to be used
-     * @param remainingItems - the items that are remaining
-     */
-    public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm, int numberOfEdgesToBeUsed, ArrayList<Integer> remainingItems) {
-
-//        // base case
-//        if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
-//            if (!this.firstRecursiveStep) { return; }
-//        }
-//        this.firstRecursiveStep = false;
-
-//        this.previousNumberOfRemainingItems = remainingItems.size();
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
-        Collections.sort(itemPairs);
-
-        System.out.println("using ALL of the item pairs? --> " + (numberOfEdgesToBeUsed == itemPairs.size()));
-
-        // question: can both items of a pair be assigned to another pair?
-        // if so, save both complete stack assignments and remove them from the list
-
-        ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
-
-        ////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////
-
+    public void generateCompletelyFilledStacks(ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
         for (MCMEdge pair : itemPairs) {
 
             if (itemPairRemovalList.contains(pair)) { continue; }
@@ -244,6 +207,28 @@ public class ThreeCapRecursiveMCMHeuristic {
                 completelyFilledStacks.add(itemTwoStack);
             }
         }
+    }
+
+    /**
+     *
+     */
+    public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm) {
+
+        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
+        Collections.sort(itemPairs);
+
+        // question: can both items of a pair be assigned to another pair?
+        // if so, save both complete stack assignments and remove them from the list
+
+        ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
+
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
+
+        this.generateCompletelyFilledStacks(itemPairs, itemPairRemovalList, completelyFilledStacks);
 
         //////////////////////////////////////////////
 
@@ -297,7 +282,7 @@ public class ThreeCapRecursiveMCMHeuristic {
 
         System.out.println("UNMATCHED: " + unmatchedItems);
 
-        this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
+        this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
         System.out.println("TRIPLES: " + itemTriples.getMatching().getEdges());
 
@@ -567,7 +552,7 @@ public class ThreeCapRecursiveMCMHeuristic {
                 items.add(item);
             }
             this.firstRecursiveStep = true;
-            this.recursiveMCMApproach(mcm, mcm.getMatching().getEdges().size(), items);
+            this.recursiveMCMApproach(mcm);
             this.completeStackAssignmentsForRecursiveApproach();
 
             sol = new Solution(0, this.timeLimit, this.instance);
