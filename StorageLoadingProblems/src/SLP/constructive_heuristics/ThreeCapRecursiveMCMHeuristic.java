@@ -274,6 +274,7 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     /**
      * Parses and sorts the item pairs resulting from the edges of the maximum cardinality matching.
+     * The sorting procedure is just relevant for cases in which there are more item pairs than stacks.
      *
      * @param mcm - the maximum cardinality matching to be parsed
      * @return the parsed and sorted list of item pairs
@@ -290,7 +291,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      * Tries to merge item pairs by splitting up pairs and assigning both items
      * to other pairs to form completely filled stacks.
      *
-     * @param itemPairs
+     * @param itemPairs - the item pairs to be merged
      */
     public ArrayList<ArrayList<Integer>> mergeItemPairs(ArrayList<MCMEdge> itemPairs) {
         ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
@@ -314,18 +315,6 @@ public class ThreeCapRecursiveMCMHeuristic {
         ArrayList<ArrayList<Integer>> itemTripleStackAssignments = new ArrayList<>();
         HeuristicUtil.parseItemTripleMCM(itemTripleStackAssignments, itemTriples);
         this.stackAssignments.addAll(itemTripleStackAssignments);
-    }
-
-    /**
-     * TODO: find new name
-     */
-    public void threeCapApproachTwo(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
-        ArrayList<ArrayList<Integer>> completelyFilledStacks = this.mergeItemPairs(itemPairs);
-        ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs, completelyFilledStacks);
-        if (itemPairs.size() > 0 && unmatchedItems.size() > 0) {
-            this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
-        }
     }
 
     /**
@@ -485,6 +474,7 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     /**
      * Fills the storage area with the generated stack assignments.
+     * TODO: The costs could be considered here.
      */
     public void fillStorageAreaWithGeneratedStackAssignments() {
 
@@ -526,19 +516,32 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     /**
-     * Completes the stack assignments.
+     * Applies the best remaining stack assignments.
+     *
+     * @param itemPairPermutations - the list of permutations of the item pairs
+     * @param listsOfRemainingItems - the list of permutations of the remaining items
+     * @param remainingItems - the list of remaining items
+     */
+    public void applyBestRemainingStackAssignments(
+            ArrayList<ArrayList<MCMEdge>> itemPairPermutations,
+            ArrayList<ArrayList<Integer>> listsOfRemainingItems,
+            ArrayList<Integer> remainingItems
+    ) {
+        ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
+        this.findBestRemainingStackAssignments(bestStackAssignments, itemPairPermutations, listsOfRemainingItems, remainingItems);
+        this.stackAssignments.addAll(bestStackAssignments);
+        this.assignUnstackableItemsToOwnStack(remainingItems);
+    }
+
+    /**
+     * Completes the stack assignments by assigning the remaining items to free positions in the stacks.
      */
     public void completeStackAssignments() {
         ArrayList<Integer> remainingItems = this.getUnassignedItems();
-        System.out.println("REMAINING: " + remainingItems);
 
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems(remainingItems, this.instance.getStackingConstraints());
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
         this.updateRemainingItems(itemPairs, remainingItems);
-
-        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
-        Collections.sort(itemPairs);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
@@ -546,14 +549,23 @@ public class ThreeCapRecursiveMCMHeuristic {
             itemPairs, remainingItems, itemPairPermutations, listsOfRemainingItems
         );
 
-        ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
-        this.findBestRemainingStackAssignments(bestStackAssignments, itemPairPermutations, listsOfRemainingItems, remainingItems);
-        this.stackAssignments.addAll(bestStackAssignments);
-        this.assignUnstackableItemsToOwnStack(remainingItems);
+        this.applyBestRemainingStackAssignments(itemPairPermutations, listsOfRemainingItems, remainingItems);
 
-        System.out.println("stacks used: " + this.stackAssignments.size());
+        System.out.println("stacks used: " + this.stackAssignments.size() + " / " + this.instance.getStacks().length);
         this.checkItemAssignments();
         this.fillStorageAreaWithGeneratedStackAssignments();
+    }
+
+    /**
+     * TODO: find new name
+     */
+    public void threeCapApproachTwo(EdmondsMaximumCardinalityMatching mcm) {
+        ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
+        ArrayList<ArrayList<Integer>> completelyFilledStacks = this.mergeItemPairs(itemPairs);
+        ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs, completelyFilledStacks);
+        if (itemPairs.size() > 0 && unmatchedItems.size() > 0) {
+            this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
+        }
     }
 
     /**
