@@ -84,37 +84,6 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     /**
-     * TODO: Not used atm
-     *
-     * @param length
-     * @param edges
-     * @param unassignedItems
-     * @return
-     */
-    public ArrayList<Integer> getCurrentListOfUnmatchedItems(int length, ArrayList<MCMEdge> edges, ArrayList<Integer> unassignedItems) {
-
-        HeuristicUtil.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
-        Collections.sort(edges);
-
-        if (length > edges.size()) {
-            length = edges.size();
-        }
-
-        ArrayList<Integer> matchedItemsOfChoice = new ArrayList<>();
-        for (int i = 0; i < length; i++) {
-            matchedItemsOfChoice.add(edges.get(i).getVertexOne());
-            matchedItemsOfChoice.add(edges.get(i).getVertexTwo());
-        }
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : unassignedItems) {
-            if (!matchedItemsOfChoice.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
-    }
-
-    /**
      * Returns the unassigned items based on the items that are assigned so far.
      * TODO: just using stack assignments?
      *
