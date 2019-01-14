@@ -261,6 +261,25 @@ public class HeuristicUtil {
         }
     }
 
+    public static void assignColRatingToEdgesNewWay(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+
+            if (itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+                // return the max col rating of both items
+                int colRatingOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
+                int colRatingTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
+                edge.setRating(colRatingOne > colRatingTwo ? colRatingOne : colRatingTwo);
+            } else if (stackingConstraints[itemOne][itemTwo] == 1) {
+                edge.setRating(computeColRatingForUnmatchedItem(itemOne, stackingConstraints));
+            } else {
+                edge.setRating(computeColRatingForUnmatchedItem(itemTwo, stackingConstraints));
+            }
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -334,6 +353,14 @@ public class HeuristicUtil {
         }
 
         return itemPairStackCombination;
+    }
+
+    public static ArrayList<Integer> getArrayListOfItems(int[] itemsArr) {
+        ArrayList<Integer> items = new ArrayList<>();
+        for (int item : itemsArr) {
+            items.add(item);
+        }
+        return items;
     }
 
     public static ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
