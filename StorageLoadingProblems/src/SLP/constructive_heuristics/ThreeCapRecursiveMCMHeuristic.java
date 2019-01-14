@@ -258,38 +258,20 @@ public class ThreeCapRecursiveMCMHeuristic {
         ArrayList<Integer> unmatchedItems = this.computeUnmatchedItems(itemPairs, completelyFilledStacks);
 
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        if (itemPairs.size() > 0 && unmatchedItems.size() > 0) {
+            System.out.println("PAIRS: " + itemPairs);
+            System.out.println("UNMATCHED: " + unmatchedItems);
 
-        System.out.println("PAIRS: " + itemPairs);
-        System.out.println("UNMATCHED: " + unmatchedItems);
-
-        this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
-        System.out.println("TRIPLES: " + itemTriples.getMatching().getEdges());
-
-        ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
-        HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
-
+            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+            this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
+            System.out.println("TRIPLES: " + itemTriples.getMatching().getEdges());
+            ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
+            HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
+            this.stackAssignments.addAll(currentStackAssignments);
+        }
+        
         this.stackAssignments.addAll(completelyFilledStacks);
-        this.stackAssignments.addAll(currentStackAssignments);
-
-        // COMPUTING COMPATIBLE ITEM PAIRS FROM REMAINING ITEMS
-        unmatchedItems = this.getUnassignedItemsFromStorageAreaSnapshot(currentStackAssignments);
-
-        System.out.println("###################################");
-        System.out.println(unmatchedItems);
-        System.out.println(currentStackAssignments);
-        System.out.println("###################################");
-
-        EdmondsMaximumCardinalityMatching remainingItemPairs = HeuristicUtil.getMCMForUnassignedItems(unmatchedItems, this.instance.getStackingConstraints());
-        itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, remainingItemPairs);
-
-//        // TODO: Check value
-//        // numberOfEdgesToBeUsed = (int)Math.ceil(itemPairs.size() / 3);
-//        numberOfEdgesToBeUsed = itemPairs.size();
-
-//        this.recursiveMCMApproach(remainingItemPairs, numberOfEdgesToBeUsed, unmatchedItems);
     }
 
     public void generateItemPairPermutationsAndCorrespondingListsOfRemainingItems(
