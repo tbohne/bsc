@@ -122,6 +122,41 @@ public class ThreeCapRecursiveMCMHeuristic {
         return unassignedItems;
     }
 
+    public boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo) {
+
+        // pair stackable in both directions
+        if (HeuristicUtil.itemsStackableInBothDirections(pairItemOne, pairItemTwo, this.instance.getStackingConstraints())) {
+            if (this.instance.getStackingConstraints()[item][pairItemOne] == 1) {
+                // itemOne above itemOneNew above itemTwoNew --> itemOne assigned
+                return true;
+            } else if (this.instance.getStackingConstraints()[pairItemOne][item] == 1) {
+                // itemTwoNew above itemOneNew above itemOne --> itemOne assigned
+                return true;
+            } else if (this.instance.getStackingConstraints()[pairItemTwo][item] == 1) {
+                // itemOneNew above itemTwoNew above itemOne --> itemOne assigned
+                return true;
+            } else if (this.instance.getStackingConstraints()[item][pairItemTwo] == 1) {
+                // itemOne above itemTwoNew above itemOneNew --> itemOne assigned
+                return true;
+            }
+        // pairItemOne above pairItemTwo
+        } else if (this.instance.getStackingConstraints()[pairItemOne][pairItemTwo] == 1) {
+            if (this.instance.getStackingConstraints()[item][pairItemOne] == 1) {
+                return true;
+            } else if (this.instance.getStackingConstraints()[pairItemTwo][item] == 1) {
+                return true;
+            }
+        // pairItemTwo above pairItemOne
+        } else {
+            if (this.instance.getStackingConstraints()[item][pairItemTwo] == 1) {
+                return true;
+            } else if (this.instance.getStackingConstraints()[pairItemOne][item] == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Recursively generates maximum cardinality matchings for the given items as long as either there is no
      * item remaining or the number of remaining items didn't change between two recursion steps.
@@ -132,39 +167,163 @@ public class ThreeCapRecursiveMCMHeuristic {
      */
     public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm, int numberOfEdgesToBeUsed, ArrayList<Integer> remainingItems) {
 
-        // base case
-        if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
-            if (!this.firstRecursiveStep) { return; }
-        }
-        this.firstRecursiveStep = false;
+//        // base case
+//        if (remainingItems.size() == 0 || this.previousNumberOfRemainingItems == remainingItems.size()) {
+//            if (!this.firstRecursiveStep) { return; }
+//        }
+//        this.firstRecursiveStep = false;
 
-        this.previousNumberOfRemainingItems = remainingItems.size();
+//        this.previousNumberOfRemainingItems = remainingItems.size();
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
-
         Collections.sort(itemPairs);
 
+        System.out.println("using ALL of the item pairs? --> " + (numberOfEdgesToBeUsed == itemPairs.size()));
+
+        // question: can both items of a pair be assigned to another pair?
+        // if so, save both complete stack assignments and remove them from the list
+
+        ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
+
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
+
+        for (MCMEdge pair : itemPairs) {
+
+            if (itemPairRemovalList.contains(pair)) { continue; }
+
+            int itemOne = pair.getVertexOne();
+            int itemTwo = pair.getVertexTwo();
+            boolean itemOneAssigned = false;
+            boolean itemTwoAssigned = false;
+            MCMEdge itemOneEdge = new MCMEdge(0, 0, 0);
+            MCMEdge itemTwoEdge = new MCMEdge(0, 0, 0);
+
+            for (MCMEdge pair2 : itemPairs) {
+
+                if (itemPairRemovalList.contains(pair2)) { continue; }
+                if (itemOneAssigned && itemTwoAssigned) { break; }
+
+                if (pair != pair2) {
+
+                    int pairItemOne = pair2.getVertexOne();
+                    int pairItemTwo = pair2.getVertexTwo();
+
+                    if (!itemOneAssigned && this.itemAssignableToPair(itemOne, pairItemOne, pairItemTwo)) {
+                        itemOneAssigned = true;
+                        itemOneEdge = pair2;
+                        continue;
+                    }
+
+                    if (!itemTwoAssigned && this.itemAssignableToPair(itemTwo, pairItemOne, pairItemTwo)) {
+                        itemTwoAssigned = true;
+                        itemTwoEdge = pair2;
+                        continue;
+                    }
+                }
+            }
+
+            if (itemOneAssigned && itemTwoAssigned) {
+                itemPairRemovalList.add(itemOneEdge);
+                itemPairRemovalList.add(itemTwoEdge);
+                itemPairRemovalList.add(pair);
+
+                ArrayList<Integer> itemOneStack = new ArrayList<>();
+                itemOneStack.add(itemOne);
+                itemOneStack.add(itemOneEdge.getVertexOne());
+                itemOneStack.add(itemOneEdge.getVertexTwo());
+
+                ArrayList<Integer> itemTwoStack = new ArrayList<>();
+                itemTwoStack.add(itemTwo);
+                itemTwoStack.add(itemTwoEdge.getVertexOne());
+                itemTwoStack.add(itemTwoEdge.getVertexTwo());
+
+                completelyFilledStacks.add(itemOneStack);
+                completelyFilledStacks.add(itemTwoStack);
+            }
+        }
+
+        //////////////////////////////////////////////
+
+        for (MCMEdge e : itemPairRemovalList) {
+            itemPairs.remove(itemPairs.indexOf(e));
+        }
+
+        ArrayList<Integer> test = new ArrayList<>();
+
+//        System.out.println("####################################################");
+//        for (ArrayList<Integer> stack : completelyFilledStacks) {
+//            for (int item : stack) {
+//                if (test.contains(item)) {
+//                    System.out.println("ALREADY: " + item);
+//                } else {
+//                    test.add(item);
+//                }
+//                System.out.print(item + " ");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println("####################################################");
+
+        ArrayList<Integer> assignedItems = new ArrayList<>();
+        for (ArrayList<Integer> stack : completelyFilledStacks) {
+            for (int item : stack) {
+                assignedItems.add(item);
+            }
+        }
+        for (MCMEdge edge : itemPairs) {
+            assignedItems.add(edge.getVertexOne());
+            assignedItems.add(edge.getVertexTwo());
+        }
+
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
+
+        for (int item : this.instance.getItems()) {
+            if (!assignedItems.contains(item)) {
+                unmatchedItems.add(item);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
+
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
-        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(numberOfEdgesToBeUsed, itemPairs, remainingItems);
+//        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(numberOfEdgesToBeUsed, itemPairs, remainingItems);
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+
+        System.out.println(itemPairs);
+
+        System.out.println("UNMATCHED: " + unmatchedItems);
 
         this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems, numberOfEdgesToBeUsed);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
+        System.out.println("TRIPLES: " + itemTriples.getMatching().getEdges());
 
         ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
         HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
 
+        this.stackAssignments.addAll(completelyFilledStacks);
         this.stackAssignments.addAll(currentStackAssignments);
 
         // COMPUTING COMPATIBLE ITEM PAIRS FROM REMAINING ITEMS
         unmatchedItems = this.getUnassignedItemsFromStorageAreaSnapshot(currentStackAssignments);
+
+        System.out.println("###################################");
+        System.out.println(unmatchedItems);
+        System.out.println(currentStackAssignments);
+        System.out.println("###################################");
+
         EdmondsMaximumCardinalityMatching remainingItemPairs = HeuristicUtil.getMCMForUnassignedItems(unmatchedItems, this.instance.getStackingConstraints());
         itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, remainingItemPairs);
-        numberOfEdgesToBeUsed = (int)Math.ceil(itemPairs.size() / 3);
 
-        this.recursiveMCMApproach(remainingItemPairs, numberOfEdgesToBeUsed, unmatchedItems);
+//        // TODO: Check value
+//        // numberOfEdgesToBeUsed = (int)Math.ceil(itemPairs.size() / 3);
+//        numberOfEdgesToBeUsed = itemPairs.size();
+
+//        this.recursiveMCMApproach(remainingItemPairs, numberOfEdgesToBeUsed, unmatchedItems);
     }
 
     public void generateItemPairPermutationsAndCorrespondingListsOfRemainingItems(
@@ -254,12 +413,14 @@ public class ThreeCapRecursiveMCMHeuristic {
 
         int maxNumberOfAssignments = 0;
 
+        System.out.println("EDGE PERM: " + edgePermutations);
+
         for (ArrayList<MCMEdge> currentEdges : edgePermutations) {
             ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
             ArrayList<Integer> currentRemainingItems = new ArrayList<>(listsOfRemainingItems.get(edgePermutations.indexOf(currentEdges)));
             int numberOfAssignments = this.generateCurrentStackAssignments(currentEdges, currentRemainingItems, currentStackAssignments);
 
-            if (numberOfAssignments > maxNumberOfAssignments) {
+            if (numberOfAssignments >= maxNumberOfAssignments) {
                 maxNumberOfAssignments = numberOfAssignments;
                 bestStackAssignments.clear();
                 bestStackAssignments.addAll(currentStackAssignments);
@@ -346,6 +507,7 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     public void completeStackAssignmentsForRecursiveApproach() {
         ArrayList<Integer> remainingItems = this.getUnassignedItemsFromStorageAreaSnapshot(this.stackAssignments);
+
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems(remainingItems, this.instance.getStackingConstraints());
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
@@ -354,7 +516,8 @@ public class ThreeCapRecursiveMCMHeuristic {
         HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         // TODO: search for reasonable way to compute the number of used item pairs
-        int numberOfUsedItemPairs = itemPairs.size() - (int)Math.ceil(itemPairs.size() / 2) + 10;
+//        int numberOfUsedItemPairs = itemPairs.size() - (int)Math.ceil(itemPairs.size() / 2) + 10;
+        int numberOfUsedItemPairs = itemPairs.size();
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         ArrayList<ArrayList<Integer>> listsOfRemainingItems = new ArrayList<>();
@@ -364,6 +527,9 @@ public class ThreeCapRecursiveMCMHeuristic {
 
         ArrayList<ArrayList<Integer>> bestStackAssignments = new ArrayList<>();
         this.findBestRemainingStackAssignments(bestStackAssignments, itemPairPermutations, listsOfRemainingItems, remainingItems);
+
+        System.out.println("BEST: " + bestStackAssignments);
+
         this.stackAssignments.addAll(bestStackAssignments);
         this.assignUnstackableItemsToOwnStack(remainingItems);
 
@@ -401,7 +567,7 @@ public class ThreeCapRecursiveMCMHeuristic {
                 items.add(item);
             }
             this.firstRecursiveStep = true;
-            this.recursiveMCMApproach(mcm, this.instance.getStacks().length, items);
+            this.recursiveMCMApproach(mcm, mcm.getMatching().getEdges().size(), items);
             this.completeStackAssignmentsForRecursiveApproach();
 
             sol = new Solution(0, this.timeLimit, this.instance);
