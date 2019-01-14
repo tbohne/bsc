@@ -209,49 +209,13 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
-    /**
-     *
-     */
-    public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm) {
-
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
-        Collections.sort(itemPairs);
-
-        // question: can both items of a pair be assigned to another pair?
-        // if so, save both complete stack assignments and remove them from the list
-
-        ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
-
-        ////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////
-
-        this.generateCompletelyFilledStacks(itemPairs, itemPairRemovalList, completelyFilledStacks);
-
-        //////////////////////////////////////////////
-
+    public void removedAlreadyUsedItemPairs(ArrayList<MCMEdge> itemPairRemovalList, ArrayList<MCMEdge> itemPairs) {
         for (MCMEdge e : itemPairRemovalList) {
             itemPairs.remove(itemPairs.indexOf(e));
         }
+    }
 
-        ArrayList<Integer> test = new ArrayList<>();
-
-//        System.out.println("####################################################");
-//        for (ArrayList<Integer> stack : completelyFilledStacks) {
-//            for (int item : stack) {
-//                if (test.contains(item)) {
-//                    System.out.println("ALREADY: " + item);
-//                } else {
-//                    test.add(item);
-//                }
-//                System.out.print(item + " ");
-//            }
-//            System.out.println();
-//        }
-//        System.out.println("####################################################");
-
+    public ArrayList<Integer> computeUnmatchedItems(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
         ArrayList<Integer> assignedItems = new ArrayList<>();
         for (ArrayList<Integer> stack : completelyFilledStacks) {
             for (int item : stack) {
@@ -271,15 +235,32 @@ public class ThreeCapRecursiveMCMHeuristic {
             }
         }
 
-        ////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////
+        return unmatchedItems;
+    }
+
+    /**
+     *
+     */
+    public void recursiveMCMApproach(EdmondsMaximumCardinalityMatching mcm) {
+
+        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
+        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
+        Collections.sort(itemPairs);
+
+        // question: can both items of a pair be assigned to another pair?
+        // if so, save both complete stack assignments and remove them from the list
+        ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
+        this.generateCompletelyFilledStacks(itemPairs, itemPairRemovalList, completelyFilledStacks);
+        this.removedAlreadyUsedItemPairs(itemPairRemovalList, itemPairs);
+
+        ArrayList<Integer> unmatchedItems = this.computeUnmatchedItems(itemPairs, completelyFilledStacks);
 
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
-//        ArrayList<Integer> unmatchedItems = this.getCurrentListOfUnmatchedItems(numberOfEdgesToBeUsed, itemPairs, remainingItems);
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
-        System.out.println(itemPairs);
-
+        System.out.println("PAIRS: " + itemPairs);
         System.out.println("UNMATCHED: " + unmatchedItems);
 
         this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
