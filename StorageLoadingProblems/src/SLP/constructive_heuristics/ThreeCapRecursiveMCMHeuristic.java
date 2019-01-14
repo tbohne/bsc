@@ -273,35 +273,58 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     /**
-     * // TODO: find new name
+     * Parses and sorts the item pairs resulting from the edges of the maximum cardinality matching.
+     *
+     * @param mcm - the maximum cardinality matching to be parsed
+     * @return the parsed and sorted list of item pairs
      */
-    public void threeCapApproachTwo(EdmondsMaximumCardinalityMatching mcm) {
-
-        // PARSE AND SORT ITEM PAIRS
+    public ArrayList<MCMEdge> parseAndSortItemPairs(EdmondsMaximumCardinalityMatching mcm) {
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
         HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
+        return itemPairs;
+    }
 
-        // GENERATE COMPLETELY FILLED STACKS FROM ITEM PAIRS
-        // Idea: If both items of a pair can be assigned to another pair, two completely filled stacks are generated.
+    /**
+     * Tries to merge item pairs by splitting up pairs and assigning both items
+     * to other pairs to form completely filled stacks.
+     *
+     * @param itemPairs
+     */
+    public ArrayList<ArrayList<Integer>> mergeItemPairs(ArrayList<MCMEdge> itemPairs) {
         ArrayList<MCMEdge> itemPairRemovalList = new ArrayList<>();
         ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
         this.generateCompletelyFilledStacks(itemPairs, itemPairRemovalList, completelyFilledStacks);
         this.stackAssignments.addAll(completelyFilledStacks);
         this.removeAlreadyUsedItemPairs(itemPairRemovalList, itemPairs);
+        return completelyFilledStacks;
+    }
 
+    /**
+     * Computes compatible item triples and adds them to the list of stack assignments.
+     *
+     * @param itemPairs - list of item pairs
+     * @param unmatchedItems - list of unmatched items
+     */
+    public void computeCompatibleItemTriples(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
+        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = new ArrayList<>();
+        HeuristicUtil.parseItemTripleMCM(itemTripleStackAssignments, itemTriples);
+        this.stackAssignments.addAll(itemTripleStackAssignments);
+    }
+
+    /**
+     * TODO: find new name
+     */
+    public void threeCapApproachTwo(EdmondsMaximumCardinalityMatching mcm) {
+        ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
+        ArrayList<ArrayList<Integer>> completelyFilledStacks = this.mergeItemPairs(itemPairs);
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs, completelyFilledStacks);
-        System.out.println("UNMATCHED: " + unmatchedItems);
-
-        // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
         if (itemPairs.size() > 0 && unmatchedItems.size() > 0) {
-            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-            this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
-            ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
-            HeuristicUtil.parseItemTripleMCM(currentStackAssignments, itemTriples);
-            this.stackAssignments.addAll(currentStackAssignments);
+            this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
         }
     }
 
