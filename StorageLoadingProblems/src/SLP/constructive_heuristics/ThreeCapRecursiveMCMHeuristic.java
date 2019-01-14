@@ -271,12 +271,25 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
-    public void removedAlreadyUsedItemPairs(ArrayList<MCMEdge> itemPairRemovalList, ArrayList<MCMEdge> itemPairs) {
+    /**
+     * Removes the item pairs that are already part of completely filled stacks from the list of remaining item pairs.
+     *
+     * @param itemPairRemovalList - the item pairs to be removed
+     * @param itemPairs - the list, the pairs will be removed from
+     */
+    public void removeAlreadyUsedItemPairs(ArrayList<MCMEdge> itemPairRemovalList, ArrayList<MCMEdge> itemPairs) {
         for (MCMEdge e : itemPairRemovalList) {
             itemPairs.remove(itemPairs.indexOf(e));
         }
     }
 
+    /**
+     * Computes the unmatched items.
+     *
+     * @param itemPairs - the list of matched items
+     * @param completelyFilledStacks - the list of completely filled stacks
+     * @return the unmatched items
+     */
     public ArrayList<Integer> computeUnmatchedItems(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
         ArrayList<Integer> assignedItems = new ArrayList<>();
         for (ArrayList<Integer> stack : completelyFilledStacks) {
@@ -290,13 +303,11 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
-
         for (int item : this.instance.getItems()) {
             if (!assignedItems.contains(item)) {
                 unmatchedItems.add(item);
             }
         }
-
         return unmatchedItems;
     }
 
@@ -317,7 +328,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         ArrayList<ArrayList<Integer>> completelyFilledStacks = new ArrayList<>();
         this.generateCompletelyFilledStacks(itemPairs, itemPairRemovalList, completelyFilledStacks);
         this.stackAssignments.addAll(completelyFilledStacks);
-        this.removedAlreadyUsedItemPairs(itemPairRemovalList, itemPairs);
+        this.removeAlreadyUsedItemPairs(itemPairRemovalList, itemPairs);
 
         ArrayList<Integer> unmatchedItems = this.computeUnmatchedItems(itemPairs, completelyFilledStacks);
 
@@ -332,6 +343,14 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * Generates permutations for the item pairs as well as the corresponding lists of remaining items.
+     *
+     * @param edges - the pairs of items
+     * @param remainingItems - the list of remaining items
+     * @param itemPairPermutations - the list of item pair permutations
+     * @param listsOfRemainingItems - the list of lists of remaining items
+     */
     public void generateItemPairPermutationsAndCorrespondingListsOfRemainingItems(
             ArrayList<MCMEdge> edges,
             ArrayList<Integer> remainingItems,
@@ -342,6 +361,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         HeuristicUtil.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
         Collections.sort(edges);
 
+        // TODO: remove hard coded value
         for (int i = 0; i < 1000; i++) {
             ArrayList<Integer> tmpRemainingItems = new ArrayList<>(remainingItems);
             ArrayList<MCMEdge> tmpItemPairs = new ArrayList<>();
@@ -361,12 +381,19 @@ public class ThreeCapRecursiveMCMHeuristic {
                 Collections.shuffle(edges);
                 unsuccessfulShuffleAttempts++;
             }
-
             itemPairPermutations.add(new ArrayList<>(tmpItemPairs));
             listsOfRemainingItems.add(new ArrayList<>(tmpRemainingItems));
         }
     }
 
+    /**
+     * Generates the stack assignments for the given pairs and remaining items.
+     *
+     * @param currentEdges - the list of item pairs
+     * @param currentRemainingItems - the list of remaining items
+     * @param currentStackAssignments - the list of stack assignments
+     * @return the number of performed assignments
+     */
     public int generateCurrentStackAssignments(
             ArrayList<MCMEdge> currentEdges,
             ArrayList<Integer> currentRemainingItems,
@@ -409,6 +436,14 @@ public class ThreeCapRecursiveMCMHeuristic {
         return numberOfAssignments;
     }
 
+    /**
+     * Finds the best remaining stack assignments.
+     *
+     * @param bestStackAssignments - the best stack assignments
+     * @param edgePermutations - the list of permutations of item pairs
+     * @param listsOfRemainingItems - the lists of lists of remaining items
+     * @param remainingItems - the remaining items
+     */
     public void findBestRemainingStackAssignments(
             ArrayList<ArrayList<Integer>> bestStackAssignments,
             ArrayList<ArrayList<MCMEdge>> edgePermutations,
@@ -417,8 +452,6 @@ public class ThreeCapRecursiveMCMHeuristic {
     ) {
 
         int maxNumberOfAssignments = 0;
-
-        System.out.println("EDGE PERM: " + edgePermutations);
 
         for (ArrayList<MCMEdge> currentEdges : edgePermutations) {
             ArrayList<ArrayList<Integer>> currentStackAssignments = new ArrayList<>();
@@ -435,6 +468,12 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * Updates the list of remaining items.
+     *
+     * @param edges - the item pairs
+     * @param remainingItems - the list of remaining items
+     */
     public void updateRemainingItems(ArrayList<MCMEdge> edges, ArrayList<Integer> remainingItems) {
         for (MCMEdge e : edges) {
             if (remainingItems.contains(e.getVertexOne())) {
@@ -446,6 +485,11 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * Assigns the unstackable items to its own stacks.
+     *
+     * @param remainingItems - the remaining (unstackable) items
+     */
     public void assignUnstackableItemsToOwnStack(ArrayList<Integer> remainingItems) {
         for (int item : remainingItems) {
             ArrayList<Integer> stack = new ArrayList<>();
@@ -454,6 +498,9 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * Fills the storage area with the generated stack assignments.
+     */
     public void fillStorageAreaWithGeneratedStackAssignments() {
 
         ArrayList<Integer> usedStacks = new ArrayList<>();
@@ -462,9 +509,7 @@ public class ThreeCapRecursiveMCMHeuristic {
 
             for (int i = 0; i < this.instance.getStacks().length; i++) {
 
-                if (usedStacks.contains(i)) {
-                    continue;
-                }
+                if (usedStacks.contains(i)) { continue; }
 
                 boolean itemsCompatible = true;
                 for (int item : currStack) {
@@ -472,9 +517,7 @@ public class ThreeCapRecursiveMCMHeuristic {
                         itemsCompatible = false;
                     }
                 }
-                if (!itemsCompatible) {
-                    continue;
-                }
+                if (!itemsCompatible) { continue; }
                 for (int level = 0; level < this.instance.getStacks()[i].length; level++) {
                     if (level < currStack.size()) {
                         this.instance.getStacks()[i][level] = currStack.get(level);
@@ -486,6 +529,9 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
+    /**
+     * Checks whether all items have been assigned to a stack.
+     */
     public void checkItemAssignments() {
         ArrayList<Integer> remainingItems = this.getUnassignedItemsFromStorageAreaSnapshot(this.stackAssignments);
         if (remainingItems.size() > 0) {
@@ -493,7 +539,10 @@ public class ThreeCapRecursiveMCMHeuristic {
         }
     }
 
-    public void completeStackAssignmentsForRecursiveApproach() {
+    /**
+     * Completes the stack assignments.
+     */
+    public void completeStackAssignments() {
         ArrayList<Integer> remainingItems = this.getUnassignedItemsFromStorageAreaSnapshot(this.stackAssignments);
 
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems(remainingItems, this.instance.getStackingConstraints());
@@ -549,7 +598,7 @@ public class ThreeCapRecursiveMCMHeuristic {
                 items.add(item);
             }
             this.threeCapApproachTwo(mcm);
-            this.completeStackAssignmentsForRecursiveApproach();
+            this.completeStackAssignments();
 
             sol = new Solution(0, this.timeLimit, this.instance);
             sol.transformStackAssignmentIntoValidSolutionIfPossible();
