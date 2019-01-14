@@ -14,7 +14,6 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     private Instance instance;
     private ArrayList<ArrayList<Integer>> stackAssignments;
-    private int previousNumberOfRemainingItems;
     private double startTime;
     private int timeLimit;
     private ArrayList<ArrayList<MCMEdge>> alreadyUsedEdgeShuffles;
@@ -23,18 +22,26 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.instance = instance;
         this.timeLimit = timeLimit;
         this.stackAssignments = new ArrayList<>();
-        this.previousNumberOfRemainingItems = this.instance.getItems().length;
         this.alreadyUsedEdgeShuffles = new ArrayList<>();
     }
 
-    public void completeStackAssignment(DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemA, int unmatchedItem, int pairItemB, MCMEdge itemPair) {
+    /**
+     * Adds an edge between compatible pairs and unmatched items.
+     *
+     * @param graph - the graph to be extended
+     * @param pairItemOne - the first item of the pair
+     * @param unmatchedItem - the unmatched item
+     * @param pairItemTwo - the second item of the pair
+     * @param itemPair - the edge representing the item pair
+     */
+    public void addEdgeForCompatibleItemTriple(DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemOne, int unmatchedItem, int pairItemTwo, MCMEdge itemPair) {
 
-        if (this.instance.getStackingConstraints()[pairItemA][unmatchedItem] == 1
-            || this.instance.getStackingConstraints()[unmatchedItem][pairItemB] == 1) {
+        if (this.instance.getStackingConstraints()[pairItemOne][unmatchedItem] == 1
+            || this.instance.getStackingConstraints()[unmatchedItem][pairItemTwo] == 1) {
 
-            if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
-                graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
-            }
+                if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+                    graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+                }
         }
     }
 
@@ -59,11 +66,11 @@ public class ThreeCapRecursiveMCMHeuristic {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
                 if (this.instance.getStackingConstraints()[itemPairs.get(i).getVertexOne()][itemPairs.get(i).getVertexTwo()] == 1) {
-                    this.completeStackAssignment(graph, itemPairs.get(i).getVertexTwo(), unmatchedItems.get(j),
+                    this.addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexTwo(), unmatchedItems.get(j),
                         itemPairs.get(i).getVertexOne(), itemPairs.get(i)
                     );
                 } else {
-                    this.completeStackAssignment(graph, itemPairs.get(i).getVertexOne(), unmatchedItems.get(j),
+                    this.addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexOne(), unmatchedItems.get(j),
                         itemPairs.get(i).getVertexTwo(), itemPairs.get(i)
                     );
                 }
