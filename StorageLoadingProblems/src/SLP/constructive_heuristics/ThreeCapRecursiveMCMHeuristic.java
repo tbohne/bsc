@@ -85,18 +85,11 @@ public class ThreeCapRecursiveMCMHeuristic {
 
     /**
      * Returns the unassigned items based on the items that are assigned so far.
-     * TODO: just using stack assignments?
      *
-     * @param storageArea - the storage area
      * @return the list of unassigned items
      */
-    public ArrayList<Integer> getUnassignedItemsFromStorageAreaSnapshot(ArrayList<ArrayList<Integer>> storageArea) {
+    public ArrayList<Integer> getUnassignedItems() {
         ArrayList<Integer> alreadyAssignedItems = new ArrayList<>();
-        for (ArrayList<Integer> stack : storageArea) {
-            for (int item : stack) {
-                alreadyAssignedItems.add(item);
-            }
-        }
         for (ArrayList<Integer> stack : this.stackAssignments) {
             for (int item : stack) {
                 alreadyAssignedItems.add(item);
@@ -253,13 +246,13 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     /**
-     * Computes the unmatched items.
+     * Returns the unmatched items (not part of pair and not assigned so far).
      *
      * @param itemPairs - the list of matched items
      * @param completelyFilledStacks - the list of completely filled stacks
      * @return the unmatched items
      */
-    public ArrayList<Integer> computeUnmatchedItems(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
+    public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
         ArrayList<Integer> assignedItems = new ArrayList<>();
         for (ArrayList<Integer> stack : completelyFilledStacks) {
             for (int item : stack) {
@@ -270,7 +263,6 @@ public class ThreeCapRecursiveMCMHeuristic {
             assignedItems.add(edge.getVertexOne());
             assignedItems.add(edge.getVertexTwo());
         }
-
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
         for (int item : this.instance.getItems()) {
             if (!assignedItems.contains(item)) {
@@ -299,7 +291,8 @@ public class ThreeCapRecursiveMCMHeuristic {
         this.stackAssignments.addAll(completelyFilledStacks);
         this.removeAlreadyUsedItemPairs(itemPairRemovalList, itemPairs);
 
-        ArrayList<Integer> unmatchedItems = this.computeUnmatchedItems(itemPairs, completelyFilledStacks);
+        ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs, completelyFilledStacks);
+        System.out.println("UNMATCHED: " + unmatchedItems);
 
         // COMPUTING COMPATIBLE ITEM TRIPLES FROM ITEM PAIRS AND REMAINING ITEMS
         if (itemPairs.size() > 0 && unmatchedItems.size() > 0) {
@@ -502,7 +495,8 @@ public class ThreeCapRecursiveMCMHeuristic {
      * Checks whether all items have been assigned to a stack.
      */
     public void checkItemAssignments() {
-        ArrayList<Integer> remainingItems = this.getUnassignedItemsFromStorageAreaSnapshot(this.stackAssignments);
+        ArrayList<Integer> remainingItems = this.getUnassignedItems();
+        System.out.println("REMAINING: " + remainingItems);
         if (remainingItems.size() > 0) {
             System.out.println("Problem: Not all items have been assigned, even though the process is complete.");
         }
@@ -512,7 +506,8 @@ public class ThreeCapRecursiveMCMHeuristic {
      * Completes the stack assignments.
      */
     public void completeStackAssignments() {
-        ArrayList<Integer> remainingItems = this.getUnassignedItemsFromStorageAreaSnapshot(this.stackAssignments);
+        ArrayList<Integer> remainingItems = this.getUnassignedItems();
+        System.out.println("REMAINING: " + remainingItems);
 
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems(remainingItems, this.instance.getStackingConstraints());
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
