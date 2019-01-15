@@ -109,7 +109,7 @@ public class TwoCapHeuristic {
 //        return unmatchedItems;
 //    }
 
-    public void generateGraph(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
+    public MaximumWeightBipartiteMatching generateGraph(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
@@ -170,8 +170,29 @@ public class TwoCapHeuristic {
 //        KuhnMunkresMinimalWeightBipartitePerfectMatching mwbpm = new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
         MaximumWeightBipartiteMatching mwbm = new MaximumWeightBipartiteMatching(graph, partitionOne, partitionTwo);
 
+//        for (Object edge : mwbm.getMatching().getEdges()) {
+//            System.out.println(edge);
+//        }
+
+        return mwbm;
+
+    }
+
+    public void parseStackAssignment(MaximumWeightBipartiteMatching mwbm) {
+
         for (Object edge : mwbm.getMatching().getEdges()) {
-            System.out.println(edge);
+            String init = edge.toString().replace("(", "").replace("edge", "");
+
+            // item case
+            if (init.contains("item")) {
+                int item = Integer.parseInt(init.replace("item", "").split(":")[0].trim());
+                int stack = Integer.parseInt(init.replace("item", "").split(":")[1].replace("stack", "").replace(")", "").trim());
+            // item pair case
+            } else {
+                int stack = Integer.parseInt(init.split(":")[1].replace("stack", "").replace(")", "").trim());
+                int itemOne = Integer.parseInt(init.split(":")[0].split(", ")[0].trim());
+                int itemTwo = Integer.parseInt(init.split(":")[0].split(", ")[1].replace(")", "").trim());
+            }
         }
 
     }
@@ -184,7 +205,9 @@ public class TwoCapHeuristic {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
-        this.generateGraph(itemPairs, unmatchedItems);
+        MaximumWeightBipartiteMatching mwbm = this.generateGraph(itemPairs, unmatchedItems);
+        this.parseStackAssignment(mwbm);
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
