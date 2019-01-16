@@ -67,11 +67,9 @@ public class HeuristicUtil {
         }
     }
 
-    public static void generateStackingConstraintGraph(
-            DefaultUndirectedGraph<String, DefaultEdge> graph,
-            int[] items,
-            int[][] stackingConstraints
-    ) {
+    public static DefaultUndirectedGraph generateStackingConstraintGraph(int[] items, int[][] stackingConstraints) {
+
+        DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
 
         for (int item : items) {
             graph.addVertex("v" + item);
@@ -86,6 +84,7 @@ public class HeuristicUtil {
                 }
             }
         }
+        return graph;
     }
 
     public static int computeRowRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
@@ -313,13 +312,15 @@ public class HeuristicUtil {
         return false;
     }
 
-    public static void parseItemPairMCM(ArrayList<MCMEdge> matchedItems, EdmondsMaximumCardinalityMatching mcm) {
+    public static ArrayList<MCMEdge> parseItemPairMCM(EdmondsMaximumCardinalityMatching mcm) {
+        ArrayList<MCMEdge> matchedItems = new ArrayList<>();
         for (Object edge : mcm.getMatching()) {
             int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
             int vertexTwo = Integer.parseInt(edge.toString().split(":")[1].replace("v", "").replace(")", "").trim());
             MCMEdge e = new MCMEdge(vertexOne, vertexTwo, 0);
             matchedItems.add(e);
         }
+        return matchedItems;
     }
 
     public static void parseItemTripleMCM(ArrayList<ArrayList<Integer>> currentStackAssignments, EdmondsMaximumCardinalityMatching mcm) {
