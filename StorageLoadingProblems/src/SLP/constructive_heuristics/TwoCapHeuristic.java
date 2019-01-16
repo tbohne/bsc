@@ -28,6 +28,9 @@ public class TwoCapHeuristic {
         this.timeLimit = timeLimit;
     }
 
+    /**
+     * Fixes the order of items inside the stacks based on the stacking constraints.
+     */
     public void fixOrderInStacks() {
         for (int[] stack : this.instance.getStacks()) {
             if (stack[0] != -1 && stack[1] != -1) {
@@ -40,17 +43,21 @@ public class TwoCapHeuristic {
         }
     }
 
+    /**
+     * Returns the list of unmatched items based on the list of item pairs.
+     *
+     * @param itemPairs - the list of item pairs (matched items)
+     * @return the list of unmatched items
+     */
     public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs) {
 
         ArrayList<Integer> matchedItems = new ArrayList<>();
-
         for (MCMEdge edge : itemPairs) {
             matchedItems.add(edge.getVertexOne());
             matchedItems.add(edge.getVertexTwo());
         }
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
-
         for (int item : this.instance.getItems()) {
             if (!matchedItems.contains(item)) {
                 unmatchedItems.add(item);
@@ -59,16 +66,26 @@ public class TwoCapHeuristic {
         return unmatchedItems;
     }
 
+    /**
+     * Generates the complete bipartite graph consisting of the item partition and the stack partition
+     * and computes the minimum cost perfect matching for this graph.
+     * Since the two partitions aren't equally sized and the used algorithm to compute the MinCostPerfectMatching
+     * expects a complete bipartite graph, there are dummy items that are used to make the graph complete bipartite.
+     * These items have no influence on the costs and are ignored in later steps.
+     *
+     * @param itemPairs - the pairs of items that are assigned to a stack together
+     * @param unmatchedItems - the items that are assigned to their own stack
+     * @return the minimum cost perfect matching between items and stacks
+     */
     public KuhnMunkresMinimalWeightBipartitePerfectMatching getMinCostPerfectMatching(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
-
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
 
-        for (MCMEdge e : itemPairs) {
-            graph.addVertex("edge" + e);
-            partitionOne.add("edge" + e);
+        for (MCMEdge edge : itemPairs) {
+            graph.addVertex("edge" + edge);
+            partitionOne.add("edge" + edge);
         }
         for (int item : unmatchedItems) {
             graph.addVertex("item" + item);
@@ -80,47 +97,37 @@ public class TwoCapHeuristic {
         }
 
         int cnt = 0;
-        ArrayList<Integer> virtualItems = new ArrayList<>();
+        ArrayList<Integer> dummyItems = new ArrayList<>();
         while (partitionOne.size() < partitionTwo.size()) {
             graph.addVertex("dummy" + cnt);
             partitionOne.add("dummy" + cnt);
-            virtualItems.add(cnt);
+            dummyItems.add(cnt);
             cnt++;
         }
-
-        System.out.println("partOne: " + partitionOne.size());
-        System.out.println("partTwo: " + partitionTwo.size());
 
         // item pair - stack edges
         for (int i = 0; i < itemPairs.size(); i++) {
             for (int j = 0; j < this.instance.getStacks().length; j++) {
-//                if (this.instance.getStackConstraints()[itemPairs.get(i).getVertexOne()][j] == 1
-//                        && this.instance.getStackConstraints()[itemPairs.get(i).getVertexTwo()][j] == 1) {
-
-                    if (!graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
-                        DefaultWeightedEdge edge = graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
-                        int costs = this.instance.getCosts()[itemPairs.get(i).getVertexOne()][j] + this.instance.getCosts()[itemPairs.get(i).getVertexTwo()][j];
-                        graph.setEdgeWeight(edge, costs);
-                    }
-//                }
+                if (!graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
+                    DefaultWeightedEdge edge = graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
+                    int costs = this.instance.getCosts()[itemPairs.get(i).getVertexOne()][j] + this.instance.getCosts()[itemPairs.get(i).getVertexTwo()][j];
+                    graph.setEdgeWeight(edge, costs);
+                }
             }
         }
-
         // unmatched item - stack edges
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-//                if (this.instance.getStackConstraints()[item][stack] == 1) {
-                    if (!graph.containsEdge("item" + item, "stack" + stack)) {
-                        DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
-                        int costs = this.instance.getCosts()[item][stack];
-                        graph.setEdgeWeight(edge, costs);
-                    }
-
-//                }
+                if (!graph.containsEdge("item" + item, "stack" + stack)) {
+                    DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
+                    int costs = this.instance.getCosts()[item][stack];
+                    graph.setEdgeWeight(edge, costs);
+                }
             }
         }
 
-        for (int item : virtualItems) {
+        // dummy items can be stored in every stack with no costs
+        for (int item : dummyItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
                 DefaultWeightedEdge edge = graph.addEdge("dummy" + item, "stack" + stack);
                 int costs = 0;
