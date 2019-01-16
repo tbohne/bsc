@@ -188,21 +188,34 @@ public class TwoCapHeuristic {
 
     }
 
+    /**
+     * Generates a solution to the SLP using the item pairs given by the MCM.
+     * The item pairs are used to determine the unmatched items.
+     * A minimum cost perfect matching in the bipartite graph consisting of the set of items (and item pairs) and the set
+     * of stacks is computed and interpreted as stack assignments. Finally, the order in the stacks is fixed
+     * to respect the stacking  constraints.
+     *
+     * @param mcm - the maximum cardinality matching determining the pairs of items
+     * @return the generated solution
+     */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching mcm) {
 
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
-
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
+
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
         this.parseMatchingAndAssignItems(minCostPerfectMatching);
-
         this.fixOrderInStacks();
-        Solution sol = new Solution(0, this.timeLimit, this.instance);
 
-        return sol;
+        return new Solution(0, this.timeLimit, this.instance);
     }
 
+    /**
+     * Solves the SLP with an approach that uses a maximum cardinality matching followed by a minimum cost perfect matching
+     * to feasibly assign all items to the storage area while minimizing the costs.
+     *
+     * @return the generated solution
+     */
     public Solution solve() {
 
         Solution sol = new Solution();
@@ -210,9 +223,8 @@ public class TwoCapHeuristic {
         if (this.instance.getStackCapacity() == 2) {
 
             this.startTime = System.currentTimeMillis();
-            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-            HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(graph);
+            DefaultUndirectedGraph stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(this.instance.getItems(), this.instance.getStackingConstraints());
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
             sol = generateSolution(itemMatching);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
 
