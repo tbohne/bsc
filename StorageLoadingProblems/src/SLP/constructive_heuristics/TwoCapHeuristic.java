@@ -109,7 +109,7 @@ public class TwoCapHeuristic {
 //        return unmatchedItems;
 //    }
 
-    public MaximumWeightBipartiteMatching generateGraph(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
+    public KuhnMunkresMinimalWeightBipartitePerfectMatching generateGraph(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
@@ -131,54 +131,69 @@ public class TwoCapHeuristic {
             partitionTwo.add("stack" + stack);
         }
 
+        int cnt = 0;
+        ArrayList<Integer> virtualItems = new ArrayList<>();
+        while (partitionOne.size() < partitionTwo.size()) {
+            graph.addVertex("dummy" + cnt);
+            partitionOne.add("dummy" + cnt);
+            virtualItems.add(cnt);
+            cnt++;
+        }
+
         System.out.println("partOne: " + partitionOne.size());
         System.out.println("partTwo: " + partitionTwo.size());
+
 
         // item pair - stack edges
         for (int i = 0; i < itemPairs.size(); i++) {
             for (int j = 0; j < this.instance.getStacks().length; j++) {
-                if (this.instance.getStackConstraints()[itemPairs.get(i).getVertexOne()][j] == 1
-                        && this.instance.getStackConstraints()[itemPairs.get(i).getVertexTwo()][j] == 1) {
+//                if (this.instance.getStackConstraints()[itemPairs.get(i).getVertexOne()][j] == 1
+//                        && this.instance.getStackConstraints()[itemPairs.get(i).getVertexTwo()][j] == 1) {
 
                     if (!graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
-
                         DefaultWeightedEdge edge = graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
                         int costs = this.instance.getCosts()[itemPairs.get(i).getVertexOne()][j] + this.instance.getCosts()[itemPairs.get(i).getVertexTwo()][j];
                         graph.setEdgeWeight(edge, costs);
-
-
                     }
-                }
+//                }
             }
         }
 
         // unmatched item - stack edges
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                if (this.instance.getStackConstraints()[item][stack] == 1) {
+//                if (this.instance.getStackConstraints()[item][stack] == 1) {
                     if (!graph.containsEdge("item" + item, "stack" + stack)) {
-                        graph.addEdge("item" + item, "stack" + stack);
-                        graph.setEdgeWeight(graph.getEdge("item" + item, "stack" + stack), this.instance.getCosts()[item][stack]);
+                        DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
+                        int costs = this.instance.getCosts()[item][stack];
+                        graph.setEdgeWeight(edge, costs);
                     }
 
-                }
+//                }
             }
         }
 
-        System.out.println(graph);
+        for (int item : virtualItems) {
+            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+                DefaultWeightedEdge edge = graph.addEdge("dummy" + item, "stack" + stack);
+                int costs = 0;
+                graph.setEdgeWeight(edge, costs);
+            }
+        }
 
-//        KuhnMunkresMinimalWeightBipartitePerfectMatching mwbpm = new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
-        MaximumWeightBipartiteMatching mwbm = new MaximumWeightBipartiteMatching(graph, partitionOne, partitionTwo);
+        KuhnMunkresMinimalWeightBipartitePerfectMatching mwbpm = new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
+        System.out.println("matching size: " + mwbpm.getMatching().getEdges().size());
+        System.out.println("COSTS: " + mwbpm.getMatching().getWeight());
 
 //        for (Object edge : mwbm.getMatching().getEdges()) {
 //            System.out.println(edge);
 //        }
 
-        return mwbm;
+        return mwbpm;
 
     }
 
-    public void parseStackAssignment(MaximumWeightBipartiteMatching mwbm) {
+    public void parseStackAssignment(KuhnMunkresMinimalWeightBipartitePerfectMatching mwbm) {
 
         for (Object edge : mwbm.getMatching().getEdges()) {
             String init = edge.toString().replace("(", "").replace("edge", "");
@@ -187,11 +202,19 @@ public class TwoCapHeuristic {
             if (init.contains("item")) {
                 int item = Integer.parseInt(init.replace("item", "").split(":")[0].trim());
                 int stack = Integer.parseInt(init.replace("item", "").split(":")[1].replace("stack", "").replace(")", "").trim());
+
+                this.instance.getStacks()[stack][0] = item;
+
             // item pair case
+            } else if (init.contains("dummy")) {
+
             } else {
                 int stack = Integer.parseInt(init.split(":")[1].replace("stack", "").replace(")", "").trim());
                 int itemOne = Integer.parseInt(init.split(":")[0].split(", ")[0].trim());
                 int itemTwo = Integer.parseInt(init.split(":")[0].split(", ")[1].replace(")", "").trim());
+
+                this.instance.getStacks()[stack][0] = itemOne;
+                this.instance.getStacks()[stack][1] = itemTwo;
             }
         }
 
@@ -205,7 +228,7 @@ public class TwoCapHeuristic {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
-        MaximumWeightBipartiteMatching mwbm = this.generateGraph(itemPairs, unmatchedItems);
+        KuhnMunkresMinimalWeightBipartitePerfectMatching mwbm = this.generateGraph(itemPairs, unmatchedItems);
         this.parseStackAssignment(mwbm);
 
 
