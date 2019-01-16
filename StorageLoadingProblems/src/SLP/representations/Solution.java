@@ -140,6 +140,22 @@ public class Solution {
         return true;
     }
 
+    public boolean stackConstraintsRespectedCostApproach() {
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+            for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
+
+                int item = this.filledStorageArea[stack][level];
+
+                if (item != -1) {
+                    if (this.solvedInstance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.solvedInstance.getItems().length) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean stackConstraintsRespected() {
         for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
             for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
@@ -182,14 +198,15 @@ public class Solution {
         //      - stacking constraints respected
 
         if (!this.empty) {
-//            System.out.println("all items: " + this.allItemsAssigned());
-//            System.out.println("stacking: " + this.stackingConstraintsRespected());
-//            System.out.println("stack: " + this.stackConstraintsRespected());
-//            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
-//            System.out.println("contains duplicates: " + this.containsDuplicates());
+            System.out.println("all items: " + this.allItemsAssigned());
+            System.out.println("stacking: " + this.stackingConstraintsRespected());
+            System.out.println("stack: " + this.stackConstraintsRespected());
+            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
+            System.out.println("contains duplicates: " + this.containsDuplicates());
         }
 
-        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected() && this.stackConstraintsRespected() && !this.containsDuplicates();
+        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
+            && this.stackConstraintsRespectedCostApproach() && !this.containsDuplicates();
     }
 
     public void printStorageArea() {
