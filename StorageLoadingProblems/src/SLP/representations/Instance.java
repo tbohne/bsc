@@ -6,6 +6,8 @@ public class Instance {
 
     private int[] items;
     private int[][] stacks;
+    private ArrayList<Coordinates> itemPositions;
+    private ArrayList<Coordinates> stackPositions;
 
     private int[][] stackingConstraints;
     private int[][] stackConstraints;
@@ -17,6 +19,8 @@ public class Instance {
     public Instance(
             int numberOfItems,
             int numberOfStacks,
+            ArrayList<Coordinates> itemPositions,
+            ArrayList<Coordinates> stackPositions,
             int stackCapacity,
             int[][] stackingConstraints,
             int[][] stackConstraints,
@@ -31,6 +35,16 @@ public class Instance {
             for (int j = 0; j < stackCapacity; j++) {
                 this.stacks[i][j] = -1;
             }
+        }
+
+        this.itemPositions = new ArrayList<>();
+        for (Coordinates coords : itemPositions) {
+            this.itemPositions.add(new Coordinates(coords));
+        }
+
+        this.stackPositions = new ArrayList<>();
+        for (Coordinates coords : stackPositions) {
+            this.stackPositions.add(new Coordinates(coords));
         }
 
         for (int i = 0; i < numberOfItems; i++) {
@@ -99,6 +113,14 @@ public class Instance {
 
     public int[][] getStacks() {
         return this.stacks;
+    }
+
+    public ArrayList<Coordinates> getItemPositions() {
+        return this.itemPositions;
+    }
+
+    public ArrayList<Coordinates> getStackPositions() {
+        return this.stackPositions;
     }
 
     public int[][] getStackingConstraints() {
