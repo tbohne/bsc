@@ -160,32 +160,31 @@ public class TwoCapHeuristic {
         return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
     }
 
+    /**
+     * Parses the minimum cost perfect matching and assigns the items to the specified stacks.
+     * The dummy items are ignored here, because they're not relevant for the assignment.
+     *
+     * @param minCostPM - the minimum cost perfect matching determining the stack assignments
+     */
     public void parseMatchingAndAssignItems(KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPM) {
 
         for (Object edge : minCostPM.getMatching().getEdges()) {
 
-            String init = edge.toString().replace("(", "").replace("edge", "");
-
             // item case
-            if (init.contains("item")) {
-                int item = Integer.parseInt(init.replace("item", "").split(":")[0].trim());
-                int stack = Integer.parseInt(init.replace("item", "").split(":")[1].replace("stack", "").replace(")", "").trim());
-
+            if (edge.toString().contains("item")) {
+                int item = Integer.parseInt(edge.toString().split(":")[0].replace("(item", "").trim());
+                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
                 this.instance.getStacks()[stack][0] = item;
 
             // item pair case
-            } else if (init.contains("dummy")) {
-
-            } else {
-                int stack = Integer.parseInt(init.split(":")[1].replace("stack", "").replace(")", "").trim());
-                int itemOne = Integer.parseInt(init.split(":")[0].split(", ")[0].trim());
-                int itemTwo = Integer.parseInt(init.split(":")[0].split(", ")[1].replace(")", "").trim());
-
+            } else if (edge.toString().contains("edge")) {
+                int itemOne = Integer.parseInt(edge.toString().split(":")[0].split(",")[0].replace("(edge(", "").trim());
+                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].split(",")[1].replace(")", "").trim());
+                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
                 this.instance.getStacks()[stack][0] = itemOne;
                 this.instance.getStacks()[stack][1] = itemTwo;
             }
         }
-
     }
 
     /**
