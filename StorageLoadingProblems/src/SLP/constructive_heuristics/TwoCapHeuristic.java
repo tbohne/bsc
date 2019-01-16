@@ -109,7 +109,7 @@ public class TwoCapHeuristic {
 //        return unmatchedItems;
 //    }
 
-    public KuhnMunkresMinimalWeightBipartitePerfectMatching generateGraph(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
+    public KuhnMunkresMinimalWeightBipartitePerfectMatching getMinCostPerfectMatching(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
@@ -120,12 +120,10 @@ public class TwoCapHeuristic {
             graph.addVertex("edge" + e);
             partitionOne.add("edge" + e);
         }
-
         for (int item : unmatchedItems) {
             graph.addVertex("item" + item);
             partitionOne.add("item" + item);
         }
-
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
             graph.addVertex("stack" + stack);
             partitionTwo.add("stack" + stack);
@@ -142,7 +140,6 @@ public class TwoCapHeuristic {
 
         System.out.println("partOne: " + partitionOne.size());
         System.out.println("partTwo: " + partitionTwo.size());
-
 
         // item pair - stack edges
         for (int i = 0; i < itemPairs.size(); i++) {
@@ -181,16 +178,7 @@ public class TwoCapHeuristic {
             }
         }
 
-        KuhnMunkresMinimalWeightBipartitePerfectMatching mwbpm = new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
-        System.out.println("matching size: " + mwbpm.getMatching().getEdges().size());
-        System.out.println("COSTS: " + mwbpm.getMatching().getWeight());
-
-//        for (Object edge : mwbm.getMatching().getEdges()) {
-//            System.out.println(edge);
-//        }
-
-        return mwbpm;
-
+        return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
     }
 
     public void parseStackAssignment(KuhnMunkresMinimalWeightBipartitePerfectMatching mwbm) {
@@ -225,49 +213,10 @@ public class TwoCapHeuristic {
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
-        KuhnMunkresMinimalWeightBipartitePerfectMatching mwbm = this.generateGraph(itemPairs, unmatchedItems);
-        this.parseStackAssignment(mwbm);
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//        EdmondsMaximumCardinalityMatching matchingBetweenItemPairsAndStacks = this.getMatchingBetweenItemPairsAndStacks(itemPairs);
-//        HashMap itemPairStackCombinations = HeuristicUtil.parseItemPairStackCombination(matchingBetweenItemPairsAndStacks);
-//
-//        for (Object key : itemPairStackCombinations.keySet()) {
-//            this.instance.getStacks()[(int)key][0] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(0);
-//            this.instance.getStacks()[(int)key][1] = ((ArrayList<Integer>)itemPairStackCombinations.get(key)).get(1);
-//        }
-//
-//        // TODO: improve cost minimization
-//        // First naive approach:
-//        // Assign each item to the cheapest remaining stack.
-//        for (int item : this.getUnmatchedItems()) {
-//
-//            int idxOfCheapest = -1;
-//            int minCosts = Integer.MAX_VALUE;
-//
-//            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-//                if (this.instance.getStacks()[stack][0] == -1 && this.instance.getStackConstraints()[item][stack] == 1) {
-//                    int costs = this.instance.getCosts()[item][stack];
-//                    if (costs < minCosts) {
-//                        minCosts = costs;
-//                        idxOfCheapest = stack;
-//                    }
-//                }
-//            }
-//
-//            if (idxOfCheapest != -1) {
-//                this.instance.getStacks()[idxOfCheapest][0] = item;
-//            } else {
-//                return new Solution();
-//            }
-//        }
-
+        KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
+        this.parseStackAssignment(minCostPerfectMatching);
+        
         this.fixOrderInStacks();
         Solution sol = new Solution(0, this.timeLimit, this.instance);
 
