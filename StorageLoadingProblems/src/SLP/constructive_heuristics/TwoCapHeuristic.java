@@ -88,27 +88,6 @@ public class TwoCapHeuristic {
         return unmatchedItems;
     }
 
-//    public ArrayList<Integer> getUnmatchedItems() {
-//
-//        ArrayList<Integer> matchedItems = new ArrayList<>();
-//        for (int[] stack : this.instance.getStacks()) {
-//            for (int item : stack) {
-//                if (item != -1) {
-//                    matchedItems.add(item);
-//                }
-//            }
-//        }
-//
-//        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-//        for (int item : this.instance.getItems()) {
-//            if (!matchedItems.contains(item)) {
-//                unmatchedItems.add(item);
-//            }
-//        }
-//
-//        return unmatchedItems;
-//    }
-
     public KuhnMunkresMinimalWeightBipartitePerfectMatching getMinCostPerfectMatching(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
@@ -181,9 +160,10 @@ public class TwoCapHeuristic {
         return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
     }
 
-    public void parseStackAssignment(KuhnMunkresMinimalWeightBipartitePerfectMatching mwbm) {
+    public void parseMatchingAndAssignItems(KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPM) {
 
-        for (Object edge : mwbm.getMatching().getEdges()) {
+        for (Object edge : minCostPM.getMatching().getEdges()) {
+
             String init = edge.toString().replace("(", "").replace("edge", "");
 
             // item case
@@ -208,15 +188,15 @@ public class TwoCapHeuristic {
 
     }
 
-    public Solution firstApproach(EdmondsMaximumCardinalityMatching mcm) {
+    public Solution generateSolution(EdmondsMaximumCardinalityMatching mcm) {
 
         ArrayList<MCMEdge> itemPairs = new ArrayList<>();
         HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
 
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
-        this.parseStackAssignment(minCostPerfectMatching);
-        
+        this.parseMatchingAndAssignItems(minCostPerfectMatching);
+
         this.fixOrderInStacks();
         Solution sol = new Solution(0, this.timeLimit, this.instance);
 
@@ -233,7 +213,7 @@ public class TwoCapHeuristic {
             DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
             HeuristicUtil.generateStackingConstraintGraph(graph, this.instance.getItems(), this.instance.getStackingConstraints());
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(graph);
-            sol = firstApproach(itemMatching);
+            sol = generateSolution(itemMatching);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
 
         } else {
