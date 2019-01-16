@@ -5,6 +5,7 @@ import SLP.representations.Instance;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class InstanceReader {
 
@@ -37,11 +38,29 @@ public class InstanceReader {
         return matrix;
     }
 
+    public static void readCoordinates(ArrayList<Coordinates> coordinates, BufferedReader reader) {
+        try {
+            String line = reader.readLine().trim();
+            String[] coords = line.split(" ");
+            for (String coord : coords) {
+                int xCoord = Integer.parseInt(coord.split(",")[0].replace("(", "").trim());
+                int yCoord = Integer.parseInt(coord.split(",")[1].replace(")", "").trim());
+                coordinates.add(new Coordinates(xCoord, yCoord));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Instance readInstance(String filename) {
 
         int numberOfItems = 0;
         int numberOfStacks = 0;
         int stackCapacity = 0;
+
+        ArrayList<Coordinates> itemPositions = new ArrayList<>();
+        ArrayList<Coordinates> stackPositions = new ArrayList<>();
+
         int[][] stackingConstraints = new int[numberOfItems][];
         int[][] stackConstraints = new int[numberOfItems][];
         int[][] costs = new int [numberOfItems][];
@@ -59,11 +78,14 @@ public class InstanceReader {
             stackConstraints = readMatrix(reader, numberOfItems);
             costs = readMatrix(reader, numberOfItems);
 
+            readCoordinates(itemPositions, reader);
+            readCoordinates(stackPositions, reader);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         String instancename = filename.replace("res/", "").replace(".txt", "");
-        return new Instance(numberOfItems, numberOfStacks, stackCapacity, stackingConstraints, stackConstraints, costs, instancename);
+        return new Instance(numberOfItems, numberOfStacks, itemPositions, stackPositions, stackCapacity, stackingConstraints, stackConstraints, costs, instancename);
     }
 }
