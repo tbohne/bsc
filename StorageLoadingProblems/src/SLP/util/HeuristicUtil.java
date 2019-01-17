@@ -39,6 +39,11 @@ public class HeuristicUtil {
             int[][] stackConstraints
     ) {
 
+        ArrayList<Integer> itemList = new ArrayList<>();
+        for (int item : items) {
+            itemList.add(item);
+        }
+
         for (int item : items) {
             graph.addVertex("v" + item);
         }
@@ -49,19 +54,23 @@ public class HeuristicUtil {
             for (int j = 0; j < stackingConstraints[0].length; j++) {
                 if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
 
-                    int numberOfCompatibleStacks = 0;
-                    for (int stackIdx = 0; stackIdx < stacks.length; stackIdx++) {
-                        if (stackConstraints[i][stackIdx] == 1 && stackConstraints[j][stackIdx] == 1) {
-                            numberOfCompatibleStacks++;
-                        }
-                    }
+//                    int numberOfCompatibleStacks = 0;
+//                    for (int stackIdx = 0; stackIdx < stacks.length; stackIdx++) {
+//                        if (stackConstraints[i][stackIdx] == 1 && stackConstraints[j][stackIdx] == 1) {
+//                            numberOfCompatibleStacks++;
+//                        }
+//                    }
 
                     // TODO: find reasonable way to calculate the value
-                    if (numberOfCompatibleStacks > 0) {
+//                    if (numberOfCompatibleStacks > 0) {
+                    if (itemList.contains(i) && itemList.contains(j)) {
                         if (!graph.containsEdge("v" + j, "v" + i)) {
                             graph.addEdge("v" + i, "v" + j);
+//                        }
                         }
+
                     }
+
                 }
             }
         }
