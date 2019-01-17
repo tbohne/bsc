@@ -140,22 +140,6 @@ public class Solution {
         return true;
     }
 
-    public boolean stackConstraintsRespectedCostApproach() {
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
-            for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
-
-                int item = this.filledStorageArea[stack][level];
-
-                if (item != -1) {
-                    if (this.solvedInstance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.solvedInstance.getItems().length) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     public boolean stackConstraintsRespected() {
         for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
             for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
@@ -163,7 +147,7 @@ public class Solution {
                 int item = this.filledStorageArea[stack][level];
 
                 if (item != -1) {
-                    if (this.solvedInstance.getStackConstraints()[item][stack] != 1) {
+                    if (this.solvedInstance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.solvedInstance.getItems().length) {
                         return false;
                     }
                 }
@@ -193,10 +177,6 @@ public class Solution {
 
     public boolean isFeasible() {
 
-        // TODO:
-        //      - all Items assigned to a stack
-        //      - stacking constraints respected
-
         if (!this.empty) {
             System.out.println("all items: " + this.allItemsAssigned());
             System.out.println("stacking: " + this.stackingConstraintsRespected());
@@ -206,7 +186,7 @@ public class Solution {
         }
 
         return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
-            && this.stackConstraintsRespectedCostApproach() && !this.containsDuplicates();
+            && this.stackConstraintsRespected() && !this.containsDuplicates();
     }
 
     public void printStorageArea() {
