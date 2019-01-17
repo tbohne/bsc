@@ -4,7 +4,6 @@ import SLP.representations.Instance;
 import SLP.representations.MCMEdge;
 import SLP.representations.Solution;
 import SLP.util.HeuristicUtil;
-import SLP.util.MapUtil;
 import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
@@ -31,46 +30,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Returns the list of unmatched items increasingly sorted by col rating.
-     *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
-     */
-    public ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems) {
-        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
-        for (int item : unmatchedItems) {
-            unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
-        }
-        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
-        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
-        for (int item : sortedItemColRatings.keySet()) {
-            unmatchedItemsSortedByColRating.add(item);
-        }
-        return unmatchedItemsSortedByColRating;
-    }
-
-    /**
-     * Adds the item pairs that exceed the number of stacks to the unmatched items.
-     *
-     * @param matchedItems - the list of matched item pairs
-     * @param unmatchedItems - the list of unmatched items
-     */
-    public void removeExceedingItemPairsFromMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<Integer> unmatchedItems) {
-        ArrayList<MCMEdge> toBeRemoved = new ArrayList<>();
-        for (int i = this.instance.getStacks().length; i < matchedItems.size(); i++) {
-            int itemOne = matchedItems.get(i).getVertexOne();
-            int itemTwo = matchedItems.get(i).getVertexTwo();
-            unmatchedItems.add(itemOne);
-            unmatchedItems.add(itemTwo);
-            toBeRemoved.add(matchedItems.get(i));
-        }
-
-        for (MCMEdge e : toBeRemoved) {
-            matchedItems.remove(matchedItems.indexOf(e));
-        }
-    }
-
-    /**
      * Returns a list of permutations of the unmatched items.
      * These permutations are generated according to several strategies.
      *
@@ -80,11 +39,11 @@ public class ThreeCapHeuristic {
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
 
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
-        this.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems);
+        HeuristicUtil.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems, this.instance.getStacks());
 
         // lowest rating first --> inflexible item first
         ArrayList<Integer> unmatchedItemsSortedByRowRating = HeuristicUtil.getUnmatchedItemsSortedByRowRating(unmatchedItems, this.instance.getStackingConstraints());
-        ArrayList<Integer> unmatchedItemsSortedByColRating = this.getUnmatchedItemsSortedByColRating(unmatchedItems);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = HeuristicUtil.getUnmatchedItemsSortedByColRating(unmatchedItems, this.instance.getStackingConstraints());
 
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
 
@@ -368,7 +327,6 @@ public class ThreeCapHeuristic {
                 // TODO: Check whether possible at all
             }
         }
-
     }
 
     /**
