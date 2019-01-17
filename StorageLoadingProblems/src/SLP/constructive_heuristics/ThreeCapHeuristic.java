@@ -19,27 +19,15 @@ public class ThreeCapHeuristic {
 
     private final int COMPLETE_PERMUTATION_LIMIT = 8;
     private final int ITEM_PAIR_PERMUTATIONS = 40000;
-
     private final int NUMER_OF_USED_EDGE_RATING_SYSTEMS = 5;
 
     private Instance instance;
-    private ArrayList<Integer> unstackableItems;
-    private ArrayList<Integer> additionalUnmatchedItems;
-    private ArrayList<List<Integer>> alreadyUsedShuffles;
     private double startTime;
     private int timeLimit;
-    private int priorizationFactor;
-
-    private Solution bestSolution;
 
     public ThreeCapHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
-        this.unstackableItems = new ArrayList<>();
-        this.additionalUnmatchedItems = new ArrayList<>();
-        this.alreadyUsedShuffles = new ArrayList<>();
-        this.priorizationFactor = (int)Math.ceil((double)(instance.getItems().length) / 50.0);
-        this.bestSolution = new Solution();
     }
 
     /**
@@ -230,33 +218,6 @@ public class ThreeCapHeuristic {
         this.addItemPairPermutations(itemPairs, itemPairPermutations);
 
         return itemPairPermutations;
-    }
-
-    /**
-     * Updates the best solution if a better one is found.
-     *
-     * @param sol - the solution to be checked
-     */
-    public void updateBestSolution(Solution sol) {
-        if (sol.isFeasible() && sol.getCost() < this.bestSolution.getCost()) {
-            this.bestSolution = new Solution(sol);
-        }
-    }
-
-    /**
-     * Generates a solution with the current stack assignments.
-     *
-     * @param optimizeSolution - determines whether or not the solution is optimized
-     * @return whether or not the generated solution should be returned
-     */
-    public boolean generateSolution(boolean optimizeSolution) {
-        Solution sol = new Solution(0, this.timeLimit, this.instance);
-//        sol.printStorageArea();
-//        System.out.println("assigned: " + sol.getNumberOfAssignedItems());
-        this.updateBestSolution(sol);
-        if (!optimizeSolution && sol.isFeasible()) { return true; }
-        this.instance.resetStacks();
-        return false;
     }
 
     // TODO: HERE
@@ -479,7 +440,7 @@ public class ThreeCapHeuristic {
      */
     public Solution permutationApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching, boolean optimizeSolution) {
 
-        this.bestSolution = new Solution();
+        Solution sol = new Solution();
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
 
@@ -499,8 +460,7 @@ public class ThreeCapHeuristic {
                 }
 
                 DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
-                HeuristicUtil.generateStackingConstraintGraphNewWay(graph, items, this.instance.getStackingConstraints(),
-                        this.instance.getStacks(), this.instance.getStackConstraints());
+                HeuristicUtil.generateStackingConstraintGraphNewWay(graph, items, this.instance.getStackingConstraints());
 
                 EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
                 ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
@@ -520,15 +480,15 @@ public class ThreeCapHeuristic {
 
                 this.parseAndAssign(matching);
 
-                Solution sol = new Solution(0, this.timeLimit, this.instance);
+
+                sol = new Solution(0, this.timeLimit, this.instance);
                 sol.transformStackAssignmentIntoValidSolutionIfPossible();
                 if (sol.isFeasible()) {
                     return sol;
                 }
             }
         }
-
-        return this.bestSolution;
+        return sol;
     }
 
     /**
@@ -551,9 +511,7 @@ public class ThreeCapHeuristic {
             HeuristicUtil.generateStackingConstraintGraphNewWay(
                     stackingConstraintGraph,
                     this.instance.getItems(),
-                    this.instance.getStackingConstraints(),
-                    this.instance.getStacks(),
-                    this.instance.getStackConstraints()
+                    this.instance.getStackingConstraints()
             );
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
 
