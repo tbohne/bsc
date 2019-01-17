@@ -384,8 +384,7 @@ public class ThreeCapPermutationHeuristic {
     public void tryToAssignRemainingItemsAsPairs(List<Integer> unmatchedItems) {
 
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
 
         ArrayList<Integer> toBeRemoved = new ArrayList<>();
 
@@ -668,8 +667,7 @@ public class ThreeCapPermutationHeuristic {
      */
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
 
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, itemMatching);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
@@ -730,8 +728,8 @@ public class ThreeCapPermutationHeuristic {
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
 
-//                System.out.println("itemPairs: " + itemPairPermutation);
-//                System.out.println("unmatched: " + unmatchedItems);
+                System.out.println("itemPairs: " + itemPairPermutation);
+                System.out.println("unmatched: " + unmatchedItems);
 
                 if (!this.fillStorageArea(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
@@ -772,7 +770,7 @@ public class ThreeCapPermutationHeuristic {
     }
 
     /**
-     * Solves the SLP witch an approach that uses maximum cardinality matchings and several permutations of items that
+     * Solves the SLP with an approach that uses maximum cardinality matchings and several permutations of items that
      * are generated according to a number of different strategies.
      *
      * @param optimizeSolution - specifies whether the solution should be optimized (otherwise the first feasible solution gets returned)
