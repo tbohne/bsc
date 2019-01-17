@@ -4,7 +4,6 @@ import SLP.representations.Instance;
 import SLP.representations.MCMEdge;
 import SLP.representations.Solution;
 import SLP.util.HeuristicUtil;
-import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -16,9 +15,7 @@ import java.util.*;
 
 public class ThreeCapHeuristic {
 
-    private final int COMPLETE_PERMUTATION_LIMIT = 8;
-    private final int ITEM_PAIR_PERMUTATIONS = 40000;
-    private final int NUMER_OF_USED_EDGE_RATING_SYSTEMS = 5;
+    private final int NUMBER_OF_USED_EDGE_RATING_SYSTEMS = 5;
 
     private Instance instance;
     private double startTime;
@@ -30,8 +27,8 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Returns a list of permutations of the unmatched items.
-     * These permutations are generated according to several strategies.
+     * Returns a list of two permutations of the unmatched items.
+     * The permutations are created by sorting the items based on their row / edge rating.
      *
      * @param matchedItems - the items that are already matched
      * @return list of of permutations of the unmatched items
@@ -43,49 +40,10 @@ public class ThreeCapHeuristic {
         ArrayList<Integer> unmatchedItemsSortedByColRating = HeuristicUtil.getUnmatchedItemsSortedByColRating(unmatchedItems, this.instance.getStackingConstraints());
 
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
+        unmatchedItemPermutations.add(unmatchedItemsSortedByRowRating);
+        unmatchedItemPermutations.add(unmatchedItemsSortedByColRating);
 
         return unmatchedItemPermutations;
-    }
-
-    /**
-     * Sorts each item pair permutation based on the assigned edge ratings.
-     *
-     * @param itemPairPermutations - the list of item pair permutations
-     */
-    public void sortItemPairPermutationsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
-        for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
-            Collections.sort(itemPairPermutations.get(i));
-        }
-    }
-
-    /**
-     * Adds item pair permutations to the list.
-     *
-     * @param itemPairs - the list of item pair
-     * @param itemPairPermutations - the list of permutations of the item pairs
-     */
-    public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
-        if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
-            for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
-                itemPairPermutations.add(new ArrayList(edgeList));
-            }
-        } else {
-
-            // TODO: Remove hard coded values
-            for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(HeuristicUtil.edgeExchange(itemPairs, this.instance.getStacks()));
-                if (!itemPairPermutations.contains(tmp)) {
-                    itemPairPermutations.add(tmp);
-                }
-            }
-
-            for (int i = 0; i < ITEM_PAIR_PERMUTATIONS; i++) {
-                Collections.shuffle(itemPairs);
-                itemPairPermutations.add(new ArrayList(itemPairs));
-            }
-        }
     }
 
     /**
@@ -100,17 +58,57 @@ public class ThreeCapHeuristic {
         ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
-        for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
+        for (int i = 0; i < NUMBER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
             ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
             itemPairPermutations.add(tmpItemPairs);
         }
         HeuristicUtil.applyRatingSystemsToItemPairPermutations(itemPairPermutations, this.instance.getStackingConstraints());
         this.sortItemPairPermutationsBasedOnRatings(itemPairPermutations);
 
-        // TODO: experiment
-        this.addItemPairPermutations(itemPairs, itemPairPermutations);
-
         return itemPairPermutations;
+    }
+
+    /**
+     * Sorts each item pair permutation based on the assigned edge ratings.
+     *
+     * @param itemPairPermutations - the list of item pair permutations
+     */
+    public void sortItemPairPermutationsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
+        for (int i = 0; i < NUMBER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
+            Collections.sort(itemPairPermutations.get(i));
+        }
+    }
+
+    /**
+     * Adds the vertices for item triples, item pairs, unmatched items and stacks to the specified graph
+     * and fills the partitions that define the bipartite graph.
+     *
+     * @param itemTriples - the list of item triples
+     * @param itemPairs - the list of item pairs
+     * @param unmatchedItems - the list of unmatched items
+     * @param graph - the graph to be created
+     * @param partitionOne - the first partition of the bipartite graph
+     * @param partitionTwo - the second partition of the bipartite graph
+     */
+    public void addVertices(ArrayList<ArrayList<Integer>> itemTriples, ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
+
+        for (ArrayList<Integer> triple : itemTriples) {
+                graph.addVertex("triple" + triple);
+                partitionOne.add("triple" + triple);
+            }
+            for (MCMEdge pair : itemPairs) {
+                graph.addVertex("pair" + pair);
+                partitionOne.add("pair" + pair);
+            }
+            for (int item : unmatchedItems) {
+                graph.addVertex("item" + item);
+                partitionOne.add("item" + item);
+            }
+            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+                graph.addVertex("stack" + stack);
+                partitionTwo.add("stack" + stack);
+            }
     }
 
     /**
@@ -134,74 +132,13 @@ public class ThreeCapHeuristic {
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
+        this.addVertices(itemTriples, itemPairs, unmatchedItems, graph, partitionOne, partitionTwo);
+        ArrayList<Integer> dummyItems = HeuristicUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
 
-        for (ArrayList<Integer> triple : itemTriples) {
-            graph.addVertex("triple" + triple);
-            partitionOne.add("triple" + triple);
-        }
-        for (MCMEdge pair : itemPairs) {
-            graph.addVertex("pair" + pair);
-            partitionOne.add("pair" + pair);
-        }
-        for (int item : unmatchedItems) {
-            graph.addVertex("item" + item);
-            partitionOne.add("item" + item);
-        }
-        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-            graph.addVertex("stack" + stack);
-            partitionTwo.add("stack" + stack);
-        }
-
-        int cnt = 0;
-        ArrayList<Integer> dummyItems = new ArrayList<>();
-        while (partitionOne.size() < partitionTwo.size()) {
-            graph.addVertex("dummy" + cnt);
-            partitionOne.add("dummy" + cnt);
-            dummyItems.add(cnt);
-            cnt++;
-        }
-
-        // edges from item triples to stacks
-        for (int i = 0; i < itemTriples.size(); i++) {
-            for (int j = 0; j < this.instance.getStacks().length; j++) {
-                DefaultWeightedEdge edge = graph.addEdge("triple" + itemTriples.get(i), "stack" + j);
-                int costs = this.instance.getCosts()[itemTriples.get(i).get(0)][j]
-                        + this.instance.getCosts()[itemTriples.get(i).get(1)][j]
-                        + this.instance.getCosts()[itemTriples.get(i).get(2)][j];
-                graph.setEdgeWeight(edge, costs);
-            }
-        }
-
-        // edges from item pairs to stacks
-        for (int i = 0; i < itemPairs.size(); i++) {
-            for (int j = 0; j < this.instance.getStacks().length; j++) {
-                if (!graph.containsEdge("pair" + itemPairs.get(i), "stack" + j)) {
-                    DefaultWeightedEdge edge = graph.addEdge("pair" + itemPairs.get(i), "stack" + j);
-                    int costs = this.instance.getCosts()[itemPairs.get(i).getVertexOne()][j] + this.instance.getCosts()[itemPairs.get(i).getVertexTwo()][j];
-                    graph.setEdgeWeight(edge, costs);
-                }
-            }
-        }
-        // edges from unmatched items to stacks
-        for (int item : unmatchedItems) {
-            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                if (!graph.containsEdge("item" + item, "stack" + stack)) {
-                    DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
-                    int costs = this.instance.getCosts()[item][stack];
-                    graph.setEdgeWeight(edge, costs);
-                }
-            }
-        }
-
-        // edges from dummy items to stacks
-        // dummy items can be stored in every stack with no costs
-        for (int item : dummyItems) {
-            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                DefaultWeightedEdge edge = graph.addEdge("dummy" + item, "stack" + stack);
-                int costs = 0;
-                graph.setEdgeWeight(edge, costs);
-            }
-        }
+        HeuristicUtil.addEdgesForItemTriples(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
+        HeuristicUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
+        HeuristicUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
+        HeuristicUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
 
         return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
     }
@@ -218,101 +155,64 @@ public class ThreeCapHeuristic {
             itemPairs, unmatchedItems, this.instance.getStackingConstraints()
         );
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
-        HeuristicUtil.parseItemTripleMCM(itemTriples, mcm);
+        ArrayList<ArrayList<Integer>> itemTriples = HeuristicUtil.parseItemTripleMCM(mcm);
         return itemTriples;
     }
 
-    public void parseAndAssign(KuhnMunkresMinimalWeightBipartitePerfectMatching matching) {
-
-        for (Object edge : matching.getMatching().getEdges()) {
-            System.out.println(edge);
-
-            if (edge.toString().contains("triple")) {
-                int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[0].replace("[", "".trim()));
-                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[1].trim());
-                int itemThree = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[2].replace("]", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-
-                this.instance.getStacks()[stack][0] = itemOne;
-                this.instance.getStacks()[stack][1] = itemTwo;
-                this.instance.getStacks()[stack][2] = itemThree;
-
-            } else if (edge.toString().contains("pair")) {
-                int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
-                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-
-                this.instance.getStacks()[stack][0] = itemOne;
-                this.instance.getStacks()[stack][1] = itemTwo;
-            } else if (edge.toString().contains("item")) {
-                // TODO: Check whether possible at all
-            }
-        }
-    }
-
     /**
-     * Generates the solution to the given instance of the SLP.
+     * Generates the solution to the given instance of the SLP by applying the heuristic described in solve().
      *
      * @param itemMatching - matching containing the item pairs
      * @return the generated solution
      */
-    public Solution permutationApproach(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching) {
+    public Solution generateSolution(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching) {
 
         Solution sol = new Solution();
 
         for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
 
-            System.out.println(itemPairPermutation);
-
             if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
+
             for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
 
                 ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairPermutation, (ArrayList<Integer>) unmatchedItems);
-                System.out.println(triples);
                 unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
-                System.out.println(unmatchedItems);
 
-                int[] items = new int[unmatchedItems.size()];
-                for (int i = 0; i < unmatchedItems.size(); i++) {
-                    items[i] = unmatchedItems.get(i);
-                }
-
-                DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
-                HeuristicUtil.generateStackingConstraintGraphNewWay(graph, items, this.instance.getStackingConstraints());
-
+                DefaultUndirectedGraph graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+                    HeuristicUtil.getArrayFromList((ArrayList<Integer>) unmatchedItems), this.instance.getStackingConstraints()
+                );
                 EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
                 ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
-                System.out.println(pairs.getMatching().getEdges());
 
                 unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
-                System.out.println(unmatchedItems);
 
-                if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
-                    continue;
-                }
+                if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) { continue; }
 
                 KuhnMunkresMinimalWeightBipartitePerfectMatching matching = this.getMinCostPerfectMatching(
-                        triples, itemPairs, (ArrayList<Integer>) unmatchedItems
+                    triples, itemPairs, (ArrayList<Integer>) unmatchedItems
                 );
-                System.out.println(matching.getMatching().getEdges());
 
-                this.parseAndAssign(matching);
-
+                HeuristicUtil.parseAndAssignMinCostPerfectMatching(matching, this.instance.getStacks());
 
                 sol = new Solution(0, this.timeLimit, this.instance);
                 sol.transformStackAssignmentIntoValidSolutionIfPossible();
-                if (sol.isFeasible()) {
-                    return sol;
-                }
+                if (sol.isFeasible()) { return sol; }
             }
         }
         return sol;
     }
 
     /**
-     * Solves the SLP with an approach that uses maximum cardinality matchings and several permutations of items that
-     * are generated according to a number of different strategies.
+     * Solves the given instance of the SLP. The objective is to minimize the transport costs
+     * which is achieved by computing a min-cost-perfect-matching in the end.
+     *
+     * The heuristic is based on the following major steps:
+     *      - compute item triples from unmatched items
+     *      - compute item pairs from still unmatched items
+     *      - compute still unmatched items
+     *      - create bipartite graph between items and stacks
+     *      - compute min-cost-perfect matching
+     *      - assign items according to edges of MCPM
      *
      * @return the solution generated by the heuristic
      */
@@ -324,15 +224,13 @@ public class ThreeCapHeuristic {
 
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-            HeuristicUtil.generateStackingConstraintGraphNewWay(
-                    stackingConstraintGraph,
-                    this.instance.getItems(),
-                    this.instance.getStackingConstraints()
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+                this.instance.getItems(),
+                this.instance.getStackingConstraints()
             );
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
 
-            sol = permutationApproach(itemMatching);
+            sol = generateSolution(itemMatching);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         } else {
             System.out.println("This heuristic is designed to solve SLP with a stack capacity of 3.");
