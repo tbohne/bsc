@@ -8,7 +8,6 @@ public class Instance {
     private int[][] stacks;
     private ArrayList<Coordinates> itemPositions;
     private ArrayList<Coordinates> stackPositions;
-
     private int[][] stackingConstraints;
     private int[][] costs;
     private int stackCapacity;
@@ -65,6 +64,16 @@ public class Instance {
 
         this.items = instance.getItems().clone();
         this.stackCapacity = instance.getStackCapacity();
+
+        this.itemPositions = new ArrayList<>();
+        for (Coordinates coords : instance.getItemPositions()) {
+            itemPositions.add(new Coordinates(coords));
+        }
+
+        this.stackPositions = new ArrayList<>();
+        for (Coordinates coords : instance.getStackPositions()) {
+            stackPositions.add(new Coordinates(coords));
+        }
 
         this.stackingConstraints = new int[instance.getStackingConstraints().length][];
         for (int i = 0; i < instance.getStackingConstraints().length; i++) {
@@ -141,6 +150,12 @@ public class Instance {
 
         str += "\nnumber of stacks: " + this.getStacks().length + "\n";
         str += "stack capacity: " + this.getStackCapacity() + "\n\n";
+
+        str += "item positions:\n";
+        str += this.getItemPositions() + "\n";
+        str += "stack position:\n";
+        str += this.getStackPositions() + "\n\n";
+
         str += "stacking constraints:" + "\n";
 
         for (int i = 0; i < this.getItems().length; i++) {
@@ -149,7 +164,6 @@ public class Instance {
             }
             str += "\n";
         }
-
         str += "\n";
 
         str += "\nstacking costs:\n";
