@@ -1,6 +1,5 @@
 package SLP.util;
 
-import SLP.representations.Instance;
 import SLP.representations.MCMEdge;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -30,6 +29,27 @@ public class HeuristicUtil {
         }
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
         return mcm;
+    }
+
+    /**
+     * Adds the item pairs that exceed the number of stacks to the unmatched items.
+     *
+     * @param matchedItems - the list of matched item pairs
+     * @param unmatchedItems - the list of unmatched items
+     */
+    public static void removeExceedingItemPairsFromMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<Integer> unmatchedItems, int[][] stacks) {
+        ArrayList<MCMEdge> toBeRemoved = new ArrayList<>();
+        for (int i = stacks.length; i < matchedItems.size(); i++) {
+            int itemOne = matchedItems.get(i).getVertexOne();
+            int itemTwo = matchedItems.get(i).getVertexTwo();
+            unmatchedItems.add(itemOne);
+            unmatchedItems.add(itemTwo);
+            toBeRemoved.add(matchedItems.get(i));
+        }
+
+        for (MCMEdge e : toBeRemoved) {
+            matchedItems.remove(matchedItems.indexOf(e));
+        }
     }
 
     /**
@@ -73,6 +93,25 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns the list of unmatched items increasingly sorted by col rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
+        for (int item : unmatchedItems) {
+            unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, stackingConstraints));
+        }
+        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
+        for (int item : sortedItemColRatings.keySet()) {
+            unmatchedItemsSortedByColRating.add(item);
+        }
+        return unmatchedItemsSortedByColRating;
+    }
+
+    /**
      * Returns the list of unmatched items increasingly sorted by row rating.
      *
      * @param unmatchedItems - the unsorted list of unmatched items
@@ -92,6 +131,107 @@ public class HeuristicUtil {
         }
 
         return unmatchedItemsSortedByRowRating;
+    }
+
+    public static void addEdgeForCompatibleItemTriple(
+            DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemOne, int unmatchedItem, int pairItemTwo, MCMEdge itemPair, int[][] stackingConstraints
+    ) {
+
+        if (stackingConstraints[pairItemOne][unmatchedItem] == 1
+                || stackingConstraints[unmatchedItem][pairItemTwo] == 1) {
+
+            if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+                graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+            }
+        }
+    }
+
+    public static ArrayList<Integer> getMatchedItemsFromPairs(ArrayList<MCMEdge> pairs) {
+        ArrayList<Integer> matchedItems = new ArrayList<>();
+        for (MCMEdge pair : pairs) {
+            matchedItems.add(pair.getVertexOne());
+            matchedItems.add(pair.getVertexTwo());
+        }
+        return matchedItems;
+    }
+
+    public static ArrayList<Integer> getMatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples) {
+        ArrayList<Integer> matchedItems = new ArrayList<>();
+        for (ArrayList<Integer> triple : triples) {
+            for (int item : triple) {
+                matchedItems.add(item);
+            }
+        }
+        return matchedItems;
+    }
+
+    public static ArrayList<Integer> getUnmatchedItemsFromTriplesAndPairs(ArrayList<ArrayList<Integer>> triples, ArrayList<MCMEdge> pairs, int[] items) {
+        ArrayList<Integer> matchedItems = new ArrayList<>();
+        matchedItems.addAll(getMatchedItemsFromTriples(triples));
+        matchedItems.addAll(getMatchedItemsFromPairs(pairs));
+        return getUnmatchedItemsFromMatchedItems(matchedItems, items);
+    }
+
+    /**
+     * Returns a list of unmatched items based on the list of matched triples.
+     *
+     * @param triples - the list of matched triples
+     * @return list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples, int[] items) {
+        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromTriples(triples), items);
+    }
+
+    public static ArrayList<Integer> getUnmatchedItemsFromMatchedItems(ArrayList<Integer> matchedItems, int[] items) {
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
+        for (int item : items) {
+            if (!matchedItems.contains(item)) {
+                unmatchedItems.add(item);
+            }
+        }
+        return unmatchedItems;
+    }
+
+
+    /**
+     *
+     *
+     * @param itemPairs
+     * @param unmatchedItems
+     * @return
+     */
+    public static DefaultUndirectedGraph<String, DefaultEdge> generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
+            ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems, int[][] stackingConstraints
+    ) {
+
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+
+        // adding the item pairs as nodes to the graph
+        for (int i = 0; i < itemPairs.size(); i++) {
+            graph.addVertex("edge" + itemPairs.get(i));
+        }
+
+        // adding the unmatched items as nodes to the graph
+        for (int i : unmatchedItems) {
+            graph.addVertex("v" + i);
+        }
+
+        for (int i = 0; i < itemPairs.size(); i++) {
+            for (int j = 0; j < unmatchedItems.size(); j++) {
+
+                // if it is possible to complete the stack assignment with the unmatched item, it is done
+                if (stackingConstraints[itemPairs.get(i).getVertexOne()][itemPairs.get(i).getVertexTwo()] == 1) {
+                    addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexTwo(), unmatchedItems.get(j),
+                            itemPairs.get(i).getVertexOne(), itemPairs.get(i), stackingConstraints
+                    );
+                } else {
+                    addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexOne(), unmatchedItems.get(j),
+                            itemPairs.get(i).getVertexTwo(), itemPairs.get(i), stackingConstraints
+                    );
+                }
+            }
+        }
+        return graph;
     }
 
     public static void generateStackingConstraintGraphNewWay(

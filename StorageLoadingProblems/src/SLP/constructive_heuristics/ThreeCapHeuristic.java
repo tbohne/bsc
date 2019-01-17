@@ -223,52 +223,6 @@ public class ThreeCapHeuristic {
         return itemTriples;
     }
 
-    public ArrayList<Integer> getMatchedItemsFromPairs(ArrayList<MCMEdge> pairs) {
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (MCMEdge pair : pairs) {
-            matchedItems.add(pair.getVertexOne());
-            matchedItems.add(pair.getVertexTwo());
-        }
-        return matchedItems;
-    }
-
-    public ArrayList<Integer> getMatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples) {
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (ArrayList<Integer> triple : triples) {
-            for (int item : triple) {
-                matchedItems.add(item);
-            }
-        }
-        return matchedItems;
-    }
-
-    public ArrayList<Integer> getUnmatchedItemsFromMatchedItems(ArrayList<Integer> matchedItems) {
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : this.instance.getItems()) {
-            if (!matchedItems.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
-    }
-
-    public ArrayList<Integer> getUnmatchedItemsFromTriplesAndPairs(ArrayList<ArrayList<Integer>> triples, ArrayList<MCMEdge> pairs) {
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        matchedItems.addAll(this.getMatchedItemsFromTriples(triples));
-        matchedItems.addAll(this.getMatchedItemsFromPairs(pairs));
-        return this.getUnmatchedItemsFromMatchedItems(matchedItems);
-    }
-
-    /**
-     * Returns a list of unmatched items based on the list of matched triples.
-     *
-     * @param triples - the list of matched triples
-     * @return list of unmatched items
-     */
-    public ArrayList<Integer> getUnmatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples) {
-        return this.getUnmatchedItemsFromMatchedItems(this.getMatchedItemsFromTriples(triples));
-    }
-
     public void parseAndAssign(KuhnMunkresMinimalWeightBipartitePerfectMatching matching) {
 
         for (Object edge : matching.getMatching().getEdges()) {
@@ -316,7 +270,7 @@ public class ThreeCapHeuristic {
 
                 ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairPermutation, (ArrayList<Integer>) unmatchedItems);
                 System.out.println(triples);
-                unmatchedItems = this.getUnmatchedItemsFromTriples(triples);
+                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
                 System.out.println(unmatchedItems);
 
                 int[] items = new int[unmatchedItems.size()];
@@ -331,7 +285,7 @@ public class ThreeCapHeuristic {
                 ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
                 System.out.println(pairs.getMatching().getEdges());
 
-                unmatchedItems = this.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs);
+                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
                 System.out.println(unmatchedItems);
 
                 if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
