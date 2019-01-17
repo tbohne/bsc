@@ -53,10 +53,7 @@ public class BinPackingFormulation {
             for (int i = 0; i < this.instance.getItems().length; i++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
                 for (int q = 0; q < this.instance.getStacks().length; q++) {
-                    // only if i can be stacked into q
-                    if (this.instance.getStackConstraints()[i][q] == 1) {
-                        expr.addTerm(1, x[i][q]);
-                    }
+                    expr.addTerm(1, x[i][q]);
                 }
                 cplex.addEq(expr, 1);
             }
