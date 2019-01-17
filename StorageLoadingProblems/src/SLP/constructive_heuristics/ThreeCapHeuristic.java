@@ -37,22 +37,12 @@ public class ThreeCapHeuristic {
      * @return list of of permutations of the unmatched items
      */
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
-
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
         HeuristicUtil.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems, this.instance.getStacks());
-
-        // lowest rating first --> inflexible item first
         ArrayList<Integer> unmatchedItemsSortedByRowRating = HeuristicUtil.getUnmatchedItemsSortedByRowRating(unmatchedItems, this.instance.getStackingConstraints());
         ArrayList<Integer> unmatchedItemsSortedByColRating = HeuristicUtil.getUnmatchedItemsSortedByColRating(unmatchedItems, this.instance.getStackingConstraints());
 
         ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
-
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
-        unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
-
-        // TODO: probably not really useful
-        Collections.reverse(unmatchedItemsSortedByRowRating);
-        Collections.reverse(unmatchedItemsSortedByColRating);
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByRowRating));
         unmatchedItemPermutations.add(new ArrayList<>(unmatchedItemsSortedByColRating));
 
@@ -70,8 +60,12 @@ public class ThreeCapHeuristic {
         }
     }
 
-
-
+    /**
+     * Adds item pair permutations to the list.
+     *
+     * @param itemPairs - the list of item pair
+     * @param itemPairPermutations - the list of permutations of the item pairs
+     */
     public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
         if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
             for (List<MCMEdge> edgeList : Collections2.permutations(itemPairs)) {
@@ -119,12 +113,22 @@ public class ThreeCapHeuristic {
         return itemPairPermutations;
     }
 
-    // TODO: HERE
+    /**
+     * Generates the complete bipartite graph consisting of the item partition and the stack partition
+     * and computes the minimum cost perfect matching for this graph.
+     * Since the two partitions aren't equally sized and the used algorithm to compute the MinCostPerfectMatching
+     * expects a complete bipartite graph, there are dummy items that are used to make the graph complete bipartite.
+     * These items have no influence on the costs and are ignored in later steps.
+     *
+     * @param itemTriples - the list of item triples
+     * @param itemPairs - the list of item pairs
+     * @param unmatchedItems - the list of unmatched items
+     * @return MinCostPerfectMatching between items and stacks
+     */
     public KuhnMunkresMinimalWeightBipartitePerfectMatching getMinCostPerfectMatching(
             ArrayList<ArrayList<Integer>> itemTriples,
             ArrayList<MCMEdge> itemPairs,
             ArrayList<Integer> unmatchedItems
-
     ) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
@@ -135,12 +139,10 @@ public class ThreeCapHeuristic {
             graph.addVertex("triple" + triple);
             partitionOne.add("triple" + triple);
         }
-
         for (MCMEdge pair : itemPairs) {
             graph.addVertex("pair" + pair);
             partitionOne.add("pair" + pair);
         }
-
         for (int item : unmatchedItems) {
             graph.addVertex("item" + item);
             partitionOne.add("item" + item);
@@ -159,10 +161,7 @@ public class ThreeCapHeuristic {
             cnt++;
         }
 
-        System.out.println(partitionOne.size());
-        System.out.println(partitionTwo.size());
-
-        // item triple - stack edges
+        // edges from item triples to stacks
         for (int i = 0; i < itemTriples.size(); i++) {
             for (int j = 0; j < this.instance.getStacks().length; j++) {
                 DefaultWeightedEdge edge = graph.addEdge("triple" + itemTriples.get(i), "stack" + j);
@@ -173,7 +172,7 @@ public class ThreeCapHeuristic {
             }
         }
 
-        // item pair - stack edges
+        // edges from item pairs to stacks
         for (int i = 0; i < itemPairs.size(); i++) {
             for (int j = 0; j < this.instance.getStacks().length; j++) {
                 if (!graph.containsEdge("pair" + itemPairs.get(i), "stack" + j)) {
@@ -183,7 +182,7 @@ public class ThreeCapHeuristic {
                 }
             }
         }
-        // unmatched item - stack edges
+        // edges from unmatched items to stacks
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
                 if (!graph.containsEdge("item" + item, "stack" + stack)) {
@@ -194,6 +193,7 @@ public class ThreeCapHeuristic {
             }
         }
 
+        // edges from dummy items to stacks
         // dummy items can be stored in every stack with no costs
         for (int item : dummyItems) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
@@ -206,69 +206,44 @@ public class ThreeCapHeuristic {
         return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
     }
 
+    /**
+     * Computes item triples from the list of item pairs and the list of unmatched items.
+     *
+     * @param itemPairs - the list of item pairs
+     * @param unmatchedItems - the list of unmatched items
+     * @return list of item compatible item triples
+     */
     public ArrayList<ArrayList<Integer>> computeCompatibleItemTriples(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = new ArrayList<>();
-        HeuristicUtil.parseItemTripleMCM(itemTripleStackAssignments, itemTriples);
-        return itemTripleStackAssignments;
+        DefaultUndirectedGraph<String, DefaultEdge> graph = HeuristicUtil.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
+            itemPairs, unmatchedItems, this.instance.getStackingConstraints()
+        );
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+        ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
+        HeuristicUtil.parseItemTripleMCM(itemTriples, mcm);
+        return itemTriples;
     }
 
-    public void generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
-            DefaultUndirectedGraph<String, DefaultEdge> graph, ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems
-    ) {
-
-        // adding the item pairs as nodes to the graph
-        for (int i = 0; i < itemPairs.size(); i++) {
-            graph.addVertex("edge" + itemPairs.get(i));
-        }
-
-        // adding the unmatched items as nodes to the graph
-        for (int i : unmatchedItems) {
-            graph.addVertex("v" + i);
-        }
-
-        for (int i = 0; i < itemPairs.size(); i++) {
-            for (int j = 0; j < unmatchedItems.size(); j++) {
-
-                // if it is possible to complete the stack assignment with the unmatched item, it is done
-                if (this.instance.getStackingConstraints()[itemPairs.get(i).getVertexOne()][itemPairs.get(i).getVertexTwo()] == 1) {
-                    this.addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexTwo(), unmatchedItems.get(j),
-                            itemPairs.get(i).getVertexOne(), itemPairs.get(i)
-                    );
-                } else {
-                    this.addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexOne(), unmatchedItems.get(j),
-                            itemPairs.get(i).getVertexTwo(), itemPairs.get(i)
-                    );
-                }
-            }
-        }
-    }
-
-    public void addEdgeForCompatibleItemTriple(DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemOne, int unmatchedItem, int pairItemTwo, MCMEdge itemPair) {
-
-        if (this.instance.getStackingConstraints()[pairItemOne][unmatchedItem] == 1
-                || this.instance.getStackingConstraints()[unmatchedItem][pairItemTwo] == 1) {
-
-            if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
-                graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
-            }
-        }
-    }
-
-    public ArrayList<Integer> unmatchedHere(ArrayList<ArrayList<Integer>> triples) {
-
+    public ArrayList<Integer> getMatchedItemsFromPairs(ArrayList<MCMEdge> pairs) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
+        for (MCMEdge pair : pairs) {
+            matchedItems.add(pair.getVertexOne());
+            matchedItems.add(pair.getVertexTwo());
+        }
+        return matchedItems;
+    }
 
+    public ArrayList<Integer> getMatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples) {
+        ArrayList<Integer> matchedItems = new ArrayList<>();
         for (ArrayList<Integer> triple : triples) {
-            for (int i : triple) {
-                matchedItems.add(i);
+            for (int item : triple) {
+                matchedItems.add(item);
             }
         }
+        return matchedItems;
+    }
 
+    public ArrayList<Integer> getUnmatchedItemsFromMatchedItems(ArrayList<Integer> matchedItems) {
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
-
         for (int item : this.instance.getItems()) {
             if (!matchedItems.contains(item)) {
                 unmatchedItems.add(item);
@@ -277,28 +252,21 @@ public class ThreeCapHeuristic {
         return unmatchedItems;
     }
 
-    public ArrayList<Integer> getFinallyUnmatched(ArrayList<ArrayList<Integer>> triples, ArrayList<MCMEdge> pairs) {
+    public ArrayList<Integer> getUnmatchedItemsFromTriplesAndPairs(ArrayList<ArrayList<Integer>> triples, ArrayList<MCMEdge> pairs) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
+        matchedItems.addAll(this.getMatchedItemsFromTriples(triples));
+        matchedItems.addAll(this.getMatchedItemsFromPairs(pairs));
+        return this.getUnmatchedItemsFromMatchedItems(matchedItems);
+    }
 
-        for (ArrayList<Integer> triple : triples) {
-            for (int item : triple) {
-                matchedItems.add(item);
-            }
-        }
-
-        for (MCMEdge edge : pairs) {
-            matchedItems.add(edge.getVertexOne());
-            matchedItems.add(edge.getVertexTwo());
-        }
-
-        ArrayList<Integer> unmatched = new ArrayList<>();
-
-        for (int item : this.instance.getItems()) {
-            if (!matchedItems.contains(item)) {
-                unmatched.add(item);
-            }
-        }
-        return unmatched;
+    /**
+     * Returns a list of unmatched items based on the list of matched triples.
+     *
+     * @param triples - the list of matched triples
+     * @return list of unmatched items
+     */
+    public ArrayList<Integer> getUnmatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples) {
+        return this.getUnmatchedItemsFromMatchedItems(this.getMatchedItemsFromTriples(triples));
     }
 
     public void parseAndAssign(KuhnMunkresMinimalWeightBipartitePerfectMatching matching) {
@@ -348,7 +316,7 @@ public class ThreeCapHeuristic {
 
                 ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairPermutation, (ArrayList<Integer>) unmatchedItems);
                 System.out.println(triples);
-                unmatchedItems = this.unmatchedHere(triples);
+                unmatchedItems = this.getUnmatchedItemsFromTriples(triples);
                 System.out.println(unmatchedItems);
 
                 int[] items = new int[unmatchedItems.size()];
@@ -363,7 +331,7 @@ public class ThreeCapHeuristic {
                 ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
                 System.out.println(pairs.getMatching().getEdges());
 
-                unmatchedItems = this.getFinallyUnmatched(triples, itemPairs);
+                unmatchedItems = this.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs);
                 System.out.println(unmatchedItems);
 
                 if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
