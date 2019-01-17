@@ -111,45 +111,7 @@ public class ThreeCapHeuristic {
         }
     }
 
-    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
-    // IDEA:
-    // - choose a number n (20%) of random elements to be replaced
-    // - choose the next n unused elements from the ordered list
-    // - exchange the elements
-    public ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges) {
 
-        ArrayList tmpEdges = new ArrayList(edges);
-
-        int numberOfEdgesToBeReplaced = (int) (0.3 * this.instance.getStacks().length);
-        if (numberOfEdgesToBeReplaced > (edges.size() - this.instance.getStacks().length)) {
-            numberOfEdgesToBeReplaced = edges.size() - this.instance.getStacks().length;
-        }
-
-        ArrayList<Integer> toBeReplaced = new ArrayList<>();
-
-        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
-        }
-        for (int i = 0; i < toBeReplaced.size(); i++) {
-            Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);
-        }
-
-        return new ArrayList(tmpEdges);
-    }
-
-    /**
-     * Applies each edge rating system to a copy of the item pair list.
-     *
-     * @param itemPairPermutations - the list of item pair permutations
-     */
-    public void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
-        int idx = 0;
-        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-    }
 
     public void addItemPairPermutations(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
         if (itemPairs.size() <= COMPLETE_PERMUTATION_LIMIT) {
@@ -160,7 +122,7 @@ public class ThreeCapHeuristic {
 
             // TODO: Remove hard coded values
             for (int cnt = 0; cnt < 5000; cnt++) {
-                ArrayList<MCMEdge> tmp = new ArrayList(this.edgeExchange(itemPairs));
+                ArrayList<MCMEdge> tmp = new ArrayList(HeuristicUtil.edgeExchange(itemPairs, this.instance.getStacks()));
                 if (!itemPairPermutations.contains(tmp)) {
                     itemPairPermutations.add(tmp);
                 }
@@ -189,7 +151,7 @@ public class ThreeCapHeuristic {
             ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
             itemPairPermutations.add(tmpItemPairs);
         }
-        this.applyRatingSystemsToItemPairPermutations(itemPairPermutations);
+        HeuristicUtil.applyRatingSystemsToItemPairPermutations(itemPairPermutations, this.instance.getStackingConstraints());
         this.sortItemPairPermutationsBasedOnRatings(itemPairPermutations);
 
         // TODO: experiment
