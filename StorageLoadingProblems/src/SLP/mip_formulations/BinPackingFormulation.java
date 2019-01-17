@@ -89,6 +89,8 @@ public class BinPackingFormulation {
             cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
 
             double startTime = cplex.getCplexTime();
+            // 1 --> emphasizes feasibility over optimality
+            cplex.setParam(IloCplex.IntParam.MIPEmphasis, 1);
 
             if (cplex.solve()) {
                 double timeToSolve = cplex.getCplexTime() - startTime;
