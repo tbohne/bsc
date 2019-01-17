@@ -1,5 +1,6 @@
 package SLP.util;
 
+import SLP.representations.Instance;
 import SLP.representations.MCMEdge;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -31,12 +32,72 @@ public class HeuristicUtil {
         return mcm;
     }
 
+    /**
+     * Applies each edge rating system to a copy of the item pair list.
+     *
+     * @param itemPairPermutations - the list of item pair permutations
+     */
+    public static void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations, int[][] stackingConstraints) {
+        int idx = 0;
+        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+    }
+
+    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
+    // IDEA:
+    // - choose a number n (20%) of random elements to be replaced
+    // - choose the next n unused elements from the ordered list
+    // - exchange the elements
+    public static ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges, int[][] stacks) {
+
+        ArrayList tmpEdges = new ArrayList(edges);
+
+        int numberOfEdgesToBeReplaced = (int) (0.3 * stacks.length);
+        if (numberOfEdgesToBeReplaced > (edges.size() - stacks.length)) {
+            numberOfEdgesToBeReplaced = edges.size() - stacks.length;
+        }
+
+        ArrayList<Integer> toBeReplaced = new ArrayList<>();
+
+        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
+            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, stacks.length - 1));
+        }
+        for (int i = 0; i < toBeReplaced.size(); i++) {
+            Collections.swap(tmpEdges, toBeReplaced.get(i), i + stacks.length);
+        }
+
+        return new ArrayList(tmpEdges);
+    }
+
+    /**
+     * Returns the list of unmatched items increasingly sorted by row rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+
+        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
+        for (int item : unmatchedItems) {
+            int rating = HeuristicUtil.computeRowRatingForUnmatchedItem(item, stackingConstraints);
+            unmatchedItemRowRatings.put(item, rating);
+        }
+        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
+        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
+        for (int item : sortedItemRowRatings.keySet()) {
+            unmatchedItemsSortedByRowRating.add(item);
+        }
+
+        return unmatchedItemsSortedByRowRating;
+    }
+
     public static void generateStackingConstraintGraphNewWay(
             DefaultUndirectedGraph<String, DefaultEdge> graph,
             int[] items,
-            int[][] stackingConstraints,
-            int[][] stacks,
-            int[][] stackConstraints
+            int[][] stackingConstraints
     ) {
 
         ArrayList<Integer> itemList = new ArrayList<>();
@@ -116,8 +177,9 @@ public class HeuristicUtil {
         return storageArea[stackIdx][2] == -1 && storageArea[stackIdx][1] == -1 && storageArea[stackIdx][0] == -1;
     }
 
-    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] stackConstraints) {
-        return stackConstraints[itemOne][stackIdx] == 1 && stackConstraints[itemTwo][stackIdx] == 1;
+    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] costs, int max) {
+//        return stackConstraints[itemOne][stackIdx] == 1 && stackConstraints[itemTwo][stackIdx] == 1;
+        return costs[itemOne][stackIdx] < max && costs[itemTwo][stackIdx] < max;
     }
 
     public static boolean itemsStackableInBothDirections(int itemOne, int itemTwo, int[][] stackingConstraints) {
