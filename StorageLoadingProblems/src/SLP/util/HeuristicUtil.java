@@ -2,8 +2,11 @@ package SLP.util;
 
 import SLP.representations.MCMEdge;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
+import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
+import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
 
@@ -50,6 +53,104 @@ public class HeuristicUtil {
         for (MCMEdge e : toBeRemoved) {
             matchedItems.remove(matchedItems.indexOf(e));
         }
+    }
+
+    public static void addEdgesForItemPairs(
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
+            ArrayList<MCMEdge> itemPairs,
+            int[][] stacks,
+            int[][] costsArr
+    ) {
+
+        // edges from item pairs to stacks
+        for (int i = 0; i < itemPairs.size(); i++) {
+            for (int j = 0; j < stacks.length; j++) {
+                if (!graph.containsEdge("pair" + itemPairs.get(i), "stack" + j)) {
+                    DefaultWeightedEdge edge = graph.addEdge("pair" + itemPairs.get(i), "stack" + j);
+                    int costs = costsArr[itemPairs.get(i).getVertexOne()][j] + costsArr[itemPairs.get(i).getVertexTwo()][j];
+                    graph.setEdgeWeight(edge, costs);
+                }
+            }
+        }
+    }
+
+    public static void addEdgesForItemTriples(
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
+            ArrayList<ArrayList<Integer>> itemTriples,
+            int[][] stacks,
+            int[][] costsArr
+    ) {
+        // edges from item triples to stacks
+        for (int i = 0; i < itemTriples.size(); i++) {
+            for (int j = 0; j < stacks.length; j++) {
+                DefaultWeightedEdge edge = graph.addEdge("triple" + itemTriples.get(i), "stack" + j);
+                int costs = costsArr[itemTriples.get(i).get(0)][j]
+                        + costsArr[itemTriples.get(i).get(1)][j]
+                        + costsArr[itemTriples.get(i).get(2)][j];
+                graph.setEdgeWeight(edge, costs);
+            }
+        }
+    }
+
+    public static void addEdgesForDummyItems(
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
+            ArrayList<Integer> dummyItems,
+            int[][] stacks
+    ) {
+        // edges from dummy items to stacks
+        // dummy items can be stored in every stack with no costs
+        for (int item : dummyItems) {
+            for (int stack = 0; stack < stacks.length; stack++) {
+                DefaultWeightedEdge edge = graph.addEdge("dummy" + item, "stack" + stack);
+                int costs = 0;
+                graph.setEdgeWeight(edge, costs);
+            }
+        }
+    }
+
+    /**
+     *
+     *
+     * @param graph
+     * @param unmatchedItems
+     */
+    public static void addEdgesForUnmatchedItems(
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
+            ArrayList<Integer> unmatchedItems,
+            int[][] stacks,
+            int[][] costsArr
+    ) {
+        // edges from unmatched items to stacks
+        for (int item : unmatchedItems) {
+            for (int stack = 0; stack < stacks.length; stack++) {
+                if (!graph.containsEdge("item" + item, "stack" + stack)) {
+                    DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
+                    int costs = costsArr[item][stack];
+                    graph.setEdgeWeight(edge, costs);
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param graph
+     * @param partitionOne
+     * @param partitionTwo
+     * @return
+     */
+    public static ArrayList<Integer> introduceDummyVertices(
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
+
+        int cnt = 0;
+        ArrayList<Integer> dummyItems = new ArrayList<>();
+        while (partitionOne.size() < partitionTwo.size()) {
+            graph.addVertex("dummy" + cnt);
+            partitionOne.add("dummy" + cnt);
+            dummyItems.add(cnt);
+            cnt++;
+        }
+        return dummyItems;
     }
 
     /**
@@ -234,11 +335,9 @@ public class HeuristicUtil {
         return graph;
     }
 
-    public static void generateStackingConstraintGraphNewWay(
-            DefaultUndirectedGraph<String, DefaultEdge> graph,
-            int[] items,
-            int[][] stackingConstraints
-    ) {
+    public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraphNewWay(int[] items, int[][] stackingConstraints) {
+
+        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
         ArrayList<Integer> itemList = new ArrayList<>();
         for (int item : items) {
@@ -275,6 +374,7 @@ public class HeuristicUtil {
                 }
             }
         }
+        return graph;
     }
 
     public static DefaultUndirectedGraph generateStackingConstraintGraph(int[] items, int[][] stackingConstraints) {
@@ -534,7 +634,10 @@ public class HeuristicUtil {
         return matchedItems;
     }
 
-    public static void parseItemTripleMCM(ArrayList<ArrayList<Integer>> currentStackAssignments, EdmondsMaximumCardinalityMatching mcm) {
+    public static ArrayList<ArrayList<Integer>> parseItemTripleMCM(EdmondsMaximumCardinalityMatching mcm) {
+
+        ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
+
         for (Object edge : mcm.getMatching().getEdges()) {
             String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
             int first = Integer.parseInt(parsedEdge.split(",")[0].trim());
@@ -545,7 +648,44 @@ public class HeuristicUtil {
             currAssignment.add(first);
             currAssignment.add(second);
             currAssignment.add(third);
-            currentStackAssignments.add(new ArrayList<>(currAssignment));
+            itemTriples.add(new ArrayList<>(currAssignment));
+        }
+
+        return itemTriples;
+    }
+
+    public static int[] getArrayFromList(ArrayList<Integer> list) {
+        int[] arr = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            arr[i] = list.get(i);
+        }
+        return arr;
+    }
+
+    public static void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching matching, int[][] stacks) {
+
+        for (Object edge : matching.getMatching().getEdges()) {
+
+            if (edge.toString().contains("triple")) {
+                int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[0].replace("[", "".trim()));
+                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[1].trim());
+                int itemThree = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[2].replace("]", "").trim());
+                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+
+                stacks[stack][0] = itemOne;
+                stacks[stack][1] = itemTwo;
+                stacks[stack][2] = itemThree;
+
+            } else if (edge.toString().contains("pair")) {
+                int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
+                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
+                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+
+                stacks[stack][0] = itemOne;
+                stacks[stack][1] = itemTwo;
+            } else if (edge.toString().contains("item")) {
+                // TODO: Check whether possible at all
+            }
         }
     }
 
