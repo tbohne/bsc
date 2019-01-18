@@ -198,12 +198,14 @@ public class ThreeCapHeuristic {
                 ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
 
                 triples.addAll(this.mergeItemPairs(itemPairs));
-                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
+                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
+
                 graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
                         HeuristicUtil.getArrayFromList((ArrayList<Integer>) unmatchedItems), this.instance.getStackingConstraints(),
                         this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
                 );
                 pairs = new EdmondsMaximumCardinalityMatching(graph);
+
                 itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
                 unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
 
