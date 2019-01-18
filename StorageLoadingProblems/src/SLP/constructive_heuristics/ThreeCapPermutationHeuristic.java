@@ -229,7 +229,8 @@ public class ThreeCapPermutationHeuristic {
                 for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
                     if (!HeuristicUtil.stackEmpty(stack, this.instance.getStacks())
-                        || !HeuristicUtil.itemPairAndStackCompatible(stack, itemOne, itemTwo, this.instance.getStackConstraints())) { continue; }
+                        || !HeuristicUtil.itemPairAndStackCompatible(stack, itemOne, itemTwo, this.instance.getCosts(),
+                            Integer.MAX_VALUE / this.instance.getItems().length)) { continue; }
 
 
 //                    System.out.println("prioritizing: " + itemOne + ", " + itemTwo);
@@ -252,7 +253,7 @@ public class ThreeCapPermutationHeuristic {
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
             // item and stack are incompatible
-            if (this.instance.getStackConstraints()[item][stack] != 1) { continue; }
+            if (this.instance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.instance.getItems().length) { continue; }
 
             // empty stack
             if (HeuristicUtil.stackEmpty(stack, this.instance.getStacks())) {
@@ -391,8 +392,8 @@ public class ThreeCapPermutationHeuristic {
         for (MCMEdge itemPair : itemPairs) {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
-                if (this.instance.getStackConstraints()[itemPair.getVertexOne()][stack] != 1
-                    || this.instance.getStackConstraints()[itemPair.getVertexTwo()][stack] != 1) {
+                if (this.instance.getCosts()[itemPair.getVertexOne()][stack] >= Integer.MAX_VALUE / this.instance.getItems().length
+                    || this.instance.getCosts()[itemPair.getVertexTwo()][stack] >= Integer.MAX_VALUE / this.instance.getItems().length) {
                         continue;
                 }
 
@@ -446,7 +447,7 @@ public class ThreeCapPermutationHeuristic {
             for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
                 // item and stack incompatible
-                if (this.instance.getStackConstraints()[item][stack] != 1) { continue; }
+                if (this.instance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.instance.getItems().length) { continue; }
 
                 // completely free
                 if (this.instance.getStacks()[stack][2] == -1 && this.instance.getStacks()[stack][1] == -1 && this.instance.getStacks()[stack][0] == -1) {
@@ -509,7 +510,8 @@ public class ThreeCapPermutationHeuristic {
     public boolean assignItemPairToStack(int stackIdx, int below, int above, boolean ground) {
 
         // at least one of the items is not compatible with the stack
-        if (this.instance.getStackConstraints()[below][stackIdx] != 1 || this.instance.getStackConstraints()[above][stackIdx] != 1) {
+        if (this.instance.getCosts()[below][stackIdx] >= Integer.MAX_VALUE / this.instance.getItems().length
+                || this.instance.getCosts()[above][stackIdx] >= Integer.MAX_VALUE / this.instance.getItems().length) {
             return false;
         }
 
@@ -785,13 +787,12 @@ public class ThreeCapPermutationHeuristic {
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-            HeuristicUtil.generateStackingConstraintGraphNewWay(
-                stackingConstraintGraph,
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraphNewWay(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
-                this.instance.getStacks(),
-                this.instance.getStackConstraints()
+                this.instance.getCosts(),
+                Integer.MAX_VALUE / this.instance.getItems().length,
+                this.instance.getStacks()
             );
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
 
