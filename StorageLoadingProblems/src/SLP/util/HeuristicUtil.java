@@ -335,7 +335,9 @@ public class HeuristicUtil {
         return graph;
     }
 
-    public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraphNewWay(int[] items, int[][] stackingConstraints) {
+    public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraphNewWay(
+            int[] items, int[][] stackingConstraints, int[][] costs, int max, int[][] stacks
+    ) {
 
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
@@ -354,23 +356,21 @@ public class HeuristicUtil {
             for (int j = 0; j < stackingConstraints[0].length; j++) {
                 if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
 
-//                    int numberOfCompatibleStacks = 0;
-//                    for (int stackIdx = 0; stackIdx < stacks.length; stackIdx++) {
-//                        if (stackConstraints[i][stackIdx] == 1 && stackConstraints[j][stackIdx] == 1) {
-//                            numberOfCompatibleStacks++;
-//                        }
-//                    }
-
-                    // TODO: find reasonable way to calculate the value
-//                    if (numberOfCompatibleStacks > 0) {
-                    if (itemList.contains(i) && itemList.contains(j)) {
-                        if (!graph.containsEdge("v" + j, "v" + i)) {
-                            graph.addEdge("v" + i, "v" + j);
-//                        }
+                    int numberOfCompatibleStacks = 0;
+                    for (int stackIdx = 0; stackIdx < stacks.length; stackIdx++) {
+                        if (costs[i][stackIdx] < max && costs[j][stackIdx] < max) {
+                            numberOfCompatibleStacks++;
                         }
-
                     }
 
+                    // TODO: find reasonable way to calculate the value
+                    if (numberOfCompatibleStacks > 0) {
+                        if (itemList.contains(i) && itemList.contains(j)) {
+                            if (!graph.containsEdge("v" + j, "v" + i)) {
+                                graph.addEdge("v" + i, "v" + j);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -418,7 +418,6 @@ public class HeuristicUtil {
     }
 
     public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] costs, int max) {
-//        return stackConstraints[itemOne][stackIdx] == 1 && stackConstraints[itemTwo][stackIdx] == 1;
         return costs[itemOne][stackIdx] < max && costs[itemTwo][stackIdx] < max;
     }
 
