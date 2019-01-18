@@ -683,7 +683,10 @@ public class HeuristicUtil {
                 stacks[stack][0] = itemOne;
                 stacks[stack][1] = itemTwo;
             } else if (edge.toString().contains("item")) {
-                // TODO: Check whether possible at all
+                int item = Integer.parseInt(edge.toString().split(":")[0].replace("(item", "").trim());
+                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+
+                stacks[stack][0] = item;
             }
         }
     }
