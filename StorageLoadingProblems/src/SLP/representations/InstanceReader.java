@@ -1,7 +1,5 @@
 package SLP.representations;
 
-import SLP.representations.Instance;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -62,7 +60,6 @@ public class InstanceReader {
         ArrayList<Coordinates> stackPositions = new ArrayList<>();
 
         int[][] stackingConstraints = new int[numberOfItems][];
-        int[][] stackConstraints = new int[numberOfItems][];
         int[][] costs = new int [numberOfItems][];
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -75,7 +72,6 @@ public class InstanceReader {
                 stackingConstraints = readMatrix(reader, numberOfItems);
             }
 
-            stackConstraints = readMatrix(reader, numberOfItems);
             costs = readMatrix(reader, numberOfItems);
 
             readCoordinates(itemPositions, reader);
@@ -86,6 +82,6 @@ public class InstanceReader {
         }
 
         String instancename = filename.replace("res/", "").replace(".txt", "");
-        return new Instance(numberOfItems, numberOfStacks, itemPositions, stackPositions, stackCapacity, stackingConstraints, stackConstraints, costs, instancename);
+        return new Instance(numberOfItems, numberOfStacks, itemPositions, stackPositions, stackCapacity, stackingConstraints, costs, instancename);
     }
 }
