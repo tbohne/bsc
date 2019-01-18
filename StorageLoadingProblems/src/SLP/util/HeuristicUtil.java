@@ -661,6 +661,140 @@ public class HeuristicUtil {
         return arr;
     }
 
+    /**
+     * Updates the list of completely filled stacks and prepares the corresponding items to be removed from the remaining item pairs.
+     *
+     * @param itemPairRemovalList - the list to keep track of the items that should be removed form the remaining item pairs
+     * @param itemOneEdge - the edge (item pair), the first item is assigned to
+     * @param itemTwoEdge - the edge (item pair), the second item is assigned to
+     * @param startingPair - the pair that is going to be assigned
+     * @param itemOne - the first item to be assigned
+     * @param itemTwo - the second item to be assigned
+     * @param completelyFilledStacks - the list of completely filled stacks
+     */
+    public static void updateCompletelyFilledStacks(
+            ArrayList<MCMEdge> itemPairRemovalList,
+            MCMEdge itemOneEdge,
+            MCMEdge itemTwoEdge,
+            MCMEdge startingPair,
+            int itemOne,
+            int itemTwo,
+            ArrayList<ArrayList<Integer>> completelyFilledStacks
+    ) {
+
+        itemPairRemovalList.add(itemOneEdge);
+        itemPairRemovalList.add(itemTwoEdge);
+        itemPairRemovalList.add(startingPair);
+
+        ArrayList<Integer> itemOneStack = new ArrayList<>();
+        itemOneStack.add(itemOne);
+        itemOneStack.add(itemOneEdge.getVertexOne());
+        itemOneStack.add(itemOneEdge.getVertexTwo());
+
+        ArrayList<Integer> itemTwoStack = new ArrayList<>();
+        itemTwoStack.add(itemTwo);
+        itemTwoStack.add(itemTwoEdge.getVertexOne());
+        itemTwoStack.add(itemTwoEdge.getVertexTwo());
+
+        completelyFilledStacks.add(itemOneStack);
+        completelyFilledStacks.add(itemTwoStack);
+    }
+
+
+    /**
+     * Generates completely filled stacks from the list of item pairs.
+     * (Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks).
+     *
+     * @param itemPairs - the list of item pairs
+     * @param itemPairRemovalList - the list of edges (item pairs) to be removed
+     * @param completelyFilledStacks - list to store the completely filled stacks
+     */
+    public static void generateCompletelyFilledStacks(
+        ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks, int[][] stackingConstraints
+    ) {
+        for (MCMEdge startingPair : itemPairs) {
+
+            if (itemPairRemovalList.contains(startingPair)) { continue; }
+
+            int itemOne = startingPair.getVertexOne();
+            int itemTwo = startingPair.getVertexTwo();
+            boolean itemOneAssigned = false;
+            boolean itemTwoAssigned = false;
+            MCMEdge itemOneEdge = new MCMEdge(0, 0, 0);
+            MCMEdge itemTwoEdge = new MCMEdge(0, 0, 0);
+
+            for (MCMEdge potentialTargetPair : itemPairs) {
+                if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
+                if (itemOneAssigned && itemTwoAssigned) { break; }
+
+                if (startingPair != potentialTargetPair) {
+                    int potentialTargetPairItemOne = potentialTargetPair.getVertexOne();
+                    int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
+
+                    if (!itemOneAssigned && HeuristicUtil.itemAssignableToPair(
+                            itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)) {
+                        itemOneAssigned = true;
+                        itemOneEdge = potentialTargetPair;
+                        continue;
+                    }
+                    if (!itemTwoAssigned && HeuristicUtil.itemAssignableToPair(
+                            itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)) {
+                        itemTwoAssigned = true;
+                        itemTwoEdge = potentialTargetPair;
+                        continue;
+                    }
+                }
+            }
+
+            if (itemOneAssigned && itemTwoAssigned) {
+                updateCompletelyFilledStacks(itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair, itemOne, itemTwo, completelyFilledStacks);
+            }
+        }
+    }
+
+    /**
+     * Returns whether the given item is validly assignable to the given pair.
+     *
+     * @param item - the item to be checked
+     * @param pairItemOne - the first item of the pair
+     * @param pairItemTwo - the second item of the pair
+     * @return whether or not the item is assignable to the pair
+     */
+    public static boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo, int[][] stackingConstraints) {
+
+        // pair stackable in both directions
+        if (HeuristicUtil.itemsStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
+            if (stackingConstraints[item][pairItemOne] == 1) {
+                // itemOne above itemOneNew above itemTwoNew --> itemOne assigned
+                return true;
+            } else if (stackingConstraints[pairItemOne][item] == 1) {
+                // itemTwoNew above itemOneNew above itemOne --> itemOne assigned
+                return true;
+            } else if (stackingConstraints[pairItemTwo][item] == 1) {
+                // itemOneNew above itemTwoNew above itemOne --> itemOne assigned
+                return true;
+            } else if (stackingConstraints[item][pairItemTwo] == 1) {
+                // itemOne above itemTwoNew above itemOneNew --> itemOne assigned
+                return true;
+            }
+            // pairItemOne above pairItemTwo
+        } else if (stackingConstraints[pairItemOne][pairItemTwo] == 1) {
+            if (stackingConstraints[item][pairItemOne] == 1) {
+                return true;
+            } else if (stackingConstraints[pairItemTwo][item] == 1) {
+                return true;
+            }
+            // pairItemTwo above pairItemOne
+        } else {
+            if (stackingConstraints[item][pairItemTwo] == 1) {
+                return true;
+            } else if (stackingConstraints[pairItemOne][item] == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching matching, int[][] stacks) {
 
         for (Object edge : matching.getMatching().getEdges()) {
