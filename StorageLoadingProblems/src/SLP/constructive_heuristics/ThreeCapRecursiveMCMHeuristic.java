@@ -280,8 +280,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      * @return the parsed and sorted list of item pairs
      */
     public ArrayList<MCMEdge> parseAndSortItemPairs(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = new ArrayList<>();
-        HeuristicUtil.parseItemPairMCM(itemPairs, mcm);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
         HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         return itemPairs;
@@ -312,8 +311,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = new ArrayList<>();
-        HeuristicUtil.parseItemTripleMCM(itemTripleStackAssignments, itemTriples);
+        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = HeuristicUtil.parseItemTripleMCM(itemTriples);
         this.stackAssignments.addAll(itemTripleStackAssignments);
     }
 
@@ -415,7 +413,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      *
      * @param bestStackAssignments - the best stack assignments
      * @param edgePermutations - the list of permutations of item pairs
-     * @param listsOfRemainingItems - the lists of lists of remaining items
+     * @param listsOfRemainingItems - the list of permutations of the remaining items
      * @param remainingItems - the remaining items
      */
     public void findBestRemainingStackAssignments(
@@ -482,23 +480,23 @@ public class ThreeCapRecursiveMCMHeuristic {
 
         for (ArrayList<Integer> currStack : this.stackAssignments) {
 
-            for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
 
-                if (usedStacks.contains(i)) { continue; }
+                if (usedStacks.contains(stack)) { continue; }
 
                 boolean itemsCompatible = true;
                 for (int item : currStack) {
-                    if (this.instance.getStackConstraints()[item][i] != 1) {
+                    if (this.instance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.instance.getItems().length) {
                         itemsCompatible = false;
                     }
                 }
                 if (!itemsCompatible) { continue; }
-                for (int level = 0; level < this.instance.getStacks()[i].length; level++) {
+                for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
                     if (level < currStack.size()) {
-                        this.instance.getStacks()[i][level] = currStack.get(level);
+                        this.instance.getStacks()[stack][level] = currStack.get(level);
                     }
                 }
-                usedStacks.add(i);
+                usedStacks.add(stack);
                 break;
             }
         }
@@ -509,7 +507,6 @@ public class ThreeCapRecursiveMCMHeuristic {
      */
     public void checkItemAssignments() {
         ArrayList<Integer> remainingItems = this.getUnassignedItems();
-        System.out.println("REMAINING: " + remainingItems);
         if (remainingItems.size() > 0) {
             System.out.println("Problem: Not all items have been assigned, even though the process is complete.");
         }
@@ -558,7 +555,7 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     /**
-     * TODO: find new name
+     * TODO: find new name...
      */
     public void threeCapApproachTwo(EdmondsMaximumCardinalityMatching mcm) {
         ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
@@ -583,13 +580,12 @@ public class ThreeCapRecursiveMCMHeuristic {
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-            HeuristicUtil.generateStackingConstraintGraphNewWay(
-                graph,
+            DefaultUndirectedGraph<String, DefaultEdge> graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
-                this.instance.getStacks(),
-                this.instance.getStackConstraints()
+                this.instance.getCosts(),
+                Integer.MAX_VALUE / this.instance.getItems().length,
+                this.instance.getStacks()
             );
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
 
