@@ -1,0 +1,110 @@
+solved with: SLP.mip_formulations.BinPackingFormulation
+time limit: 2 s
+time to solve: 2.07 s (time limit exceeded)
+objective value: 3391.0 (not optimal)
+
+stacks (top to bottom):
+stack  0:    8 
+stack  1:    1 
+stack  2:    0 
+stack  3:    2 
+stack  4:    5 10 
+stack  5:    3 4 
+stack  6:    
+stack  7:    6 7 
+stack  8:    12 
+stack  9:    30 99 9 
+stack 10:    14 
+stack 11:    61 70 
+stack 12:    21 74 
+stack 13:    81 91 80 
+stack 14:    13 16 56 
+stack 15:    75 11 15 
+stack 16:    52 19 41 
+stack 17:    77 72 71 
+stack 18:    67 76 64 
+stack 19:    20 96 18 
+stack 20:    84 63 89 
+stack 21:    17 55 92 
+stack 22:    66 86 26 
+stack 23:    23 32 95 
+stack 24:    94 25 28 
+stack 25:    57 98 60 
+stack 26:    54 46 24 
+stack 27:    27 51 62 
+stack 28:    38 97 22 
+stack 29:    50 79 49 
+stack 30:    93 34 85 
+stack 31:    43 45 90 
+stack 32:    33 47 31 
+stack 33:    83 87 69 
+stack 34:    58 82 73 
+stack 35:    53 88 36 
+stack 36:    42 37 68 
+stack 37:    48 65 44 
+stack 38:    40 35 29 
+stack 39:    78 59 39 
+
+#####################################################
+
+solved with: SLP.mip_formulations.ThreeIndexFormulation
+Problem not solved.
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.ThreeCapPermutationHeuristic
+Problem not solved.
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic
+Problem not solved.
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.ThreeCapHeuristic
+time limit: 2 s
+time to solve: 0.01 s
+objective value: 3379.0
+
+stacks (top to bottom):
+stack  0:    60 1 0 
+stack  1:    
+stack  2:    
+stack  3:    
+stack  4:    6 3 7 
+stack  5:    
+stack  6:    
+stack  7:    98 
+stack  8:    11 15 29 
+stack  9:    51 2 4 
+stack 10:    13 10 9 
+stack 11:    97 99 
+stack 12:    21 19 12 
+stack 13:    8 17 18 
+stack 14:    37 16 14 
+stack 15:    5 66 68 
+stack 16:    53 91 90 
+stack 17:    75 80 
+stack 18:    67 71 
+stack 19:    42 55 59 
+stack 20:    38 20 22 
+stack 21:    54 25 26 
+stack 22:    48 61 70 
+stack 23:    23 33 34 
+stack 24:    32 24 28 
+stack 25:    27 82 85 
+stack 26:    73 88 89 
+stack 27:    63 64 45 
+stack 28:    57 30 36 
+stack 29:    58 47 31 
+stack 30:    52 65 62 
+stack 31:    40 35 39 
+stack 32:    78 81 49 
+stack 33:    46 96 95 
+stack 34:    84 86 87 
+stack 35:    50 72 69 
+stack 36:    43 76 74 
+stack 37:    94 79 56 
+stack 38:    77 41 44 
+stack 39:    83 93 92 

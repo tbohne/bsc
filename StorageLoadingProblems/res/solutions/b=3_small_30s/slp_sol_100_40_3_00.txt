@@ -1,0 +1,198 @@
+solved with: SLP.mip_formulations.BinPackingFormulation
+time limit: 30 s
+time to solve: 3.28 s
+objective value: 3304.0
+
+stacks (top to bottom):
+stack  0:    0 
+stack  1:    1 
+stack  2:    2 
+stack  3:    3 
+stack  4:    4 
+stack  5:    5 
+stack  6:    7 
+stack  7:    6 
+stack  8:    8 
+stack  9:    42 
+stack 10:    10 9 19 
+stack 11:    46 11 13 
+stack 12:    90 12 74 
+stack 13:    32 14 49 
+stack 14:    73 54 69 
+stack 15:    37 18 15 
+stack 16:    16 20 70 
+stack 17:    45 17 39 
+stack 18:    84 63 98 
+stack 19:    75 50 87 
+stack 20:    92 56 51 
+stack 21:    78 21 77 
+stack 22:    60 43 22 
+stack 23:    96 23 24 
+stack 24:    94 59 55 
+stack 25:    25 88 44 
+stack 26:    83 40 26 
+stack 27:    58 27 52 
+stack 28:    41 29 28 
+stack 29:    93 80 48 
+stack 30:    30 86 65 
+stack 31:    31 97 62 
+stack 32:    67 89 99 
+stack 33:    33 34 36 
+stack 34:    53 82 64 
+stack 35:    91 35 72 
+stack 36:    57 47 81 
+stack 37:    76 38 95 
+stack 38:    61 66 85 
+stack 39:    79 68 71 
+
+#####################################################
+
+solved with: SLP.mip_formulations.ThreeIndexFormulation
+time limit: 30 s
+time to solve: 5.14 s
+objective value: 3304.0
+
+stacks (top to bottom):
+stack  0:    0 
+stack  1:    1 
+stack  2:    2 
+stack  3:    3 
+stack  4:    4 
+stack  5:    5 
+stack  6:    7 
+stack  7:    6 
+stack  8:    8 
+stack  9:    10 
+stack 10:    9 17 19 
+stack 11:    11 13 44 
+stack 12:    31 12 95 
+stack 13:    14 52 15 
+stack 14:    16 20 22 
+stack 15:    78 85 34 
+stack 16:    73 24 88 
+stack 17:    33 18 39 
+stack 18:    79 25 71 
+stack 19:    23 65 26 
+stack 20:    58 45 56 
+stack 21:    94 55 21 
+stack 22:    96 27 28 
+stack 23:    84 59 36 
+stack 24:    90 50 69 
+stack 25:    32 60 35 
+stack 26:    57 68 29 
+stack 27:    70 81 87 
+stack 28:    66 47 98 
+stack 29:    42 30 49 
+stack 30:    75 53 91 
+stack 31:    76 40 77 
+stack 32:    46 82 64 
+stack 33:    67 83 99 
+stack 34:    62 51 38 
+stack 35:    92 63 80 
+stack 36:    37 97 43 
+stack 37:    89 54 72 
+stack 38:    93 74 48 
+stack 39:    61 41 86 
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.ThreeCapPermutationHeuristic
+Problem not solved.
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic
+time limit: 30 s
+time to solve: 0.03 s
+objective value: 4159.0
+
+stacks (top to bottom):
+stack  0:    58 60 97 
+stack  1:    78 9 5 
+stack  2:    79 61 59 
+stack  3:    96 0 1 
+stack  4:    3 31 33 
+stack  5:    10 11 2 
+stack  6:    7 50 69 
+stack  7:    75 90 91 
+stack  8:    46 43 38 
+stack  9:    4 6 35 
+stack 10:    42 41 44 
+stack 11:    57 54 65 
+stack 12:    66 25 26 
+stack 13:    23 24 80 
+stack 14:    53 64 74 
+stack 15:    84 32 34 
+stack 16:    67 92 86 
+stack 17:    14 17 36 
+stack 18:    76 13 15 
+stack 19:    89 98 99 
+stack 20:    94 30 29 
+stack 21:    16 20 70 
+stack 22:    63 52 48 
+stack 23:    83 40 39 
+stack 24:    68 71 
+stack 25:    37 27 28 
+stack 26:    12 8 72 
+stack 27:    55 49 77 
+stack 28:    62 56 51 
+stack 29:    73 93 95 
+stack 30:    45 47 81 
+stack 31:    
+stack 32:    82 87 
+stack 33:    85 88 
+stack 34:    18 19 
+stack 35:    21 22 
+stack 36:    
+stack 37:    
+stack 38:    
+stack 39:    
+
+#####################################################
+
+solved with: SLP.constructive_heuristics.ThreeCapHeuristic
+time limit: 30 s
+time to solve: 0.04 s
+objective value: 3397.0
+
+stacks (top to bottom):
+stack  0:    
+stack  1:    9 5 1 
+stack  2:    
+stack  3:    
+stack  4:    4 6 43 
+stack  5:    
+stack  6:    0 7 35 
+stack  7:    2 52 48 
+stack  8:    
+stack  9:    3 12 8 
+stack 10:    10 23 24 
+stack 11:    11 40 39 
+stack 12:    14 17 36 
+stack 13:    13 45 47 
+stack 14:    30 29 
+stack 15:    63 62 15 
+stack 16:    94 16 20 
+stack 17:    42 38 
+stack 18:    90 91 
+stack 19:    75 74 
+stack 20:    97 18 19 
+stack 21:    84 80 
+stack 22:    59 21 22 
+stack 23:    31 82 87 
+stack 24:    33 85 88 
+stack 25:    66 25 26 
+stack 26:    37 27 28 
+stack 27:    78 55 49 
+stack 28:    60 73 72 
+stack 29:    58 93 95 
+stack 30:    67 76 77 
+stack 31:    96 50 69 
+stack 32:    32 83 81 
+stack 33:    34 56 51 
+stack 34:    57 54 65 
+stack 35:    61 68 71 
+stack 36:    46 53 64 
+stack 37:    92 86 70 
+stack 38:    89 98 99 
+stack 39:    79 41 44 
