@@ -27,9 +27,8 @@ public class SolverComparison2Cap extends SolverComparison {
                 if (file.toString().contains("slp_instance_") && !allSol.contains(file.toString().replace("res/instances/", ""))) {
 
                     String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
+                    System.out.println("working on: " + instanceName);
                     Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
-
-//                    System.out.println(instance);
 
                     String solutionName = instanceName.replace("instance", "sol");
 
