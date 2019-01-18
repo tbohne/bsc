@@ -1,5 +1,6 @@
 package SLP.representations;
 
+import SLP.constructive_heuristics.ThreeCapHeuristic;
 import SLP.constructive_heuristics.ThreeCapPermutationHeuristic;
 import SLP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic;
 import SLP.constructive_heuristics.TwoCapHeuristic;
@@ -20,6 +21,8 @@ public class SolutionWriter {
                 return ThreeIndexFormulation.class.getName();
             case CONSTRUCTIVE_TWO_CAP:
                 return TwoCapHeuristic.class.getName();
+            case CONSTRUCTIVE_THREE_CAP:
+                return ThreeCapHeuristic.class.getName();
             case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
                 return ThreeCapPermutationHeuristic.class.getName();
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
@@ -37,6 +40,8 @@ public class SolutionWriter {
                 return "3Idx";
             case CONSTRUCTIVE_TWO_CAP:
                 return "2Cap";
+            case CONSTRUCTIVE_THREE_CAP:
+                return "3Cap";
             case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
                 return "3CapPerm";
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
@@ -66,7 +71,9 @@ public class SolutionWriter {
 
             String mip = getNameOfSolverCSV(solver);
             if (sol.isFeasible()) {
-                bw.write(sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "") + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n");
+                bw.write(sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
+                    + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n"
+                );
             }
             bw.close();
 
