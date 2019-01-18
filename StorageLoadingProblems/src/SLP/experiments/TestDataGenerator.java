@@ -1,5 +1,6 @@
 package SLP.experiments;
 
+import SLP.representations.Coordinates;
 import SLP.representations.Instance;
 import SLP.representations.InstanceWriter;
 import SLP.representations.Item;
@@ -13,19 +14,16 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /*************************** CONFIGURATION *********************************/
-    public static final int NUMBER_OF_INSTANCES = 200;
+    public static final int NUMBER_OF_INSTANCES = 20;
     public static final int NUMBER_OF_ITEMS = 500;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.
-    public static final int ADDITIONAL_STACK_PERCENTAGE = 50;
+    public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
 
     public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0055F;
     public static final float CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS = 0.7F;
-
-    public static final int COSTS_INCLUSIVE_LOWER_BOUND = 1;
-    public static final int COSTS_EXCLUSIVE_UPPER_BOUND = 10;
 
     // Configuration of 2nd approach to stacking constraint generation:
     public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
@@ -33,6 +31,10 @@ public class TestDataGenerator {
     public static final int ITEM_LENGTH_UB = 30;
     public static final int ITEM_WIDTH_LB = 1;
     public static final int ITEM_WIDTH_UB = 30;
+
+    public static final int STORAGE_AREA_SLOT_LENGTH = 1;
+    public static final int STORAGE_AREA_SLOT_WIDTH = 1;
+    public static final int STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5;
     /***************************************************************************/
 
     public static void main(String[] args) {
@@ -54,21 +56,20 @@ public class TestDataGenerator {
 
             avgPercentage += getPercentageOfOneEntries(stackingConstraintMatrix);
 
+            ArrayList<Coordinates> itemPositions = generateItemPositions();
+            ArrayList<Coordinates> stackPositions = generateStackPositions(numOfStacks);
+
             int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
                 for (int j = 0; j < numOfStacks; j++) {
-                    Random rand = new Random();
-                    costs[i][j] = rand.nextInt(COSTS_EXCLUSIVE_UPPER_BOUND - COSTS_INCLUSIVE_LOWER_BOUND) + COSTS_INCLUSIVE_LOWER_BOUND;
+                    costs[i][j] = computeManhattanDist(i, j, itemPositions, stackPositions);
                 }
             }
 
-            int[][] stackConstraintMatrix = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
                 for (int j = 0; j < numOfStacks; j++) {
-                    if (Math.random() < CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS) {
-                        stackConstraintMatrix[i][j] = 1;
-                    } else {
-                        stackConstraintMatrix[i][j] = 0;
+                    if (Math.random() >= CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS) {
+                        costs[i][j] = Integer.MAX_VALUE / NUMBER_OF_ITEMS;
                     }
                 }
             }
@@ -78,9 +79,10 @@ public class TestDataGenerator {
             Instance instance = new Instance(
                 NUMBER_OF_ITEMS,
                 numOfStacks,
+                itemPositions,
+                stackPositions,
                 STACK_CAPACITY,
                 stackingConstraintMatrix,
-                stackConstraintMatrix,
                 costs,
                 instanceName
             );
@@ -94,8 +96,6 @@ public class TestDataGenerator {
                 ADDITIONAL_STACK_PERCENTAGE,
                 CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
                 CHANCE_FOR_ONE_IN_STACK_CONSTRAINTS,
-                COSTS_INCLUSIVE_LOWER_BOUND,
-                COSTS_EXCLUSIVE_UPPER_BOUND,
                 USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE,
                 ITEM_LENGTH_LB,
                 ITEM_LENGTH_UB,
@@ -104,6 +104,55 @@ public class TestDataGenerator {
             );
         }
         System.out.println("AVG PERCENTAGE OF ONE-ENTRIES: " + avgPercentage / NUMBER_OF_INSTANCES);
+    }
+
+    /**
+     * Computes the manhattan distance between the specified item and stack.
+     *
+     * @param item - the item used in the dist computation
+     * @param stack - the stack used in the dist computation
+     * @param itemPositions - list of item positions
+     * @param stackPositions - list of stack positions
+     * @return manhattan distance of item and stack
+     */
+    public static int computeManhattanDist(int item, int stack, ArrayList<Coordinates> itemPositions, ArrayList<Coordinates> stackPositions) {
+        Coordinates itemPosition = itemPositions.get(item);
+        Coordinates stackPosition = stackPositions.get(stack);
+        return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
+    }
+
+    /**
+     * Generates the positions of the fixed stacks in the storage area.
+     *
+     * @param numOfStacks - the number of stacks available in the instances
+     * @return list of stack positions
+     */
+    public static ArrayList<Coordinates> generateStackPositions(int numOfStacks) {
+
+        ArrayList<Coordinates> stackPositions = new ArrayList<>();
+
+        for (int i = 0; i < numOfStacks; i++) {
+            stackPositions.add(new Coordinates(i * STORAGE_AREA_SLOT_LENGTH, 0));
+        }
+        return stackPositions;
+    }
+
+    /**
+     * Generates the original positions of the items on the truck.
+     *
+     * @return list of item positions
+     */
+    public static ArrayList<Coordinates> generateItemPositions() {
+
+        ArrayList<Coordinates> itemPositions = new ArrayList<>();
+
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            itemPositions.add(new Coordinates(
+                i * STORAGE_AREA_SLOT_LENGTH,
+                STORAGE_AREA_SLOT_WIDTH + STORAGE_AREA_TRUCK_DISTANCE_FACTOR * STORAGE_AREA_SLOT_WIDTH
+            ));
+        }
+        return itemPositions;
     }
 
     /**
