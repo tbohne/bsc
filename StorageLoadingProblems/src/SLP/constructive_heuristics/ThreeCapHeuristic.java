@@ -15,8 +15,6 @@ import java.util.*;
 
 public class ThreeCapHeuristic {
 
-    private final int NUMBER_OF_USED_EDGE_RATING_SYSTEMS = 5;
-
     private Instance instance;
     private double startTime;
     private int timeLimit;
@@ -24,59 +22,6 @@ public class ThreeCapHeuristic {
     public ThreeCapHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
-    }
-
-    /**
-     * Returns a list of two permutations of the unmatched items.
-     * The permutations are created by sorting the items based on their row / edge rating.
-     *
-     * @param matchedItems - the items that are already matched
-     * @return list of of permutations of the unmatched items
-     */
-    public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
-        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
-        HeuristicUtil.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems, this.instance.getStacks());
-        ArrayList<Integer> unmatchedItemsSortedByRowRating = HeuristicUtil.getUnmatchedItemsSortedByRowRating(unmatchedItems, this.instance.getStackingConstraints());
-        ArrayList<Integer> unmatchedItemsSortedByColRating = HeuristicUtil.getUnmatchedItemsSortedByColRating(unmatchedItems, this.instance.getStackingConstraints());
-
-        ArrayList<List<Integer>> unmatchedItemPermutations = new ArrayList<>();
-        unmatchedItemPermutations.add(unmatchedItemsSortedByRowRating);
-        unmatchedItemPermutations.add(unmatchedItemsSortedByColRating);
-
-        return unmatchedItemPermutations;
-    }
-
-    /**
-     * Returns a list of permutations of the item pairs.
-     * The permutations are generated using different rating systems as basis for the sorting procedure.
-     *
-     * @param itemMatching - matching containing the item pairs
-     * @return list of item pair permutations
-     */
-    public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
-
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
-
-        ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
-            ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
-            itemPairPermutations.add(tmpItemPairs);
-        }
-        HeuristicUtil.applyRatingSystemsToItemPairPermutations(itemPairPermutations, this.instance.getStackingConstraints());
-        this.sortItemPairPermutationsBasedOnRatings(itemPairPermutations);
-
-        return itemPairPermutations;
-    }
-
-    /**
-     * Sorts each item pair permutation based on the assigned edge ratings.
-     *
-     * @param itemPairPermutations - the list of item pair permutations
-     */
-    public void sortItemPairPermutationsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
-        for (int i = 0; i < NUMBER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
-            Collections.sort(itemPairPermutations.get(i));
-        }
     }
 
     /**
@@ -179,54 +124,48 @@ public class ThreeCapHeuristic {
      */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching) {
 
-        Solution sol = new Solution();
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
+        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(itemPairs, this.instance.getItems()));
+        ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
 
-        for (ArrayList<MCMEdge> itemPairPermutation : this.getItemPairPermutations(itemMatching)) {
+        // items that are not part of a triple
+        unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
-            if ((System.currentTimeMillis() - startTime) / 1000.0 >= this.timeLimit) { break; }
+        // build pairs again
+        DefaultUndirectedGraph graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+            HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
+            this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
+        );
+        EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
+        itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
 
-            for (List<Integer> unmatchedItems : this.getUnmatchedItemPermutations(itemPairPermutation)) {
+        // The remaining unmatched items are not assignable to the pairs,
+        // therefore pairs are merged together to form triples if possible.
+        triples.addAll(this.mergeItemPairs(itemPairs));
 
-                ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairPermutation, (ArrayList<Integer>) unmatchedItems);
-                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
+        // compute finally unmatched items
+        unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
-                DefaultUndirectedGraph graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
-                    HeuristicUtil.getArrayFromList((ArrayList<Integer>) unmatchedItems), this.instance.getStackingConstraints(),
-                    this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
-                );
-                EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
-                ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
+        graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+                HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
+                this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
+        );
+        pairs = new EdmondsMaximumCardinalityMatching(graph);
 
-                triples.addAll(this.mergeItemPairs(itemPairs));
-                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
+        // items that are stored as pairs
+        itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
 
-                graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
-                        HeuristicUtil.getArrayFromList((ArrayList<Integer>) unmatchedItems), this.instance.getStackingConstraints(),
-                        this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
-                );
-                pairs = new EdmondsMaximumCardinalityMatching(graph);
+        // items that are stored in their own stack
+        unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
 
-                itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
-                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
+        // unable to assign the items feasibly to the given number of stacks
+        if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) { return new Solution(); }
 
-                System.out.println("triples: " + triples.size());
-                System.out.println("pairs: " + itemPairs.size());
-                System.out.println("items: " + unmatchedItems.size());
-                System.out.println("stacks: " + this.instance.getStacks().length);
+        KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(triples, itemPairs, unmatchedItems);
+        HeuristicUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
-                if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) { continue; }
-
-                KuhnMunkresMinimalWeightBipartitePerfectMatching matching = this.getMinCostPerfectMatching(
-                    triples, itemPairs, (ArrayList<Integer>) unmatchedItems
-                );
-
-                HeuristicUtil.parseAndAssignMinCostPerfectMatching(matching, this.instance.getStacks());
-
-                sol = new Solution(0, this.timeLimit, this.instance);
-                sol.transformStackAssignmentIntoValidSolutionIfPossible();
-                if (sol.isFeasible()) { return sol; }
-            }
-        }
+        Solution sol = new Solution(0, this.timeLimit, this.instance);
+        sol.transformStackAssignmentIntoValidSolutionIfPossible();
         return sol;
     }
 
