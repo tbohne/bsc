@@ -174,10 +174,8 @@ public class TwoCapHeuristic {
      * @return the generated solution
      */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching mcm) {
-
         ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
-
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
         this.parseMatchingAndAssignItems(minCostPerfectMatching);
         this.fixOrderInStacks();
@@ -198,7 +196,10 @@ public class TwoCapHeuristic {
         if (this.instance.getStackCapacity() == 2) {
 
             this.startTime = System.currentTimeMillis();
-            DefaultUndirectedGraph stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(this.instance.getItems(), this.instance.getStackingConstraints());
+            DefaultUndirectedGraph stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+                this.instance.getItems(), this.instance.getStackingConstraints(), this.instance.getCosts(),
+                    Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
+            );
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
             sol = generateSolution(itemMatching);
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
