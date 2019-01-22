@@ -1,4 +1,5 @@
 import sys
+import os
 
 def get_instance_idx(line):
     return line.split(",")[0].split("_")[3]
@@ -13,28 +14,45 @@ def get_percentage_deviation(otimal_val, curr_val):
 def get_runtime(line):
     return float(line.split(",")[2])
 
+def read_optimal_costs():
+    costs_file = open("optimal_costs.txt", "r")
+    lines = costs_file.readlines()
+    costs_file.close()
+
+    optimal_costs = []
+    for line in lines:
+        if not "time limit" in line:
+            optimal_costs.append(float(line.strip()))
+    return optimal_costs
+
+def read_time_limit():
+    costs_file = open("optimal_costs.txt", "r")
+    lines = costs_file.readlines()
+    costs_file.close()
+
+    optimal_costs = []
+    for line in lines:
+        if "time limit" in line:
+            return int(line.split(":")[1].strip())
+
 if __name__ == '__main__':
 
-    time_limit = 5.0
-
-    input = sys.stdin.readlines()
-    optimal_costs = []
+    solutions_file = open("../../../res/solutions/solutions.csv", "r")
+    lines = solutions_file.readlines()
+    optimal_costs = read_optimal_costs()
+    time_limit = read_time_limit()
 
     optimally_solved_by_bin_packing = 0
     optimally_solved_by_three_index = 0
 
-    for line in input:
+    for line in lines:
 
         if "BinP," in line or "3Idx," in line:
             runtime = get_runtime(line)
 
         if "BinP," in line:
             if runtime <= time_limit:
-                optimal_costs.append(get_value(line))
                 optimally_solved_by_bin_packing += 1
-            else:
-                optimal_costs.append(-1.0)
-                print("Problem: Not all optimal cost values have been determined.")
         elif "3Idx," in line:
             if runtime <= time_limit:
                 optimally_solved_by_three_index += 1
@@ -43,13 +61,13 @@ if __name__ == '__main__':
     sum_of_deviations_three_idx = 0.0
     sum_of_deviations_three_cap = 0.0
 
-    for line in input:
+    for line in lines:
 
         if "BinP," in line or "3Idx," in line or "3Cap," in line:
             instance_idx = get_instance_idx(line)
             curr_val = get_value(line)
             optimal_val = optimal_costs[int(instance_idx)]
-            percentage_deviation = get_percentage_deviation(optimal_val, curr_val)
+            percentage_deviation = get_percentage_deviation(float(optimal_val), curr_val)
 
         if "BinP," in line:
             sum_of_deviations_bin_packing += percentage_deviation
