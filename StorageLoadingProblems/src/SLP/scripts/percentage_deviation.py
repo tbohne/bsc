@@ -16,6 +16,8 @@ if __name__ == '__main__':
                 optimal_costs.append(-1.0)
                 print("Problem: Not all optimal cost values have been determined.")
 
+    avg_percentage_deviation = 0.0
+
     for line in input:
         if "3Cap," in line:
             instance_idx = line.split(",")[0].split("_")[3]
@@ -23,4 +25,10 @@ if __name__ == '__main__':
             optimal_val = optimal_costs[int(instance_idx)]
 
             diff = abs(optimal_val - three_cap_val)
-            print("percentage deviation for instance " + instance_idx + ": " + str(round((diff / (optimal_val) * 100), 2)))
+            percentage_deviation = round((diff / (optimal_val) * 100), 2)
+            print("percentage deviation for instance " + instance_idx + ": " + str(percentage_deviation))
+            avg_percentage_deviation += percentage_deviation
+
+    num_of_instances = int(instance_idx) + 1
+    print(num_of_instances)
+    print("avg percentage deviation: " + str(round((avg_percentage_deviation / num_of_instances), 2)))
