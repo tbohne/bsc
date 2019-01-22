@@ -21,9 +21,8 @@ def get_runtime(line):
 def get_value(line):
     return float(line.split(",")[3].strip())
 
-def write_results(optimal_costs, time_limit):
+def write_results(optimal_costs):
     f = open("optimal_costs.txt", "a")
-    f.write("time limit: " + str(time_limit) + "\n")
     for costs in optimal_costs:
         f.write(str(costs) + "\n")
     f.close()
@@ -48,4 +47,4 @@ if __name__ == '__main__':
                 print("Problem: Not all optimal cost values have been determined.")
                 exit()
 
-    write_results(optimal_costs, time_limit)
+    write_results(optimal_costs)
