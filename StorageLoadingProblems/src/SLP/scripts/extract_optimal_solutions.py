@@ -36,15 +36,16 @@ if __name__ == '__main__':
     solutions_file.close()
 
     optimal_costs = []
+    already_used_instances = []
 
     for line in lines:
-        if "BinP," in line:
-            runtime = get_runtime(line)
 
+        if "BinP," in line or "3Idx," in line:
+            runtime = get_runtime(line)
             if runtime <= time_limit:
-                optimal_costs.append(get_value(line))
-            else:
-                print("Problem: Not all optimal cost values have been determined.")
-                exit()
+                curr_instance = int(line.split(",")[0].split("_")[3])
+                if not curr_instance in already_used_instances:
+                    optimal_costs.append(get_value(line))
+                    already_used_instances.append(curr_instance)
 
     write_results(optimal_costs)
