@@ -1001,50 +1001,173 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{
 \end{frame}
 
 \begin{frame}
-\frametitle{Vergleich der $b = 3$ Solver}
+\frametitle{Vergleich der $b = 3$ Solver (s)}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_small_b=3.png}
-\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_mid_b=3.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_small_3s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_small_5s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_small_10s.png}
+\caption*{\textsc{Zeitlimit 3s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 5s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 10s}}
+% \end{figure}
+% \begin{figure}[H]
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $\textcolor{mygreen}{40 \%}$ & $\textcolor{red}{5 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace 2.9 s$ & \O $\thinspace 2.9 s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{mygreen}{1.7 \%}$ & \O $\thinspace \textcolor{red}{7.8 \%}$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $\textcolor{mygreen}{100 \%}$ & $\textcolor{red}{50 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{3.1 s}$ & \O $\thinspace \textcolor{red}{4.0 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ & \O $\thinspace \textcolor{red}{1.2 \%}$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{85 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{3.1 s}$ & \O $\thinspace \textcolor{red}{5.6 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ & \O $\thinspace \textcolor{red}{0.5 \%}$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+\end{figure}
+\centering
+\textbf{3Cap-Heuristik}\linebreak
+\centering
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{2.65 \%}$\linebreak
+\centering
+Laufzeit: \O $\thinspace \boldsymbol{0.01s}$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Vergleich der $b = 3$ Solver (m)}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_medium_600s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_medium_1200s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_medium_1800s.png}
+\caption*{\textsc{Zeitlimit 10min} $\quad\quad\quad$ \textsc{Zeitlimit 20min} $\quad\quad\quad$ \textsc{Zeitlimit 30min}}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{20 \%}$ & $ \textcolor{red}{10 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{583.7 s}$ & \O $\thinspace \textcolor{mygreen}{554.3 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.2 \%}$ & \O $\thinspace \textcolor{mygreen}{0.01 \%}$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{30 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{791.4 s}$ & \O $\thinspace \textcolor{red}{795.4 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{35 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{766.4 s}$ & \O $\thinspace \textcolor{red}{874.0 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+\end{figure}
+\centering
+\textbf{3Cap-Heuristik}\linebreak
+\centering
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{1.02 \%}$\linebreak
+\centering
+Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Vergleich der $b = 3$ Solver (l)}
+
+\begin{figure}
+\centering
 \includegraphics[width=0.3\textwidth]{images/na.png}
-\caption*{small (30s) $\quad\quad\quad\quad\quad$ mid (180s) $\quad\quad\quad\quad\quad$ big (300s)}
-\end{figure}
-\begin{figure}[H]
-\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
 \centering
-\resizebox{0.9\textwidth}{!}{
-\begin{tabular}{ | l | l | l | l | l |}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
     \hline
-     & \textbf{BinP} & \textbf{3Idx} & \textbf{3CapPerm} & \textbf{3CapRec} \\ \hline
-    \textbf{Kosten} & \O $\thinspace 108$ & \O $\thinspace 108$ & \O $\thinspace 483$ & \O $\thinspace 493$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace 1.2s$ & \O $\thinspace 12.3s$ & \O $\thinspace 0.2s$ & \O $\thinspace 0.01s$ \\ \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $  \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
 \end{tabular}}
 \end{subfigure}
-$\quad\quad\quad\quad$
-\begin{subfigure}[b]{0.4\textwidth}
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
 \centering
-\resizebox{0.9\textwidth}{!}{
-\begin{tabular}{ | l | l | l | l | l |}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
     \hline
-     & \textbf{BinP} & \textbf{3Idx} & \textbf{3CapPerm} & \textbf{3CapRec} \\ \hline
-    \textbf{Kosten} & $-$ & \O $\thinspace 1912$ & $-$ & \O $\thinspace 2499$ \\ \hline
-    \textbf{Laufzeit} & $-$ & \O $\thinspace 301.3s$ & $-$ & \O $\thinspace 0.3s$ \\ \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $  \%$ & $ \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \%$ & \O $\thinspace \%$ \\ \hline
 \end{tabular}}
 \end{subfigure}
-
-\end{figure}
-
-\begin{figure}[H]
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
 \centering
-\resizebox{0.4\textwidth}{!}{
-\begin{tabular}{ | l | l | l | l | l |}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
     \hline
-     & \textbf{BinP} & \textbf{3Idx} & \textbf{3CapPerm} & \textbf{3CapRec} \\ \hline
-    \textbf{Kosten} & \O $\thinspace 1269$ & \O $\thinspace 300$ & $-$ & \O $\thinspace 1505$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace 189.2s$ & \O $\thinspace 94.35s$ & $-$ & \O $\thinspace 0.07s$ \\ \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
 \end{tabular}}
+\end{subfigure}
 \end{figure}
+\centering
+\textbf{3Cap-Heuristik}\linebreak
+\centering
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
+\centering
+Laufzeit: \O $\thinspace \boldsymbol{ s}$
 
 \end{frame}
 
