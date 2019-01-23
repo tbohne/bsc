@@ -39,6 +39,11 @@ def get_time_limit():
     instance_file.close()
     return time_limit
 
+def get_avg_percentage_deviation(sum_of_deviations, number_of_solutions):
+    if number_of_solutions > 0:
+        return round((sum_of_deviations / number_of_solutions), 2)
+    return None
+
 if __name__ == '__main__':
 
     solutions_file = open("../../../res/solutions/solutions.csv", "r")
@@ -88,9 +93,9 @@ if __name__ == '__main__':
             three_cap_solutions += 1
 
     num_of_instances = int(instance_idx) + 1
-    print("avg percentage deviation BinP: " + str(round((sum_of_deviations_bin_packing / bin_packing_solutions), 2)))
-    print("avg percentage deviation 3Idx: " + str(round((sum_of_deviations_three_idx / three_index_solutions), 2)))
-    print("avg percentage deviation 3Cap: " + str(round((sum_of_deviations_three_cap / three_cap_solutions), 2)))
+    print("avg percentage deviation BinP: " + str(get_avg_percentage_deviation(sum_of_deviations_bin_packing, bin_packing_solutions)))
+    print("avg percentage deviation 3Idx: " + str(get_avg_percentage_deviation(sum_of_deviations_three_idx, three_index_solutions)))
+    print("avg percentage deviation 3Cap: " + str(get_avg_percentage_deviation(sum_of_deviations_three_cap, three_cap_solutions)))
     print()
     print("optimally solved by BinP: " + str((optimally_solved_by_bin_packing / num_of_instances) * 100) + " %")
     print("optimally solved by 3Idx: " + str((optimally_solved_by_three_index / num_of_instances) * 100) + " %")
