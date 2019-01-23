@@ -38,7 +38,7 @@ public class ThreeCapHeuristic {
     public void addVertices(ArrayList<ArrayList<Integer>> itemTriples, ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems,
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
 
-        for (ArrayList<Integer> triple : itemTriples) {
+            for (ArrayList<Integer> triple : itemTriples) {
                 graph.addVertex("triple" + triple);
                 partitionOne.add("triple" + triple);
             }
@@ -100,6 +100,7 @@ public class ThreeCapHeuristic {
         );
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
         ArrayList<ArrayList<Integer>> itemTriples = HeuristicUtil.parseItemTripleMCM(mcm);
+
         return itemTriples;
     }
 
@@ -126,6 +127,7 @@ public class ThreeCapHeuristic {
 
         ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(itemPairs, this.instance.getItems()));
+
         ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
 
         // items that are not part of a triple
@@ -162,6 +164,7 @@ public class ThreeCapHeuristic {
         if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) { return new Solution(); }
 
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(triples, itemPairs, unmatchedItems);
+
         HeuristicUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
         Solution sol = new Solution(0, this.timeLimit, this.instance);
