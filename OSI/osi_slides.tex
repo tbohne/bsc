@@ -787,50 +787,174 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
 \end{frame}
 
 \begin{frame}
-\frametitle{Vergleich der $b = 2$ Solver}
+\frametitle{Vergleich der $b = 2$ Solver (s)}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_small_b=2.png}
-\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_mid_b=2.png}
-\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_big_b=2.png}
-\caption*{small (30s) $\quad\quad\quad\quad\quad$ medium (180s) $\quad\quad\quad\quad\quad$ large (300s)}
-\end{figure}
-\begin{figure}[H]
-\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_s_1s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_s_3s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_s_5s.png}
+\caption*{\textsc{Zeitlimit 1s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 3s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 5s}}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
 \centering
-\resizebox{0.9\textwidth}{!}{
-\begin{tabular}{ | l | l | l | l |}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
     \hline
-     & \textbf{BinP} & \textbf{3Idx} & \textbf{2Cap} \\ \hline
-    \textbf{Kosten} & \O $\thinspace \textcolor{mygreen}{102} $ & \O $\thinspace \textcolor{mygreen}{102} $ & \O $\thinspace \textcolor{red}{471} $ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{3.41s}$ & \O $\thinspace \textcolor{red}{2.12s}$ & \O $\thinspace \textcolor{mygreen}{0.01s}$ \\ \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{35 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{-}$ & \O $\thinspace \textcolor{mygreen}{0.9 s}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{-}$ & \O $\thinspace \textcolor{mygreen}{2.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
-$\quad\quad\quad\quad$
-\begin{subfigure}[b]{0.4\textwidth}
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
 \centering
-\resizebox{0.9\textwidth}{!}{
-\begin{tabular}{ | l | l | l | l |}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
     \hline
-     & \textbf{BinP} & \textbf{3Idx} & \textbf{2Cap} \\ \hline
-    \textbf{Kosten} & $\textcolor{red}{-}$ & \O $\thinspace \textcolor{mygreen}{648}$ & \O $\thinspace \textcolor{red}{2365}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{-}$ & \O $\thinspace \textcolor{red}{198.5s}$ & \O $\thinspace \textcolor{mygreen}{0.2s}$ \\ \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{10 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{3.0 s}$ & \O $\thinspace \textcolor{mygreen}{1.1 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{4.7 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
-
-\end{figure}
-
-\begin{figure}[H]
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
 \centering
-\resizebox{0.4\textwidth}{!}{
-\begin{tabular}{ | l | l | l | l |}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
     \hline
-     & \textbf{BinP} & \textbf{3Idx} & \textbf{2Cap} \\ \hline
-    \textbf{Kosten} & \O $\thinspace \textcolor{red}{387}$ & \O $\thinspace \textcolor{mygreen}{300}$ & \O $\thinspace \textcolor{red}{1457}$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{141.0s}$ & \O $\thinspace \textcolor{red}{33.4s}$ & \O $\thinspace \textcolor{mygreen}{0.1s}$ \\ \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{90 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{3.9 s}$ & \O $\thinspace \textcolor{mygreen}{1.1 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.4 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
+\end{subfigure}
 \end{figure}
+\centering
+\textbf{2Cap-Heuristik}\linebreak
+\centering
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{2.0 \%}$\linebreak
+\centering
+Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Vergleich der $b = 2$ Solver (m)}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $  \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $  \%$ & $ \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \%$ & \O $\thinspace \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+\end{figure}
+\centering
+\textbf{2Cap-Heuristik}\linebreak
+\centering
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
+\centering
+Laufzeit: \O $\thinspace \boldsymbol{ s}$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Vergleich der $b = 2$ Solver (l)}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\includegraphics[width=0.3\textwidth]{images/na.png}
+\caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $  \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $  \%$ & $ \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \%$ & \O $\thinspace \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+% \end{figure}
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+\end{figure}
+\centering
+\textbf{2Cap-Heuristik}\linebreak
+\centering
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
+\centering
+Laufzeit: \O $\thinspace \boldsymbol{ s}$
+
 \end{frame}
 
 \begin{frame}
