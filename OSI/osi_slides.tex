@@ -178,7 +178,7 @@
 \end{itemize}
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{images/container_terminal.png}
+\includegraphics[width=0.8\textwidth]{images/t5.png}
 \end{figure}
 \end{frame}
 
@@ -186,10 +186,13 @@
 \frametitle{Literatur Überblick}
 
 \begin{itemize}
-  \item \textbf{Bruns et. al. (2015)}: Complexity results for storage loading problems with stacking constraints.
-  \item \textbf{Caserta et. al. (2012)}: A mathematical formulation and complexity considerations for the blocks relocation problem.
-  \item \textbf{Janstrup et. al. (2012)}: A constraint programming model for fast optimal stowage of container vessel bays.
-  \item \textbf{Jaehn (2013)}: Positioning of loading units in a transshipment yard storage area.
+  \item \textbf{Kim et al. (2000)}: Deriving decision rules to locate export containers in container yards
+  \item \textbf{Kang et al. (2006)}: Deriving stacking strategies for export containers with uncertain weight information
+  \item \textbf{Delgado et al. (2012)}: A constraint programming model for fast optimal stowage of container vessel bays
+  \item \textbf{Jaehn (2013)}: Positioning of loading units in a transshipment yard storage area
+  \item \textbf{Bruns et al. (2015)}: Complexity results for storage loading problems with stacking constraints
+  \item \textbf{Le et al. (2016)}: MIP-based approaches for robust storage loading problems with stacking constraints
+  % \item \textbf{Caserta et. al. (2012)}: A mathematical formulation and complexity considerations for the blocks relocation problem.
 \end{itemize}
 
 \end{frame}
@@ -266,7 +269,7 @@ wobei die Stacking Constraints $\boldsymbol{s_{ij}}$, die Placement Constraints 
 \frametitle{Stacking Constraints}
 \begin{itemize}
     \item Schwerere Items dürfen nicht auf leichteren platziert werden
-    \item Längere Items dürfen nicht auf kürzeren platziert werden
+    \item Größere Items dürfen nicht auf kleineren platziert werden
     \item Items bestimmter Materialien / Zielorte dürfen nicht aufeinander gestapelt werden\newline
 \end{itemize}
 Sämtliche Stacking Constraints werden in einer Binärmatrix $\boldsymbol{S} = (\boldsymbol{s_{ij}})_{n \times n}$ kodiert, wobei:
@@ -281,7 +284,7 @@ Sämtliche Stacking Constraints werden in einer Binärmatrix $\boldsymbol{S} = (
 
 \begin{frame}
 \frametitle{Stacking Constraints}
-Diese Matrix lässt sich als gerichteter Graph mit $\boldsymbol{n}$ Knoten \newline und Kanten $\boldsymbol{i} \rightarrow \boldsymbol{j}$ für alle $\boldsymbol{s_{ij}} = 1$ repräsentieren.\newline
+Diese Matrix lässt sich als gerichteter Graph mit $\boldsymbol{n}$ Knoten $\boldsymbol{i} \in \boldsymbol{I}$ \newline und Kanten $\boldsymbol{i} \rightarrow \boldsymbol{j}$ für alle $\boldsymbol{s_{ij}} = 1$ repräsentieren.\newline
 
 \begin{figure}[H]
   \begin{subfigure}[b]{0.45\textwidth}
@@ -362,25 +365,25 @@ $\boldsymbol{c_{iq}} \coloneqq d_{man}(\boldsymbol{O_i}, \boldsymbol{F_q})$
     \item Länge / Gewicht der Items und Eigenschaften der Stacks
     \item Spezielle Anforderungen der Items (Kühlcontainer, ...)
     \item Tendenziell mehr erlaubt als verboten (rand(0, 1) zu restriktiv)
-    \item Über sehr hohe Kostenwerte umgesetzt
+    \item Über sehr hohe Kostenwerte umgesetzt\newline
 \end{itemize}
 In Binärmatrix $\boldsymbol{T} = (\boldsymbol{t_{iq}})_{n \times m}$ kodiert, wobei:
-\[
+$
     \boldsymbol{t_{iq}} =
 \begin{cases}
     1, & \text{wenn Item $\boldsymbol{i}$ in Stack $\boldsymbol{q}$ platziert werden darf }\\
     0, & \text{sonst}
 \end{cases}
-\]
-
-Für die Transportkosten Matrix $\boldsymbol{C} = (\boldsymbol{c_{iq}})_{n \times m}$ gilt:
-\[
+$
+\\[20pt]
+Für die Transportkosten-Matrix $\boldsymbol{C} = (\boldsymbol{c_{iq}})_{n \times m}$ gilt:
+$
     \boldsymbol{c_{iq}} =
 \begin{cases}
     d_{man}(\boldsymbol{O_i}, \boldsymbol{F_q}), & \text{wenn $\boldsymbol{t_{iq}} = 1$}\\
     \infty, & \text{sonst}
 \end{cases}
-\]
+$
 \end{frame}
 
 %------------------------------------------------
@@ -390,13 +393,13 @@ Für die Transportkosten Matrix $\boldsymbol{C} = (\boldsymbol{c_{iq}})_{n \time
 \begin{frame}
 \frametitle{Problem Settings}
 
-\textbf{Stack Kapazitäten}: $\boldsymbol{b} = 2, 3, (4)$
+\textbf{Stack-Kapazitäten}: $\boldsymbol{b} = 2, 3, (4)$
 \begin{itemize}
   \item Zulässigkeitsproblem $\boldsymbol{b=2}$ mit $\boldsymbol{s_{ij}}$ und $\boldsymbol{t_{iq}}$ NP-schwer
   \item Zulässigkeitsproblem $\boldsymbol{b=3}$ mit $\boldsymbol{s_{ij}}$ NP-schwer
 \end{itemize}
 
-\textbf{Größen der Instanzen}:
+\textbf{Instanzgrößen}:
 \begin{itemize}
   \item klein (\textbf{s}) ($\leq 100$ Items)
   \item mittel (\textbf{m}) ($\approx 300$ Items)
@@ -422,16 +425,16 @@ Die Placement Constraints gelten als verletzt, wenn eine Lösung eine Item-Zuwei
 \end{frame}
 
 \begin{frame}
-\frametitle{Generierung der Testdaten}
+\frametitle{Testdaten-Generierung}
 
 \begin{itemize}
-  \item Anzahl der Instanzen: \textcolor{red}{20}\newline
+  \item Anzahl der Instanzen: \textcolor{red}{$\boldsymbol{20}$}\newline
   \item Anzahl der Items: $\boldsymbol{n}$
   \item Stack Kapazität: $\boldsymbol{b}$
-  \item Anzahl der Stacks: $\boldsymbol{m}$ = $\boldsymbol{n} / \boldsymbol{b}$ + $\textcolor{red}{20 \%}$\newline
-  \item Stacking Constraints: \textcolor{red}{Variante 2}
-  \item Placement Constraints: $\textcolor{red}{70 \%}$ erlaubt
-  \item Kosten: \textcolor{red}{Manhattan-Metrik}
+  \item Anzahl der Stacks: $\boldsymbol{m}$ = $\boldsymbol{n} / \boldsymbol{b}$ + $\textcolor{red}{\boldsymbol{20 \%}}$\newline
+  \item Stacking Constraints: \textcolor{red}{\textbf{Variante 2}}
+  \item Placement Constraints: $\textcolor{red}{\boldsymbol{70 \%}}$ erlaubt
+  \item Kosten: \textcolor{red}{\textbf{Manhattan-Metrik}}
   \begin{itemize}
     \item Item- und Stackpositionen ($x, y$)
     \item Item- und Stack-Längen, Item- und Stack-Breiten
@@ -815,8 +818,8 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
     \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{35 \%}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{-}$ & \O $\thinspace \textcolor{mygreen}{0.9 s}$ \\ \hline
-    \textbf{Abweichung} & $\textcolor{red}{-}$ & \O $\thinspace \textcolor{mygreen}{2.0 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{0.9 s}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{2.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 % $\quad\quad\quad\quad$
@@ -859,23 +862,12 @@ Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
 
 \begin{figure}
 \centering
-\includegraphics[width=0.3\textwidth]{images/na.png}
-\includegraphics[width=0.3\textwidth]{images/na.png}
-\includegraphics[width=0.3\textwidth]{images/na.png}
-\caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_m_60s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_m_600s.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_m_1200s.png}
+\caption*{\textsc{Zeitlimit 1min} $\quad\quad\quad$ \textsc{Zeitlimit 10min} $\quad\quad\quad$ \textsc{Zeitlimit 20min}}
 % \end{figure}
 % \begin{figure}[H]
-\begin{subfigure}[b]{0.3\textwidth}
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{ | l | l | l |}
-    \hline
-     & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $  \%$ & $  \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
-\end{tabular}}
-\end{subfigure}
 % $\quad\quad\quad\quad$
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
@@ -883,9 +875,20 @@ Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $  \%$ & $ \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace \%$ & \O $\thinspace \%$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{50 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{55.4 s}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{0.8 \%}$ \\ \hline
+\end{tabular}}
+\end{subfigure}
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{10 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{581.6 s}$ & \O $\thinspace \textcolor{mygreen}{73.7 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.6 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 % \end{figure}
@@ -896,18 +899,18 @@ Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+    \textbf{Optimal} & $ 100 \%$ & $ 100 \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace 869.6 s$ & \O $\thinspace \textcolor{mygreen}{107.8 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 \end{figure}
 \centering
 \textbf{2Cap-Heuristik}\linebreak
 \centering
-Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{0.8 \%}$\linebreak
 \centering
-Laufzeit: \O $\thinspace \boldsymbol{ s}$
+Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 
 \end{frame}
 
@@ -976,7 +979,7 @@ Laufzeit: \O $\thinspace \boldsymbol{ s}$
   \item Item-Tripel bilden (\textsc{\textbf{MCM}(pairs, unmatchedItems)})
   \item Verbleibende Item-Paare zu Tripeln mergen
   \item Item-Paare bilden (\textsc{\textbf{MCM}(remainingItems)})
-  \item Verbleibende Items als unmatched betrachten
+  \item Verbleibende Items als \textquote{unmatched} betrachten
   \item Bipartiten Graph generieren:
   \begin{enumerate}
     \item Items (Item-Tripel, Item-Paare, Unmatched-Items)
@@ -1267,8 +1270,8 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
     \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{red}{0 \%}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{-}$ & $\textcolor{red}{-}$ \\ \hline
-    \textbf{Abweichung} & $\textcolor{red}{-}$ & $\textcolor{red}{-}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 % $\quad\quad\quad\quad$
@@ -1314,14 +1317,11 @@ Laufzeit: \O $\thinspace \boldsymbol{1.0 s}$
 \begin{frame}
 \frametitle{Ausblick}
 \begin{itemize}
-  \item Weitere Ansätze zu Rating-Systemen für 3CapPerm erarbeiten und implementieren
-  \item andere Zielfunktion - Minimieren der verwendeten Stacks (sichere Lösung) etc.
-  \item 2Cap verbessern (andere Ansätze?)
-  \item 3Cap verbessern (andere Ansätze?)
-  \item 4Cap implementieren basierend auf MCM
+  \item Konstruktive Heuristik für $\boldsymbol{b = 4}$ entwickeln
   \item Verbesserungsverfahren implementieren
-  \item realistischere Test-Instanzen anhand der Daten aus dem Paper generieren
-  \item andere Konfigurationen / Einfluss auf die Schwierigkeit des Problems untersuchen z.B. m = n / b +20%
+  \item Realistischere Test-Instanzen basierend auf \textbf{Briskorn (2018)}
+  \item Einfluss von $\boldsymbol{m}$ auf die Schwierigkeit des Problems untersuchen ($+20\%$, +30\%, ...)
+  \item Evaluation
 \end{itemize}
 \end{frame}
 
