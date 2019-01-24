@@ -171,20 +171,31 @@
 \frametitle{Stacking-Probleme}
 \begin{itemize}
 \item Im Umfeld von Lagerhallen und Container-Terminals
-\item Ankommende Items müssen Stacks zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden
+\item Eintreffende Items müssen Stacks zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden
 \item Storage Area ist in festen Stacks organisiert, die eine limitierte gemeinsame Stack Kapazität besitzen
-\item Item-Zugriff erfolgt nach dem \textquote{Last-In–First-Out}-Prinzip
-% \item Es wird nur der Loading-Prozess betrachtet
+% \item Item-Zugriff erfolgt nach dem \textquote{Last-In–First-Out}-Prinzip
+\item Es wird nur der Loading-Prozess betrachtet
 \end{itemize}
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{images/container_terminal.png}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Literatur Überblick}
+
+\begin{itemize}
+  \item \textbf{Bruns et. al. (2015)}: Complexity results for storage loading problems with stacking constraints.
+  \item \textbf{Caserta et. al. (2012)}: A mathematical formulation and complexity considerations for the blocks relocation problem.
+  \item \textbf{Janstrup et. al. (2012)}: A constraint programming model for fast optimal stowage of container vessel bays.
+  \item \textbf{Jaehn (2013)}: Positioning of loading units in a transshipment yard storage area.
+\end{itemize}
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Stacking-Probleme}
+\frametitle{Storage Area}
 Aufbau der Storage Area bestehend aus $\boldsymbol{m}$ fixierten Stacks, die jeweils $\boldsymbol{b}$ Level enthalten:\newline
 
 \begin{figure}[H]
@@ -1243,7 +1254,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 
 \begin{figure}
 \centering
-\includegraphics[width=0.3\textwidth]{images/na.png}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_l_1800s.png}
 \includegraphics[width=0.3\textwidth]{images/na.png}
 \includegraphics[width=0.3\textwidth]{images/na.png}
 \caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
@@ -1255,9 +1266,9 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $  \%$ & $  \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{red}{0 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{-}$ & $\textcolor{red}{-}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{-}$ & $\textcolor{red}{-}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 % $\quad\quad\quad\quad$
@@ -1291,7 +1302,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 \centering
 Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
 \centering
-Laufzeit: \O $\thinspace \boldsymbol{ s}$
+Laufzeit: \O $\thinspace \boldsymbol{1.0 s}$
 
 \end{frame}
 
@@ -1310,6 +1321,7 @@ Laufzeit: \O $\thinspace \boldsymbol{ s}$
   \item 4Cap implementieren basierend auf MCM
   \item Verbesserungsverfahren implementieren
   \item realistischere Test-Instanzen anhand der Daten aus dem Paper generieren
+  \item andere Konfigurationen / Einfluss auf die Schwierigkeit des Problems untersuchen z.B. m = n / b +20%
 \end{itemize}
 \end{frame}
 
