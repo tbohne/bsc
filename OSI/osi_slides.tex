@@ -15,6 +15,8 @@
 
 \usepackage{graphicx} % images
 \usepackage{algorithm2e}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 \usepackage{algpseudocode}
 \usepackage{booktabs} % allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage[ngerman]{babel}
@@ -172,7 +174,7 @@
 \begin{itemize}
 \item Im Umfeld von Lagerhallen und Container-Terminals
 \item Eintreffende Items müssen Stacks zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden
-\item Storage Area ist in festen Stacks organisiert, die eine limitierte gemeinsame Stack Kapazität besitzen
+\item Storage Area ist in fixierten Stacks organisiert, die eine limitierte gemeinsame Stack Kapazität besitzen
 % \item Item-Zugriff erfolgt nach dem \textquote{Last-In–First-Out}-Prinzip
 \item Es wird nur der Loading-Prozess betrachtet
 \end{itemize}
@@ -431,7 +433,7 @@ Die Placement Constraints gelten als verletzt, wenn eine Lösung eine Item-Zuwei
   \item Anzahl der Instanzen: \textcolor{red}{$\boldsymbol{20}$}\newline
   \item Anzahl der Items: $\boldsymbol{n}$
   \item Stack Kapazität: $\boldsymbol{b}$
-  \item Anzahl der Stacks: $\boldsymbol{m}$ = $\boldsymbol{n} / \boldsymbol{b}$ + $\textcolor{red}{\boldsymbol{20 \%}}$\newline
+  \item Anzahl der Stacks: $\boldsymbol{m}$ = $\ceil{\boldsymbol{n} / \boldsymbol{b}}$ + $\textcolor{red}{\boldsymbol{20 \%}}$\newline
   \item Stacking Constraints: \textcolor{red}{\textbf{Variante 2}}
   \item Placement Constraints: $\textcolor{red}{\boldsymbol{70 \%}}$ erlaubt
   \item Kosten: \textcolor{red}{\textbf{Manhattan-Metrik}}
@@ -449,10 +451,31 @@ Die Placement Constraints gelten als verletzt, wenn eine Lösung eine Item-Zuwei
 
 \begin{frame}
 \frametitle{MIP Formulierungen}
-Bin-Packing Formulierung\newline
-\includegraphics[width=0.75\textwidth]{images/BinP.png}\newline
-3-Index Formulierung\newline
-\includegraphics[width=0.75\textwidth]{images/3Idx.png}
+\centering
+\textbf{Bin-Packing-Formulierung}
+\scalebox{0.7}{\parbox{\linewidth}{%
+\begin{gather}
+\boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \\
+\thinspace\thinspace \boldsymbol{s.t.} \thinspace \quad \sum_{q \in Q} x_{iq} = 1 \thinspace\thinspace\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace \\
+\quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \\
+\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin A \\
+\thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace
+\end{gather}}}
+\centering
+\textbf{3-Index-Formulierung}
+\scalebox{0.7}{\parbox{\linewidth}{%
+\begin{gather}
+\boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} \sum_{l \in L} c_{iq} x_{iql} \\
+\boldsymbol{s.t.} \quad \sum_{q \in Q} \sum_{l \in L} x_{iql} = 1 \quad\thinspace\thinspace\quad\quad\quad\quad \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \\
+\sum_{i \in I} x_{iql} \leq 1 \thinspace\quad\quad\quad\quad\quad\quad\quad \forall q \in Q, l \in L \thinspace\thinspace\thinspace\thinspace\quad\quad\quad\thinspace \\
+\sum_{j \in I | i \rightarrow j} x_{jq(l-1)} - x_{iql} \geq 0 \thinspace\quad\quad \forall i \in I, q \in Q, l \in L \textbackslash \{1\} \\
+\quad\quad x_{iql} \in \{0, 1\} \quad\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q, l \in L \quad\thinspace\thinspace\thinspace\thinspace\thinspace
+\end{gather}}}
+
+
+% \includegraphics[width=0.75\textwidth]{images/BinP.png}\newline
+% 3-Index Formulierung\newline
+% \includegraphics[width=0.75\textwidth]{images/3Idx.png}
 \end{frame}
 
 % \begin{frame}
@@ -607,7 +630,7 @@ Falls $\boldsymbol{M}$ eine maximale Kardinalität unter allen Matchings von $\b
 \begin{frame}
 \frametitle{Exkurs: Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 \begin{itemize}
-  \item Matching, welches sämtliche Knoten des Graphen matcht
+  \item Matching, welches sämtliche Knoten matcht
   \item Jeder Knoten ist inzident zu genau einer Kante des Matchings
   \item Günstigstes Perfect Matching basierend auf den Kantenkosten
 \end{itemize}
