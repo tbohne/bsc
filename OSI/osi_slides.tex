@@ -305,19 +305,19 @@ Diese Matrix lässt sich als gerichteter Graph mit $\boldsymbol{n}$ Knoten $\bol
   \begin{subfigure}[b]{0.45\textwidth}
   \centering
     \begin{tikzpicture}[->, scale=0.50, transform shape, node distance=2.5cm]
-    \node[state] (A) {1};
-    \node[state] (B) [right of=A] {2};
-    \node[state] (C) [below of=A] {3};
-    \node[state] (D) [right of=C] {4};
+    \node[state] (A) [thick] {1};
+    \node[state] (B) [thick, right of=A] {2};
+    \node[state] (C) [thick, below of=A] {3};
+    \node[state] (D) [thick, right of=C] {4};
 
-    \path (A) edge node {} (B)
-          (A) edge node {} (C)
-          (B) edge [bend right] node {} (A)
-          (B) edge [bend left=10] node {} (C)
-          (C) edge [bend left] node {} (A)
-          (D) edge [bend left=10] node {} (A)
-          (D) edge node {} (B)
-          (D) edge node {} (C);
+    \path (A) edge [thick] node {} (B)
+          (A) edge [thick] node {} (C)
+          (B) edge [thick, bend right] node {} (A)
+          (B) edge [thick, bend left=10] node {} (C)
+          (C) edge [thick, bend left] node {} (A)
+          (D) edge [thick, bend left=10] node {} (A)
+          (D) edge [thick] node {} (B)
+          (D) edge [thick] node {} (C);
   \end{tikzpicture}
     \caption*{\textsc{Resultierender Graph}}
   \end{subfigure}
@@ -586,41 +586,41 @@ Falls $\boldsymbol{M}$ eine maximale Kardinalität unter allen Matchings von $\b
 \begin{figure}[H]
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.45, transform shape, node distance=2cm]
-    \node[state] (A) {};
-    \node[state] (B) [above right of=A] {};
-    \node[state] (C) [below left of=A] {};
-    \node[state] (D) [below right of=C] {};
-    \node[state] (F) [below right of=B] {};
-    \node[state] (E) [below of=F] {};
+    \begin{tikzpicture}[scale=0.6, transform shape, node distance=2cm]
+    \node[state] (A) [thick] {};
+    \node[state] (B) [thick, above right of=A] {};
+    \node[state] (C) [thick, below left of=A] {};
+    \node[state] (D) [thick, below right of=C] {};
+    \node[state] (F) [thick, below right of=B] {};
+    \node[state] (E) [thick, below of=F] {};
 
-    \path (A) edge [mygreen] node {} (B)
-          (A) edge node {} (C)
-          (A) edge node {} (D)
-          (A) edge node {} (E)
-          (A) edge node {} (F)
-          (C) edge [mygreen] node {} (D);
+    \path (A) edge [thick, mygreen] node {} (B)
+          (A) edge [thick] node {} (C)
+          (A) edge [thick] node {} (D)
+          (A) edge [thick] node {} (E)
+          (A) edge [thick] node {} (F)
+          (C) edge [thick, mygreen] node {} (D);
   \end{tikzpicture}
   \caption*{\textsc{$|\textsc{MCM}| = 2$}}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.45, transform shape, node distance=2cm]
-    \node[state] (A) {};
-    \node[state] (B) [right of=A] {};
-    \node[state] (C) [right of=B] {};
-    \node[state] (D) [below left of=A] {};
-    \node[state] (E) [below right of=D] {};
-    \node[state] (F) [right of=E] {};
+    \begin{tikzpicture}[scale=0.6, transform shape, node distance=2cm]
+    \node[state] (A) [thick] {};
+    \node[state] (B) [thick, right of=A] {};
+    \node[state] (C) [thick, right of=B] {};
+    \node[state] (D) [thick, below left of=A] {};
+    \node[state] (E) [thick, below right of=D] {};
+    \node[state] (F) [thick, right of=E] {};
 
-    \path (A) edge node {} (B)
-          (B) edge [mygreen] node {} (C)
-          (B) edge node {} (F)
-          (A) edge node {} (E)
-          (E) edge [mygreen] node {} (F)
-          (A) edge [mygreen] node {} (D)
-          (D) edge node {} (E);
+    \path (A) edge [thick] node {} (B)
+          (B) edge [thick, mygreen] node {} (C)
+          (B) edge [thick] node {} (F)
+          (A) edge [thick] node {} (E)
+          (E) edge [thick, mygreen] node {} (F)
+          (A) edge [thick, mygreen] node {} (D)
+          (D) edge [thick] node {} (E);
   \end{tikzpicture}
     \caption*{\textsc{$|\textsc{MCM}| = 3$}}
   \end{subfigure}
@@ -636,21 +636,21 @@ Falls $\boldsymbol{M}$ eine maximale Kardinalität unter allen Matchings von $\b
 \end{itemize}
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[-, scale=0.5, transform shape, node distance=3cm]
-    \node[state] (A) {};
-    \node[state] (B) [above right of=A] {};
-    \node[state] (C) [below right of=A] {};
-    \node[state] (D) [right of=B] {};
-    \node[state] (E) [right of=D] {};
-    \node[state] (F) [right of=C] {};
+\begin{tikzpicture}[-, scale=0.75, transform shape, node distance=3cm]
+    \node[state] (A) [thick] {};
+    \node[state] (B) [thick, above right of=A] {};
+    \node[state] (C) [thick, below right of=A] {};
+    \node[state] (D) [thick, right of=B] {};
+    \node[state] (E) [thick, right of=D] {};
+    \node[state] (F) [thick, right of=C] {};
 
-    \path (A) edge [mygreen] node {} (B)
-          (A) edge node {} (C)
-          (B) edge node {} (D)
-          (B) edge node {} (C)
-          (D) edge [mygreen] node {} (E)
-          (D) edge node {} (F)
-          (C) edge [mygreen] node {} (F);
+    \path (A) edge [thick, mygreen] node {} (B)
+          (A) edge [thick] node {} (C)
+          (B) edge [thick] node {} (D)
+          (B) edge [thick] node {} (C)
+          (D) edge [thick, mygreen] node {} (E)
+          (D) edge [thick] node {} (F)
+          (C) edge [thick, mygreen] node {} (F);
 \end{tikzpicture}
 \end{figure}
 \end{frame}
@@ -678,24 +678,24 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[scale=0.8, transform shape, node distance=3cm]
-        \node[state] (G) {$\boldsymbol{6}$};
-        \node[state] (B) [above left of=G] {$\boldsymbol{1}$};
-        \node[state] (C) [above right of=G] {$\boldsymbol{2}$};
-        \node[state] (E) [below right of=G] {$\boldsymbol{4}$};
-        \node[state] (F) [below left of=G] {$\boldsymbol{5}$};
-        \node[state] (A) [below left of=B] {$\boldsymbol{0}$};
-        \node[state] (D) [below right of=C] {$\boldsymbol{3}$};
+        \node[state] (G) [thick] {$\boldsymbol{6}$};
+        \node[state] (B) [thick, above left of=G] {$\boldsymbol{1}$};
+        \node[state] (C) [thick, above right of=G] {$\boldsymbol{2}$};
+        \node[state] (E) [thick, below right of=G] {$\boldsymbol{4}$};
+        \node[state] (F) [thick, below left of=G] {$\boldsymbol{5}$};
+        \node[state] (A) [thick, below left of=B] {$\boldsymbol{0}$};
+        \node[state] (D) [thick, below right of=C] {$\boldsymbol{3}$};
 
-        \path (B) edge node {} (C)
-              (B) edge node {} (F)
-              (B) edge node {} (G)
-              (C) edge [bend right = 75, distance=5cm] node {} (F)
-              (C) edge node {} (E)
-              (C) edge node {} (D)
-              (C) edge node {} (G)
-              (F) edge node {} (G)
-              (F) edge node {} (E)
-              (E) edge node {} (G);
+        \path (B) edge [thick] node {} (C)
+              (B) edge [thick] node {} (F)
+              (B) edge [thick] node {} (G)
+              (C) edge [thick, bend right = 75, distance=5cm] node {} (F)
+              (C) edge [thick] node {} (E)
+              (C) edge [thick] node {} (D)
+              (C) edge [thick] node {} (G)
+              (F) edge [thick] node {} (G)
+              (F) edge [thick] node {} (E)
+              (E) edge [thick] node {} (G);
     \end{tikzpicture}
     \caption*{\textsc{Stacking-Constraint-Graph}}
 \end{figure}
@@ -706,34 +706,34 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
-        \node[state] (G) {$\boldsymbol{\textcolor{mygreen}{6}}$};
-        \node[state] (B) [above left of=G] {$\boldsymbol{\textcolor{mygreen}{1}}$};
-        \node[state] (C) [above right of=G] {$\boldsymbol{\textcolor{mygreen}{2}}$};
-        \node[state] (E) [below right of=G] {$\boldsymbol{\textcolor{mygreen}{4}}$};
-        \node[state] (F) [below left of=G] {$\boldsymbol{\textcolor{mygreen}{5}}$};
-        \node[state] (A) [below left of=B] {$\boldsymbol{\textcolor{red}{0}}$};
-        \node[state] (D) [below right of=C] {$\boldsymbol{\textcolor{mygreen}{3}}$};
+        \node[state] (G) [thick] {$\boldsymbol{\textcolor{mygreen}{6}}$};
+        \node[state] (B) [thick, above left of=G] {$\boldsymbol{\textcolor{mygreen}{1}}$};
+        \node[state] (C) [thick, above right of=G] {$\boldsymbol{\textcolor{mygreen}{2}}$};
+        \node[state] (E) [thick, below right of=G] {$\boldsymbol{\textcolor{mygreen}{4}}$};
+        \node[state] (F) [thick, below left of=G] {$\boldsymbol{\textcolor{mygreen}{5}}$};
+        \node[state] (A) [thick, below left of=B] {$\boldsymbol{\textcolor{red}{0}}$};
+        \node[state] (D) [thick, below right of=C] {$\boldsymbol{\textcolor{mygreen}{3}}$};
 
-        \path (B) edge node {} (C)
-              (B) edge node {} (F)
-              (B) edge [mygreen] node {} (G)
-              (C) edge [bend right = 75, distance=5cm] node {} (F)
-              (C) edge node {} (E)
-              (C) edge [mygreen] node {} (D)
-              (C) edge node {} (G)
-              (F) edge node {} (G)
-              (F) edge [mygreen] node {} (E)
-              (E) edge node {} (G);
+        \path (B) edge [thick] node {} (C)
+              (B) edge [thick] node {} (F)
+              (B) edge [thick, mygreen] node {} (G)
+              (C) edge [thick, bend right = 75, distance=5cm] node {} (F)
+              (C) edge [thick] node {} (E)
+              (C) edge [thick, mygreen] node {} (D)
+              (C) edge [thick] node {} (G)
+              (F) edge [thick] node {} (G)
+              (F) edge [thick, mygreen] node {} (E)
+              (E) edge [thick] node {} (G);
     \end{tikzpicture}
   \caption*{\textsc{MCM (Item $0$ unmatched)}}
 \end{figure}
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
-        \node[state] (A) {\textcolor{mygreen}{$\boldsymbol{1, 6}$}};
-        \node[state] (B) [right of=A] {\textcolor{mygreen}{$\boldsymbol{2, 3}$}};
-        \node[state] (C) [right of=B] {\textcolor{mygreen}{$\boldsymbol{4, 5}$}};
-        \node[state] (D) [right of=C] {\textcolor{red}{$\boldsymbol{0}$}};
+        \node[state] (A) [thick] {\textcolor{mygreen}{$\boldsymbol{1, 6}$}};
+        \node[state] (B) [thick, right of=A] {\textcolor{mygreen}{$\boldsymbol{2, 3}$}};
+        \node[state] (C) [thick, right of=B] {\textcolor{mygreen}{$\boldsymbol{4, 5}$}};
+        \node[state] (D) [thick, right of=C] {\textcolor{red}{$\boldsymbol{0}$}};
         \path ;
   \end{tikzpicture}
   \caption*{\textsc{Kanten bilden Item-Paare}}
@@ -748,40 +748,40 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
 \begin{subfigure}[b]{0.45\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=1.5cm]
-        \node[state] (A) {$\boldsymbol{1, 6}$};
-        \node[state] (B) [below of=A] {$\boldsymbol{2, 3}$};
-        \node[state] (C) [below of=B] {$\boldsymbol{4, 5}$};
-        \node[state] (D) [below of=C] {$\boldsymbol{0}$};
+        \node[state] (A) [thick] {$\boldsymbol{1, 6}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 3}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{4, 5}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{0}$};
 
-        \node[state] (F) [right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (G) [right = 4cm of B] {$\boldsymbol{S_2}$};
-        \node[state] (H) [right = 4cm of C] {$\boldsymbol{S_3}$};
-        \node[state] (I) [right = 4cm of D] {$\boldsymbol{S_4}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (G) [thick, right = 4cm of B] {$\boldsymbol{S_2}$};
+        \node[state] (H) [thick, right = 4cm of C] {$\boldsymbol{S_3}$};
+        \node[state] (I) [thick, right = 4cm of D] {$\boldsymbol{S_4}$};
 
         \path
           % from (1,6) to all stacks
-          (A) edge node {} (F)
-          (A) edge node {} (G)
-          (A) edge node {} (H)
-          (A) edge node {} (I)
+          (A) edge [thick] node {} (F)
+          (A) edge [thick] node {} (G)
+          (A) edge [thick] node {} (H)
+          (A) edge [thick] node {} (I)
 
           % from (2,3) to all stacks
-          (B) edge node {} (F)
-          (B) edge node {} (G)
-          (B) edge node {} (H)
-          (B) edge node {} (I)
+          (B) edge [thick] node {} (F)
+          (B) edge [thick] node {} (G)
+          (B) edge [thick] node {} (H)
+          (B) edge [thick] node {} (I)
 
           % from (4,5) to all stacks
-          (C) edge node {} (F)
-          (C) edge node {} (G)
-          (C) edge node {} (H)
-          (C) edge node {} (I)
+          (C) edge [thick] node {} (F)
+          (C) edge [thick] node {} (G)
+          (C) edge [thick] node {} (H)
+          (C) edge [thick] node {} (I)
 
           % from 0 to all stacks
-          (D) edge node {} (F)
-          (D) edge node {} (G)
-          (D) edge node {} (H)
-          (D) edge node {} (I);
+          (D) edge [thick] node {} (F)
+          (D) edge [thick] node {} (G)
+          (D) edge [thick] node {} (H)
+          (D) edge [thick] node {} (I);
   \end{tikzpicture}
   \caption*{\textsc{vollständig bipartit}}
 \end{subfigure}
@@ -789,21 +789,21 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
 \begin{subfigure}[b]{0.45\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=1.5cm]
-        \node[state] (A) {$\boldsymbol{1, 6}$};
-        \node[state] (B) [below of=A] {$\boldsymbol{2, 3}$};
-        \node[state] (C) [below of=B] {$\boldsymbol{4, 5}$};
-        \node[state] (D) [below of=C] {$\boldsymbol{0}$};
+        \node[state] (A) [thick] {$\boldsymbol{1, 6}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 3}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{4, 5}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{0}$};
 
-        \node[state] (F) [right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (G) [right = 4cm of B] {$\boldsymbol{S_2}$};
-        \node[state] (H) [right = 4cm of C] {$\boldsymbol{S_3}$};
-        \node[state] (I) [right = 4cm of D] {$\boldsymbol{S_4}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (G) [thick, right = 4cm of B] {$\boldsymbol{S_2}$};
+        \node[state] (H) [thick, right = 4cm of C] {$\boldsymbol{S_3}$};
+        \node[state] (I) [thick, right = 4cm of D] {$\boldsymbol{S_4}$};
 
         \path
-          (A) edge node {} (I)
-          (B) edge node {} (H)
-          (C) edge node {} (G)
-          (D) edge node {} (F);
+          (A) edge [thick] node {} (I)
+          (B) edge [thick] node {} (H)
+          (C) edge [thick] node {} (G)
+          (D) edge [thick] node {} (F);
   \end{tikzpicture}
   \caption*{\textsc{MWPM}}
 \end{subfigure}
@@ -831,7 +831,8 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_s_1s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_s_3s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_s_5s.png}
-\caption*{\textsc{Zeitlimit 1s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 3s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 5s}}
+\caption*{\textsc{Zeitlimit} $1s$ $\quad\quad\quad\thinspace\thinspace\thinspace\thinspace\thinspace$ \textsc{Zeitlimit} $3s$
+$\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad$ \textsc{Zeitlimit} $5s$}
 % \end{figure}
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
@@ -888,7 +889,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_m_60s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_m_600s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_m_1200s.png}
-\caption*{\textsc{Zeitlimit 1min} $\quad\quad\quad$ \textsc{Zeitlimit 10min} $\quad\quad\quad$ \textsc{Zeitlimit 20min}}
+\caption*{\textsc{Zeitlimit} $1min$ $\quad\quad\quad$ \textsc{Zeitlimit} $10min$ $\quad\quad\quad$ \textsc{Zeitlimit} $20min$}
 % \end{figure}
 % \begin{figure}[H]
 % $\quad\quad\quad\quad$
@@ -899,8 +900,8 @@ Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
     \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{50 \%}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{55.4 s}$ \\ \hline
-    \textbf{Abweichung} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{0.8 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{----}$ & \O $\thinspace \textcolor{mygreen}{55.4 s}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{----}$ & \O $\thinspace \textcolor{mygreen}{0.8 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 \begin{subfigure}[b]{0.3\textwidth}
@@ -945,7 +946,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_l_1800s.png}
 \includegraphics[width=0.3\textwidth]{images/na.png}
 \includegraphics[width=0.3\textwidth]{images/na.png}
-\caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
+\caption*{\textsc{Zeitlimit} $30min$ $\quad\quad\quad$ \textsc{Zeitlimit} $45min$ $\quad\quad\quad$ \textsc{Zeitlimit} $60min$}
 % \end{figure}
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
@@ -1018,43 +1019,64 @@ Laufzeit: \O $\thinspace \boldsymbol{0.7 s}$
 $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{b} := 3 \quad\quad\quad \boldsymbol{m} := 4$
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{\textcolor{mygreen}{0, 2}}$};
-        \node[state] (B) [right of=A] {$\boldsymbol{\textcolor{mygreen}{1, 9}}$};
-        \node[state] (C) [right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
-        \node[state] (D) [right of=C] {$\boldsymbol{\textcolor{mygreen}{5, 6}}$};
-        \node[state] (E) [right of=D] {$\boldsymbol{\textcolor{red}{7}}$};
-        \node[state] (F) [right of=E] {$\boldsymbol{\textcolor{red}{8}}$};
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0, 2}}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{\textcolor{mygreen}{1, 9}}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{\textcolor{mygreen}{5, 6}}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{\textcolor{red}{7}}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{\textcolor{red}{8}}$};
         \path;
   \end{tikzpicture}
   \caption*{\textsc{Item-Paare und Unmatched-Items}}
 % \end{figure}
 % \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{\textcolor{red}{0, 2}}$};
-        \node[state] (B) [right of=A] {$\boldsymbol{\textcolor{red}{1, 9}}$};
-        \node[state] (C) [right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
-        \node[state] (D) [below of =B] {$\boldsymbol{\textcolor{red}{5, 6}}$};
-        \node[state] (E) [below of=A] {$\boldsymbol{\textcolor{mygreen}{7}}$};
-        \node[state] (F) [below of=C] {$\boldsymbol{\textcolor{red}{8}}$};
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{\textcolor{red}{0, 2}}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{\textcolor{red}{1, 9}}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
+        \node[state] (D) [thick, right of =C] {$\boldsymbol{\textcolor{red}{5, 6}}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{\textcolor{mygreen}{7}}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{\textcolor{red}{8}}$};
         \path
-          (E) edge [mygreen] node {} (C)
-          (E) edge node {} (D);
+          (E) edge [thick, mygreen, bend right] node {} (C)
+          (E) edge [thick] node {} (D);
   \end{tikzpicture}
   \caption*{\textsc{MCM aus Item-Paaren und Unmatched-Items}}
 % \end{figure}
 % \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{3, 4, 7}$};
-        \node[state] (B) [right of=A] {$\boldsymbol{0, 2}$};
-        \node[state] (C) [right of=B] {$\boldsymbol{1, 9}$};
-        \node[state] (D) [right of=C] {$\boldsymbol{5, 6}$};
-        \node[state] (E) [right of=D] {$\boldsymbol{8}$};
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{0, 2}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{1, 9}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{5, 6}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{8}$};
+        \path;
+\end{tikzpicture}
+\caption*{\textsc{Item-Tripel, Item-Paare und Unmatched-Items}}
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{0, 2}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 9}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{5, 6}$};
         \path;
   \end{tikzpicture}
-  \caption*{\textsc{Item-Tripel, Item-Paare und Unmatched-Items}}
+  \caption*{\textsc{Item-Paare}}
+\end{subfigure}
+\hspace{10pt}
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{0, 5, 6}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 1, 9}$};
+        \path;
+  \end{tikzpicture}
+  \caption*{\textsc{Merge-Ergebnis}}
+\end{subfigure}
+
 \end{figure}
 \end{frame}
 
@@ -1062,92 +1084,70 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{
 \frametitle{Beispiel $b=3$}
 
 \begin{figure}[H]
-\begin{subfigure}[b]{0.4\textwidth}
-\centering
-\begin{tikzpicture}[scale=0.45, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{0, 2}$};
-        \node[state] (B) [right of=A] {$\boldsymbol{1, 9}$};
-        \node[state] (C) [right of=B] {$\boldsymbol{5, 6}$};
-        \path;
-  \end{tikzpicture}
-  \caption*{\textsc{Item-Paare}}
-\end{subfigure}
-\hfill
-\begin{subfigure}[b]{0.4\textwidth}
-\centering
-\begin{tikzpicture}[scale=0.45, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{0, 5, 6}$};
-        \node[state] (B) [right of=A] {$\boldsymbol{2, 1, 9}$};
-        \path;
-  \end{tikzpicture}
-  \caption*{\textsc{Merge-Ergebnis}}
-\end{subfigure}
-% \end{figure}
-\newline\newline
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.5, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{3, 4, 7}$};
-        \node[state] (B) [below of=A] {$\boldsymbol{0, 5, 6}$};
-        \node[state] (C) [below of=B] {$\boldsymbol{2, 1, 9}$};
-        \node[state] (D) [below of=C] {$\boldsymbol{8}$};
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{0, 5, 6}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{2, 1, 9}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{8}$};
 
-        \node[state] (E) [right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (F) [below of=E] {$\boldsymbol{S_2}$};
-        \node[state] (G) [below of=F] {$\boldsymbol{S_3}$};
-        \node[state] (H) [below of=G] {$\boldsymbol{S_4}$};
+        \node[state] (E) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{S_2}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_3}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_4}$};
 
         \path
-          (A) edge node {} (E)
-          (A) edge node {} (F)
-          (A) edge node {} (G)
-          (A) edge node {} (H)
+          (A) edge [thick] node {} (E)
+          (A) edge [thick] node {} (F)
+          (A) edge [thick] node {} (G)
+          (A) edge [thick] node {} (H)
 
-          (B) edge node {} (E)
-          (B) edge node {} (F)
-          (B) edge node {} (G)
-          (B) edge node {} (H)
+          (B) edge [thick] node {} (E)
+          (B) edge [thick] node {} (F)
+          (B) edge [thick] node {} (G)
+          (B) edge [thick] node {} (H)
 
-          (C) edge node {} (E)
-          (C) edge node {} (F)
-          (C) edge node {} (G)
-          (C) edge node {} (H)
+          (C) edge [thick] node {} (E)
+          (C) edge [thick] node {} (F)
+          (C) edge [thick] node {} (G)
+          (C) edge [thick] node {} (H)
 
-          (D) edge node {} (E)
-          (D) edge node {} (F)
-          (D) edge node {} (G)
-          (D) edge node {} (H);
+          (D) edge [thick] node {} (E)
+          (D) edge [thick] node {} (F)
+          (D) edge [thick] node {} (G)
+          (D) edge [thick] node {} (H);
   \end{tikzpicture}
   \caption*{\textsc{Vollständig Bipartit}}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.5, transform shape, node distance=2cm]
-        \node[state] (A) {$\boldsymbol{3, 4, 7}$};
-        \node[state] (B) [below of=A] {$\boldsymbol{0, 5, 6}$};
-        \node[state] (C) [below of=B] {$\boldsymbol{2, 1, 9}$};
-        \node[state] (D) [below of=C] {$\boldsymbol{8}$};
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{0, 5, 6}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{2, 1, 9}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{8}$};
 
-        \node[state] (E) [right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (F) [below of=E] {$\boldsymbol{S_2}$};
-        \node[state] (G) [below of=F] {$\boldsymbol{S_3}$};
-        \node[state] (H) [below of=G] {$\boldsymbol{S_4}$};
+        \node[state] (E) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{S_2}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_3}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_4}$};
 
         \path
-          (A) edge node {} (H)
-          (B) edge node {} (F)
-          (C) edge node {} (G)
-          (D) edge node {} (E);
+          (A) edge [thick] node {} (H)
+          (B) edge [thick] node {} (F)
+          (C) edge [thick] node {} (G)
+          (D) edge [thick] node {} (E);
   \end{tikzpicture}
   \caption*{\textsc{MWPM}}
 \end{subfigure}
 % \end{figure}
-\newline
+\newline\newline
 % \begin{figure}[H]
   \centering
-  \resizebox{0.3\textwidth}{!}{
+  \resizebox{0.35\textwidth}{!}{
     \begin{tabular}{c|c|c|c|c|}
     \cline{2-5}
     $\boldsymbol{L_3}$ & $$ & $6$ & $9$ & $7$ \\ \cline{2-5}
@@ -1169,7 +1169,7 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_small_3s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_small_5s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_small_10s.png}
-\caption*{\textsc{Zeitlimit 3s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 5s} $\quad\quad\quad\quad$ \textsc{Zeitlimit 10s}}
+\caption*{\textsc{Zeitlimit} $3s$ $\quad\quad\quad\quad$ \textsc{Zeitlimit} $5s$ $\quad\quad\quad\quad$ \textsc{Zeitlimit} $10s$}
 % \end{figure}
 % \begin{figure}[H]
 % $\quad\quad\quad\quad$
@@ -1226,7 +1226,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.01s}$
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_medium_600s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_medium_1200s.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_medium_1800s.png}
-\caption*{\textsc{Zeitlimit 10min} $\quad\quad\quad$ \textsc{Zeitlimit 20min} $\quad\quad\quad$ \textsc{Zeitlimit 30min}}
+\caption*{\textsc{Zeitlimit} $10min$ $\quad\quad\quad$ \textsc{Zeitlimit} $20min$ $\quad\quad\quad$ \textsc{Zeitlimit} $30min$}
 % \end{figure}
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
@@ -1283,7 +1283,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=3_l_1800s.png}
 \includegraphics[width=0.3\textwidth]{images/na.png}
 \includegraphics[width=0.3\textwidth]{images/na.png}
-\caption*{\textsc{Zeitlimit 30min} $\quad\quad\quad$ \textsc{Zeitlimit 45min} $\quad\quad\quad$ \textsc{Zeitlimit 60min}}
+\caption*{\textsc{Zeitlimit} $30min$ $\quad\quad\quad$ \textsc{Zeitlimit} $45min$ $\quad\quad\quad$ \textsc{Zeitlimit} $60min$}
 % \end{figure}
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
