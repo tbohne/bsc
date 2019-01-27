@@ -326,23 +326,6 @@ Diese Matrix lässt sich als gerichteter Graph mit $\boldsymbol{n}$ Knoten $\bol
 \end{frame}
 
 \begin{frame}
-\frametitle{Stacking-Constraint-Generierung}
-\textbf{Variante 1:}
-\begin{itemize}
-  \item $\boldsymbol{S}$ anhand definierter Wahrscheinlichkeit mit 1/0 Werten füllen
-  \item 1-Einträge, die aus Transitivität folgen, ergänzen
-\end{itemize}
-\textbf{Variante 2:}
-\begin{itemize}
-  \item Für alle $\boldsymbol{n}$ Items zufällige Länge und Breite generieren
-  \item Item $\boldsymbol{i}$ kann auf Item $\boldsymbol{j}$ platziert werden, wenn für dessen Länge $\boldsymbol{l_i}$ und Breite
-  $\boldsymbol{w_i}$ gilt $\boldsymbol{l_i} \leq \boldsymbol{l_j}$ und $\boldsymbol{w_i} \leq \boldsymbol{w_j}$
-  \item Items $\boldsymbol{i}, \boldsymbol{j}$ sind in beide Richtungen stackbar, wenn $\boldsymbol{l_i} =
-  \boldsymbol{l_j}$ und $\boldsymbol{w_i} = \boldsymbol{w_j}$
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{Transportkosten}
 
 \begin{itemize}
@@ -397,8 +380,8 @@ $
 
 \textbf{Stack-Kapazitäten}: $\boldsymbol{b} = 2, 3, (4)$
 \begin{itemize}
-  \item Zulässigkeitsproblem $\boldsymbol{b=2}$ mit $\boldsymbol{s_{ij}}$ und $\boldsymbol{t_{iq}}$ NP-schwer
-  \item Zulässigkeitsproblem $\boldsymbol{b=3}$ mit $\boldsymbol{s_{ij}}$ NP-schwer
+  \item Zulässigkeitsproblem $\boldsymbol{b=2}$ mit $\boldsymbol{s_{ij}}$ und $\boldsymbol{t_{iq}}$ NP-vollständig
+  \item Zulässigkeitsproblem $\boldsymbol{b=3}$ mit $\boldsymbol{s_{ij}}$ NP-vollständig
 \end{itemize}
 
 \textbf{Instanzgrößen}:
@@ -414,17 +397,34 @@ $
 \textbf{Zulässigkeit und geringe Laufzeit haben Priorität.}\newline
 \end{frame}
 
-\begin{frame}
-\frametitle{Zulässigkeit}
-\textbf{Kriterien für die Zulässigkeit einer Lösung}:
-\begin{itemize}
-  \item Sämtliche Items eingelagert
-  \item Stacking Constraints respektiert
-  \item Placement Constraints respektiert
-\end{itemize}
+% \begin{frame}
+% \frametitle{Zulässigkeit}
+% \textbf{Kriterien für die Zulässigkeit einer Lösung}:
+% \begin{itemize}
+%   \item Sämtliche Items eingelagert
+%   \item Stacking Constraints respektiert
+%   \item Placement Constraints respektiert
+% \end{itemize}
 
-Die Placement Constraints gelten als verletzt, wenn eine Lösung eine Item-Zuweisung der Kosten $\infty$ enthält.
-\end{frame}
+% Die Placement Constraints gelten als verletzt, wenn eine Lösung eine Item-Zuweisung der Kosten $\infty$ enthält.
+% \end{frame}
+
+% \begin{frame}
+% \frametitle{Stacking-Constraint-Generierung}
+% \textbf{Variante 1:}
+% \begin{itemize}
+%   \item $\boldsymbol{S}$ anhand definierter Wahrscheinlichkeit mit 1/0 Werten füllen
+%   \item 1-Einträge, die aus Transitivität folgen, ergänzen
+% \end{itemize}
+% \textbf{Variante 2:}
+% \begin{itemize}
+%   \item Für alle $\boldsymbol{n}$ Items zufällige Länge und Breite generieren
+%   \item Item $\boldsymbol{i}$ kann auf Item $\boldsymbol{j}$ platziert werden, wenn für dessen Länge $\boldsymbol{l_i}$ und Breite
+%   $\boldsymbol{w_i}$ gilt $\boldsymbol{l_i} \leq \boldsymbol{l_j}$ und $\boldsymbol{w_i} \leq \boldsymbol{w_j}$
+%   \item Items $\boldsymbol{i}, \boldsymbol{j}$ sind in beide Richtungen stackbar, wenn $\boldsymbol{l_i} =
+%   \boldsymbol{l_j}$ und $\boldsymbol{w_i} = \boldsymbol{w_j}$
+% \end{itemize}
+% \end{frame}
 
 \begin{frame}
 \frametitle{Testdaten-Generierung}
@@ -434,7 +434,7 @@ Die Placement Constraints gelten als verletzt, wenn eine Lösung eine Item-Zuwei
   \item Anzahl der Items: $\boldsymbol{n}$
   \item Stack Kapazität: $\boldsymbol{b}$
   \item Anzahl der Stacks: $\boldsymbol{m}$ = $\ceil{\boldsymbol{n} / \boldsymbol{b}}$ + $\textcolor{red}{\boldsymbol{20 \%}}$\newline
-  \item Stacking Constraints: \textcolor{red}{\textbf{Variante 2}}
+  \item Stacking Constraints: Zwei Varianten \textcolor{red}{\textbf{(V2)}}
   \item Placement Constraints: $\textcolor{red}{\boldsymbol{70 \%}}$ erlaubt
   \item Kosten: \textcolor{red}{\textbf{Manhattan-Metrik}}
   \begin{itemize}
@@ -943,12 +943,23 @@ Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 
 \begin{figure}
 \centering
+\includegraphics[width=0.3\textwidth]{images/na.png}
 \includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_l_1800s.png}
-\includegraphics[width=0.3\textwidth]{images/na.png}
-\includegraphics[width=0.3\textwidth]{images/na.png}
-\caption*{\textsc{Zeitlimit} $30min$ $\quad\quad\quad$ \textsc{Zeitlimit} $45min$ $\quad\quad\quad$ \textsc{Zeitlimit} $60min$}
+\includegraphics[width=0.3\textwidth]{images/solver_instance_coverage_b=2_l_2700s.png}
+\caption*{\textsc{Zeitlimit} $15min$ $\quad\quad\quad$ \textsc{Zeitlimit} $30min$ $\quad\quad\quad$ \textsc{Zeitlimit} $45min$}
 % \end{figure}
 % \begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+\end{tabular}}
+\end{subfigure}
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
@@ -974,17 +985,6 @@ Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 \end{subfigure}
 % \end{figure}
 % \begin{figure}[H]
-\begin{subfigure}[b]{0.3\textwidth}
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{ | l | l | l |}
-    \hline
-     & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
-\end{tabular}}
-\end{subfigure}
 \end{figure}
 \centering
 \textbf{2Cap-Heuristik}\linebreak
