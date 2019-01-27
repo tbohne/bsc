@@ -27,7 +27,7 @@ SOLVER <- c("BinP", "3Idx", "3Cap")
 png(file = "solver_instance_coverage.png")
 
 # plot the bar chart
-barplot(SOLUTIONS, names.arg = SOLVER, xlab = "solver", ylab = "instance coverage (%)", col = "red", border = "black")
+barplot(SOLUTIONS, names.arg = SOLVER, xlab = "solver", ylab = "instance coverage (%)", col = c(rgb(32, 43, 50, maxColorValue = 255)), border = "black")
 
 # save the file
 dev.off()
