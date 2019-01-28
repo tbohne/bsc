@@ -456,7 +456,7 @@ $
 \scalebox{0.7}{\parbox{\linewidth}{%
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \\
-\thinspace\thinspace \boldsymbol{s.t.} \thinspace \quad \sum_{q \in Q} x_{iq} = 1 \thinspace\thinspace\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace \\
+\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \\
 \quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \\
 \thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin A \\
 \thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace
@@ -630,7 +630,7 @@ Falls $\boldsymbol{M}$ eine maximale Kardinalität unter allen Matchings von $\b
 \begin{frame}
 \frametitle{Exkurs: Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 \begin{itemize}
-  \item Matching, welches sämtliche Knoten matcht
+  \item Matching, welches sämtliche Knoten enthält
   \item Jeder Knoten ist inzident zu genau einer Kante des Matchings
   \item Günstigstes Perfect Matching basierend auf den Kantenkosten
 \end{itemize}
@@ -966,9 +966,9 @@ Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $  \%$ & $  \%$ \\ \hline
-    \textbf{Laufzeit} & $---$ & \O $\thinspace 977.2 s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{85 \%}$ \\ \hline
+    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{977.2 s}$ \\ \hline
+    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 % $\quad\quad\quad\quad$
@@ -978,9 +978,9 @@ Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $  \%$ & $ \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace  s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace \%$ & \O $\thinspace \%$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{1185.9  s}$ \\ \hline
+    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 % \end{figure}
@@ -989,7 +989,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 \centering
 \textbf{2Cap-Heuristik}\linebreak
 \centering
-Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
+Abweichung vom Optimum: \O $\thinspace \boldsymbol{0.6 \%}$\linebreak
 \centering
 Laufzeit: \O $\thinspace \boldsymbol{0.7 s}$
 
@@ -1317,16 +1317,16 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \%$ & $  \%$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace  s$ & \O $\thinspace s$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace  \%$ & \O $\thinspace  \%$ \\ \hline
+    \textbf{Optimal} & $tbd$ & $tbd$ \\ \hline
+    \textbf{Laufzeit} & $tbd$ & $tbd$ \\ \hline
+    \textbf{Abweichung} & $tbd$ & $tbd$ \\ \hline
 \end{tabular}}
 \end{subfigure}
 \end{figure}
 \centering
 \textbf{3Cap-Heuristik}\linebreak
 \centering
-Abweichung vom Optimum: \O $\thinspace \boldsymbol{ \%}$\linebreak
+Abweichung vom Optimum: $\boldsymbol{tbd}$\linebreak
 \centering
 Laufzeit: \O $\thinspace \boldsymbol{1.0 s}$
 
