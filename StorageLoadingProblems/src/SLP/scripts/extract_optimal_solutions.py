@@ -39,7 +39,6 @@ if __name__ == '__main__':
     already_used_instances = []
 
     for line in lines:
-
         if "BinP," in line or "3Idx," in line:
             runtime = get_runtime(line)
             if runtime <= time_limit:
