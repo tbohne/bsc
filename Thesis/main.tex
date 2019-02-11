@@ -1,0 +1,188 @@
+% Vorlage der AG KO fuer Abschlussarbeiten zum doppelseitigen Druck
+\documentclass[%
+a4paper,
+12pt,
+parskip=half,
+numbers=noenddot,
+twoside,
+abstract=on,
+headings=standardclasses,
+headings=big,
+]{scrartcl}
+
+\usepackage[english,main=ngerman]{babel}
+
+\usepackage[margin=2.8cm,bottom=2.8cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{lmodern}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+% \usepackage{array}
+% \usepackage{longtable}
+% \usepackage{verbatim}
+
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage[vlined,ruled]{algorithm2e}
+%\usepackage{tabularx}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+% \usepackage{comment}
+% \usepackage{enumitem}
+% \usepackage[binary-units=true]{siunitx}
+% \usepackage{thmtools}
+\usepackage{csquotes}
+
+\usepackage[]{hyperref}
+\hypersetup{
+  colorlinks,
+  linkcolor={red!50!black},
+  citecolor={blue!90!black},
+  urlcolor={blue!50!black}
+}
+
+% \usepackage{tikz}
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{shapes}
+% \usetikzlibrary{calc}
+% \usetikzlibrary{backgrounds}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{decorations.pathmorphing}
+
+
+%---------------------------------------------------------------------%
+% Floats
+
+\def\textfraction{.01}
+\def\topfraction{.8}
+\def\bottomfraction{.8}
+\def\floatpagefraction{.8}
+
+
+%---------------------------------------------------------------------%
+% Bibiliography
+
+\usepackage[
+style=numeric,
+%backend=biber,      % auf Linux
+backend=bibtex,    % auf Windows und Linux
+natbib
+]{biblatex}
+
+\DeclareFieldFormat[
+article,inbook,incollection,inproceedings,patent,thesis,unpublished
+]{citetitle}{#1}
+\DeclareFieldFormat[
+article,inbook,incollection,inproceedings,patent,thesis,unpublished
+]{title}{#1}
+
+\AtEveryBibitem{\clearfield{doi}}
+\AtEveryBibitem{\clearfield{url}}
+\AtEveryBibitem{\clearfield{isbn}}
+\AtEveryBibitem{\clearfield{issn}}
+\AtEveryBibitem{\clearfield{eprint}}
+
+\DeclareNameAlias{sortname}{last-first}
+
+% Order names: Mustermann, E.
+%\DeclareNameAlias{default}{last-first}
+% Order names: E. Mustermann
+\DeclareNameAlias{author}{first-last}
+
+\renewbibmacro{in:}{}
+
+% Separation between two bibliography items
+\setlength\bibitemsep{1.5\itemsep}
+
+\addbibresource{literatur.bib}
+
+
+%---------------------------------------------------------------------%
+% Acronyms
+
+%\input{acronyms.tex}
+
+
+%---------------------------------------------------------------------%
+% Settings
+
+\graphicspath{{./img/}}
+
+
+%---------------------------------------------------------------------%
+% Page styles
+
+\usepackage[]{scrlayer-scrpage}
+\automark[subsection]{section}
+
+
+%---------------------------------------------------------------------%
+% Author
+
+\author{Erika Mustermann}
+\title{Titel der Arbeit...}
+\date{\today}
+
+\newcommand{\ThesisType}{Bachelorarbeit}  %bei Masterarbeit anpassen
+\newcommand{\ThesisSupFst}{Prof. Dr. Sigrid Knust}
+\newcommand{\ThesisSupSnd}{...Zweitgutachter...}
+
+% Darstellung von Theoremen mit normaler Schrift
+\theoremstyle{definition}
+
+% Definition von eigenen Umgebungen 
+\newtheorem{mytheorem}{Theorem}
+\newtheorem{mylemma}[mytheorem]{Lemma}
+\newtheorem{mydefinition}[mytheorem]{Definition}
+
+%=====================================================================%
+
+\begin{document}
+
+%---------------------------------------------------------------------%
+% Frontmatter
+
+\pagestyle{empty}
+\pagenumbering{alph}
+
+\input{sections/titlepage.tex}
+
+\cleardoublepage
+
+\input{sections/abstract.tex}
+
+\cleardoublepage
+
+\pagenumbering{Roman}
+
+\tableofcontents{}
+
+\cleardoublepage
+
+\pagestyle{scrheadings}
+\pagenumbering{arabic}
+
+%---------------------------------------------------------------------%
+% Content
+
+\input{sections/einleitung.tex}
+\input{sections/kapitel.tex}
+
+%\section*{Danksagung}
+%Optional
+
+%---------------------------------------------------------------------%
+% Bibliography
+\cleardoublepage
+\printbibliography
+
+% Erklaerung, dass man die Arbeit serioes erstellt hat.
+\cleardoublepage
+\input{sections/erklaerung.tex}
+
+\end{document}
