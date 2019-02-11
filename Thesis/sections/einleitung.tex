@@ -1,10 +1,42 @@
 \section{Einleitung}
 \label{sec:einleitung}
 
-...
+Stacking-Probleme beschreiben Situationen, in denen es darum geht, eine Menge von Items zulässigen Positionen in Stacks zuzuordnen, sodass bestimmte Nebenbedingungen respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird. Sie treten in der Praxis häufig im Umfeld von Lagerhallen und Container-Terminals auf. In dieser Arbeit werden heuristische Lösungsverfahren für verschiedene Varianten von Stacking-Problemen entwickelt, bei denen der Fokus auf der Minimierung der Transportkosten liegt. Dabei werden MIP-Formulierungen zum experimentellen Vergleich genutzt.\newline
 
-\subsection{Ein Unterabschnitt}
-\label{sec:einleitung:unterabschnitt}
+Bei den Items handelt es sich häufig um Container, die in einer Lagerfläche positioniert und gestapelt werden müssen. Das immer weiter steigende Volumen an Waren, die per Container verschifft werden, führt dazu, dass auch der Bedarf an effizienter Handhabung dieser Container immer weiter wächst.
 
+Diese Arbeit ist dadurch motiviert, dass bisher kaum effiziente Lösungsansätze für Stacking-Probleme vorgestellt wurden. Insbesondere zur effizienten Minimierung der Transportkosten gibt es keine Veröffentlichungen, obwohl dies auch aus praktischer Perspektive ein durchaus relevantes Problem darstellt.\newline
 
-..
+Ziel der Arbeit ist es dementsprechend, effiziente Heursitiken für Stacking-Probleme vorzustellen und zu implementieren, bei denen der Fokus auf Zulässigkeit und geringer Laufzeit liegt.
+
+Es gibt allerdings einige Veröffentlichungen zu Storage Unloading Problemen oder kombinierten Problemen,
+bei denen es um den Loading- und Unloading-Prozess geht.
+
+\textcite{Caserta2012} haben beispielsweise 2012 ein Paper veröffentlicht, welches sich mit
+einem Unloading Problem beschäftigt, bei dem es darum geht, Items, die bereits in Stacks gelagert sind,
+in einer bestimmten Reihenfolge zu entladen. Sie haben gezeigt, dass die Minimierung der Anzahl
+an \textquote{Reshuffles}, also der Anzahl der Umsortierungen innerhalb der Stacks, NP-schwer ist.
+
+Eine weitere themennahe Veröffentlichung aus dem Jahr 2012 lieferten Janstrup et al. \cite{Delgado2012},
+die sich mit dem Loading Problem befasst haben, bei dem ein Containerschiff mit einer Menge an Items beladen wird.
+Basierend auf der Stabilität des Schiffs, sind für jeden Stack Gewichts- und Höhenbeschränkungen gegeben.
+Da einige Container eine Energiequelle benötigen, sind auch bestimmte Restriktionen bezüglich der Positionierung gegeben.
+Durch eine Reduktion vom \textsc{BinPacking} Problem, haben sie gezeigt, dass die Minimierung der Anzahl
+verwendeter Stacks NP-schwer ist.
+
+Im Zusammenhang mit Bahn-Terminals hat \textcite{Jaehn2013} 2013 ein Storage Loading Problem betrachtet,
+bei dem Items von einer Anzahl von Zügen, die gleichzeitig eintreffen, in eine Storage Area
+verladen werden müssen, die aus parallelen \textquote{Lanes} besteht.
+Es wird zunächst die NP-Schwere zweier Modelle gezeigt, woraufhin heuristische Algorithmen vorgestellt werden,
+die mit realen Daten getestet werden.
+
+Diese Beispiele stehen exemplarisch dafür, dass es sich bei Storage Loading bzw. Unloading Problemen um
+ein aktives Forschungsgebiet handelt, welches auch aus praktischer Perspektive von großer Relevanz ist.
+
+Zunächst werden in Kapitel \ref{storage_loading_problems} Storage Loading Probleme im Allgemeinen eingeführt und anschließend
+in Kapitel \ref{slp_definition} formal definiert. Da­r­auf­fol­gend wird in Kapitel \ref{stacking_restrictions} auf die \textquote{Stacking Constraints} eingegangen,
+die in Storage Loading Problemen eine zentrale Rolle spielen. In Kapitel \ref{decision_problem} wird die simpelste Variante eines Storage Loading Problems
+skizziert und in Kapitel \ref{objective_functions} durch mögliche Zielfunktionen ergänzt. Im Anschluss geht es dann in Kapitel \ref{theorems} darum,
+die im Paper hergeleiteten Theoreme und zugehörigen Beweise vorzustellen. Kapitel \ref{conclusion} enthält einige abschließende Bemerkungen.
+
+\pagebreak

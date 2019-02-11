@@ -38,6 +38,10 @@ headings=big,
 % \usepackage{thmtools}
 \usepackage{csquotes}
 
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
 \usepackage[]{hyperref}
 \hypersetup{
   colorlinks,
@@ -124,18 +128,18 @@ article,inbook,incollection,inproceedings,patent,thesis,unpublished
 %---------------------------------------------------------------------%
 % Author
 
-\author{Erika Mustermann}
-\title{Titel der Arbeit...}
+\author{Tim Bohne}
+\title{Heuristische Lösungsverfahren für Stacking-Probleme mit Transportkosten}
 \date{\today}
 
 \newcommand{\ThesisType}{Bachelorarbeit}  %bei Masterarbeit anpassen
 \newcommand{\ThesisSupFst}{Prof. Dr. Sigrid Knust}
-\newcommand{\ThesisSupSnd}{...Zweitgutachter...}
+\newcommand{\ThesisSupSnd}{Tobias Oelschlägel, M. Sc.}
 
 % Darstellung von Theoremen mit normaler Schrift
 \theoremstyle{definition}
 
-% Definition von eigenen Umgebungen 
+% Definition von eigenen Umgebungen
 \newtheorem{mytheorem}{Theorem}
 \newtheorem{mylemma}[mytheorem]{Lemma}
 \newtheorem{mydefinition}[mytheorem]{Definition}
