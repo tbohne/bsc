@@ -295,8 +295,9 @@ entsprechend die \textit{Item}- und \textit{Stack}positionen als $x$- und $y$-Ko
 \section{MIP-Formulierungen}
 \label{sec:mip_formulations}
 
-In diesem Abschnitt werden MIP-Formulierungen eingeführt, die zum experimentellen Vergleich genutzt werden.
-Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit der die Qualität der Lösungen der Heuristiken beurteilt werden kann. Des Weiteren geht es auch um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander. Zunächst wird in Abschnitt \ref{sec:mip_definition} eine kurze Einführung zu MIPs geliefert.
+In diesem Kapitel werden MIP-Formulierungen eingeführt, die zum experimentellen Vergleich genutzt werden.
+Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit der die Qualität der von den Heuristiken generierten Lösungen beurteilt werden kann. Des Weiteren geht es auch um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander. Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee des MIP im Allgemeinen
+eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formulation} und \ref{sec:three_idx_formulation} die beiden in dieser Arbeit betrachteten MIP-Formulierungen im Detail vorzustellen.
 
 \subsection{Mixed Integer Linear Programming (MIP)}
 \label{sec:mip_definition}
@@ -311,7 +312,7 @@ Da sich dadurch der Lösungsraum vergrößert, erhält man auf diese Weise eine 
 
 In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
 um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
-zu lösen. Es handelt sich dabei um eine u.a. auf dem Simplexverfahren basierende Implementation von IBM. \cite{CPLEX2015}
+zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM. \cite{CPLEX2015}
 
 \subsection{Bin-Packing-Formulierung}
 \label{sec:bin_packing_formulation}
@@ -319,9 +320,10 @@ zu lösen. Es handelt sich dabei um eine u.a. auf dem Simplexverfahren basierend
 Die Bin-Packing-Formulierung orientiert sich dem Namen nach am klassichen \textsc{Bin-Packing} Problem, bei dem es darum geht,
 eine Menge von Objekten so auf eine Menge von Behältern zu verteilen, dass die Behälterkapazitäten eingehalten werden.
 Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
-die diesen Behältern zugeordnet werden, wobei die Stack- also Behälterkapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
+die diesen Behältern zugeordnet werden, wobei die Stack- bzw. Behälterkapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
 
 $G = (I, A)$ sei ein transitiver Stacking-Constraint-Graph, bei dem eine Kante $i \rightarrow j \in A$ bedeutet, dass $i$ direkt auf $j$ gestapelt werden darf. Außerdem seien Items $I = \{1, ..., n\}$ und Stacks $Q = \{1, ..., m\}$ mit einer Kapazität von $b$ gegeben.
+Bei den Variablen $x_{iq}$ handelt es sich um Binärvariablen, wobei $x_{iq} = 1$ bedeutet, dass Item $i$ Stack $q$ zugewiesen wird. $c_{iq}$ entspricht den Kosten für den Transport des Items $i$ in den Stack $q$.
 
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
@@ -331,22 +333,78 @@ $G = (I, A)$ sei ein transitiver Stacking-Constraint-Graph, bei dem eine Kante $
 \thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace \label{bin_packing_line_five}
 \end{gather}
 
-(\ref{bin_packing_line_one}) definiert die Zielfunktion, die der Minimierung der Transportkosten entspricht. In (\ref{bin_packing_line_two}) wird
-gefordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass die Stack-Kapazität eingehalten werden muss und (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stackbar sind, nicht Teil desselben Stacks sind. Außerdem handelt es sich laut (\ref{bin_packing_line_five}) bei den $x_{iq}$ um Binärvariablen, bei denen $x_{iq} = 1$ bedeutet, dass Item $i$ Stack $q$ zugewiesen wird und $x_{iq} = 0$, wenn dies nicht der Fall ist.
-
-
+In (\ref{bin_packing_line_one}) wird die Zielfunktion definiert, die der Minimierung der Transportkosten entspricht.
+Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass die Stack-Kapazität eingehalten werden muss und (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stackbar sind, nicht Teil desselben Stacks sind. Außerdem handelt es sich laut (\ref{bin_packing_line_five}), wie bereits erwähnt, bei den Variablen $x_{iq}$ um Binärvariablen.
 
 \subsection{3-Index-Formulierung}
 \label{sec:three_idx_formulation}
 
+Die 3-Index-Formulierung enthält drei Indizes: Item, Stack und Level.
+Im Gegensatz zur Bin-Packing-Formulierung, die Item-Stack-Zuweisungen vornimmt, weist die 3-Index-Formulierung einem
+Item auch eine konkrete Position innerhalb eines Stacks zu, sie berücksichtigt also den Level.
+
+Gegeben ist eine Item-Menge $I = \{1, ..., n\}$ und eine Stack-Mange $Q = \{1, ..., m\}$ mit Stacks der Kapazität $b$.
+Jeder Stack enthält dementsprechend die Level $L = \{1, ..., b\}$. Die Kosten seien definiert durch die gegebene Transportkostenmatrix $C$,
+in der an der Stelle $c_{iq}$ die Kosten für den Transport von Item $i$ in Stack $q$ stehen. Die Variablen $x_{iql}$ seien Binärvariablen, bei denen
+$x_{iql} = 1$ bedeutet, dass Item $i$ in Stack $q$ auf Level $l$ platziert wird.
+
 \begin{gather}
-\boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} \sum_{l \in L} c_{iq} x_{iql} \\
-\boldsymbol{s.t.} \quad \sum_{q \in Q} \sum_{l \in L} x_{iql} = 1 \quad\thinspace\thinspace\quad\quad\quad\quad \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \\
-\sum_{i \in I} x_{iql} \leq 1 \thinspace\quad\quad\quad\quad\quad\quad\quad \forall q \in Q, l \in L \thinspace\thinspace\thinspace\thinspace\quad\quad\quad\thinspace \\
-\sum_{j \in I | i \rightarrow j} x_{jq(l-1)} - x_{iql} \geq 0 \thinspace\quad\quad \forall i \in I, q \in Q, l \in L \textbackslash \{1\} \\
-\quad\quad x_{iql} \in \{0, 1\} \quad\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q, l \in L \quad\thinspace\thinspace\thinspace\thinspace\thinspace
+\boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} \sum_{l \in L} c_{iq} x_{iql} \label{three_idx_line_one} \\
+\boldsymbol{s.t.} \quad \sum_{q \in Q} \sum_{l \in L} x_{iql} = 1 \quad\thinspace\thinspace\quad\quad\quad\quad \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \label{three_idx_line_two} \\
+\sum_{i \in I} x_{iql} \leq 1 \thinspace\quad\quad\quad\quad\quad\quad\quad \forall q \in Q, l \in L \thinspace\thinspace\thinspace\thinspace\quad\quad\quad\thinspace \label{three_idx_line_three} \\
+\sum_{j \in I | i \rightarrow j} x_{jq(l-1)} - x_{iql} \geq 0 \thinspace\quad\quad \forall i \in I, q \in Q, l \in L \textbackslash \{1\}
+\label{three_idx_line_four} \\
+\quad\quad x_{iql} \in \{0, 1\} \quad\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q, l \in L \quad\thinspace\thinspace\thinspace\thinspace\thinspace \label{three_idx_line_five}
 \end{gather}
 
+In (\ref{three_idx_line_one}) wird die Zielfunktion definiert, die erneut die Summe der Kosten sämtlicher Item-Zuweisungen minimiert.
+Nebenbedingung (\ref{three_idx_line_two}) fordert, dass sich jedes Item in genau einem Stack an genau einer Position (Level) befinden muss.
+Anschließend wird in (\ref{three_idx_line_three}) gefordert, dass sich an jeder Position in jedem Stack höchstens ein Item befindet und
+(\ref{three_idx_line_four}) formuliert die Einschränkung, dass alle Items, die sich oberhalb des Ground-Levels befinden, ein Item unter sich haben,
+welches unter ihnen liegen darf. Schließlich wird in (\ref{three_idx_line_five}) festgehalten, dass es sich bei den $x_{iql}$ um Binärvariablen handelt.
+
+Beide Formulierungen vollziehen Item-Stack-Zuweisungen und minimieren dabei die Transportkosten.
+Die Bin-Packing-Formulierung nimmt dabei lediglich Item-Stack-Zuweisungen vor, während die 3-Index-Formulierung die
+Items konkreten Positionen innerhalb der Stacks zuweist. Dabei ist allerdings auch bei der Bin-Packing-Formulierung
+sichergestellt, dass eine Item-Stack-Zuweisung nur dann vorgenommen wird, wenn die Items innerhalb des Stacks anschließend
+der Art umsortiert werden können, dass sie den Stacking Constraints entsprechen. Diese Tatsache ergibt sich aus Nebenbedingung (\ref{bin_packing_line_four}), die fordert, dass Items sich nur dann im selben Stack befinden, wenn sie in mindestens einer Richtung stackbar sind.
+Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert
+werden kann, dass eine valide Lösung dabei herauskommt.
+
+Die 3-Index-Formulierung liefert also direkt eine valide Lösung, während die Item-Stack-Zuweisungen, die die Bin-Packing-Formulierung liefert,
+zunächst noch sortiert werden müssen, damit sie eine valide Lösung ergeben. Dies kann durch den simplen Algorithmus (\ref{alg:algo1}) erreicht werden.
+Wie bereits erwähnt, ist garantiert, dass eine Lösung, die die Stacking Constraints respektiert, generiert werden kann.
+
+\begin{algorithm}
+\fontsize{10pt}{10pt}
+
+\SetAlgoLined
+
+  \ForEach{stack in storageArea}{
+
+    somethingChanged = true\;
+
+    \While{somethingChanged}{
+
+      somethingChanged = false\;
+
+      \For{position = 0; position < stack.capacity - 1; position++}{
+          \BlankLine\BlankLine
+          \uIf{stack[position].\Call{isOccupied()}{} \&\& stack[position + 1].\Call{isOccupied()}{{}}}{
+            \uIf{itemAt(stack[position]).\Call{isStackableOn}{itemAt(stack[position + 1])}}{
+
+                \Call{exchangeItems}{stack[position], stack[position + 1]}\;
+                somethingChanged = true\;
+                break\;
+            }
+          }
+      }
+    }
+  }
+
+\caption{Korrektur der Item Reihenfolge innerhalb der Stacks.}
+\label{alg:algo1}
+\end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -358,7 +416,8 @@ gefordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in
 In diesem Abschnitt werden die entwickelten konstruktiven Heuristiken vorgestellt.
 Zunächst werden drei wichtige Konzepte vorgestellt, in \ref{sec:digression_mcm} das Maximum-Cardinality-Matching,
 in \ref{sec:digression_mwpm} das Minimum-Weight-Perfect-Matching und in \ref{sec:digression_bipartite_graph} ein
-bipartiter Graph.
+bipartiter Graph. In \ref{sec:two_cap_heuristic} geht es dann um die konstruktive Heuristik für eine Stack-Kapazität
+von $b=2$ und anschließend...
 
 \subsection{Exkurs: Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
