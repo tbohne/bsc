@@ -2,17 +2,16 @@
 \label{sec:stacking_problems}
 
 Stacking-Probleme treten in der Praxis zum Beispiel im Umfeld von Lagerhallen und Container-Terminals auf.
-Ankommende \textit{Items}, häufig Container, müssen sogenannten \textit{Stacks} zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden.
-Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden
+Ankommende \textit{Items}, häufig Container, müssen sogenannten \textit{Stacks} zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden. Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden
 darf. Es wird dabei angenommen, dass die im Folgenden als \textit{Storage-Area} bezeichnete Lagerfläche in festen
-\textit{Stacks} organisiert ist, die eine limitierte gemeinsame Höhe besitzen, die im Folgenden als \textit{Stack}-Kapazität bezeichnet wird.\newline
+\textit{Stacks} organisiert ist, die eine limitierte gemeinsame Höhe besitzen, die im Folgenden als \textit{Stack}-Kapazität bezeichnet wird.
 Es kann in der Regel nur auf das oberste \textit{Item} eines \textit{Stacks} zugegriffen werden, d.h. der \textit{Item}-Zugriff erfolgt
 nach dem \textquote{Last-In–First-Out}-Prinzip. Ein Zugriff auf \textit{Items} darunter erfordert eine \textit{Relocation}-Operation, die
-zeit- und energieaufwendig ist.\newline
+zeit- und energieaufwendig ist.
 
 In dieser Arbeit wird nur der \textit{Loading}-Prozess betrachtet, währenddem keine \textit{Item}-Entnahme stattfindet.
 Die \textit{Items} werden in die \textit{Storage-Area} geladen, die aus \textit{Stacks} mit einer festen Position besteht, d.h.
-man kann die \textit{Stacks} nicht positionieren, sondern lediglich den \textit{Items} eine Position in einem \textit{Stack} zuweisen.\newline
+man kann die \textit{Stacks} nicht positionieren, sondern lediglich den \textit{Items} eine Position in einem \textit{Stack} zuweisen.
 Der \textit{Relocation}-Prozess wird typischerweise durch Kräne durchgeführt, die den \textit{Stacks} eine Maximalhöhe auferlegen.
 
 Neben der Tatsache, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden darf, gilt auch, dass es \textit{Items} gibt, die auf bestimmte Positionen beschränkt sind, weil sie zum Beispiel eine Energiequelle benötigen.
@@ -26,7 +25,7 @@ Abbildung \ref{fig:storage_area} zeigt den Aufbau der \textit{Storage-Area} best
 \cline{1-5}
 $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & ... & $\boldsymbol{S_m}$\\ \cline{1-5}
 \end{tabular}}
-\caption*{\textsc{von oben betrachtet}}
+\caption*{\textsc{Draufsicht}}
 \end{figure}
 \begin{figure}[H]
 \centering
@@ -40,9 +39,9 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m,
 \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
 & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{...} & \multicolumn{1}{c}{$\boldsymbol{S_m}$} \\
 \end{tabular}}
-\caption*{\textsc{von der Seite betrachtet}}
+\caption*{\textsc{Seitenansicht}}
 
-\caption{\textsc{Aufbau der \textit{Storage-Area}}}
+\caption{\textsc{Aufbau der \textit{Storage-Area}}.}
 \label{fig:storage_area}
 \end{figure}
 
@@ -57,11 +56,11 @@ in dieser Arbeit geht es um die Minimieren der Transportkosten, die bei der Verl
 \section{Formale Definition}
 \label{sec:formal_definition}
 
-Die \textit{Storage-Area} besteht aus \textit{Stacks}, die in einer Reihe angeordnet sind (vgl. Abb. \ref{fig:storage_area}). Die x-Koordinate spezifiziert jeweils den \textit{Stack} und die y-Koordinate den \textit{Level} innerhalb des jeweiligen \textit{Stacks}. Es handelt sich also um eine Reihe von $m$ \textit{Stacks} mit jeweils $b$ Positionen pro \textit{Stack}. Abb. \ref{fig:parameters} zeigt eine Liste der
-Parameter, die im weiteren Verlauf der Arbeit immer wieder verwendet werden, um Stacking-Probleme zu definieren.
+Die \textit{Storage-Area} besteht aus \textit{Stacks}, die in einer Reihe angeordnet sind (vgl. Abb. \ref{fig:storage_area}). Die $x$-Koordinate spezifiziert jeweils den \textit{Stack} und die $y$-Koordinate den \textit{Level} innerhalb des jeweiligen \textit{Stacks}. Es handelt sich also um eine Reihe von $m$ \textit{Stacks} mit jeweils $b$ Positionen pro \textit{Stack}. Abb. \ref{fig:parameters} zeigt eine Liste der
+Parameter, die im weiteren Verlauf der Arbeit verwendet werden, um Stacking-Probleme zu definieren.
 \begin{figure}[H]
 \centering
-\resizebox{0.5\textwidth}{!}{
+\resizebox{0.6\textwidth}{!}{
 \begin{tabular}{ | l | l |}
     \hline
     \textbf{Parameter} & \textbf{Semantik} \\ \hline
@@ -70,13 +69,13 @@ Parameter, die im weiteren Verlauf der Arbeit immer wieder verwendet werden, um 
     $b$ & Stack Kapazität \\ \hline
     $I$ & Menge der Items $ I := \{1, 2, ..., n\}$ \\ \hline
 \end{tabular}}
-\caption{\textsc{Zur Definition verwendete Parameter}}
+\caption{\textsc{Zur Definition verwendete Parameter}.}
 \label{fig:parameters}
 \end{figure}
 In der Regel gilt $m < n$, d.h. es müssen \textit{Items} gestapelt werden.
 Außerdem muss die Annahme $n \leq bm$ gelten, denn sonst ist die Instanz des Problems unzulässig,
 weil es mehr \textit{Items} als Positionen gibt.\newline
-Für jedes \textit{Item} $i \in I$ ist dessen Originalposition $O_i$ in x- und y-Koordinaten gegeben.
+Für jedes \textit{Item} $i \in I$ ist dessen Originalposition $O_i$ in $x$- und $y$-Koordinaten gegeben.
 
 \textit{Items}, die in einem \textit{Stack} platziert werden, sind durch ein Tupel $(i_k, ..., i_1)$ definiert, wobei
 $i_\lambda$ das \textit{Item} auf \textit{Level} $\lambda$ beschreibt. $\lambda = 1$ beschreibt den \textit{Ground-Level}.
@@ -84,27 +83,12 @@ Instanzen können Stacking-Restriktionen $s_{ij}$ enthalten, die angeben, ob ein
 werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
 Ein Tupel ist zulässig, wenn $k \leq b$ und $s_{i_{\lambda + 1}, i_\lambda} = 1 \quad \forall \quad \lambda = 1, ..., k - 1$.
 D.h. ein Tupel ist dann zulässig, wenn die \textit{Stack}-Kapazität eingehalten wird und alle \textit{Items}, die aufeinander gestapelt sind,
-nicht den Stacking-Restriktionen widersprechen, die in Kapitel \ref{stacking_restrictions} erläutert werden.
+nicht den Stacking-Restriktionen widersprechen, die in Kapitel \ref{sec:stacking_restrictions} erläutert werden. Außerdem müssen sämtliche \textit{Item}-\textit{Stack}-Zuweisungen den Placement-Restriktionen entsprechen, die in Kapitel \ref{sec:placement_restrictions} thematisiert werden.
 
 \textbf{Formulierung des Problems}\newline
 Gegeben sei eine Menge $I = \{1, ..., n\}$ von \textit{Items} und eine Menge $Q = \{1, ..., m\}$ von \textit{Stacks} mit einer \textit{Stack}-Kapazität von $b$. Außerdem seien \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ gegeben.
 Das Ziel ist nun, jedes \textit{Item} $i \in I$ genau einem \textit{Stack} $q \in Q$ zuzuweisen, wobei die \textit{Stacking Constraints} $s_{ij}$,
-die Placement Constraints $t_{iq}$ und die Stack-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Das Zulässigkeitsproblem}
-\label{sec:decision_problem}
-
-Die simpelste Variante des Storage Loading Problems ist ein Zulässigkeitsproblem, welches die Frage stellt, ob sämtliche Items der Storage Area zugewiesen werden können, sodass alle Nebenbedingungen respektiert werden.
-Diese Nebenbedingungen beziehen sich z.B. auf die Stack Kapazität, die Stacking Constraints, ein Gewichtslimit pro Stack oder auch
-Restriktionen bezüglich der Position.\newline
-Sollte dies möglich sein, so ist häufig das Ziel, jedes Item einer zulässigen Position zuzuweisen.
-Diese Position zeichnet sich durch einen Stack-Index und einen Level innerhalb des Stacks aus.
-Dabei kann z.B. eine der in Abb. \ref{fig:objective_functions} dargestellten Zielfunktionen optimiert werden, was jedoch bereits über
-das Zulässigkeitsproblem hinausgeht.
+die \textit{Placement Constraints} $t_{iq}$ und die \textit{Stack}-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -113,16 +97,17 @@ das Zulässigkeitsproblem hinausgeht.
 \section{Transportkosten}
 \label{sec:transport_costs}
 Die Transportkosten beziehen sich auf die Kosten, die bei der Verladung der \textit{Items} in die \textit{Storage-Area} entstehen
-und sind praktisch zum Beispiel durch Kranbetriebskosten, Wartezeiten oder auch Arbeitszeiten motiviert.\newline
-Jeder Stack $q$ besitzt eine fixierte Position $F_q$ in der Storage-Area. Außerdem besitzt jedes Item $i$ eine gegebene
-Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird. Die Kosten ergeben sich aus der Manhattan-Distanz zwischen
-Item- und zugewiesener Stack-Position, da diese der Kranbewegung entspricht. In Abb. \ref{fig:costs} ist dieser Sachverhalt visualisiert.
+und sind praktisch zum Beispiel durch Kranbetriebskosten, Wartezeiten oder Arbeitszeiten motiviert.\newline
+Jeder \textit{Stack} $q \in Q$ besitzt eine fixierte Position $F_q$ in der \textit{Storage-Area}.
+Außerdem besitzt jedes \textit{Item} $i \in I$ eine gegebene Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird.
+Die Kosten ergeben sich aus der Manhattan-Distanz zwischen \textit{Item}- und zugewiesener \textit{Stack}-Position, da diese der Kranbewegung entspricht. In Abb. \ref{fig:costs} ist ein Beispielszenario visualisiert, in welchem die \textit{Items} auf Zügen geliefert und dann durch Kräne auf die ihnen zugewiesenen \textit{Stack}positionen in der \textit{Storage-Area} verladen werden.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{img/costs.png}
-\caption{Beispielszenario}
+\caption{Schematische Darstellung eines Bahn-Terminals \cite{Briskorn2018}.}
 \label{fig:costs}
 \end{figure}
 Die Transportkosten werden in einer Matrix $C = (c_{iq})_{n \times m}$ kodiert, \newline wobei $c_{iq} \coloneqq d_{man}(O_i, F_q)$.
+D.h. der Eintrag an der Stelle $c_{iq}$ entspricht den Kosten für den Transport des \textit{Items} $i$ in den \textit{Stack} $q$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -193,9 +178,10 @@ als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarr
   \caption{\textsc{Stacking Constraints interpretiert als Matrix bzw. Graph.}}
   \label{fig:matrix_to_graph}
 \end{figure}
-\textit{Stacking Constraints} können transitiv sein. Ist dies der Fall, so gilt folgendes:\newline
+In dieser Arbeit werden ausschließlich transitive \textit{Stacking Constraints} betrachtet, d.h.:\newline
 Wenn \textit{Item} $i$ auf \textit{Item} $j$ und \textit{Item} $j$ auf \textit{Item} $h$ gestapelt werden darf,
 so darf auch \textit{Item} $i$ auf \textit{Item} $h$ gestapelt werden.\newline
+Diese Eigenschaft ist auch in der Praxis häufig gegeben.
 Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was bedeutet, dass diese Restriktionen eine totale Ordnung auf allen \textit{Items} definieren.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,32 +191,31 @@ Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigensc
 \subsection{Placement Restriktionen}
 \label{sec:placement_restrictions}
 
-Die im Folgenden als \textit{Placement Constraints} bezeichneten Einschränkungen bezüglich der Position eines Items resultieren z.B.
-aus der Länge oder dem Gewicht der Items und den Eigenschaften der Stacks oder auch durch spezielle Anforderungen der Items wie
-Kühlcontainer, die eine Energiequelle benötigen. Tendenziell sind dabei mehr Item-Stack-Zuweisungen erlaubt als verboten.
-Diese Placement-Constraints werden nun allerdings nicht direkt implementiert, sondern indirekt über hohe Kostenwerte.\newline
+Die im Folgenden als \textit{Placement Constraints} bezeichneten Einschränkungen bezüglich der Position eines \textit{Items} resultieren z.B.
+aus der Länge oder dem Gewicht der \textit{Items} und den Eigenschaften der \textit{Stacks}. Es gibt allerdings auch \textit{Items} mit speziellen Anforderungen, z.B. Kühlcontainer, die eine Energiequelle benötigen. Solche \textit{Items} können dann nur \textit{Stacks} mit entsprechender Konfiguration zugewiesen werden. Tendenziell sind dabei mehr \textit{Item}-\textit{Stack}-Zuweisungen erlaubt als verboten. Diese \textit{Placement Constraints} werden nun allerdings nicht direkt implementiert, sondern indirekt über hohe Kostenwerte.
+\newline
 
-Zunächst werden die Placement-Constraints in einer Binärmatrix $\boldsymbol{T} = (\boldsymbol{t_{iq}})_{n \times m}$ kodiert, wobei:\newline
-$
-    \boldsymbol{t_{iq}} =
+Zunächst werden die \textit{Placement Constraints} in einer Binärmatrix $T = (t_{iq})_{n \times m}$ kodiert, wobei:\newline
+\[
+    t_{iq} =
 \begin{cases}
-    1, & \text{wenn Item $\boldsymbol{i}$ in Stack $\boldsymbol{q}$ platziert werden darf }\\
+    1, & \text{wenn \textit{Item} $i$ in \textit{Stack} $q$ platziert werden darf }\\
     0, & \text{sonst}
 \end{cases}
-$
-\\[20pt]
-
+\]
 Diese Matrix wird jedoch nicht direkt verwendet, um die Restriktionen zu implementieren. Stattdessen wird
-die Transportkosten-Matrix $C$ nun wie folgt erweitert.
-
-Für die Transportkosten-Matrix $\boldsymbol{C} = (\boldsymbol{c_{iq}})_{n \times m}$ gilt:\newline
-$
-    \boldsymbol{c_{iq}} =
+die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, die in Abschnitt \ref{sec:transport_costs} eingeführt wurde, nun wie folgt erweitert.
+\[
+    c_{iq} =
 \begin{cases}
-    d_{man}(\boldsymbol{O_i}, \boldsymbol{F_q}), & \text{wenn $\boldsymbol{t_{iq}} = 1$}\\
+    d_{man}(O_i, F_q), & \text{wenn $t_{iq} = 1$}\\
     \infty, & \text{sonst}
 \end{cases}
-$
+\]
+Der Eintrag an der Stelle $c_{iq}$ enthält also nur noch dann die tatsächlichen Transportkosten, wenn die
+entsprechende \textit{Item}-\textit{Stack}-Zuweisung die \textit{Placement Constraints} respektiert und sonst $\infty$.
+
+Die \textit{Placement Constraints} gelten als verletzt, wenn eine Lösung eine \textit{Item}-\textit{Stack}-Zuweisung der Kosten $\infty$ enthält.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -239,16 +224,14 @@ $
 \section{Problemstellungen}
 \label{sec:problem_settings}
 
+In diesem Kapitel werden konkret die Problemstellungen eingeführt, die im Folgenden heuristisch gelöst werden.
+Es werden die \textit{Stack}-Kapazitäten $b=2, b=3 $ und $ b=4$ betrachtet, die besonders in Szenarien aus der Praxis, in denen
+Container gestapelt werden, von Interesse sind.
+
 \subsection{Komplexität}
 \label{sec:complexity}
 
-In diesem Kapitel werden konkret die Problemstellungen eingeführt, die im Folgenden heuristisch gelöst werden.
-Es werden die Stack-Kapazitäten $b=2, b=3 $ und $ b=4$ betrachtet, die besonders in Szenarien aus der Praxis, in denen
-Container gestapelt werden, von Interesse sind.
-
-Wie \cite{Bruns2015} zeigte, handelt es sich bei dem Zulässigkeitsproblem mit $b=3$ und gegebenen $s_{ij}$ um
-ein NP-vollständiges Problem. Erst kürzlich wurde außerdem gezeigt, dass auch $b=2$ mit gegebenen $s_{ij}$ und $t_{iq}$
-NP-vollständig ist. Somit sind auch die entsprechenden Stacking-Probleme, die zusätzlich die Transportkosten minimieren, NP-vollständig.
+Wie \cite{Bruns2015} zeigte, handelt es sich bei dem Zulässigkeitsproblem mit einer \textit{Stack}-Kapazität von $b=3$ und gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ um ein stark NP-vollständiges Problem. Erst kürzlich wurde außerdem gezeigt, dass auch das Problem mit einer \textit{Stack}-Kapazität von $b=2$ mit gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ NP-vollständig ist. Diese Erkenntnis wurde allerdings noch nicht veröffentlicht. Somit sind auch die entsprechenden Stacking-Probleme, bei denen zusätzlich die Transportkosten minimiert werden, NP-vollständig. Für eben diese Probleme werden in dieser Arbeit heuristische Lösungsansätze präsentiert.
 
 \subsection{Instanzgrößen}
 \label{sec:instance_sizes}
@@ -259,13 +242,15 @@ Die betrachteten Testinstanzen werden in drei Kategorien unterteilt:
   \item mittel (\textbf{m}) ($\approx 300$ Items)
   \item groß (\textbf{l}) ($\approx 500$ Items)\newline
 \end{itemize}
-Dies scheint auch in der Literatur der Rahmen zu sein, in dem sich solche Stacking-Probleme typischerweise bewegen.
+Dies scheint auch in der Literatur der Rahmen zu sein, in dem sich praktisch motivierte Stacking-Probleme typischerweise bewegen.
 
 \subsection{Ziel}
 \label{sec:objective}
 
-Sämtliche Items sollen möglichst günstig eingelagert werden, d.h. die Zielfunktion entspricht der Minimierung der Transportkosten.
-Dabei haben Zulässigkeit und geringe Laufzeit allerdings Priorität.
+Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine möglichst günstige Einlagerung
+sämtlicher \textit{Items}, d.h. die Zielfunktion entspricht der Minimierung der Transportkosten.
+Dabei haben Zulässigkeit und geringe Laufzeit Priorität.
+Eine Lösung wird dann als zulässig betrachtet, wenn sämtliche \textit{Items} unter Berücksichtigung der \textit{Stacking}- und \textit{Placement-Constraints} sowie der \textit{Stack}-Kapazität, eingelagert wurden.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -275,33 +260,33 @@ Dabei haben Zulässigkeit und geringe Laufzeit allerdings Priorität.
 \section{Testdaten-Generierung}
 \label{sec:test_data}
 
-In diesem Kapitel geht es um die durchaus interessante Frage danach, wie realistische Test-Instanzen aussehen können.
-Zunächst einmal werden pro Konfiguration 20 Instanzen verwendet um eine Vergleichbarkeit zu ermöglichen.
-Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl
-der zur Verfügung stehenden Stacks $m$ verwendet: $m$ = $\ceil{n / b}$ + $20 \%$.\newline
-Bei einer Stackanzahl von $m$ = $\ceil{n / b}$ gäbe es überhaupt keinen Spielraum bei der Itemplatzierung. Ein Spielraum von $20 \%$
-ist durchaus gering und könnte in weiteren Betrachtungen erhöht werden.
+Um die entwickelten Lösungsverfahren testen und vergleichen zu können, mussten Test-Instanzen generiert werden,
+die im Idealfall nicht allzu weit von der Realität entfernt sein sollten.
+Pro Konfiguration werden 20 Instanzen generiert, um eine Vergleichbarkeit zu ermöglichen.
+Die Anzahl der \textit{Items} $n$ sowie die \textit{Stack}-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl
+der zur Verfügung stehenden \textit{Stacks} $m$ verwendet. Es gilt $m$ = $\ceil{n / b}$ + $20 \%$.\newline
+Bei einer \textit{Stack}anzahl von $m$ = $\ceil{n / b}$ gäbe es überhaupt keinen Spielraum bei der \textit{Item}platzierung. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch nicht lösbar. Daher wurde ein Spielraum
+von $20 \%$ definiert, der durchaus gering ist und in weiteren Betrachtungen erhöht werden könnte.
 
 \textbf{Stacking-Constraint-Generierung}\newline
 
-Es wurden zwei Varianten der Stacking-Constraint-Generierung implementiert, die im Folgenden erläutert werden.
+Es wurden zwei Varianten der \textit{Stacking-Constraint}-Generierung implementiert, die jeweils spezifische Vor- und Nachteile aufweisen.
 
 \textbf{Variante 1}\newline
-Die Stacking-Constraint Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt.
-Anschließend werden die 1-Einträge, die aus Transitivität folgen, ergänzt.
+Die \textit{Stacking-Constraint}-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt.
+Anschließend werden die $1$-Einträge, die aus Transitivität folgen, ergänzt.
 
 \textbf{Variante 2}\newline
-Für alle $n$ Items wird eine zufällige Länge und Breite generiert. Item $i$ kann auf Item $j$ platziert werden,
+Für alle $n$ \textit{Items} wird eine zufällige Länge und Breite generiert. \textit{Item} $i$ kann auf \textit{Item} $j$ platziert werden,
 wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq l_j$ und $w_i \leq w_j$.
-Items $i, j$ sind in beide Richtungen stackbar, wenn $l_i = l_j$ und $w_i = w_j$.
+Zwei \textit{Items} $i, j$ sind in beide Richtungen stackbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
 
 Variante 2 scheint realitätsnäher zu sein und wird deshalb zunächst bevorzugt. Aufgrund der Tatsache, dass Variante 2 jedoch stets
-zu einer 1-Quote von ca. 25\% führt und diese mit Variante 1 sehr gut konfigurierbar ist, wird Variante 1 jedoch noch nicht vollständig verworfen.
-(TODO: Grund ergänzen...)
+zu einem Anteil von $1$-Einträgen in der Matrix von ca. $25\%$ führt und dieser mit Variante 1 sehr gut konfigurierbar ist, wird Variante 1 nicht vollständig verworfen. (TODO: Grund ergänzen...)
 
-Bei den Placement-Constraints sind in den betrachteten Tests 70\% der Item-Stack-Zuweisungen erlaubt.
+Bei den Placement-Constraints sind in den betrachteten Tests $70\%$ der \textit{Item}-\textit{Stack}-Zuweisungen erlaubt.
 Zur Transportkostenberechnung wird wie in Abschnitt \ref{sec:transport_costs} erläutert, die Manhattan-Metrik verwendet. Dazu sind
-entsprechend die Item- und Stackpositionen als x- und y-Koordinaten gegeben. Auch die entsprechenden Längen und Breiten sowie die Distanz zwischen Storage-Area und den Fahrzeug-Lanes ist jeweils gegeben.
+entsprechend die \textit{Item}- und \textit{Stack}positionen als $x$- und $y$-Koordinaten gegeben. Auch die entsprechenden Längen und Breiten sowie die Distanz zwischen \textit{Storage-Area} und den Fahrzeug-Lanes ist jeweils gegeben.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -310,21 +295,46 @@ entsprechend die Item- und Stackpositionen als x- und y-Koordinaten gegeben. Auc
 \section{MIP-Formulierungen}
 \label{sec:mip_formulations}
 
-In diesem Abschnitt werden die MIP-Formulierungen eingeführt, die zum experimentellen Vergleich genutzt werden.
-Es geht darum, mit den MIP-Formulierungen die optimalen Zielfunktionswerte der Instanzen zu ermitteln, um dann
-zu ermitteln, wie weit die Heuristiken davon abweichen. Des Weiteren geht es auch um einen Vergleich der MIP-Formulierungen
-untereinander.
+In diesem Abschnitt werden MIP-Formulierungen eingeführt, die zum experimentellen Vergleich genutzt werden.
+Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit der die Qualität der Lösungen der Heuristiken beurteilt werden kann. Des Weiteren geht es auch um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander. Zunächst wird in Abschnitt \ref{sec:mip_definition} eine kurze Einführung zu MIPs geliefert.
+
+\subsection{Mixed Integer Linear Programming (MIP)}
+\label{sec:mip_definition}
+
+Viele kombinatorische Optimierungsprobleme lassen sich als lineare bzw. ganzzahlige lineare Programme
+formulieren. Ein lineares Programm zeichnet sich dadurch aus, dass die Zielfunktion eine lineare Funktion
+in Abhängigkeit von den Entscheidungsvariablen ist und alle Nebenbedingungen in Form von linearen Gleichungen
+und Ungleichungen für die Variablen gegeben sind. Für diese Probleme gibt es ein sehr effizientes
+Lösungsverfahren - das Simplexverfahren. Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm mit kontinuierlichen und ganzzahligen Variablen. Im Gegensatz zu kontinuierlichen linearen Programmen ist die Lösung von ganzzahligen linearen Programmen deutlich schwieriger. Sie gehören zu den NP-schwierigen Problemen und können nur mit deutlich aufwendigeren Algorithmen
+(z.B. Branch \& Bound) gelöst werden. Oft löst man zunächst die kontinuierliche Relaxation eines ganzzahligen linearen Programms.
+Da sich dadurch der Lösungsraum vergrößert, erhält man auf diese Weise eine obere Schranke für den optimalen Zielfunktionswert. \cite{Knust2017}
+
+In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
+um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
+zu lösen. Es handelt sich dabei um eine u.a. auf dem Simplexverfahren basierende Implementation von IBM. \cite{CPLEX2015}
 
 \subsection{Bin-Packing-Formulierung}
 \label{sec:bin_packing_formulation}
 
+Die Bin-Packing-Formulierung orientiert sich dem Namen nach am klassichen \textsc{Bin-Packing} Problem, bei dem es darum geht,
+eine Menge von Objekten so auf eine Menge von Behältern zu verteilen, dass die Behälterkapazitäten eingehalten werden.
+Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
+die diesen Behältern zugeordnet werden, wobei die Stack- also Behälterkapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
+
+$G = (I, A)$ sei ein transitiver Stacking-Constraint-Graph, bei dem eine Kante $i \rightarrow j \in A$ bedeutet, dass $i$ direkt auf $j$ gestapelt werden darf. Außerdem seien Items $I = \{1, ..., n\}$ und Stacks $Q = \{1, ..., m\}$ mit einer Kapazität von $b$ gegeben.
+
 \begin{gather}
-\boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \\
-\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \\
-\quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \\
-\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin A \\
-\thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace
+\boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
+\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
+\quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \label{bin_packing_line_three} \\
+\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin A \label{bin_packing_line_four} \\
+\thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace \label{bin_packing_line_five}
 \end{gather}
+
+(\ref{bin_packing_line_one}) definiert die Zielfunktion, die der Minimierung der Transportkosten entspricht. In (\ref{bin_packing_line_two}) wird
+gefordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass die Stack-Kapazität eingehalten werden muss und (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stackbar sind, nicht Teil desselben Stacks sind. Außerdem handelt es sich laut (\ref{bin_packing_line_five}) bei den $x_{iq}$ um Binärvariablen, bei denen $x_{iq} = 1$ bedeutet, dass Item $i$ Stack $q$ zugewiesen wird und $x_{iq} = 0$, wenn dies nicht der Fall ist.
+
+
 
 \subsection{3-Index-Formulierung}
 \label{sec:three_idx_formulation}
