@@ -303,11 +303,11 @@ eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formul
 \label{sec:mip_definition}
 
 Viele kombinatorische Optimierungsprobleme lassen sich als lineare Programme formulieren, die sich dadurch
-auszeichnen, dass die Zielfunktion eine lineare Funktion in Abhängigkeit von den Entscheidungsvariablen ist 
+auszeichnen, dass die Zielfunktion eine lineare Funktion in Abhängigkeit von den Entscheidungsvariablen ist
 und alle Nebenbedingungen in Form von linearen Gleichungen und Ungleichungen vorliegen. Für diese Probleme gibt es mit dem Simplexverfahren ein sehr effizientes Lösungsverfahren.\cite{Knust2017}
 
 Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm, welches kontinuierliche und ganzzahligen Variablen
-enthält. Im Gegensatz zur kontinuierlichen Variante ist die Lösung von ganzzahligen linearen Programmen NP-schwer. 
+enthält. Im Gegensatz zur kontinuierlichen Variante ist die Lösung von ganzzahligen linearen Programmen NP-schwer.
 Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle Solver in weniegn Minuten gelöst werden können, gilt dies nicht für ganzzahlige lineare Programme. Diese können nur mit deutlich zeitaufwändigeren Algorithmen wie Branch \& Bound gelöst werden.\cite{Brucker2006}
 
 In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
@@ -414,10 +414,13 @@ Wie bereits erwähnt, ist garantiert, dass eine Lösung, die die Stacking Constr
 \label{sec:constructive_heuristics}
 
 In diesem Abschnitt werden die entwickelten konstruktiven Heuristiken vorgestellt.
-Zunächst werden drei wichtige Konzepte vorgestellt, in \ref{sec:digression_mcm} das Maximum-Cardinality-Matching,
-in \ref{sec:digression_mwpm} das Minimum-Weight-Perfect-Matching und in \ref{sec:digression_bipartite_graph} ein
-bipartiter Graph. In \ref{sec:two_cap_heuristic} geht es dann um die konstruktive Heuristik für eine Stack-Kapazität
-von $b=2$ und anschließend...
+Zunächst werden drei wichtige Konzepte eingeführt, die in den Heuristiken Verwendung finden.
+In \ref{sec:digression_mcm} Maximum-Cardinality-Matchings,
+in \ref{sec:digression_mwpm} Minimum-Weight-Perfect-Matchings und in \ref{sec:digression_bipartite_graph}
+bipartite Graphen. Anschließend geht es in \ref{sec:two_cap_heuristic} um die konstruktive Heuristik für eine Stack-Kapazität
+von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen Vergleich der Solver für eben diese Stack-Kapazität.
+In \ref{sec:three_cap_heuristic} geht es dann um die konstruktive Heuristik für eine Stack-Kapazität von $b=3$, auf
+die erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
 
 \subsection{Exkurs: Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
@@ -540,23 +543,43 @@ Es lassen sich folgende Äquivalenzen festhalten:
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
 
-\begin{itemize}
-  \item Stacking-Constraint-Graph generieren
-  \item \textsc{\textbf{MCM}} berechnen, Kanten als Item-Paare interpretieren
-  \item Bipartiten Graph generieren:
-  \begin{enumerate}
-    \item Items (Item-Paare, Unmatched-Items)
-    \item Stacks
-  \end{enumerate}
-  \item \textsc{\textbf{MWPM}} berechnen, Kanten als Stackzuweisungen interpretieren
-  \item Ggf. Reihenfolge der Items innerhalb der Stacks anpassen
-\end{itemize}
+In diesem Abschnitt wird die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$
+vorgestellt.
+
+Zunächst wird ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
+enthält eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ in mindestens einer Richtung stackbar sind, d.h.
+wenn $s_{ij} + s_{ji} \geq 1$.
+
+Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Item-Paare, so bekommt man die größtmögliche Anzahl
+von Item-Paaren. Im Grunde kann man nun bereits jede Kante des \textsc{MCM} als Stack betrachten, welcher die beiden Knoten, die durch
+die Kante verbunden werden, als Items enthält. Des Weiteren werden die Items, die nicht gematcht werden, auf dem Ground-Level platziert.
+Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet. Eine zulässige Lösung mit maximal $m$ Stacks existiert nur dann,
+wenn die Anzahl der Kanten im Matching plus der Anzahl der nicht gematchten Knoten nicht größer ist als $m$. Da die Anzahl der Knoten $n$ beträgt, kann ein \textsc{MCM} in der Laufzeit $O(n^{2.5})$ berechnet werden, wie Even und Kariv bereits 1975 zeigte.
+
+Dies entspricht dem Vorgehen aus dem Beweis zu Theorem 1 aus dem Paper "Complexity Results for Storage Loading Problems with Stacking Constraints",
+welches 2015 von Bruns et al. veröffentlicht wurde.
+
+Augrund der Placement Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
+Items- und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht idealerweise einer Zuweisung, in der sämtliche Items einem Stack zugeordnet werden. Dafür wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E)$ generiert, wobei die Partition $V_1$ den Items, bestehend aus Item-Paaren und Unmatched Items, entspricht und $V_2$ den zur Verfügung stehenden Stacks.
+
+Für alle $i \in V_1$ und $q \in V_2$ wird nun eine Kante $\{i, q\}$ eingeführt. Das Gewicht $c_{iq}$ dieser Kante ist definiert als die Kosten
+des Transports von Item $i$ von seiner Originalposition $O_i$ zum Stack $q$.
+
+Auf diesem Graph wird wiederum ein \textsc{MWPM} berechnet,
+bei dem die Kanten als Stackzuweisungen interpretiert werden. Abschließend muss ggf. die Reihenfolge innerhalb der Stacks angepasst werden,
+da für die Item-Paare bisher nur sichergestellt ist, dass sie kompatibel sind, die Reihenfolge wurde noch nicht festgelegt.
 
 \textbf{Beispiel}
-$\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \quad\quad\quad \boldsymbol{m} := 4$
+
+$I := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad b := 2 \quad\quad\quad m := 4$
+
+Zunächst wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph für die gegebenen Items generiert.
+Darauf wird das in \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet, wobei Item 0 unmatched ist.
 \begin{figure}[H]
+  \centering
+    \begin{subfigure}[b]{0.4\textwidth}
     \centering
-    \begin{tikzpicture}[scale=0.8, transform shape, node distance=3cm]
+    \begin{tikzpicture}[scale=0.75, transform shape, node distance=3cm]
         \node[state] (G) [thick] {$\boldsymbol{6}$};
         \node[state] (B) [thick, above left of=G] {$\boldsymbol{1}$};
         \node[state] (C) [thick, above right of=G] {$\boldsymbol{2}$};
@@ -576,13 +599,13 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
               (F) edge [thick] node {} (E)
               (E) edge [thick] node {} (G);
     \end{tikzpicture}
-    \caption*{\textsc{Stacking-Constraint-Graph}}
-\end{figure}
-
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
+    \caption{\textsc{Stacking-Constraint-Graph}}
+    \label{fig:stacking_const_graph_example_b=2_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.75, transform shape, node distance=3cm]
         \node[state] (G) [thick] {$\boldsymbol{\textcolor{mygreen}{6}}$};
         \node[state] (B) [thick, above left of=G] {$\boldsymbol{\textcolor{mygreen}{1}}$};
         \node[state] (C) [thick, above right of=G] {$\boldsymbol{\textcolor{mygreen}{2}}$};
@@ -602,9 +625,15 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
               (F) edge [thick, mygreen] node {} (E)
               (E) edge [thick] node {} (G);
     \end{tikzpicture}
-  \caption*{\textsc{MCM (Item $0$ unmatched)}}
+    \caption{\textsc{MCM (Item $0$ unmatched)}}
+    \label{fig:stacking_const_graph_example_b=2_b}
+    \end{subfigure}
+    \caption{}
+    \label{fig:stacking_const_graph_example_b=2}
 \end{figure}
 
+Die Kanten des in \ref{fig:stacking_const_graph_example_b=2_b} dargestellten \textsc{MCM} werden nun wie in \ref{fig:item_pairs}
+abgebildet, als Item-Paare interpretiert.
 
 \begin{figure}[H]
 \centering
@@ -615,8 +644,13 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
         \node[state] (D) [thick, right of=C] {\textcolor{red}{$\boldsymbol{0}$}};
         \path ;
   \end{tikzpicture}
-  \caption*{\textsc{Kanten bilden Item-Paare}}
+  \caption{\textsc{Resultierende Item-Paare.}}
+  \label{fig:item_pairs}
 \end{figure}
+
+Da nun noch die Zuweisung der Item-Paare und Unmatched Items zu Stacks fehlt, wird der vollständig bipartite Graph
+in Abb. \ref{fig:bipartite_graph} generiert. In Abb. \ref{fig:mwpm} sieht man das darauf berechnete \textsc{MWPM},
+welches wie in \ref{fig:stacking_solution} dargestellt, als zulässige Stack-Zuweisung interpretiert werden kann.
 
 \begin{figure}[H]
 \begin{subfigure}[b]{0.45\textwidth}
@@ -657,7 +691,8 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
           (D) edge [thick] node {} (H)
           (D) edge [thick] node {} (I);
   \end{tikzpicture}
-  \caption*{\textsc{vollständig bipartit}}
+  \caption{\textsc{vollständig bipartit}}
+  \label{fig:bipartite_graph}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.45\textwidth}
@@ -679,8 +714,10 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
           (C) edge [thick] node {} (G)
           (D) edge [thick] node {} (F);
   \end{tikzpicture}
-  \caption*{\textsc{MWPM}}
+  \caption{\textsc{MWPM}}
+  \label{fig:mwpm}
 \end{subfigure}
+\caption{}
 \end{figure}
 
 \begin{figure}[H]
@@ -693,23 +730,102 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad \boldsymbol{b} := 2 \
     \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
     & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} \\
     \end{tabular}}
-    \caption*{\textsc{Zulässige Zuweisungen (ggf. Item-Reihenfolge korrigieren)}}
+    \caption{\textsc{Zulässige Zuweisungen (ggf. Item-Reihenfolge korrigieren)}}
+    \label{fig:stacking_solution}
 \end{figure}
+
+Zuletzt muss ggf. noch die Reihenfolge innerhalb der Stacks angepasst werden, da es sich bisher nur um zulässige Zuweisungen handelt.
+Da jedoch sichergestellt ist, dass die Items und Item-Paare kompatibel sind, ist dies trivial durch Anwendung des Algorithmus
+\ref{alg:algo1} möglich.
+
+\subsection{Vergleich der $b = 2$ Solver}
+\label{sec:solver_comp_b=2}
+
+In diesem Kapitel werden die verschiedenen Solver für Instanzen mit einer Stack-Kapazität von $b=2$ miteinander verglichen.
+Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen,
+die Laufzeit und die prozentuale Abweichung vom Optimum.
+
+Die MIP-Formulierungen wurden mit dem Java-Interface von CPLEX 12.8.0 implementiert.
+Dabei wurde CPLEX über den Parameter \textsc{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
+Priorität vor der Optimalität hat.\cite{IBM_DOC}
+
+Die in dieser Arbeit entwickelten Heuristiken wurden ebenfalls in der Programmiersprache Java implementiert.
+
+Sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
 
 \pagebreak
 
-\subsection{Vergleich der $b = 2$ Solver (s)}
-\label{sec:solver_comp_b=2_s}
+\textbf{Kleine Instanzen (s)}
+
+In den Diagrammen in Abb. \ref{fig:instance_cov_b=2_s} ist jeweils die Instance-Coverage der einzelnen Solver dargestellt.
+In \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil an gelösten Instanzen pro Solver bei einem Zeitlimit
+von $1s$ pro Instanz, in \ref{fig:instance_cov_b=2_s_b} bei einem Zeitlimit von $3s$ und in \ref{fig:instance_cov_b=2_s_c} $5s$.
+
+Wie bereits in Kapitel \ref{sec:test_data} erläutert, wurden jeweils 20 Instanzen pro Konfiguration zu Grunde gelegt.
+
+Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist, dass sämtliche Instanzen bereits bei einem Zeitlimit von $5s$
+von allen Solvern gelöst werden, was darauf hindeutet, dass der Bedarf für eine Laufzeitverbesserung durch eine Heuristik auch
+aus praktischer Perspektive hier gering sein sollte.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=2_s_1s.png}
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=2_s_3s.png}
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=2_s_5s.png}
-\caption*{\textsc{Zeitlimit} $1s$ $\quad\quad\quad\thinspace\thinspace\thinspace\thinspace\thinspace$ \textsc{Zeitlimit} $3s$
-$\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad$ \textsc{Zeitlimit} $5s$}
-% \end{figure}
-% \begin{figure}[H]
+
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_s_1s.png}
+\caption{\textsc{Zeitlimit 1s}}
+\label{fig:instance_cov_b=2_s_a}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_s_3s.png}
+\caption{\textsc{Zeitlimit 3s}}
+\label{fig:instance_cov_b=2_s_b}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_s_5s.png}
+\caption{\textsc{Zeitlimit 5s}}
+\label{fig:instance_cov_b=2_s_c}
+\end{subfigure}
+
+\caption{\textsc{Instance-Coverage der $b=2$ Solver (s)}}
+\label{fig:instance_cov_b=2_s}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_s_5s.png}
+\caption{\textsc{Laufzeiten bei 5s Zeitlimit}}
+\label{fig:b=2_s_runtimes}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_s_5s.png}
+\caption{\textsc{Kosten bei 5s Zeitlimit}}
+\label{fig:b=2_s_costs}
+\end{subfigure}
+\caption{}
+\end{figure}
+
+In Abb. \ref{fig:b=2_s_runtimes} sind die Laufzeiten der Heuristiken pro Instanz bei einem Zeitlimit von $5s$ aufgetragen. Man erkennt, dass
+die 3-Index-Formulierung deutlich schneller ist als die Bin-Packing-Formulierung und, dass die Heuristik beide MIP-Formulierungen noch einmal deutlich unterbietet. Aufgrund der Tatsache, dass CPLEX nur dann vor dem Zeitlimit terminiert, wenn die Instanz optimal gelöst wurde, ist klar
+ersichtlich, dass die 3-Index-Formulierung sämtliche Instanzen nach etwa $1s$ optimal löst während die Bin-Packing-Formulierung in wenigen Fällen noch durch das Zeitlimit gestoppt wird.
+
+Die exakten Ergebnisse der MIP-Formulierungen sind den Tabellen in Abb. \ref{fig:table} zu entnehmen.
+\textquote{Optimal} bezeichnet den Anteil der Instanzen, die optimal gelöst wurden. Bei der \textquote{Laufzeit} handelt
+es sich um die durchschnittliche Laufzeit in Sekunden und \textquote{Abweichung} gibt die durchschnittliche prozentuale Abweichung
+vom Optimum an.
+
+\begin{figure}[H]
+\centering
+
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
@@ -746,16 +862,24 @@ $\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad$ \textsc{Zeit
     \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.4 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \end{subfigure}
+
+\caption{}
+\label{fig:table}
 \end{figure}
+
+Da die Zeitlimits aufgrund der geringen Laufzeit für die Heuristik keine Rolle spielen, kommt diese stets zum selben Ergebnis.
+Sie weicht durchschnittlich um $2.0 \%$ vom Optimum ab und benötigt dafür eine Laufzeit von $0.02s$.
+
+Da die 3-Index-Formulierung sämtliche Instanzen mit einer durchschnittlichen Laufzeit von $1.1s$ optimal löst, ist der Bedarf für
+eine Laufzeitverbesserung durch eine Heuristik aus praktischer Perspektive vermutlich eher gering. Dessen ungeachtet kommt die
+Heuristik mit einer sehr geringen Laufzeit zu guten Ergebnissen.
+
 \centering
 \textbf{2Cap-Heuristik}\linebreak
 \centering
 Abweichung vom Optimum: \O $\thinspace \boldsymbol{2.0 \%}$\linebreak
 \centering
 Laufzeit: \O $\thinspace \boldsymbol{0.02 s}$
-
-\subsection{Vergleich der $b = 2$ Solver (m)}
-\label{sec:solver_comp_b=2_m}
 
 \begin{figure}[H]
 \centering
@@ -810,9 +934,6 @@ Abweichung vom Optimum: \O $\thinspace \boldsymbol{0.8 \%}$\linebreak
 Laufzeit: \O $\thinspace \boldsymbol{0.1 s}$
 
 \pagebreak
-
-\subsection{Vergleich der $b = 2$ Solver (l)}
-\label{sec:solver_comp_b=2_l}
 
 \begin{figure}[H]
 \centering
@@ -1028,8 +1149,8 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{
 
 \pagebreak
 
-\subsection{Vergleich der $b = 3$ Solver (s)}
-\label{sec:solver_comp_b=3_s}
+\subsection{Vergleich der $b = 3$ Solver}
+\label{sec:solver_comp_b=3}
 
 \begin{figure}[H]
 \centering
@@ -1082,9 +1203,6 @@ $\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{
 Abweichung vom Optimum: \O $\thinspace \boldsymbol{2.65 \%}$\linebreak
 \centering
 Laufzeit: \O $\thinspace \boldsymbol{0.01s}$
-
-\subsection{Vergleich der $b = 3$ Solver (m)}
-\label{sec:solver_comp_b=3_m}
 
 \begin{figure}[H]
 \centering
@@ -1139,9 +1257,6 @@ Abweichung vom Optimum: \O $\thinspace \boldsymbol{1.02 \%}$\linebreak
 Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 
 \pagebreak
-
-\subsection{Vergleich der $b = 3$ Solver (l)}
-\label{sec:solver_comp_b=3_l}
 
 \begin{figure}[H]
 \centering
