@@ -302,13 +302,13 @@ eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formul
 \subsection{Mixed Integer Linear Programming (MIP)}
 \label{sec:mip_definition}
 
-Viele kombinatorische Optimierungsprobleme lassen sich als lineare bzw. ganzzahlige lineare Programme
-formulieren. Ein lineares Programm zeichnet sich dadurch aus, dass die Zielfunktion eine lineare Funktion
-in Abhängigkeit von den Entscheidungsvariablen ist und alle Nebenbedingungen in Form von linearen Gleichungen
-und Ungleichungen für die Variablen gegeben sind. Für diese Probleme gibt es ein sehr effizientes
-Lösungsverfahren - das Simplexverfahren. Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm mit kontinuierlichen und ganzzahligen Variablen. Im Gegensatz zu kontinuierlichen linearen Programmen ist die Lösung von ganzzahligen linearen Programmen deutlich schwieriger. Sie gehören zu den NP-schwierigen Problemen und können nur mit deutlich aufwendigeren Algorithmen
-(z.B. Branch \& Bound) gelöst werden. Oft löst man zunächst die kontinuierliche Relaxation eines ganzzahligen linearen Programms.
-Da sich dadurch der Lösungsraum vergrößert, erhält man auf diese Weise eine obere Schranke für den optimalen Zielfunktionswert. \cite{Knust2017}
+Viele kombinatorische Optimierungsprobleme lassen sich als lineare Programme formulieren, die sich dadurch
+auszeichnen, dass die Zielfunktion eine lineare Funktion in Abhängigkeit von den Entscheidungsvariablen ist 
+und alle Nebenbedingungen in Form von linearen Gleichungen und Ungleichungen vorliegen. Für diese Probleme gibt es mit dem Simplexverfahren ein sehr effizientes Lösungsverfahren.\cite{Knust2017}
+
+Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm, welches kontinuierliche und ganzzahligen Variablen
+enthält. Im Gegensatz zur kontinuierlichen Variante ist die Lösung von ganzzahligen linearen Programmen NP-schwer. 
+Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle Solver in weniegn Minuten gelöst werden können, gilt dies nicht für ganzzahlige lineare Programme. Diese können nur mit deutlich zeitaufwändigeren Algorithmen wie Branch \& Bound gelöst werden.\cite{Brucker2006}
 
 In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
 um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
