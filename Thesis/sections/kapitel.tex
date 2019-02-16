@@ -1392,6 +1392,24 @@ für eine Laufzeitvebessrung durch eine Heuristik vorliegt.
 
 \begin{figure}[H]
 \centering
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_s_10s.png}
+\caption{\textsc{Laufzeiten bei 10s Zeitlimit}}
+\label{fig:b=3_s_runtimes}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_s_10s.png}
+\caption{\textsc{Kosten bei 10s Zeitlimit}}
+\label{fig:b=3_s_costs}
+\end{subfigure}
+\caption{}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
@@ -1437,14 +1455,49 @@ für eine Laufzeitvebessrung durch eine Heuristik vorliegt.
 \label{fig:mip_results_b=3_s}
 \end{figure}
 
+\textbf{Mittelgroße Instanzen (m)}
+
+In der Kategorie der mittelgroßen Instanzen wurden Zeitlimits von $10$, $20$ und $30$ Minuten betrachtet.
+In Abb. \ref{fig:instance_coverage_b=3_s} ist klar zu erkennen, dass die Bin-Packing-Formulierung erfolgsversprechender
+als die 3-Index-Formulierung ist, die selbst bei einem Zeitlimit von $30$ Minuten nur $40 \%$ der Instanzen löst.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=3_m_600s.png}
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=3_m_1200s.png}
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=3_m_1800s.png}
-\caption*{\textsc{Zeitlimit} $10min$ $\quad\quad\quad$ \textsc{Zeitlimit} $20min$ $\quad\quad\quad$ \textsc{Zeitlimit} $30min$}
-% \end{figure}
-% \begin{figure}[H]
+
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_600s.png}
+\caption{\textsc{Zeitlimit} $10min$}
+\label{}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1200s.png}
+\caption{\textsc{Zeitlimit} $20min$}
+\label{}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1800s.png}
+\caption{\textsc{Zeitlimit} $30min$}
+\label{}
+\end{subfigure}
+
+\caption{}
+\label{fig:instance_coverage_b=3_s}
+\end{figure}
+
+Wie man Abb. \ref{fig:mip_results_b=3_s} entnehmen kann, löst die Bin-Packing-Formulierung mit einer durchschnittlichen
+Laufzeit von ca. $13$ Minuten sämtliche Instanzen optimal. Daher ist diese der 3-Index-Formulierung hier klar zu bevorzugen, die bei
+einem Zeitlimit von $30$ Minuten nur $35 \%$ der Instanzen optimal löst.
+
+Die Heuristik benötigt durchschnittlich eine Laufzeit von nur $0.2s$ und weicht dabei um durchschnittlich
+$1.02 \%$ vom Optimum ab. Wie auch schon beim $b = 2$ Szenario ist dieser erhebliche Laufzeitunterschied
+vermutlich hinreichende Motivation, um diesen geringe Abweichung vom Optimalwert in Kauf zu nehmen.
+
+\begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
@@ -1455,6 +1508,8 @@ für eine Laufzeitvebessrung durch eine Heuristik vorliegt.
     \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{583.7 s}$ & \O $\thinspace \textcolor{mygreen}{554.3 s}$ \\ \hline
     \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.2 \%}$ & \O $\thinspace \textcolor{mygreen}{0.01 \%}$ \\ \hline
 \end{tabular}}
+\caption{\textsc{Zeitlimit} $10min$}
+\label{}
 \end{subfigure}
 % $\quad\quad\quad\quad$
 \begin{subfigure}[b]{0.3\textwidth}
@@ -1467,6 +1522,8 @@ für eine Laufzeitvebessrung durch eine Heuristik vorliegt.
     \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{791.4 s}$ & \O $\thinspace \textcolor{red}{795.4 s}$ \\ \hline
     \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
 \end{tabular}}
+\caption{\textsc{Zeitlimit} $20min$}
+\label{}
 \end{subfigure}
 % \end{figure}
 % \begin{figure}[H]
@@ -1480,25 +1537,65 @@ für eine Laufzeitvebessrung durch eine Heuristik vorliegt.
     \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{766.4 s}$ & \O $\thinspace \textcolor{red}{874.0 s}$ \\ \hline
     \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
 \end{tabular}}
+\caption{\textsc{Zeitlimit} $30min$}
+\label{}
 \end{subfigure}
-\end{figure}
-\centering
-\textbf{3Cap-Heuristik}\linebreak
-\centering
-Abweichung vom Optimum: \O $\thinspace \boldsymbol{1.02 \%}$\linebreak
-\centering
-Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
 
-\pagebreak
+\caption{}
+\label{fig:mip_results_b=3_m}
+\end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=3_l_1800s.png}
-\includegraphics[width=0.3\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
-\includegraphics[width=0.3\textwidth]{img/na.png}
-\caption*{\textsc{Zeitlimit} $30min$ $\quad\quad\quad$ \textsc{Zeitlimit} $45min$ $\quad\quad\quad$ \textsc{Zeitlimit} $60min$}
-% \end{figure}
-% \begin{figure}[H]
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_m_1800s.png}
+\caption{\textsc{Laufzeiten bei 30min Limit}}
+\label{fig:b=3_m_runtimes}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_m_1800s.png}
+\caption{\textsc{Kosten bei 30min Limit}}
+\label{fig:b=3_m_costs}
+\end{subfigure}
+\caption{}
+\end{figure}
+
+\pagebreak
+
+\textbf{Große Instanzen (l)}
+
+\begin{figure}[H]
+\centering
+
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_1800s.png}
+\caption{\textsc{Zeitlimit} $30min$}
+\label{fig:instance_coverage_b=3_l_a}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
+\caption{\textsc{Zeitlimit} $45min$}
+\label{fig:instance_coverage_b=3_l_b}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\includegraphics[width=1.2\textwidth]{img/na.png}
+\caption{\textsc{Zeitlimit} $60min$}
+\label{fig:instance_coverage_b=3_l_c}
+\end{subfigure}
+
+\caption{}
+\label{}
+\end{figure}
+
+\begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
@@ -1509,6 +1606,8 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
     \textbf{Laufzeit} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
     \textbf{Abweichung} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
 \end{tabular}}
+\caption{\textsc{Zeitlimit} $30min$}
+\label{}
 \end{subfigure}
 % $\quad\quad\quad\quad$
 \begin{subfigure}[b]{0.3\textwidth}
@@ -1521,6 +1620,8 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
     \textbf{Laufzeit} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
     \textbf{Abweichung} & $\textcolor{red}{---}$ &$\textcolor{red}{---}$ \\ \hline
 \end{tabular}}
+\caption{\textsc{Zeitlimit} $45min$}
+\label{}
 \end{subfigure}
 % \end{figure}
 % \begin{figure}[H]
@@ -1534,11 +1635,7 @@ Laufzeit: \O $\thinspace \boldsymbol{0.2 s}$
     \textbf{Laufzeit} & $-tbd-$ & $-tbd-$ \\ \hline
     \textbf{Abweichung} & $-tbd-$ & $-tbd-$ \\ \hline
 \end{tabular}}
+\caption{\textsc{Zeitlimit} $60min$}
+\label{}
 \end{subfigure}
 \end{figure}
-\centering
-\textbf{3Cap-Heuristik}\linebreak
-\centering
-Abweichung vom Optimum: $\boldsymbol{tbd}$\linebreak
-\centering
-Laufzeit: \O $\thinspace \boldsymbol{1.0 s}$
