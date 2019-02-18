@@ -241,7 +241,7 @@ Die \textit{Placement Constraints} gelten als verletzt, wenn eine Lösung eine \
 
 In diesem Kapitel werden konkret die Problemstellungen eingeführt, die im Folgenden heuristisch gelöst werden.
 Es werden die \textit{Stack}-Kapazitäten $b=2, b=3 $ und $ b=4$ betrachtet, die besonders in Szenarien aus der Praxis, in denen
-Container gestapelt werden, von Interesse sind.
+es darum geht, Container zu stapeln, von Interesse sind.
 
 \subsection{Komplexität}
 \label{sec:complexity}
@@ -251,15 +251,18 @@ Wie \cite{Bruns2015} zeigte, handelt es sich bei dem Zulässigkeitsproblem mit e
 \subsection{Instanzgrößen}
 \label{sec:instance_sizes}
 
-Die betrachteten Testinstanzen werden in drei Kategorien unterteilt:
+Zu Testzwecken werden unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
+Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
+in drei Kategorien unterteilt:
 \begin{itemize}
   \item klein (\textbf{s}) ($\leq 100$ Items)
-  \item mittel (\textbf{m}) ($\approx 300$ Items)
+  \item mittelgroß (\textbf{m}) ($\approx 300$ Items)
   \item groß (\textbf{l}) ($\approx 500$ Items)\newline
 \end{itemize}
-Dies scheint auch in der Literatur der Rahmen zu sein, in dem sich praktisch motivierte Stacking-Probleme typischerweise bewegen.
+Dies scheinen auch in der Literatur Größenordnungen zu sein, in dem sich praktisch motivierte Stacking-Probleme
+typischerweise bewegen. \cite{Le2016}
 
-\subsection{Ziel}
+\subsection{Zielfunktion}
 \label{sec:objective}
 
 Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine möglichst günstige Einlagerung
