@@ -56,7 +56,10 @@ in dieser Arbeit geht es allerdings ausschließlich um die Minimierung der Trans
 \section{Formale Definition}
 \label{sec:formal_definition}
 
-Die \textit{Storage-Area} besteht aus \textit{Stacks}, die in einer Reihe angeordnet sind (vgl. Abb. \ref{fig:storage_area}). Die $x$-Koordinate spezifiziert jeweils den \textit{Stack} und die $y$-Koordinate den \textit{Level} innerhalb des jeweiligen \textit{Stacks}. Es handelt sich also um eine Reihe von $m$ \textit{Stacks} mit jeweils $b$ Positionen pro \textit{Stack}. Abb. \ref{fig:parameters} zeigt eine Liste der
+Die \textit{Storage-Area} besteht aus \textit{Stacks}, die in einer Reihe angeordnet sind (vgl. Abb. \ref{fig:storage_area}).
+Prinzipiell kann es mehrere Reihen von Stacks geben, da sich die Schwierigkeit des Problems dadurch jedoch nicht verändert,
+wird im Folgenden immwer von einer Reihe von Stacks ausgegangen.
+Die $x$-Koordinate spezifiziert jeweils den \textit{Stack} und die $y$-Koordinate den \textit{Level} innerhalb des jeweiligen \textit{Stacks}. Es handelt sich also um eine Reihe von $m$ \textit{Stacks} mit jeweils $b$ Positionen pro \textit{Stack}. Abb. \ref{fig:parameters} zeigt eine Liste der
 Parameter, die im weiteren Verlauf der Arbeit verwendet werden, um Stacking-Probleme zu definieren.
 \begin{figure}[H]
 \centering
@@ -74,16 +77,25 @@ Parameter, die im weiteren Verlauf der Arbeit verwendet werden, um Stacking-Prob
 \end{figure}
 In der Regel gilt $m < n$, d.h. es müssen \textit{Items} gestapelt werden.
 Außerdem muss die Annahme $n \leq bm$ gelten, denn sonst ist die Instanz des Problems unzulässig,
-weil es mehr \textit{Items} als Positionen gibt.\newline
-Für jedes \textit{Item} $i \in I$ ist dessen Originalposition $O_i$ in $x$- und $y$-Koordinaten gegeben.
+weil es mehr \textit{Items} als verfügbare Positionen gibt.\newline
+Für jedes \textit{Item} $i \in I$ ist dessen Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird,
+in $x$- und $y$-Koordinaten gegeben.
+
+Neben den in Abb. \ref{fig:parameters} aufgeführten Parametern, gibt es Nebenbedingungen, die beim Lösen der Stacking-Probleme
+berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_restrictions} vorgestellten Stacking Constraints $s_{ij}$,
+bei denen es sich um Restriktionen handelt, die angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf.
+Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
+Zum anderen die Placement Constraints $t_{iq}$, die in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen
+es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack
+$q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
 
 \textit{Items}, die in einem \textit{Stack} platziert werden, sind durch ein Tupel $(i_k, ..., i_1)$ definiert, wobei
 $i_\lambda$ das \textit{Item} auf \textit{Level} $\lambda$ beschreibt. $\lambda = 1$ beschreibt den \textit{Ground-Level}.
-Instanzen können Stacking-Restriktionen $s_{ij}$ enthalten, die angeben, ob ein \textit{Item} $i$ direkt auf einem \textit{Item} $j$ platziert
-werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
 Ein Tupel ist zulässig, wenn $k \leq b$ und $s_{i_{\lambda + 1}, i_\lambda} = 1 \quad \forall \quad \lambda = 1, ..., k - 1$.
 D.h. ein Tupel ist dann zulässig, wenn die \textit{Stack}-Kapazität eingehalten wird und alle \textit{Items}, die aufeinander gestapelt sind,
-nicht den Stacking-Restriktionen widersprechen, die in Kapitel \ref{sec:stacking_restrictions} erläutert werden. Außerdem müssen sämtliche \textit{Item}-\textit{Stack}-Zuweisungen den Placement-Restriktionen entsprechen, die in Kapitel \ref{sec:placement_restrictions} thematisiert werden.
+nicht den Stacking Constraints widersprechen. Außerdem müssen sämtliche \textit{Item}-\textit{Stack}-Zuweisungen den Placement Constraints entsprechen, d.h. für alle $i_\lambda$ eines Tupels bzw. Stacks $q \in Q$ muss gelten $t_{i_\lambda q} = 1$. Jedes Item muss also mit dem Stack, dem es zugewiesen wurde, kompatibel sein.
+
+\pagebreak
 
 \textbf{Formulierung des Problems}\newline
 Gegeben sei eine Menge $I = \{1, ..., n\}$ von \textit{Items} und eine Menge $Q = \{1, ..., m\}$ von \textit{Stacks} mit einer \textit{Stack}-Kapazität von $b$. Außerdem seien \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ gegeben.
