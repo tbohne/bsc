@@ -102,10 +102,6 @@ Gegeben sei eine Menge $I = \{1, ..., n\}$ von \textit{Items} und eine Menge $Q 
 Das Ziel ist nun, jedes \textit{Item} $i \in I$ genau einem \textit{Stack} $q \in Q$ zuzuweisen, wobei die \textit{Stacking Constraints} $s_{ij}$,
 die \textit{Placement Constraints} $t_{iq}$ und die \textit{Stack}-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Transportkosten}
 \label{sec:transport_costs}
 Die Transportkosten beziehen sich auf die Kosten, die bei der Verladung der \textit{Items} in die \textit{Storage-Area} entstehen
@@ -187,11 +183,11 @@ als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarr
     \caption{\textsc{Resultierender Graph}}
     \label{fig:resulting_graph}
   \end{subfigure}
-  \caption{\textsc{Stacking Constraints interpretiert als Matrix bzw. Graph.}}
+  \caption{\textsc{Repräsentation der Stacking Constraints.}}
   \label{fig:matrix_to_graph}
 \end{figure}
-In dieser Arbeit werden ausschließlich transitive \textit{Stacking Constraints} betrachtet, d.h.:\newline
-Wenn \textit{Item} $i$ auf \textit{Item} $j$ und \textit{Item} $j$ auf \textit{Item} $h$ gestapelt werden darf,
+In dieser Arbeit werden ausschließlich transitive \textit{Stacking Constraints} betrachtet, d.h.
+wenn \textit{Item} $i$ auf \textit{Item} $j$ und \textit{Item} $j$ auf \textit{Item} $h$ gestapelt werden darf,
 so darf auch \textit{Item} $i$ auf \textit{Item} $h$ gestapelt werden.\newline
 Diese Eigenschaft ist auch in der Praxis häufig gegeben.
 Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was bedeutet, dass diese Restriktionen eine totale Ordnung auf allen \textit{Items} definieren.
@@ -204,8 +200,15 @@ Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigensc
 \label{sec:placement_restrictions}
 
 Die im Folgenden als \textit{Placement Constraints} bezeichneten Einschränkungen bezüglich der Position eines \textit{Items} resultieren z.B.
-aus der Länge oder dem Gewicht der \textit{Items} und den Eigenschaften der \textit{Stacks}. Es gibt allerdings auch \textit{Items} mit speziellen Anforderungen, z.B. Kühlcontainer, die eine Energiequelle benötigen. Solche \textit{Items} können dann nur \textit{Stacks} mit entsprechender Konfiguration zugewiesen werden. Tendenziell sind dabei mehr \textit{Item}-\textit{Stack}-Zuweisungen erlaubt als verboten. Diese \textit{Placement Constraints} werden nun allerdings nicht direkt implementiert, sondern indirekt über hohe Kostenwerte.
-\newline
+aus der Länge oder dem Gewicht der \textit{Items} und den Eigenschaften der \textit{Stacks}. Es gibt allerdings auch \textit{Items} mit speziellen Anforderungen, z.B. Kühlcontainer, die eine Energiequelle benötigen. Solche \textit{Items} können nur \textit{Stacks} mit entsprechender Konfiguration zugewiesen werden. Tendenziell sind dabei mehr \textit{Item}-\textit{Stack}-Zuweisungen erlaubt als verboten. Diese \textit{Placement Constraints} werden allerdings nicht direkt implementiert, sondern indirekt über hohe Kostenwerte.
+
+Dies hat den Vorteil, dass die Placement Constraints zunächst nur \textquote{Weak Constraints} sind, d.h. es wird auch
+dann eine Lösung gefunden, wenn gegen diese Nebenbedingungen verstoßen wird. Eine solche Lösung wird allerdings nur dann generiert,
+wenn keine Lösung existiert, die sämtliche Placement Constraints respektiert.
+Anschließend kann entschieden werden, ob solche Lösungen als zulässig gelten, oder, ob die Placement Constraints trotzdem
+als \textquote{Hard Constraints} betrachtet und solche Lösungen dementsprechend unzulässig sind. Diese Art der Implementation ist sehr flexibel.
+
+Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, die in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Dies bedeutet, dass jedes Item zunächst mit jedem Stack kompatibel sein muss. Da die Placement Constraints genau dies jedoch verhindern, ist es sinnvoll, diese, wie im Folgenden beschrieben, indirekt über hohe Kostenwerte umzusetzen.
 
 Zunächst werden die \textit{Placement Constraints} in einer Binärmatrix $T = (t_{iq})_{n \times m}$ kodiert, wobei:\newline
 \[
@@ -225,7 +228,7 @@ die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, die in Abschnitt \ref{se
 \end{cases}
 \]
 Der Eintrag an der Stelle $c_{iq}$ enthält also nur noch dann die tatsächlichen Transportkosten, wenn die
-entsprechende \textit{Item}-\textit{Stack}-Zuweisung die \textit{Placement Constraints} respektiert und sonst $\infty$.
+entsprechende \textit{Item}-\textit{Stack}-Zuweisung basierend auf den \textit{Placement Constraints} erlaubt ist und sonst $\infty$.
 
 Die \textit{Placement Constraints} gelten als verletzt, wenn eine Lösung eine \textit{Item}-\textit{Stack}-Zuweisung der Kosten $\infty$ enthält.
 
