@@ -278,32 +278,43 @@ Eine Lösung wird dann als zulässig betrachtet, wenn sämtliche \textit{Items} 
 \section{Testdaten-Generierung}
 \label{sec:test_data}
 
-Um die entwickelten Lösungsverfahren testen und vergleichen zu können, mussten Test-Instanzen generiert werden,
-die im Idealfall nicht allzu weit von der Realität entfernt sein sollten.
-Pro Konfiguration werden 20 Instanzen generiert, um eine Vergleichbarkeit zu ermöglichen.
-Die Anzahl der \textit{Items} $n$ sowie die \textit{Stack}-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl
-der zur Verfügung stehenden \textit{Stacks} $m$ verwendet. Es gilt $m$ = $\ceil{n / b}$ + $20 \%$.\newline
-Bei einer \textit{Stack}anzahl von $m$ = $\ceil{n / b}$ gäbe es überhaupt keinen Spielraum bei der \textit{Item}platzierung. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch nicht lösbar. Daher wurde ein Spielraum
-von $20 \%$ definiert, der durchaus gering ist und in weiteren Betrachtungen erhöht werden könnte.
+Um die entwickelten Lösungsverfahren testen und vergleichen zu können, werden Testinstanzen generiert,
+die im Idealfall nicht allzu weit von realistischen Szenarien entfernt sein sollten.
+Pro Konfiguration werden 20 Instanzen generiert, damit aussagekräftige Ergebnisse entstehen.
 
-\textbf{Stacking-Constraint-Generierung}\newline
+\textbf{Anzahl zur Verfügung stehender Stacks}
+
+Die Anzahl der \textit{Items} $n$ sowie die \textit{Stack}-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl
+zur Verfügung stehender \textit{Stacks} $m$ verwendet. Es gilt $m$ = $\ceil{n / b}$ + $20 \%$.
+Bei einer \textit{Stack}anzahl von $m$ = $\ceil{n / b}$ gäbe es überhaupt keinen Spielraum bei der \textit{Item}platzierung. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch unlösbar.
+Daher wurde zunächst ein durchaus geringer Spielraum von $20 \%$ eingeführt, der in weiteren Betrachtungen erhöht werden könnte.
+
+\textbf{Stacking Constraints}
 
 Es wurden zwei Varianten der \textit{Stacking-Constraint}-Generierung implementiert, die jeweils spezifische Vor- und Nachteile aufweisen.
 
-\textbf{Variante 1}\newline
+\textbf{Variante 1}
+
 Die \textit{Stacking-Constraint}-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt.
 Anschließend werden die $1$-Einträge, die aus Transitivität folgen, ergänzt.
 
-\textbf{Variante 2}\newline
+\textbf{Variante 2}
+
 Für alle $n$ \textit{Items} wird eine zufällige Länge und Breite generiert. \textit{Item} $i$ kann auf \textit{Item} $j$ platziert werden,
 wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq l_j$ und $w_i \leq w_j$.
 Zwei \textit{Items} $i, j$ sind in beide Richtungen stackbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
 
 Variante 2 scheint realitätsnäher zu sein und wird deshalb zunächst bevorzugt. Aufgrund der Tatsache, dass Variante 2 jedoch stets
-zu einem Anteil von $1$-Einträgen in der Matrix von ca. $25\%$ führt und dieser mit Variante 1 sehr gut konfigurierbar ist, wird Variante 1 nicht vollständig verworfen. (TODO: Grund ergänzen...)
+zu einem Anteil von $1$-Einträgen in der Matrix von ca. $25\%$ führt und dieser mit Variante 1 sehr gut konfigurierbar ist, wird Variante 1 nicht verworfen. (TODO: Grund ergänzen...)
 
-Bei den Placement-Constraints sind in den betrachteten Tests $70\%$ der \textit{Item}-\textit{Stack}-Zuweisungen erlaubt.
-Zur Transportkostenberechnung wird wie in Abschnitt \ref{sec:transport_costs} erläutert, die Manhattan-Metrik verwendet. Dazu sind
+\textbf{Placement Constraints}
+
+Die Placement Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
+dass ein Item $i$ in einem Stack $q$ platziert werden darf, $70 \%$ beträgt, da, wie in Kapitel \ref{sec:placement_restrictions} bereits erwähnt, tendenziell mehr Zuweisungen erlaubt als verboten sind.
+
+\textbf{Transportkosten}
+
+Zur Transportkostenberechnung wird, wie in Abschnitt \ref{sec:transport_costs} erläutert, die Manhattan-Metrik verwendet. Dazu sind
 entsprechend die \textit{Item}- und \textit{Stack}positionen als $x$- und $y$-Koordinaten gegeben. Auch die entsprechenden Längen und Breiten sowie die Distanz zwischen \textit{Storage-Area} und den Fahrzeug-Lanes ist jeweils gegeben.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
