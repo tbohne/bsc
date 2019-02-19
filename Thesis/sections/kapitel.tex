@@ -586,38 +586,47 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
 
-In diesem Abschnitt wird die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$
+In diesem Abschnitt wird eine konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$
 vorgestellt.
 
 Zunächst wird ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
 enthält eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ in mindestens einer Richtung stackbar sind, d.h.
 wenn $s_{ij} + s_{ji} \geq 1$.
 
-Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Item-Paare, so bekommt man die größtmögliche Anzahl
-von Item-Paaren. Im Grunde kann man nun bereits jede Kante des \textsc{MCM} als Stack betrachten, welcher die beiden Knoten, die durch
-die Kante verbunden werden, als Items enthält. Des Weiteren werden die Items, die nicht gematcht werden, auf dem Ground-Level platziert.
-Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet. Eine zulässige Lösung mit maximal $m$ Stacks existiert nur dann,
-wenn die Anzahl der Kanten im Matching plus der Anzahl der nicht gematchten Knoten nicht größer ist als $m$. Da die Anzahl der Knoten $n$ beträgt, kann ein \textsc{MCM} in der Laufzeit $O(n^{2.5})$ berechnet werden, wie Even und Kariv bereits 1975 zeigte.
+Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Stacks, welche die beiden Knoten, die durch
+die Kanten verbunden werden, als Items enthalten, so erhält man die größtmögliche Anzahl von vollständig gefüllten Stacks.
+Die Items, die nicht gematcht werden, werden auf dem Ground-Level platziert.
+Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet.
+Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching plus der Anzahl der nicht gematchten Knoten nicht größer ist als $m$. Da die Anzahl der Knoten $n$ beträgt, kann ein \textsc{MCM} in der Laufzeit $O(n^{2.5})$ berechnet werden, wie Even und Kariv bereits 1975 zeigten.
 
-Dies entspricht dem Vorgehen aus dem Beweis zu Theorem 1 aus dem Paper "Complexity Results for Storage Loading Problems with Stacking Constraints",
-welches 2015 von Bruns et al. veröffentlicht wurde.
+Dies entspricht dem Vorgehen aus dem Beweis zu Theorem 1 aus dem Paper "Complexity Results for Storage Loading Problems with Stacking Constraints", welches 2015 von Bruns et al. veröffentlicht wurde.
 
 Augrund der Placement Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
-Items- und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht idealerweise einer Zuweisung, in der sämtliche Items einem Stack zugeordnet werden. Dafür wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E)$ generiert, wobei die Partition $V_1$ den Items, bestehend aus Item-Paaren und Unmatched Items, entspricht und $V_2$ den zur Verfügung stehenden Stacks.
+Items- und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in der sämtliche Items möglichst günstig einem Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ generiert, wobei die Partition $V_1$ den Items bestehend aus Item-Paaren und Unmatched Items entspricht und $V_2$ den zur Verfügung stehenden Stacks.
 
-Für alle $i \in V_1$ und $q \in V_2$ wird nun eine Kante $\{i, q\}$ eingeführt. Das Gewicht $c_{iq}$ dieser Kante ist definiert als die Kosten
-des Transports von Item $i$ von seiner Originalposition $O_i$ zum Stack $q$.
+Für alle $i \in V_1$ und $q \in V_2$ existiert eine Kante $\{i, q\} \in A$. Das Gewicht $c_{iq}$ dieser Kante ist definiert als die Kosten
+des Transports des Items $i$ von seiner Originalposition $O_i$ zum Stack $q$.
 
-Auf diesem Graph wird wiederum ein \textsc{MWPM} berechnet,
-bei dem die Kanten als Stackzuweisungen interpretiert werden. Abschließend muss ggf. die Reihenfolge innerhalb der Stacks angepasst werden,
-da für die Item-Paare bisher nur sichergestellt ist, dass sie kompatibel sind, die Reihenfolge wurde noch nicht festgelegt.
+Nun wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als Stackzuweisungen interpretiert werden.
+Da es sich um ein Perfect-Matching handelt, werden sämtliche Items einem Stack zugewiesen. Die Minimum-Weight-Variante eines
+Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items zu Stacks handelt, da die Kantenkosten
+den Transportkosten der Items entsprechen. Sollte kein \textsc{MWPM} existieren, so existiert auch keine zulässige Zuweisung
+der generierten Item-Paare und Unmatched Items zu den Stacks, welche die Placement Constraints respektiert.
+Abschließend muss ggf. die Reihenfolge innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist,
+dass sie kompatibel und somit in mindestens einer Richtung stackbar sind. Die Richtung, in welcher sie stackbar sind, wurde bei der Zuweisung
+jedoch noch nicht berücksichtigt.
+
+\pagebreak
 
 \textbf{Beispiel}
 
-$I := \{0, 1, 2, 3, 4, 5, 6\} \quad\quad\quad b := 2 \quad\quad\quad m := 4$
+Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6\}$ sowie eine Stack-Kapazität von $b = 2$.
+Die Anzahl der zur Verfügung stehenden Stacks wird nun, wie in Abschnitt \ref{sec:test_data} geschildert,
+durch $m = \ceil{n / b} + 20 \%$ ermittelt und entspricht somit $m = \ceil{7 / 2} + 20 \% = 4$.
 
-Zunächst wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph für die gegebenen Items generiert.
-Darauf wird das in \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet, wobei Item 0 unmatched ist.
+Die Stacking-Constraint-Matrix $S$ wird ebenfalls, wie in \ref{sec:test_data} beschrieben, generiert.
+Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph
+für die gegebenen Items generiert. Darauf wird das in \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet, wobei Item 0 unmatched ist.
 \begin{figure}[H]
   \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -675,8 +684,8 @@ Darauf wird das in \ref{fig:stacking_const_graph_example_b=2_b} in grün dargest
     \label{fig:stacking_const_graph_example_b=2}
 \end{figure}
 
-Die Kanten des in \ref{fig:stacking_const_graph_example_b=2_b} dargestellten \textsc{MCM} werden nun wie in \ref{fig:item_pairs}
-abgebildet, als Item-Paare interpretiert.
+Die Kanten des in \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellten \textsc{MCM} werden nun wie in \ref{fig:item_pairs_b=2}
+abgebildet, als kompatible Item-Paare interpretiert. Item $0$ verbleibt als einziges Unmatched Item.
 
 \begin{figure}[H]
 \centering
@@ -688,12 +697,19 @@ abgebildet, als Item-Paare interpretiert.
         \path ;
   \end{tikzpicture}
   \caption{\textsc{Resultierende Item-Paare.}}
-  \label{fig:item_pairs}
+  \label{fig:item_pairs_b=2}
 \end{figure}
 
-Da nun noch die Zuweisung der Item-Paare und Unmatched Items zu Stacks fehlt, wird der vollständig bipartite Graph
-in Abb. \ref{fig:bipartite_graph} generiert. In Abb. \ref{fig:mwpm} sieht man das darauf berechnete \textsc{MWPM},
-welches wie in \ref{fig:stacking_solution} dargestellt, als zulässige Stack-Zuweisung interpretiert werden kann.
+Nun geht es darum, eine Zuweisung der Item-Paare und Unmatched Items zu Stacks zu finden, die die Placement Constraints
+respektiert. Dazu wird zunächst der vollständig bipartite Graph in Abb. \ref{fig:bipartite_graph} generiert.
+Dieser Graph ist, wie in Kapitel \ref{sec:} erläutert, vollständig bipartit, da die Placement Constraints indirekt
+über hohe Kostenwerte umgesetzt werden. Eine Zuweisung, die den Placement Constraints widerspricht, wird im \textsc{MWPM}
+nur dann vorgenommen, wenn keine günstigere Variante existiert, d.h., wenn eine solche Zuweisung vorgenommen wird,
+dann existiert keine Lösung, die sämtliche Placement Constraints respektiert.
+
+Das für den bipartiten Graphen berechnete \textsc{MWPM} ist in Abb. \ref{fig:mwpm} dargestellt. Jede
+Kante entspricht dabei einer Zuweisung eines Item-Paars bzw. Unmatched Items zu einem Stack.
+Die entsprechende Interpretation als zulässige Stack-Zuweisung ist in \ref{fig:stacking_solution} abgebildet.
 
 \begin{figure}[H]
 \begin{subfigure}[b]{0.45\textwidth}
@@ -773,7 +789,7 @@ welches wie in \ref{fig:stacking_solution} dargestellt, als zulässige Stack-Zuw
     \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
     & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} \\
     \end{tabular}}
-    \caption{\textsc{Zulässige Zuweisungen (ggf. Item-Reihenfolge korrigieren)}}
+    \caption{\textsc{Zulässige Zuweisungen}}
     \label{fig:stacking_solution}
 \end{figure}
 
