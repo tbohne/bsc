@@ -451,7 +451,8 @@ Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, währe
 \section{Konstruktive Heuristiken}
 \label{sec:constructive_heuristics}
 
-In diesem Abschnitt werden die entwickelten konstruktiven Heuristiken vorgestellt.
+In diesem Abschnitt werden die entwickelten konstruktiven Heuristiken zur Lösung der in Kapitel \ref{sec:problem_settings}
+beschriebenen Problemstellungen vorgestellt.
 Zunächst werden drei wichtige Konzepte eingeführt, die in den Heuristiken Verwendung finden.
 In \ref{sec:digression_mcm} Maximum-Cardinality-Matchings,
 in \ref{sec:digression_mwpm} Minimum-Weight-Perfect-Matchings und in \ref{sec:digression_bipartite_graph}
@@ -467,7 +468,7 @@ Gegeben sei ein ungerichteter Graph $G = (V, E)$. Eine Menge $M \subseteq E$ hei
 wenn keine zwei Kanten aus $M$ einen Knoten gemeinsam haben. Falls $M$ als Menge eine maximale Kardinalität unter
 allen Matchings von $G$ hat, wird dies als Maximum-Cardinality-Matching bezeichnet. \cite{WikiMatching}
 Es kann mehrere unterschiedliche MCMs in einem Graphen geben.
-In Abb. \ref{fig:mcm_examples} werden beispielhaft zwei MCMs dargestellt.
+In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
 \begin{figure}[H]
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
@@ -511,20 +512,20 @@ In Abb. \ref{fig:mcm_examples} werden beispielhaft zwei MCMs dargestellt.
     \caption{\textsc{$|MCM| = 3$}}
     \label{fig:mcm_2}
   \end{subfigure}
-  \caption{\textsc{Zwei Beispiele für MCMs (dargestellt in rot).}}
+  \caption{\textsc{Beispiele für MCMs (dargestellt in rot).}}
   \label{fig:mcm_examples}
 \end{figure}
 
 \subsection{Exkurs: Minimum-Weight-Perfect-Matching}
 \label{sec:digression_mwpm}
 
-Zunächst einmal ist es wichtig, zu erwähnen, dass ein Perfect-Matching nur für Graphen mit einer geraden Anzahl an Knoten möglich ist.
-Ein Perfect-Matching ist ein Matching, welches sämtliche Knoten des Graphen matcht.
-D.h. jeder Knoten des Graphen ist inzident zu genau einer Kante des Matchings (vgl. Abb. \ref{fig:perfect_matching}).
+Bei einem Perfect-Matching handelt es sich um ein Matching, welches sämtliche Knoten des Graphen matcht.
+Jeder Knoten des Graphen ist dabei inzident zu genau einer Kante des Matchings (vgl. Abb. \ref{fig:perfect_matching}).
+Daher ist ein Perfect-Matching nur für Graphen mit einer geraden Anzahl an Knoten möglich.
 Ein Minimum-Weight-Perfect-Matching ist nun ein günstigstes Perfect-Matching basierend auf den Kantenkosten.
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[-, scale=0.40, transform shape, node distance=3cm]
+\begin{tikzpicture}[-, scale=0.6, transform shape, node distance=3cm]
     \node[state] (A) {};
     \node[state] (B) [above right of=A] {};
     \node[state] (C) [below right of=A] {};
@@ -547,17 +548,21 @@ Ein Minimum-Weight-Perfect-Matching ist nun ein günstigstes Perfect-Matching ba
 \subsection{Exkurs: Bipartiter Graph}
 \label{sec:digression_bipartite_graph}
 
-Ein Graph $G = (V, E)$ heißt bipartit (vgl. Abb. \ref{fig:bipartite_graph}), wenn die Knotenmenge in zwei disjunkte Teilmengen zerfällt
+Ein Graph $G = (V, E)$ heißt bipartit (vgl. Abb. \ref{fig:digression_bipartite_graph}), wenn die Knotenmenge in zwei disjunkte Teilmengen zerfällt
 $(V = S \cup T$ mit $S \cap T = \emptyset$), sodass jede Kante einen Knoten aus $S$ mit einem Knoten aus $T$ verbindet. \cite{HochschuleDarmstadt}\newline
-Es lassen sich folgende Äquivalenzen festhalten:
+Es lassen sich folgende Äquivalenzen \cite{Leighton2010} festhalten:
 \begin{itemize}
   \item $G$ bipartit $\iff$ $G$ 2-färbbar
   \item $G$ bipartit $\iff$ keine Kreise ungerader Länge in $G$
 \end{itemize}
+In Abb. \ref{fig:digression_bipartite_graph} ist die 2-Färbbarkeit eines bipartiten Graphen, bei der die eine Teilmenge
+in grün und die andere Teilmenge in rot gefärbt ist, visualisiert. Man kann daran gut erkennen, dass es in solchen Graphen
+ausschließlich Kanten gibt, die einen Knoten der einen Teilmenge (rot) mit einem Knoten der anderen Teilmenge (grün) verbinden,
+jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.50, transform shape, node distance=3cm]
+\begin{tikzpicture}[scale=0.6, transform shape, node distance=3cm]
   \node[state] [green] (A) {};
   \node[state] [red] (B) [above right of=A] {};
   \node[state] [green] (C) [below right of=B] {};
@@ -575,7 +580,7 @@ Es lassen sich folgende Äquivalenzen festhalten:
 
 \end{tikzpicture}
 \caption{\textsc{Bipartiter Graph.}}
-\label{fig:bipartite_graph}
+\label{fig:digression_bipartite_graph}
 \end{figure}
 
 \subsection{Konstruktive Heuristik ($b = 2$)}
