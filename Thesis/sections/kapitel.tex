@@ -1324,7 +1324,7 @@ In diesem Fall ist also lediglich die $7$ kompatibel zu zwei Paaren, zu $(3, 4)$
           (E) edge [thick, bend right = 50] node {} (C)
           (E) edge [thick] node {} (D);
 \end{tikzpicture}
-\caption{\textsc{}}
+\caption{\textsc{Resultierender Kompatibilitätsgraph.}}
 \label{fig:graph_for_pairs_and_unmatched}
 \end{figure}
 
@@ -1345,17 +1345,18 @@ Dementsprechend wird Item $7$ dem Paar $(3, 4)$ zugeordnet.
           (E) edge [thick, mygreen, bend right = 50] node {} (C)
           (E) edge [thick] node {} (D);
 \end{tikzpicture}
-\caption{\textsc{MCM aus Item-Paaren und Unmatched-Items}}
+\caption{\textsc{MCM aus Item-Paaren und Unmatched-Items.}}
 \label{fig:mcm_for_pairs_and_unmatched}
 \end{figure}
 
 \pagebreak
 
-In Abb. \ref{fig:intermediate_result} ist das Zwischenergebnis bestehend aus Tripeln, Paaren und Unmatched Items dargestellt.
+Abbildung \ref{fig:intermediate_result} zeigt das bis hierher generierte Zwischenergebnis bestehend aus Tripeln, Paaren
+und Unmatched Items.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{0, 2}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{1, 9}$};
@@ -1363,18 +1364,19 @@ In Abb. \ref{fig:intermediate_result} ist das Zwischenergebnis bestehend aus Tri
         \node[state] (E) [thick, right of=D] {$\boldsymbol{8}$};
         \path;
 \end{tikzpicture}
-\caption{\textsc{Item-Tripel, Item-Paare und Unmatched-Items}}
+\caption{\textsc{Zwischenergebnis.}}
 \label{fig:intermediate_result}
 \end{figure}
 
-In \ref{fig:merge_step} wird versucht, die verbleibenden Paare zu Tripeln zu mergen. In diesem Fall ist es möglich,
-die verbleibenden Paare aus \ref{fig:item_pairs} zu den kompatiblen Tripeln in \ref{fig:merge_result} zu mergen.
+Es folgt der Schritt, in welchem versucht wird, die in Abb. \ref{fig:item_pairs} dargestellten verbleibenden Paare zu
+kompatiblen Tripeln zu mergen. In diesem Fall ist es möglich, die drei Paare zu den zwei kompatiblen Tripeln in
+\ref{fig:merge_result} zu mergen.
 
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{0, 2}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 9}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{5, 6}$};
@@ -1386,7 +1388,7 @@ die verbleibenden Paare aus \ref{fig:item_pairs} zu den kompatiblen Tripeln in \
 \hspace{10pt}
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{0, 5, 6}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 1, 9}$};
         \path;
@@ -1398,7 +1400,7 @@ die verbleibenden Paare aus \ref{fig:item_pairs} zu den kompatiblen Tripeln in \
 \label{fig:merge_step}
 \end{figure}
 
-Nun existieren drei Item-Tripel und ein Unmatched Item, die im Folgenden Stacks zugewiesen werden.
+Dementsprechend existieren nun drei Item-Tripel und ein Unmatched Item, die im Folgenden jeweils einem Stack zugewiesen werden.
 Dafür wird zunächst der vollständig bipartite Graph in Abb. \ref{fig:complete_bipartite} eingeführt.
 Dieser Graph enthält die Items bestehend aus drei Tripeln und einem Unmatched Item in der einen Partition
 und die Stacks in der anderen. Anschließend wird ein \textsc{MWPM} in diesem Graph berechnet, welches
@@ -1408,7 +1410,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist.
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{0, 5, 6}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{2, 1, 9}$};
@@ -1446,7 +1448,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist.
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{0, 5, 6}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{2, 1, 9}$};
@@ -1470,8 +1472,10 @@ in Abb. \ref{fig:mwpm} dargestellt ist.
 \label{}
 \end{figure}
 
-Die Kanten des \textsc{MWPM} werden nun erneut als Stack-Zuweisungen interpretiert.
-Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet. Wobei erneut gegebenenfalls die Reihenfolge
+\pagebreak
+
+Die Kanten des \textsc{MWPM} in Abb. \ref{fig:mwpm} werden als Stack-Zuweisungen interpretiert.
+Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet. Wobei wiederum gegebenenfalls die Reihenfolge
 innerhalb der Stacks angepasst werden muss.
 
 \begin{figure}[H]
@@ -1485,11 +1489,9 @@ innerhalb der Stacks angepasst werden muss.
     \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
     & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} \\
     \end{tabular}}
-    \caption{\textsc{Zulässige Zuweisungen}}
+    \caption{\textsc{Zulässige Zuweisungen.}}
     \label{fig:valid_solution}
 \end{figure}
-
-\pagebreak
 
 \subsection{Vergleich der $b = 3$ Solver}
 \label{sec:solver_comp_b=3}
