@@ -1246,14 +1246,16 @@ In diesem Abschnitt wird die konstruktive Heuristik zur Lösung von Stacking-Pro
 mit Stacks der Kapazität $b = 3$ vorgestellt. Viele der Ansätze funktionieren analog zur Heuristik für $b = 2$
 aus Kapitel \ref{sec:two_cap_heuristic}.
 
-Zunächst wird, wie auch im $b = 2$ - Fall ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items
-als Knoten enthält, d.h. $V = I$. Dieser Graph enthält ebenfalls eine Kante $\{i, j\}$ zwischen zwei Knoten,
-wenn die entsprechenden Items $i, j \in I$ in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$.
+Zunächst wird, wie auch in der Heuristik für $b = 2$, ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items
+als Knoten enthält, d.h. $V = I$. Dieser Graph enthält eine Kante $\{i, j\}$ zwischen zwei Knoten,
+wenn die entsprechenden Items $i, j \in I$ in mindestens einer Richtung stackbar sind, d.h., wenn $s_{ij} + s_{ji} \geq 1$.
 
-Nun berechnet man ebenfalls analog zum $b = 2$ - Fall ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Paare von Items.
-Da die Stacks nun aber nicht nur Paare, sondern Tripel beinhalten können, wird im nächsten Schritt versucht, eben solche Tripel von
-kompatiblen Items zu generieren. Dafür wird zunächst ein weiterer Graph $G_1$ generiert, der die zuvor generierten Item-Paare
-und die Unmatched Items als Knoten enthält. Dieser Graph enthält eine Kante zwischen einem Item-Paar und einem Unmatched Item,
+Nun wird, ebenfalls analog zur Heuristik aus \ref{sec:two_cap_heuristic}, ein \textsc{MCM} in $G$ berechnet,
+dessen Kanten als Paare von Items intepretiert werden.
+Da die Stacks nun jedoch nicht nur Paare, sondern Tripel von Items beinhalten können, wird im nächsten Schritt versucht,
+eben solche Tripel von kompatiblen Items zu generieren. Dafür wird zunächst ein weiterer Graph $G_1$ eingeführt,
+welcher die zuvor generierten Item-Paare und die verbleibenden Unmatched Items als Knoten enthält.
+Dieser Graph besitzt eine Kante zwischen einem Item-Paar und einem Unmatched Item,
 wenn diese kompatibel sind, d.h., wenn das Unmatched Item dem Paar zugeordnet werden kann und ein Tripel entsteht, welches
 stapelbar ist, also die Stacking Constraints respektiert.
 
@@ -1261,35 +1263,37 @@ Anschließend wird in $G_1$ ein \textsc{MCM} berechnet, dessen Kanten einer grö
 Die verbleibenden Item-Paare, für die kein passendes Unmatched Item gefunden wurde, werden nun in einem weiteren Schritt,
 wenn möglich, zu Tripeln gemergt. (TODO: Merge-Step vorstellen).
 
-Da im Zuge des Merge-Prozesses erneut Unmatched Items entstehen können und auch nicht unbedingt sämtliche vorherigen Unmatched Items
-einem Paar zugeordnet wurden, werden nun erneut aus allen verbleibenden Items Paare gebildet, was erneut durch ein \textsc{MCM} geschieht.
-Die dabei entstehenden Unmatched Items werden dann als unmatched betrachtet.
+Da im Zuge des Merge-Prozesses weitere Unmatched Items entstehen können und auch nicht notwendigerweise sämtliche vorherigen Unmatched Items
+einem Paar zugeordnet wurden, werden nun abermals aus allen verbleibenden Items Paare gebildet, was erneut durch ein \textsc{MCM}
+auf dem für diese Items generierten Stacking-Constraint-Graphen geschieht. Die dabei entstehenden Unmatched Items werden schließlich
+im Folgenden auch als solche betrachtet.
 
-An dieser Stelle gibt es also eine Menge an Tripeln, eine Menge an Paaren und eine Menge an Unmatched Items. Diese müssen nun natürlich
-noch Stacks zugewiesen werden. Diese Zuweisung muss außerdem den Placement Constraints entsprechen.
+An dieser Stelle liegt also eine Menge an Tripeln, eine Menge an Paaren und eine Menge an Unmatched Items vor. Diese müssen nun
+noch in einer die Stacking Constraints respektierenden Weise den Stacks zugewiesen werden.
 
-Dafür wird ein bipartiter Graph generiert, welcher die Items, bestehend aus Tripeln, Paaren und Unmatched Items, in der einen Partition
-und die Stacks in der anderen Partition enthält. Dabei gibt es, wie schon bei $b = 2$ initial eine Kante von jedem Tripel, Paar und Item zu
-jedem Stack. D.h. im Prinzip sind sämtliche Items mit jedem Stack kompatibel. Dies liegt daran, dass die Placement Constraints indirekt über
-hohe Kosten implementiert wurden und nicht direkt durch ein Vermeiden der Kante. Diese Entscheidung wurde getroffen, weil der Algorithmus,
-mit dem das \textsc{MWPM} auf diesem Graphen berechnet wird, einen vollständigen bipartiten Graphen als Eingabe erwartet, also einen Graphen,
-der jeden Knoten der einen Partition mit jedem Knoten der anderen Partition verbindet. Die inkompatiblen Item-Stack-Zuweisungen werden
-also indirekt durch das \textsc{MWPM} ausgeschlossen, wenn möglich.
+Zu diesem Zweck wird ein bipartiter Graph generiert, welcher die Items, bestehend aus Tripeln, Paaren und Unmatched Items, in der einen Partition
+und die Stacks in der anderen Partition enthält. Dabei gibt es, wie schon bei der Heuristik für $b = 2$, initial eine Kante von jedem Tripel, Paar und Item zu jedem Stack. D.h. im Prinzip sind sämtliche Items mit jedem Stack kompatibel. Dies liegt daran, dass die Placement Constraints indirekt über hohe Kostenwerte implementiert wurden und nicht direkt durch ein Vermeiden der entsprechenden Kanten. Der Grund für diese Entscheidung wurde bereits in Kapitel \ref{sec:placement_restrictions} erläutert. Die inkompatiblen Item-Stack-Zuweisungen werden
+also, sofern möglich, indirekt durch das \textsc{MWPM} ausgeschlossen.
 
-Dies entspricht auch bereits dem nächsten Schritt - es wird ein \textsc{MWPM} im bipartiten Graphen berechnet, dessen Kanten
-als Stack-Zuweisungen interpretiert werden. Zuletzt muss dann erneut die ggf. die Reihenfolge innerhalb der Stacks so angepasst werden,
-dass sie die Placement Constraints respektiert. Was jedoch trivial durch den Algorithmus \ref{alg:algo1} möglich ist.
+\pagebreak
+
+Im nächsten Schritt wird ebendieses \textsc{MWPM} im bipartiten Graphen berechnet, dessen Kanten
+als Stack-Zuweisungen interpretiert werden. Zuletzt muss dann wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
+dass sie die Stacking Constraints respektieren. Dabei ist wieder garantiert, dass eines solche Sortierung möglich ist und trivial durch den
+Algorithmus \ref{alg:algo1} erfolgen kann.\newline
 
 \textbf{Beispiel}
 
-$\boldsymbol{I} := \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\} \quad\quad\quad \boldsymbol{b} := 3 \quad\quad\quad \boldsymbol{m} := 4$
+Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ sowie eine Stack-Kapazität von $b = 3$. Die Anzahl der
+zur Verfügung stehenden Stacks von $m = 4$ ergibt sich basierend auf der Beschreibung in Abschnitt \ref{sec:test_data}.
 
-Zunächst wird das \textsc{MCM} auf dem Stacking-Constraint-Graph berechnet.
-In Abb. \ref{fig:pairs_and_unmatched} sieht man das Ergebnis, bei dem die Kanten des \textsc{MCM} als Item-Paare interpretiert wurden.
+Zunächst wird der Stacking-Constraint-Graph für die Item-Menge $I$ generiert, auf welchem dann analog zum Beispiel aus Abschnitt
+\ref{sec:two_cap_heuristic} ein \textsc{MCM} berechnet wird. In Abb. \ref{fig:pairs_and_unmatched} ist das Ergebnis dargestellt,
+welches die Kanten des \textsc{MCM} interpretiert als Item-Paare in grün zeigt. Die als unmatched verbleibenden Items sind in rot dargestellt.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0, 2}}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{\textcolor{mygreen}{1, 9}}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
@@ -1302,15 +1306,35 @@ In Abb. \ref{fig:pairs_and_unmatched} sieht man das Ergebnis, bei dem die Kanten
 \label{fig:pairs_and_unmatched}
 \end{figure}
 
-Anschließend wird der in Abb. \ref{fig:mcm_for_pairs_and_unmatched} dargestellte Graph generiert, welcher die Paare und
+Anschließend wird der in Abb. \ref{fig:graph_for_pairs_and_unmatched} dargestellte Graph generiert, welcher die Paare und
 Unmatched Items als Knoten enthält. Eine Kante zwischen einem Unmatched Item und einem Paar bedeutet, dass dieses Unmatched
 Item dem Paar zugeordnet werden kann, sodass ein kompatibles Tripel entsteht.
-In diesem Fall ist also lediglich die $7$ kompatibel zu zwei Paaren, zu $(3, 4)$ und zu $(5, 6)$. Das auf diesem Graph
-berechnete \textsc{MCM} ist in grün dargestellt, d.h. die $7$ wird dem Paar $(3, 4)$ zugeordnet.
+In diesem Fall ist also lediglich die $7$ kompatibel zu zwei Paaren, zu $(3, 4)$ und zu $(5, 6)$.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{0, 2}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 9}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 4}$};
+        \node[state] (D) [thick, right of =C] {$\boldsymbol{5, 6}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{7}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{8}$};
+        \path
+          (E) edge [thick, bend right = 50] node {} (C)
+          (E) edge [thick] node {} (D);
+\end{tikzpicture}
+\caption{\textsc{}}
+\label{fig:graph_for_pairs_and_unmatched}
+\end{figure}
+
+Im Graph aus Abb. \ref{fig:graph_for_pairs_and_unmatched} wird nun ein \textsc{MCM} berechnet, welches
+in Abb. \ref{fig:mcm_for_pairs_and_unmatched} in grün dargestellt ist.
+Dementsprechend wird Item $7$ dem Paar $(3, 4)$ zugeordnet.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{\textcolor{red}{0, 2}}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{\textcolor{red}{1, 9}}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
@@ -1318,12 +1342,14 @@ berechnete \textsc{MCM} ist in grün dargestellt, d.h. die $7$ wird dem Paar $(3
         \node[state] (E) [thick, right of=D] {$\boldsymbol{\textcolor{mygreen}{7}}$};
         \node[state] (F) [thick, right of=E] {$\boldsymbol{\textcolor{red}{8}}$};
         \path
-          (E) edge [thick, mygreen, bend right] node {} (C)
+          (E) edge [thick, mygreen, bend right = 50] node {} (C)
           (E) edge [thick] node {} (D);
 \end{tikzpicture}
 \caption{\textsc{MCM aus Item-Paaren und Unmatched-Items}}
 \label{fig:mcm_for_pairs_and_unmatched}
 \end{figure}
+
+\pagebreak
 
 In Abb. \ref{fig:intermediate_result} ist das Zwischenergebnis bestehend aus Tripeln, Paaren und Unmatched Items dargestellt.
 
