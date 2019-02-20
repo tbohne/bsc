@@ -1115,11 +1115,14 @@ wenn sich damit eine derart große Laufzeitersparnis ergibt. In dieser Kategorie
 
 \textbf{Große Instanzen (l)}
 
-In der Kategorie der großen Instanzen wurden noch einmal größere Zeitlimits von $15$, $30$ und $45$
-Minuten betrachtet. In Abb. \ref{fig:instance_cov_b=2_l} fällt sofort auf, dass die Bin-Packing-Formulierung überhaupt keine Instanz löst.
-Dies liegt zum einen daran, dass im betrachteten Zeitlimit tatsächlich noch keine Lösung gefunden wurde,
-zum anderen aber auch daran, dass der Speicherbedarf den zur Verfügung stehenden Speicher überschritt.
-TODO: Grund checken: B\&B Tree?
+Zuletzt werden die Solver für die in Kapitel \ref{sec:instance_sizes} als groß bezeichneten Instanzen, bei denen es darum geht,
+$500$ eintreffende Items in die Storage-Area zu verladen, verglichen. In dieser Kategorie wurden noch einmal größere Zeitlimits von
+$15$, $30$ und $45$ Minuten betrachtet.
+
+In Abb. \ref{fig:instance_cov_b=2_l} ist die Instance-Coverage der Solver für die jeweiligen Zeitlimits dargestellt und es fällt auf,
+dass die Bin-Packing-Formulierung überhaupt keine Instanz löst. Dies liegt zum einen daran, dass im jeweils betrachteten Zeitlimit
+tatsächlich noch keine Lösung gefunden wurde, zum anderen aber auch daran, dass der Speicherbedarf den zur Verfügung stehenden Speicher
+übersteigt. TODO: Grund checken: B\&B Tree?
 
 \begin{figure}[H]
 \centering
@@ -1145,62 +1148,17 @@ TODO: Grund checken: B\&B Tree?
 \label{fig:instance_cov_b=2_l_c}
 \end{subfigure}
 
-\caption{}
+\caption{\textsc{Instance-Coverage der $b=2$ Solver (l)}}
 \label{fig:instance_cov_b=2_l}
 \end{figure}
 
-In Abb. \ref{fig:res_b=2_l} sind erneut die exakten Ergebnisse der MIP-Formulierungen aufgeführt, denen man
-entnehmen kann, dass die 3-Index-Formulierung mit einer durchschnittlichen Laufzeit von ca. $20$ Minuten sämtliche Instanzen
-optimal löst. Die Heuristik benötigt allerdings nur durchschnittlich $0.7s$ pro Instanz und weicht auch nur um im Durchschnitt
-$0.6 \%$ vom Optimalwert ab. Dieser erhebliche Laufzeitunterschied und die nur sehr geringe Abweichung vom Optimum sorgen wie auch
-schon bei den mittelgroßen Instanzen dafür, dass die Heuristik in der Praxis, wenn geringe Abweichungen gestattet sind, bevorzugt wird.
+Überdies ist Abb. \ref{fig:instance_cov_b=2_l} zu enthnehmen, dass die 3-Index-Formulierung erst beim betrachteten
+Zeitlimit von $45$ Minuten sämtliche Instanzen gelöst hat. Für die Heuristik sind die Zeitlimits erneut irrelevant,
+da sie mit einer durchschnittlichen Laufzeit von $0.7s$ pro Instanz sämtliche Instanzen löst.
 
-
-\begin{figure}[H]
-\begin{subfigure}[b]{0.3\textwidth}
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{ | l | l | l |}
-    \hline
-     & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{70 \%}$ \\ \hline
-    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{728.0 s}$ \\ \hline
-    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.53 \%}$ \\ \hline
-\end{tabular}}
-\caption{\textsc{Zeitlimit} $15min$}
-\label{}
-\end{subfigure}
-\begin{subfigure}[b]{0.3\textwidth}
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{ | l | l | l |}
-    \hline
-     & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{85 \%}$ \\ \hline
-    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{977.2 s}$ \\ \hline
-    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
-\end{tabular}}
-\caption{\textsc{Zeitlimit} $30min$}
-\label{}
-\end{subfigure}
-% $\quad\quad\quad\quad$
-\begin{subfigure}[b]{0.3\textwidth}
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{ | l | l | l |}
-    \hline
-     & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
-    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{1185.9  s}$ \\ \hline
-    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
-\end{tabular}}
-\caption{\textsc{Zeitlimit} $45min$}
-\label{}
-\end{subfigure}
-
-\caption{}
-\label{fig:res_b=2_l}
-\end{figure}
+In Abb. \ref{fig:res_plots_b=2_l} bestätigt sich die Tendenz aus der Darstellung der Instance-Coverage.
+Die Heuristik ist deutlich schneller als die 3-Index-Formulierung (vgl. Abb \ref{fig:b=2_l_runtimes}) und weicht dabei nur
+unwesentlich vom optimalen Zielfunktionswert ab (vgl. \ref{fig:b=2_l_costs}).
 
 \begin{figure}[H]
 \centering
@@ -1220,6 +1178,66 @@ schon bei den mittelgroßen Instanzen dafür, dass die Heuristik in der Praxis, 
 \caption{}
 \label{fig:res_plots_b=2_l}
 \end{figure}
+
+In Abb. \ref{fig:res_b=2_l} sind die exakten Ergebnisse der MIP-Formulierungen aufgeführt, denen man
+entnehmen kann, dass die 3-Index-Formulierung mit einer durchschnittlichen Laufzeit von ca. $20$ Minuten sämtliche Instanzen
+optimal löst (vgl. Abb. \ref{fig:res_b=2_l_c}). Die Heuristik benötigt allerdings nur durchschnittlich $0.7s$ pro Instanz und
+weicht auch nur um im Durchschnitt $0.6 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen,
+noch gravierende Laufzeitunterschied und die nur sehr geringe Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis,
+wenn geringe Abweichungen gestattet sind, bevorzugt werden sollte.
+
+\begin{figure}[H]
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{70 \%}$ \\ \hline
+    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{728.0 s}$ \\ \hline
+    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.53 \%}$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Zeitlimit} $15min$}
+\label{fig:res_b=2_l_a}
+\end{subfigure}
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{85 \%}$ \\ \hline
+    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{977.2 s}$ \\ \hline
+    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Zeitlimit} $30min$}
+\label{fig:res_b=2_l_b}
+\end{subfigure}
+% $\quad\quad\quad\quad$
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | l | l | l |}
+    \hline
+     & \textbf{BinP} & \textbf{3Idx} \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{1185.9  s}$ \\ \hline
+    \textbf{Abweichung} & \textcolor{red}{$---$} & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Zeitlimit} $45min$}
+\label{fig:res_b=2_l_c}
+\end{subfigure}
+
+\caption{\textsc{MIP-Ergebnisse}}
+\label{fig:res_b=2_l}
+\end{figure}
+
+\textbf{Fazit}
+
+Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität $b = 2$ in der Kategorie der kleinen Instanzen
+aufgrund der geringen Laufzeit der MIP-Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht.
+Anders in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik bei nur kleinen Abweichungen zu einer
+derart großen Laufzeiteinparung führt, dass sie eine für die Praxis relevante Alternative darstellt.
 
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
