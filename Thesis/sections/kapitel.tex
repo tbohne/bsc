@@ -1849,64 +1849,68 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 \label{sec:post_optimization}
 
 Bei Verbesserungsverfahren handelt es sich um lokale Suchverfahren, welche bereits mit einer Lösung des Problems starten,
-die z.B. durch ein konstruktives Eröffnungsverfahren, wie den Heuristiken aus den Kapiteln \ref{sec:two_cap_heuristic} und \ref{sec:three_cap_heuristic} bestimmt wurden und versuchen diese im Laufe des Verfahrens zu verbessern.
+die z.B. durch ein konstruktives Eröffnungsverfahren, wie die Heuristiken aus den Kapiteln \ref{sec:two_cap_heuristic} und \ref{sec:three_cap_heuristic} bestimmt wurden und versuchen diese im Laufe des Verfahrens zu verbessern.
 
 Dabei wird zwischen deterministischen Verfahren, die bei gleichen Startlösungen und gleichen Rahmenbedingungen stets zum gleichen
 Ergebnis kommen und stochastischen Verfahren, bei denen durch den Einsatz einer Zufallskomponente unterschiedliche Lösungen
 generiert werden, unterschieden. \cite{Knust2017}
 
-\textbf{Lokale Suchverfahren}
+\subsection{Lokale Suchverfahren}
+\label{sec:local_search}
 
 Bei den in dieser Arbeit betrachteten lokalen Suchverfahren handelt es sich um sogenannte Metaheuristiken,
 weil sie nicht auf ein spezielles Problem abzielen, sondern auf grundsätzlichen Suchprinzipien beruhen,
 die auf eine Vielzahl von Optimierungsproblemen anwendbar sind.
-Das ist auch direkt einer der Gründe, weshalb sich diese Heuristiken einer so großen Beliebtheit erfreuen,
+Aus diesem Grund erfreuen sich diese Heuristiken einer sehr großen Beliebtheit,
 sie sind allgemein anwendbar und sehr flexibel an konkrete Problemstellungen anpassbar.
 
-Die Idee eines lokalen Suchverfahrens ist es, ausgehend von der Initiallösung, durch wohldefinierte Regeln zu anderen,
-verbessernden Lösungen innerhalb der Nachbarschaft zu gelangen. Dazu muss die Struktur dieser Nachbarschaft zunächst
-klar definiert werden. Wurde eine solche verbessernde Lösung gefunden, so wird entsprechend deren Nachbarschaft
-nach verbessernden Lösungen durchsucht.
-Das Kriterium, anhand dessen die jeweils nächste Lösung ausgewählt wird, entspricht häufig der besten Lösung.
-Dabei wird solange fortgeschritten, bis keine bessere Lösung in der Nachbarschaft gefunden wird.
+Eine lokale Suche ist ein iterativer Prozess, bei welchem von einer Lösung zur nächsten, verbessernden Lösung vorangeschritten wird,
+bis ein bestimmtes Abbruchkriterium erfüllt ist. Um den Lösungsraum systematisch zu durchsuchen, wird die
+sogenannte Nachbarschaft einer Lösung definiert, die der Menge der Lösungen entspricht, die im nächsten Schritt
+von der gegenwärtigen Lösung erreichbar sind. \cite{Brucker2006}
 
-Dabei hängt der Erfolg dieses Ansatzes und somit die Lösungsqualität primär von der definierten Struktur der Nachbarschaft ab.
+Die Idee eines lokalen Suchverfahrens ist es also, ausgehend von einer Initiallösung, durch wohldefinierte Regeln zu anderen,
+verbessernden Lösungen innerhalb der Nachbarschaft zu gelangen.
+Dabei wird häufig solange fortgeschritten, bis keine verbessernde Lösung in der Nachbarschaft gefunden wird,
+also bis ein lokales Minimum erreicht ist.
 
-Der größte Schwäche dieses Ansatzes ist die Unfähigkeit, lokale Minima zu verlassen. Dieses Problem ist sehr
-anschaulich in Abb. \ref{} visualisiert. Darin sind sämtliche Lösungen in der Nachbarschaft schlechter
-als die gegenwärtige Lösung, obwohl weiter entfernt ein globales Minimum existiert, welches
-basierend auf der ... nicht erreicht werden kann.
+Der Erfolg dieses Ansatzes und somit die Lösungsqualität hängt primär von der definierten Struktur der Nachbarschaft ab. \cite{Pirlot1996}
+
+Die größte Schwäche dieses Ansatzes ist die Unfähigkeit, lokale Minima zu verlassen. Dieses Problem ist sehr
+anschaulich in Abb. \ref{fig:local_search_weakness} visualisiert. Darin sind sämtliche Lösungen in der Nachbarschaft $V(x_n)$ schlechter
+als die gegenwärtige Lösung $x_n$, obwohl weiter entfernt ein globales Minimum existiert, welches
+aufgrund der Tatsache, dass ausschließlich verbessernde Lösungen gewählt werden, nicht erreicht werden kann.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{img/local_minimum.png}
-\caption{Schwäche lokaler Suchverfahren. \cite{Pirlot1996}}
-\label{}
+\includegraphics[width=0.6\textwidth]{img/local_minimum.png}
+\caption{\textsc{Schwäche lokaler Suchverfahren. \cite{Pirlot1996}}}
+\label{fig:local_search_weakness}
 \end{figure}
 
 \textbf{Formaler Ablauf einer lokalen Suche}
 
 Eine lokale Suche startet mit einer beliebigen Lösung $x_1 \in X$ und in jedem Schritt $n$
 wird eine neue Lösung $x_{n+1}$ aus der Nachbarschaft $V(x_n)$ der gegenwärtigen Lösung $x_n$ gewählt.
-Für jedes $x \in X$ existiert also eine solche Nachbarschaft $V(x) \subseteq X$.
-
-Ein simples Beispiel für eine solche Nachbarschaft ist ein Bitvektor. Wenn $X$ also eine Menge
-von Bitvektoren ist und $x \in X$, dann kann eine Nachbarschaft $V(x)$ von $x$ als die Menge
-sämtlicher Lösungen $x \in X$ definiert werden, bei denen in $x$ ein einzelnes Bit geflippt wird.
-
+Für jedes $x \in X$ existiert eine solche Nachbarschaft $V(x) \subseteq X$.
 Typischerweise entspricht das Kriterium, anhand welchem die nächste Lösung $x_{n+1}$ gewählt wird,
 die beste Lösung in der Nachbarschaft von $x_n$ zu wählen, also eine Lösung $x_{n+1} \in V(x_n)$
-mit $F(x_{n+1}) \leq F(x) \forall x \in V(x_n)$.
+mit $F(x_{n+1}) \leq F(x) \forall x \in V(x_n)$. \cite{Pirlot1996}
 
-Sollte dabei keine verbessernde Lösung in der Nachbarschaft gefunden werden, so terminiert die Suche.
-Diese Strategien wird \textquote{Steepest Descent} genannt, also die Strategie des steilsten Abstiegs.
-Dieser Name kommt daher, dass man bei einem Minimierungsproblem in der Richtung des steilsten Abstiegs
-von der Initiallösung voranschreitet, bis man keine Verbesserung mehr erzielt.
+Sollte keine verbessernde Lösung in der Nachbarschaft gefunden werden, so terminiert die Suche.
+Diese Strategien wird \textquote{Steepest Descent} genannt, also Strategie des steilsten Abstiegs.
+Dieser Name ergibt sich daraus, dass bei einem Minimierungsproblem in der Richtung des steilsten Abstiegs
+von der Initiallösung vorangeschritten wird, bis keine Verbesserung mehr erzielt wird. Diese Strategie führt zum
+bereits erwähnten Problem aus Abb. \ref{fig:local_search_weakness}.
 
 \textbf{Beispiel}
 
-Lösung $x$ kodiert als Bitvektor: $x = \{1, 1, 1, 0, 1, 0\}$.
-Die Nachbarschaft dieser Lösung sieht nun wie folgt aus:\newline
+Ein simples Beispiel für eine solche Nachbarschaft ist ein Bitvektor. Wenn $X$ eine Menge
+von Bitvektoren ist und $x \in X$, dann kann eine Nachbarschaft $V(x)$ als die Menge
+sämtlicher Lösungen $x \in X$ definiert werden, bei denen in $x$ ein einzelnes Bit invertiert wird. \cite{Pirlot1996}
+
+Sei $x = \{1, 1, 1, 0, 1, 0\}$ eine als Bitvektor kodierte Lösung.
+Die Nachbarschaft dieser Lösung sieht nun gemäß der beschrieben Struktur wie folgt aus:
 \[
 V(x) =
   \begin{bmatrix}
@@ -1918,6 +1922,11 @@ V(x) =
     1 & 1 & 1 & 0 & 1 & \boldsymbol{1}
   \end{bmatrix}
 \]
+
+\pagebreak
+
+\subsection{Tabu-Suche}
+\label{sec:tabu_seach}
 
 \pagebreak
 
