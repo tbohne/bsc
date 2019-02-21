@@ -1928,6 +1928,28 @@ V(x) =
 \subsection{Tabu-Suche}
 \label{sec:tabu_seach}
 
+Das größte Problem des in Kapitel \ref{sec:local_search} vorgestellten allgemeinen lokalen Suchverfahrens
+ist, dass die Lösung nur einem lokalen Minimum entspricht und daher möglicherweise stark vom globalen
+Minimum abweicht. Eine gute Qualität der Lösung ist somit nicht garantiert.
+
+Eine Strategie um diesem Problem entgegenzutreten wäre beispielsweise, das Verfahren mehrfach mit unterschiedlichen
+Initiallösungen zu starten und anschließend das beste generierte lokale Minimum zu wählen.
+Ein weiterer Ansatz ist, Verschlechterungen des Zielfunktionswerts während des Suchprozesses zu erlauben.
+Das führt allerdings dazu, dass Lösungen mehrfach besucht werden können und somit Zyklen entstehen können.
+Somit müssen in solchen Ansätzen zusätzliche Strategien umgesetzt werden, die Zyklen vermeiden. \cite{Brucker2006}
+
+Genau dort setzt das Verfahren der sogenannten Tabu-Suche an. Eine Tabu-Suche besitzt eine Tabu-Liste,
+in der sämtliche Lösungen, die besucht werden, als zukünftig \textquote{tabu} gespeichert werden.
+Eine zur gegenwärtigen Lösung benachbarte Lösung wird nur dann akzeptiert, wenn diese nicht Teil der Tabu-Liste ist.
+In jeder Iteration wird die gegenwärtige Lösung demnach durch eine benachbarte Lösung ersetzt, die nicht \textquote{tabu} ist.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/tabu_search_algo_placeholder.png}
+\caption{\textsc{Tabu-Suche. \cite{Knust2017}}}
+\label{fig:local_search_weakness}
+\end{figure}
+
 \pagebreak
 
 \section{Fazit}
