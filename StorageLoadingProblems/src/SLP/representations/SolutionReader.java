@@ -14,13 +14,9 @@ public class SolutionReader {
         File dir = new File(solutionDirName);
         ArrayList<Solution> solutions = new ArrayList<>();
 
-        int cnt = 0;
-
         for (File file : dir.listFiles()) {
 
-            if (cnt > 0) { break; }
-
-            if (!file.isDirectory()) {
+            if (!file.isDirectory() && file.getName().contains("stack: ")) {
 
                 try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                     for (String line; (line = br.readLine()) != null; ) {
@@ -53,7 +49,6 @@ public class SolutionReader {
                         storageArea.add(new ArrayList<>(stack));
                     }
 
-                    System.out.println(file.getName());
                     String instanceName = file.getName().replace("sol", "instance");
 
                     Instance instance = InstanceReader.readInstance(instanceDirName + instanceName);
@@ -70,9 +65,7 @@ public class SolutionReader {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
-            cnt++;
         }
         return solutions;
     }
