@@ -2,12 +2,12 @@ package SLP.post_optimization_methods;
 
 import SLP.representations.StorageAreaPosition;
 
-public class TabuListEntry {
+public class Exchange {
 
     private StorageAreaPosition posOne;
     private StorageAreaPosition posTwo;
 
-    public TabuListEntry(StorageAreaPosition posOne, StorageAreaPosition posTwo) {
+    public Exchange(StorageAreaPosition posOne, StorageAreaPosition posTwo) {
         this.posOne = posOne;
         this.posTwo = posTwo;
     }

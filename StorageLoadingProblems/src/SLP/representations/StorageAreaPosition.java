@@ -1,5 +1,7 @@
 package SLP.representations;
 
+import SLP.post_optimization_methods.Exchange;
+
 public class StorageAreaPosition {
 
     private int stackIdx;
