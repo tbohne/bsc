@@ -63,8 +63,8 @@ public class Solution {
         this.nameOfSolvedInstance = sol.nameOfSolvedInstance;
         this.timeLimit = sol.timeLimit;
         this.filledStorageArea = new int[sol.solvedInstance.getStacks().length][];
-        for (int i = 0; i < sol.solvedInstance.getStacks().length; i++) {
-            this.filledStorageArea[i] = sol.solvedInstance.getStacks()[i].clone();
+        for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
+            this.filledStorageArea[i] = sol.getFilledStorageArea()[i].clone();
         }
     }
 
@@ -242,6 +242,10 @@ public class Solution {
 
     public String getObjectiveValue() {
         return String.format("%.02f", this.objectiveValue).replace(",", ".");
+    }
+
+    public double getObjectiveValueAsDouble() {
+        return this.objectiveValue;
     }
 
     public String getNameOfSolvedInstance() {
