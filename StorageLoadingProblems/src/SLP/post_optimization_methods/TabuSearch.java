@@ -12,7 +12,7 @@ public class TabuSearch {
     private Solution currSol;
     private Solution bestSol;
 
-    private ArrayList<Integer> tabuList;
+    private ArrayList<TabuListEntry> tabuList;
     private int tabuListCleared;
 
     public TabuSearch(Instance instance, Solution initialSolution) {
@@ -28,41 +28,29 @@ public class TabuSearch {
         this.tabuListCleared++;
     }
 
-    public Solution getNeighbor(boolean firstFir, boolean onlyValid) {
+    public Solution getNeighbor(boolean firstFit, boolean onlyValid) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
-        while (nbrs.size() <= /*this.instance.getItems().length*/ 50) {
+        while (nbrs.size() <= /*this.instance.getItems().length*/ 0) {
 
             Solution neighbor = new Solution(this.currSol);
 
-            int minOuter = 0;
-            int maxOuter = neighbor.getFilledStorageArea().length;
+            int stackIdxItemOne = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea().length);
+            int stackIdxItemTwo = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea().length);
+            int levelItemOne = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemOne].length);
+            int levelItemTwo = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemTwo].length);
 
-            int outerOne = HeuristicUtil.getRandomValueInBetween(minOuter, maxOuter);
-            int outerTwo = HeuristicUtil.getRandomValueInBetween(minOuter, maxOuter);
+            // Exchanges the positions of two items from the storage area.
+            int itemOne = neighbor.getFilledStorageArea()[stackIdxItemOne][levelItemOne];
+            int itemTwo = neighbor.getFilledStorageArea()[stackIdxItemTwo][levelItemTwo];
+            neighbor.getFilledStorageArea()[stackIdxItemOne][levelItemOne] = itemTwo;
+            neighbor.getFilledStorageArea()[stackIdxItemTwo][levelItemTwo] = itemOne;
 
-            int minInner = 0;
-            int maxInnerOne = neighbor.getFilledStorageArea()[outerOne].length;
-            int maxInnerTwo = neighbor.getFilledStorageArea()[outerTwo].length;
-
-            int innerOne = HeuristicUtil.getRandomValueInBetween(minInner, maxInnerOne);
-            int innerTwo = HeuristicUtil.getRandomValueInBetween(minInner, maxInnerTwo);
-
-            System.out.println(neighbor.getNumberOfAssignedItems());
-
-            int itemOne = neighbor.getFilledStorageArea()[outerOne][innerOne];
-            int itemTwo = neighbor.getFilledStorageArea()[outerTwo][innerTwo];
-            neighbor.getFilledStorageArea()[outerOne][innerOne] = itemTwo;
-            neighbor.getFilledStorageArea()[outerTwo][innerTwo] = itemOne;
-
-            System.out.println(neighbor.getNumberOfAssignedItems());
-
-            // only feasible solutions are considered for now
+            // Only feasible solutions are considered for now.
             if (neighbor.isFeasible()) {
                 nbrs.add(neighbor);
             }
-            System.out.println(nbrs.size());
         }
 
         return nbrs.get(0);
