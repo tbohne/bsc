@@ -1,20 +1,22 @@
 package SLP.post_optimization_methods;
 
+import SLP.representations.StorageAreaPosition;
+
 public class TabuListEntry {
 
-    private int idxItemOne;
-    private int idxItemTwo;
+    private StorageAreaPosition posOne;
+    private StorageAreaPosition posTwo;
 
-    public TabuListEntry(int idxItemOne, int idxItemTwo) {
-        this.idxItemOne = idxItemOne;
-        this.idxItemTwo = idxItemTwo;
+    public TabuListEntry(StorageAreaPosition posOne, StorageAreaPosition posTwo) {
+        this.posOne = posOne;
+        this.posTwo = posTwo;
     }
 
-    public int getIdxItemOne() {
-        return this.idxItemOne;
+    public StorageAreaPosition getPosOne() {
+        return this.posOne;
     }
 
-    public int getIdxItemTwo() {
-        return this.idxItemTwo;
+    public StorageAreaPosition getPosTwo() {
+        return this.posTwo;
     }
 }
