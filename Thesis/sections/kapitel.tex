@@ -1120,9 +1120,8 @@ $500$ eintreffende Items in die Storage-Area zu verladen, verglichen. In dieser 
 $15$, $30$ und $45$ Minuten betrachtet.
 
 In Abb. \ref{fig:instance_cov_b=2_l} ist die Instance-Coverage der Solver für die jeweiligen Zeitlimits dargestellt und es fällt auf,
-dass die Bin-Packing-Formulierung überhaupt keine Instanz löst. Dies liegt zum einen daran, dass im jeweils betrachteten Zeitlimit
-tatsächlich noch keine Lösung gefunden wurde, zum anderen aber auch daran, dass der Speicherbedarf den zur Verfügung stehenden Speicher
-übersteigt. TODO: Grund checken: B\&B Tree?
+dass die Bin-Packing-Formulierung erst bei einem Zeitlimit von $45$ Minuten überhaupt eine Instanz löst (vgl. \ref{fig:instance_cov_b=2_l_c}).
+In diesem Szenario ist die 3-Index-Formulierung der Bin-Packing-Formulierung folglich klar überlegen.
 
 \begin{figure}[H]
 \centering
@@ -1156,9 +1155,15 @@ tatsächlich noch keine Lösung gefunden wurde, zum anderen aber auch daran, das
 Zeitlimit von $45$ Minuten sämtliche Instanzen gelöst hat. Für die Heuristik sind die Zeitlimits erneut irrelevant,
 da sie mit einer durchschnittlichen Laufzeit von $0.7s$ pro Instanz sämtliche Instanzen löst.
 
+\pagebreak
+
 In Abb. \ref{fig:res_plots_b=2_l} bestätigt sich die Tendenz aus der Darstellung der Instance-Coverage.
 Die Heuristik ist deutlich schneller als die 3-Index-Formulierung (vgl. Abb \ref{fig:b=2_l_runtimes}) und weicht dabei nur
-unwesentlich vom optimalen Zielfunktionswert ab (vgl. \ref{fig:b=2_l_costs}).
+unwesentlich vom optimalen Zielfunktionswert ab (vgl. \ref{fig:b=2_l_costs}). Wie bereits zuvor gesehen, löst
+die Bin-Packing-Formulierung mit Instanz $09$ nur eine einzige Instanz und reizt dafür, wie man Abb. \ref{fig:b=2_l_runtimes}
+entnehmen kann, das Zeitlimit von $45$ Minuten vollständig aus. In Abb. \ref{fig:b=2_l_costs} ist zu erkennen, dass diese auch bei den
+Zielfunktionswerten sehr weit von denen der 3-Index-Formulierung und der Heuristik abweicht und somit in dieser Kategorie in keinem Fall
+konkurrenzfähig ist.
 
 \begin{figure}[H]
 \centering
