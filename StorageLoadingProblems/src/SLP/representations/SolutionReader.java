@@ -16,7 +16,7 @@ public class SolutionReader {
 
         for (File file : dir.listFiles()) {
 
-            if (!file.isDirectory() && file.getName().contains("stack: ")) {
+            if (!file.isDirectory() && file.getName().contains("slp_")) {
 
                 try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                     for (String line; (line = br.readLine()) != null; ) {
