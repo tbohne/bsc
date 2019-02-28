@@ -49,55 +49,81 @@ public class HeuristicUtil {
         return mcm;
     }
 
+    /**
+     * Adds the edges from item pairs to stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge means that the item pair is assignable
+     * to the stack. Each pair is assignable to every stack initially. Forbidden assignments are indirectly
+     * avoided by the minimum weight perfect matching through high edge costs.
+     *
+     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
+     * @param itemPairs      - the pairs of items to be connected to the stacks
+     * @param stacks         - the stacks the item pairs are going to be connected to
+     * @param costMatrix     - the matrix containing the costs for item-stack-assignments
+     */
     public static void addEdgesForItemPairs(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
-            ArrayList<MCMEdge> itemPairs,
-            int[][] stacks,
-            int[][] costsArr
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        ArrayList<MCMEdge> itemPairs,
+        int[][] stacks,
+        int[][] costMatrix
     ) {
-
-        // edges from item pairs to stacks
-        for (int i = 0; i < itemPairs.size(); i++) {
-            for (int j = 0; j < stacks.length; j++) {
-                if (!graph.containsEdge("pair" + itemPairs.get(i), "stack" + j)) {
-                    DefaultWeightedEdge edge = graph.addEdge("pair" + itemPairs.get(i), "stack" + j);
-                    int costs = costsArr[itemPairs.get(i).getVertexOne()][j] + costsArr[itemPairs.get(i).getVertexTwo()][j];
-                    graph.setEdgeWeight(edge, costs);
+        for (int pair = 0; pair < itemPairs.size(); pair++) {
+            for (int stack = 0; stack < stacks.length; stack++) {
+                // TODO: check necessary?
+                if (!bipartiteGraph.containsEdge("pair" + itemPairs.get(pair), "stack" + stack)) {
+                    DefaultWeightedEdge edge = bipartiteGraph.addEdge("pair" + itemPairs.get(pair), "stack" + stack);
+                    int costs = costMatrix[itemPairs.get(pair).getVertexOne()][stack] + costMatrix[itemPairs.get(pair).getVertexTwo()][stack];
+                    bipartiteGraph.setEdgeWeight(edge, costs);
                 }
             }
         }
     }
 
+    /**
+     * Adds the edges from item triples to stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge means that the item triple is assignable
+     * to the stack. Each triple is assignable to every stack initially. Forbidden assignments are indirectly
+     * avoided by the minimum weight perfect matching through high edge costs.
+     *
+     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
+     * @param itemTriples    - the triples of items to be connected to the stacks
+     * @param stacks         - the stacks the item triples are going to be connected to
+     * @param costMatrix     - the matrix containing the costs for item-stack-assignments
+     */
     public static void addEdgesForItemTriples(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
-            ArrayList<ArrayList<Integer>> itemTriples,
-            int[][] stacks,
-            int[][] costsArr
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        ArrayList<ArrayList<Integer>> itemTriples,
+        int[][] stacks,
+        int[][] costMatrix
     ) {
-        // edges from item triples to stacks
-        for (int i = 0; i < itemTriples.size(); i++) {
-            for (int j = 0; j < stacks.length; j++) {
-                DefaultWeightedEdge edge = graph.addEdge("triple" + itemTriples.get(i), "stack" + j);
-                int costs = costsArr[itemTriples.get(i).get(0)][j]
-                        + costsArr[itemTriples.get(i).get(1)][j]
-                        + costsArr[itemTriples.get(i).get(2)][j];
-                graph.setEdgeWeight(edge, costs);
+        for (int triple = 0; triple < itemTriples.size(); triple++) {
+            for (int stack = 0; stack < stacks.length; stack++) {
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriples.get(triple), "stack" + stack);
+                int costs = costMatrix[itemTriples.get(triple).get(0)][stack]
+                    + costMatrix[itemTriples.get(triple).get(1)][stack]
+                    + costMatrix[itemTriples.get(triple).get(2)][stack];
+                bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
     }
 
+    /**
+     * Adds the edges from dummy items to stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge means that the dummy item is assignable
+     * to the stack. Each dummy is assignable to every stack at costs 0.
+     *
+     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
+     * @param dummyItems     - the dummy items to be connected to the stacks
+     * @param stacks         - the stacks the dummy items are going to be connected to
+     */
     public static void addEdgesForDummyItems(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
-            ArrayList<Integer> dummyItems,
-            int[][] stacks
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        ArrayList<Integer> dummyItems,
+        int[][] stacks
     ) {
-        // edges from dummy items to stacks
-        // dummy items can be stored in every stack with no costs
         for (int item : dummyItems) {
             for (int stack = 0; stack < stacks.length; stack++) {
-                DefaultWeightedEdge edge = graph.addEdge("dummy" + item, "stack" + stack);
-                int costs = 0;
-                graph.setEdgeWeight(edge, costs);
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("dummy" + item, "stack" + stack);
+                bipartiteGraph.setEdgeWeight(edge, 0);
             }
         }
     }
