@@ -1,4 +1,4 @@
-solved with: SLP.mip_formulations.BinPackingFormulation
+solved with: SP.mip_formulations.BinPackingFormulation
 time limit: 1200 s
 time to solve: 995,57 s
 objective value: 16229.0
@@ -187,7 +187,7 @@ stack 179:    294 229
 
 #####################################################
 
-solved with: SLP.mip_formulations.ThreeIndexFormulation
+solved with: SP.mip_formulations.ThreeIndexFormulation
 time limit: 1200 s
 time to solve: 96,42 s
 objective value: 16229.0
@@ -376,7 +376,7 @@ stack 179:    258 298
 
 #####################################################
 
-solved with: SLP.constructive_heuristics.TwoCapHeuristic
+solved with: SP.constructive_heuristics.TwoCapHeuristic
 time limit: 1200 s
 time to solve: 0,26 s
 objective value: 16332.0

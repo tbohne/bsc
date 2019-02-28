@@ -1,4 +1,4 @@
-solved with: SLP.mip_formulations.BinPackingFormulation
+solved with: SP.mip_formulations.BinPackingFormulation
 time limit: 30 s
 time to solve: 1.95 s
 objective value: 111.0
@@ -47,7 +47,7 @@ stack 39:    51
 
 #####################################################
 
-solved with: SLP.mip_formulations.ThreeIndexFormulation
+solved with: SP.mip_formulations.ThreeIndexFormulation
 time limit: 30 s
 time to solve: 22.69 s
 objective value: 111.0

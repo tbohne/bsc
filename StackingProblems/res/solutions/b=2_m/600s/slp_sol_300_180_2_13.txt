@@ -1,9 +1,9 @@
-solved with: SLP.mip_formulations.BinPackingFormulation
+solved with: SP.mip_formulations.BinPackingFormulation
 Problem not solved.
 
 #####################################################
 
-solved with: SLP.mip_formulations.ThreeIndexFormulation
+solved with: SP.mip_formulations.ThreeIndexFormulation
 time limit: 600 s
 time to solve: 89,39 s
 objective value: 16221.0
@@ -192,7 +192,7 @@ stack 179:    257 254
 
 #####################################################
 
-solved with: SLP.constructive_heuristics.TwoCapHeuristic
+solved with: SP.constructive_heuristics.TwoCapHeuristic
 time limit: 600 s
 time to solve: 0,12 s
 objective value: 16306.0

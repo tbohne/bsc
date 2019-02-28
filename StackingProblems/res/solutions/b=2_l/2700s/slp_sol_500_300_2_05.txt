@@ -1,4 +1,4 @@
-solved with: SLP.mip_formulations.ThreeIndexFormulation
+solved with: SP.mip_formulations.ThreeIndexFormulation
 time limit: 2700 s
 time to solve: 922,82 s
 objective value: 43040.0
@@ -307,7 +307,7 @@ stack 299:    302 450
 
 #####################################################
 
-solved with: SLP.constructive_heuristics.TwoCapHeuristic
+solved with: SP.constructive_heuristics.TwoCapHeuristic
 time limit: 2700 s
 time to solve: 0,96 s
 objective value: 43394.0
