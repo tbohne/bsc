@@ -94,14 +94,7 @@ public class TwoCapHeuristic {
             partitionTwo.add("stack" + stack);
         }
 
-        int cnt = 0;
-        ArrayList<Integer> dummyItems = new ArrayList<>();
-        while (partitionOne.size() < partitionTwo.size()) {
-            graph.addVertex("dummy" + cnt);
-            partitionOne.add("dummy" + cnt);
-            dummyItems.add(cnt);
-            cnt++;
-        }
+        ArrayList<Integer> dummyItems = HeuristicUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
 
         // item pair - stack edges
         for (int i = 0; i < itemPairs.size(); i++) {
