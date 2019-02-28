@@ -539,7 +539,7 @@ public class ThreeCapRecursiveMCMHeuristic {
     public void completeStackAssignments() {
         ArrayList<Integer> remainingItems = this.getUnassignedItems();
 
-        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems(remainingItems, this.instance.getStackingConstraints());
+        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForItemList(remainingItems, this.instance.getStackingConstraints());
         ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
         this.updateRemainingItems(itemPairs, remainingItems);
 

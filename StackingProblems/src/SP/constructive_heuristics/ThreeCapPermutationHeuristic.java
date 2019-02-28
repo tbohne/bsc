@@ -384,7 +384,7 @@ public class ThreeCapPermutationHeuristic {
      */
     public void tryToAssignRemainingItemsAsPairs(List<Integer> unmatchedItems) {
 
-        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForUnassignedItems((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
+        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForItemList((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
         ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
 
         ArrayList<Integer> toBeRemoved = new ArrayList<>();

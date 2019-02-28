@@ -1,5 +1,9 @@
 package SP.constructive_heuristics;
 
+import SP.representations.Instance;
+import SP.representations.InstanceReader;
+import SP.representations.Solution;
+
 public class ConstructiveHeuristicTest {
 
     // TODO: Should be removed later (for now used as test class)
@@ -14,16 +18,16 @@ public class ConstructiveHeuristicTest {
         //   - solve instance using the heuristic
         //   - print results
 
-//        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_20_8_3_00.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/b=2_m/slp_instance_300_180_2_02.txt");
 //        // System.out.println(instance);
 //
-////        TwoCapHeuristic solver = new TwoCapHeuristic(instance, TIME_LIMIT);
+        TwoCapHeuristic solver = new TwoCapHeuristic(instance, TIME_LIMIT);
 //        ThreeCapPermutationHeuristic solver = new ThreeCapPermutationHeuristic(instance, TIME_LIMIT);
-//        Solution sol = solver.solve(false);
+        Solution sol = solver.solve();
 //
-//        System.out.println("feasible: " + sol.isFeasible());
-//        System.out.println("cost: " + sol.getCost());
+        System.out.println("feasible: " + sol.isFeasible());
+        System.out.println("cost: " + sol.getCost());
 
-        System.out.println("COST: " + Integer.MAX_VALUE / 100);
+//        System.out.println("COST: " + Integer.MAX_VALUE / 100);
     }
 }

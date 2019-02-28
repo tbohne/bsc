@@ -10,49 +10,43 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
 
+/**
+ * A collection of utility methods used in the heuristics.
+ *
+ * @author Tim Bohne
+ */
 public class HeuristicUtil {
 
-    public static EdmondsMaximumCardinalityMatching<String, DefaultEdge> getMCMForUnassignedItems(ArrayList<Integer> unassignedItems, int[][] stackingConstraints) {
+    /**
+     * Generates a stacking constraint graph containing the given items as nodes.
+     * There exists an edge between two items if the items are stackable in at least one direction
+     * based on the given stacking constraints.
+     *
+     * @param items               - the items to be matched
+     * @param stackingConstraints - the matrix representing the stacking constraints
+     * @return the computed maximum cardinality matching
+     */
+    public static EdmondsMaximumCardinalityMatching<String, DefaultEdge> getMCMForItemList(ArrayList<Integer> items, int[][] stackingConstraints) {
 
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        for (int item : unassignedItems) {
-            graph.addVertex("v" + item);
+        DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        for (int item : items) {
+            stackingConstraintGraph.addVertex("v" + item);
         }
-        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
-        for (int i = 0; i < unassignedItems.size(); i++) {
-            for (int j = 0; j < unassignedItems.size(); j++) {
-                if (unassignedItems.get(i) != unassignedItems.get(j) && stackingConstraints[unassignedItems.get(i)][unassignedItems.get(j)] == 1
-                        || stackingConstraints[unassignedItems.get(j)][unassignedItems.get(i)] == 1) {
 
-                    if (!graph.containsEdge("v" + unassignedItems.get(j), "v" + unassignedItems.get(i))) {
-                        graph.addEdge("v" + unassignedItems.get(i), "v" + unassignedItems.get(j));
-                    }
+        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = 0; j < items.size(); j++) {
+                if (items.get(i) != items.get(j) && stackingConstraints[items.get(i)][items.get(j)] == 1
+                    || stackingConstraints[items.get(j)][items.get(i)] == 1) {
+
+                        if (!stackingConstraintGraph.containsEdge("v" + items.get(j), "v" + items.get(i))) {
+                            stackingConstraintGraph.addEdge("v" + items.get(i), "v" + items.get(j));
+                        }
                 }
             }
         }
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
         return mcm;
-    }
-
-    /**
-     * Adds the item pairs that exceed the number of stacks to the unmatched items.
-     *
-     * @param matchedItems - the list of matched item pairs
-     * @param unmatchedItems - the list of unmatched items
-     */
-    public static void removeExceedingItemPairsFromMatchedItems(ArrayList<MCMEdge> matchedItems, ArrayList<Integer> unmatchedItems, int[][] stacks) {
-        ArrayList<MCMEdge> toBeRemoved = new ArrayList<>();
-        for (int i = stacks.length; i < matchedItems.size(); i++) {
-            int itemOne = matchedItems.get(i).getVertexOne();
-            int itemTwo = matchedItems.get(i).getVertexTwo();
-            unmatchedItems.add(itemOne);
-            unmatchedItems.add(itemTwo);
-            toBeRemoved.add(matchedItems.get(i));
-        }
-
-        for (MCMEdge e : toBeRemoved) {
-            matchedItems.remove(matchedItems.indexOf(e));
-        }
     }
 
     public static void addEdgesForItemPairs(
