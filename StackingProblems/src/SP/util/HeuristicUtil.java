@@ -74,6 +74,17 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns the list of unmatched items based on the given list of item pairs.
+     *
+     * @param itemPairs - the list of matched items
+     * @param items     - the list containing every item
+     * @return the list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsFromPairs(ArrayList<MCMEdge> itemPairs, int[] items) {
+        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromPairs(itemPairs), items);
+    }
+
+    /**
      * Returns the list of unmatched items based on the list of matched items.
      *
      * @param matchedItems - the list of matched items
@@ -127,28 +138,6 @@ public class HeuristicUtil {
      */
     public static boolean itemsStackableInBothDirections(int itemOne, int itemTwo, int[][] stackingConstraints) {
         return stackingConstraints[itemTwo][itemOne] == 1 && stackingConstraints[itemOne][itemTwo] == 1;
-    }
-
-    /**
-     * Returns the list of unmatched items based on the given list of item pairs.
-     *
-     * @param itemPairs - the list of matched items
-     * @param items     - the list containing every item
-     * @return the list of unmatched items
-     */
-    public static ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs, int[] items) {
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (MCMEdge edge : itemPairs) {
-            matchedItems.add(edge.getVertexOne());
-            matchedItems.add(edge.getVertexTwo());
-        }
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : items) {
-            if (!matchedItems.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
     }
 
     /**

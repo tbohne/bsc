@@ -189,7 +189,7 @@ public class ThreeCapPermutationHeuristic {
      */
     public ArrayList<List<Integer>> getUnmatchedItemPermutations(ArrayList<MCMEdge> matchedItems) {
 
-        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(matchedItems, this.instance.getItems()));
+        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItemsFromPairs(matchedItems, this.instance.getItems()));
         this.removeExceedingItemPairsFromMatchedItems(matchedItems, unmatchedItems);
 
         // lowest rating first --> inflexible item first
