@@ -316,7 +316,7 @@ public class ThreeCapPermutationHeuristic {
         stillUnmatchedItems = this.getUnmatchedItemsSortedByRowRating(stillUnmatchedItems);
         toRemoveAgain = new ArrayList<>(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
+        if (HeuristicUtil.getNumberOfItemsAssignedToStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
         this.instance.removeItemListFromStorageArea(toRemoveAgain);
 
@@ -325,7 +325,7 @@ public class ThreeCapPermutationHeuristic {
         toRemoveAgain = new ArrayList<>(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
 
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
+        if (HeuristicUtil.getNumberOfItemsAssignedToStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
         this.instance.removeItemListFromStorageArea(toRemoveAgain);
 
@@ -335,7 +335,7 @@ public class ThreeCapPermutationHeuristic {
         Collections.reverse(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
 
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
+        if (HeuristicUtil.getNumberOfItemsAssignedToStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
         this.instance.removeItemListFromStorageArea(toRemoveAgain);
 
@@ -344,7 +344,7 @@ public class ThreeCapPermutationHeuristic {
         Collections.reverse(stillUnmatchedItems);
         this.assignSortedListOfUnmatchedItems(stillUnmatchedItems);
 
-        if (HeuristicUtil.getNumberOfItemsInStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
+        if (HeuristicUtil.getNumberOfItemsAssignedToStacks(this.instance.getStacks()) == this.instance.getItems().length) { return true; }
 
         return false;
     }
