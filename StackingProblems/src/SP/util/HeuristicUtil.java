@@ -464,6 +464,14 @@ public class HeuristicUtil {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Provides a map containing the ratings of the item pair.
+     *
+     * @param itemOne             - the first item of the pair
+     * @param itemTwo             - the second item of the pair
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @return the map containing the ratings
+     */
     public static HashMap<Integer, String> getRatingsMapForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
         HashMap<Integer, String> itemRatings = new HashMap<>();
         itemRatings.put(HeuristicUtil.computeRowRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneRow");
@@ -473,6 +481,14 @@ public class HeuristicUtil {
         return itemRatings;
     }
 
+    /**
+     * Provides a list of the ratings of the item pair.
+     *
+     * @param itemOne             - the first item of the pair
+     * @param itemTwo             - the second item of the pair
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @return the list containing the ratings
+     */
     public static ArrayList<Integer> getItemRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
         HashMap<Integer, String> itemRatings = getRatingsMapForItemPair(itemOne, itemTwo, stackingConstraints);
         ArrayList<Integer> ratings = new ArrayList<>();
@@ -482,10 +498,16 @@ public class HeuristicUtil {
         return ratings;
     }
 
+    /**
+     * Returns the sum of the relevant ratings for the item pair.
+     *
+     * @param itemOne             - the first item of the pair
+     * @param itemTwo             - the second item of the pair
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @return the sum of the relevant item ratings
+     */
     public static int getSumOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
-
         if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
-
             // stackable in both directions
             return computeRowRatingForUnmatchedItem(itemOne, stackingConstraints)
                 + computeColRatingForUnmatchedItem(itemOne, stackingConstraints)
@@ -506,6 +528,12 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Returns a copy of the given edge list.
+     *
+     * @param edgeList - the edge list to be copied
+     * @return the copied edge list
+     */
     public static ArrayList<MCMEdge> getCopyOfEdgeList(ArrayList<MCMEdge> edgeList) {
         ArrayList<MCMEdge> edgeListCopy = new ArrayList<>();
         for (MCMEdge edge : edgeList) {
@@ -514,9 +542,16 @@ public class HeuristicUtil {
         return edgeListCopy;
     }
 
+    /**
+     * Returns the extreme value from the relevant ratings of the pair.
+     *
+     * @param itemOne             - the first item of the pair
+     * @param itemTwo             - the second item of the pair
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param min                 - specifies whether the min value should be returned (max otherwise)
+     * @return the extreme rating value
+     */
     public static int getExtremeOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
-
-        // both directions possible?
         if (itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
             if (min) {
                 return Collections.min(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
@@ -524,7 +559,6 @@ public class HeuristicUtil {
                 return Collections.max(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
             }
         } else if (stackingConstraints[itemOne][itemTwo] == 1) {
-
             // item one upon item two
             // min(col rating item one, row rating item two)
             int colItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
@@ -534,9 +568,7 @@ public class HeuristicUtil {
             } else {
                 return colItemOne > rowItemTwo ? colItemOne : rowItemTwo;
             }
-
         } else {
-
             // item two upon item one
             // min(col rating item two, row rating item one)
             int colItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
@@ -546,10 +578,15 @@ public class HeuristicUtil {
             } else {
                 return colItemTwo > rowItemOne ? colItemTwo : rowItemOne;
             }
-
         }
     }
 
+    /**
+     * Assigns the sum of the ratings to the specified edges.
+     *
+     * @param matchedItems        - the matched items (edges) to be rated
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     */
     public static void assignSumRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
@@ -558,6 +595,12 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Assigns the minimum rating to the specified edges.
+     *
+     * @param matchedItems        - the matched items (edges) to be rated
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     */
     public static void assignMinRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
@@ -566,6 +609,12 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Assigns the maximum rating to the specified edges.
+     *
+     * @param matchedItems        - the matched items (edges) to be rated
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     */
     public static void assignMaxRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
@@ -574,10 +623,15 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Assigns the row rating to the specified edges.
+     *
+     * @param matchedItems        - the matched items (edges) to be rated
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     */
     public static void assignRowRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
-
             for (int entry : stackingConstraints[edge.getVertexOne()]) {
                 rating += entry;
             }
@@ -588,10 +642,15 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Assigns the col rating to the specified edges.
+     *
+     * @param matchedItems        - the matched items (edges) to be rated
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     */
     public static void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
-
             // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
             // A high rating means that many items can be placed on top of the initial assignment.
             for (int i = 0; i < stackingConstraints.length; i++) {
@@ -601,6 +660,12 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Assigns the col rating to the specified edges.
+     *
+     * @param matchedItems        - the matched items (edges) to be rated
+     * @param stackingConstraints - the stacking constraints the ratings are based on
+     */
     public static void assignColRatingToEdgesNewWay(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
 
