@@ -356,8 +356,6 @@ public class HeuristicUtil {
         ArrayList<Integer> itemList = new ArrayList<>();
         for (int item : items) {
             itemList.add(item);
-        }
-        for (int item : items) {
             stackingConstraintGraph.addVertex("v" + item);
         }
         for (int i = 0; i < stackingConstraints.length; i++) {
@@ -823,66 +821,5 @@ public class HeuristicUtil {
         }
 
         return new ArrayList(tmpEdges);
-    }
-
-    /**
-     * Returns the list of unmatched items increasingly sorted by col rating.
-     *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
-     */
-    public static ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
-        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
-        for (int item : unmatchedItems) {
-            unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForUnmatchedItem(item, stackingConstraints));
-        }
-        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
-        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
-        for (int item : sortedItemColRatings.keySet()) {
-            unmatchedItemsSortedByColRating.add(item);
-        }
-        return unmatchedItemsSortedByColRating;
-    }
-
-    /**
-     * Returns the list of unmatched items increasingly sorted by row rating.
-     *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
-     */
-    public static ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
-
-        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
-        for (int item : unmatchedItems) {
-            int rating = RatingSystem.computeRowRatingForUnmatchedItem(item, stackingConstraints);
-            unmatchedItemRowRatings.put(item, rating);
-        }
-        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
-        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
-        for (int item : sortedItemRowRatings.keySet()) {
-            unmatchedItemsSortedByRowRating.add(item);
-        }
-
-        return unmatchedItemsSortedByRowRating;
-    }
-
-    public static DefaultUndirectedGraph generateStackingConstraintGraphDeprecated(int[] items, int[][] stackingConstraints) {
-
-        DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
-
-        for (int item : items) {
-            graph.addVertex("v" + item);
-        }
-        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
-        for (int i = 0; i < stackingConstraints.length; i++) {
-            for (int j = 0; j < stackingConstraints[0].length; j++) {
-                if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
-                    if (!graph.containsEdge("v" + j, "v" + i)) {
-                        graph.addEdge("v" + i, "v" + j);
-                    }
-                }
-            }
-        }
-        return graph;
     }
 }

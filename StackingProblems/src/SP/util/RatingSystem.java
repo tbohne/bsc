@@ -5,6 +5,7 @@ import SP.representations.MCMEdge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A collection of utility methods providing a rating system
@@ -251,5 +252,45 @@ public class RatingSystem {
                 edge.setRating(computeColRatingForUnmatchedItem(itemTwo, stackingConstraints));
             }
         }
+    }
+
+    /**
+     * Returns the list of unmatched items increasingly sorted by col rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
+        for (int item : unmatchedItems) {
+            unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForUnmatchedItem(item, stackingConstraints));
+        }
+        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
+        for (int item : sortedItemColRatings.keySet()) {
+            unmatchedItemsSortedByColRating.add(item);
+        }
+        return unmatchedItemsSortedByColRating;
+    }
+
+    /**
+     * Returns the list of unmatched items increasingly sorted by row rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+
+        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
+        for (int item : unmatchedItems) {
+            int rating = RatingSystem.computeRowRatingForUnmatchedItem(item, stackingConstraints);
+            unmatchedItemRowRatings.put(item, rating);
+        }
+        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
+        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
+        for (int item : sortedItemRowRatings.keySet()) {
+            unmatchedItemsSortedByRowRating.add(item);
+        }
+        return unmatchedItemsSortedByRowRating;
     }
 }
