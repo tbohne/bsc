@@ -1,6 +1,6 @@
 package SP.experiments;
 
-import SP.representations.Coordinates;
+import SP.representations.Position;
 import SP.representations.Instance;
 import SP.representations.InstanceWriter;
 import SP.representations.Item;
@@ -55,8 +55,8 @@ public class TestDataGenerator {
 
             avgPercentage += getPercentageOfOneEntries(stackingConstraintMatrix);
 
-            ArrayList<Coordinates> itemPositions = generateItemPositions();
-            ArrayList<Coordinates> stackPositions = generateStackPositions(numOfStacks);
+            ArrayList<Position> itemPositions = generateItemPositions();
+            ArrayList<Position> stackPositions = generateStackPositions(numOfStacks);
 
             int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
             for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
@@ -114,9 +114,9 @@ public class TestDataGenerator {
      * @param stackPositions - list of stack positions
      * @return manhattan distance of item and stack
      */
-    public static int computeManhattanDist(int item, int stack, ArrayList<Coordinates> itemPositions, ArrayList<Coordinates> stackPositions) {
-        Coordinates itemPosition = itemPositions.get(item);
-        Coordinates stackPosition = stackPositions.get(stack);
+    public static int computeManhattanDist(int item, int stack, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
+        Position itemPosition = itemPositions.get(item);
+        Position stackPosition = stackPositions.get(stack);
         return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
     }
 
@@ -126,12 +126,12 @@ public class TestDataGenerator {
      * @param numOfStacks - the number of stacks available in the instances
      * @return list of stack positions
      */
-    public static ArrayList<Coordinates> generateStackPositions(int numOfStacks) {
+    public static ArrayList<Position> generateStackPositions(int numOfStacks) {
 
-        ArrayList<Coordinates> stackPositions = new ArrayList<>();
+        ArrayList<Position> stackPositions = new ArrayList<>();
 
         for (int i = 0; i < numOfStacks; i++) {
-            stackPositions.add(new Coordinates(i * STORAGE_AREA_SLOT_LENGTH, 0));
+            stackPositions.add(new Position(i * STORAGE_AREA_SLOT_LENGTH, 0));
         }
         return stackPositions;
     }
@@ -141,12 +141,12 @@ public class TestDataGenerator {
      *
      * @return list of item positions
      */
-    public static ArrayList<Coordinates> generateItemPositions() {
+    public static ArrayList<Position> generateItemPositions() {
 
-        ArrayList<Coordinates> itemPositions = new ArrayList<>();
+        ArrayList<Position> itemPositions = new ArrayList<>();
 
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            itemPositions.add(new Coordinates(
+            itemPositions.add(new Position(
                 i * STORAGE_AREA_SLOT_LENGTH,
                 STORAGE_AREA_SLOT_WIDTH + STORAGE_AREA_TRUCK_DISTANCE_FACTOR * STORAGE_AREA_SLOT_WIDTH
             ));

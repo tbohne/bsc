@@ -36,14 +36,14 @@ public class InstanceReader {
         return matrix;
     }
 
-    public static void readCoordinates(ArrayList<Coordinates> coordinates, BufferedReader reader) {
+    public static void readCoordinates(ArrayList<Position> coordinates, BufferedReader reader) {
         try {
             String line = reader.readLine().trim();
             String[] coords = line.split(" ");
             for (String coord : coords) {
                 int xCoord = Integer.parseInt(coord.split(",")[0].replace("(", "").trim());
                 int yCoord = Integer.parseInt(coord.split(",")[1].replace(")", "").trim());
-                coordinates.add(new Coordinates(xCoord, yCoord));
+                coordinates.add(new Position(xCoord, yCoord));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,8 +56,8 @@ public class InstanceReader {
         int numberOfStacks = 0;
         int stackCapacity = 0;
 
-        ArrayList<Coordinates> itemPositions = new ArrayList<>();
-        ArrayList<Coordinates> stackPositions = new ArrayList<>();
+        ArrayList<Position> itemPositions = new ArrayList<>();
+        ArrayList<Position> stackPositions = new ArrayList<>();
 
         int[][] stackingConstraints = new int[numberOfItems][];
         int[][] costs = new int [numberOfItems][];

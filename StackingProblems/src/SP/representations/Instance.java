@@ -6,8 +6,8 @@ public class Instance {
 
     private int[] items;
     private int[][] stacks;
-    private ArrayList<Coordinates> itemPositions;
-    private ArrayList<Coordinates> stackPositions;
+    private ArrayList<Position> itemPositions;
+    private ArrayList<Position> stackPositions;
     private int[][] stackingConstraints;
     private int[][] costs;
     private int stackCapacity;
@@ -17,8 +17,8 @@ public class Instance {
     public Instance(
             int numberOfItems,
             int numberOfStacks,
-            ArrayList<Coordinates> itemPositions,
-            ArrayList<Coordinates> stackPositions,
+            ArrayList<Position> itemPositions,
+            ArrayList<Position> stackPositions,
             int stackCapacity,
             int[][] stackingConstraints,
             int[][] costs,
@@ -35,13 +35,13 @@ public class Instance {
         }
 
         this.itemPositions = new ArrayList<>();
-        for (Coordinates coords : itemPositions) {
-            this.itemPositions.add(new Coordinates(coords));
+        for (Position coords : itemPositions) {
+            this.itemPositions.add(new Position(coords));
         }
 
         this.stackPositions = new ArrayList<>();
-        for (Coordinates coords : stackPositions) {
-            this.stackPositions.add(new Coordinates(coords));
+        for (Position coords : stackPositions) {
+            this.stackPositions.add(new Position(coords));
         }
 
         for (int i = 0; i < numberOfItems; i++) {
@@ -66,13 +66,13 @@ public class Instance {
         this.stackCapacity = instance.getStackCapacity();
 
         this.itemPositions = new ArrayList<>();
-        for (Coordinates coords : instance.getItemPositions()) {
-            itemPositions.add(new Coordinates(coords));
+        for (Position coords : instance.getItemPositions()) {
+            itemPositions.add(new Position(coords));
         }
 
         this.stackPositions = new ArrayList<>();
-        for (Coordinates coords : instance.getStackPositions()) {
-            stackPositions.add(new Coordinates(coords));
+        for (Position coords : instance.getStackPositions()) {
+            stackPositions.add(new Position(coords));
         }
 
         this.stackingConstraints = new int[instance.getStackingConstraints().length][];
@@ -116,11 +116,11 @@ public class Instance {
         return this.stacks;
     }
 
-    public ArrayList<Coordinates> getItemPositions() {
+    public ArrayList<Position> getItemPositions() {
         return this.itemPositions;
     }
 
-    public ArrayList<Coordinates> getStackPositions() {
+    public ArrayList<Position> getStackPositions() {
         return this.stackPositions;
     }
 

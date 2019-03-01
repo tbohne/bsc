@@ -32,12 +32,12 @@ public class InstanceWriter {
             }
             bw.newLine();
 
-            for (Coordinates coords: instance.getItemPositions()) {
+            for (Position coords: instance.getItemPositions()) {
                 bw.write(coords + " ");
             }
             bw.newLine();
 
-            for (Coordinates coords: instance.getStackPositions()) {
+            for (Position coords: instance.getStackPositions()) {
                 bw.write(coords + " ");
             }
             bw.newLine();
