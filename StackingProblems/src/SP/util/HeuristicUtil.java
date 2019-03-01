@@ -338,78 +338,61 @@ public class HeuristicUtil {
     }
 
     /**
+     * Generates the stacking constraint graph for the items.
+     * There exists an edge between two items if the items are stackable in
+     * at least one direction and if they can be assigned to at least one stack together.
      *
-     *
-     *
-     * @param items
-     * @param stackingConstraints
-     * @param costs
-     * @param max
-     * @param stacks
-     * @return
+     * @param items               - the list of items (nodes of the graph)
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @param costMatrix          - the matrix containing the costs for item-stack-assignments
+     * @param invalidEdgeCosts    - the cost value used to implement the placement constraints
+     * @param stacks              - the given stacks in the storage area
+     * @return the generated stacking constraint graph
      */
     public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph(
-        int[] items, int[][] stackingConstraints, int[][] costs, int max, int[][] stacks
+        int[] items, int[][] stackingConstraints, int[][] costMatrix, int invalidEdgeCosts, int[][] stacks
     ) {
-
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-
+        DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         ArrayList<Integer> itemList = new ArrayList<>();
         for (int item : items) {
             itemList.add(item);
         }
-
         for (int item : items) {
-            graph.addVertex("v" + item);
+            stackingConstraintGraph.addVertex("v" + item);
         }
-        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1
-        // and if they have at least one compatible stack.
-
         for (int i = 0; i < stackingConstraints.length; i++) {
             for (int j = 0; j < stackingConstraints[0].length; j++) {
-                if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
 
+                // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1
+                // and if they have at least one compatible stack.
+                if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
                     int numberOfCompatibleStacks = 0;
                     for (int stackIdx = 0; stackIdx < stacks.length; stackIdx++) {
-                        if (costs[i][stackIdx] < max && costs[j][stackIdx] < max) {
+                        if (costMatrix[i][stackIdx] < invalidEdgeCosts && costMatrix[j][stackIdx] < invalidEdgeCosts) {
                             numberOfCompatibleStacks++;
                         }
                     }
-
-                    // TODO: find reasonable way to calculate the value
                     if (numberOfCompatibleStacks > 0) {
                         if (itemList.contains(i) && itemList.contains(j)) {
-                            if (!graph.containsEdge("v" + j, "v" + i)) {
-                                graph.addEdge("v" + i, "v" + j);
+                            if (!stackingConstraintGraph.containsEdge("v" + j, "v" + i)) {
+                                stackingConstraintGraph.addEdge("v" + i, "v" + j);
                             }
                         }
                     }
                 }
             }
         }
-        return graph;
+        return stackingConstraintGraph;
     }
 
-    public static DefaultUndirectedGraph generateStackingConstraintGraphDeprecated(int[] items, int[][] stackingConstraints) {
-
-        DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
-
-        for (int item : items) {
-            graph.addVertex("v" + item);
-        }
-        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
-        for (int i = 0; i < stackingConstraints.length; i++) {
-            for (int j = 0; j < stackingConstraints[0].length; j++) {
-                if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
-                    if (!graph.containsEdge("v" + j, "v" + i)) {
-                        graph.addEdge("v" + i, "v" + j);
-                    }
-                }
-            }
-        }
-        return graph;
-    }
-
+    /**
+     * Computes the row rating for the given unmatched item.
+     * The row rating is the number of items the given item can be stacked upon.
+     *
+     * @param item                - the item for which the row rating gets computed
+     * @param stackingConstraints - the stacking constraints the rating is based on
+     * @return the item's row rating
+     */
     public static int computeRowRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
         int rating = 0;
         for (int entry : stackingConstraints[item]) {
@@ -418,6 +401,14 @@ public class HeuristicUtil {
         return rating;
     }
 
+    /**
+     * Computes the column rating for the given unmatched item.
+     * The column rating is the number of items that can be stacked upon the given item.
+     *
+     * @param item                - the item for which the col rating gets computed
+     * @param stackingConstraints - teh stacking constraints the rating is based on
+     * @return the item's col rating
+     */
     public static int computeColRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
         int rating = 0;
         for (int i = 0; i < stackingConstraints.length; i++) {
@@ -426,14 +417,41 @@ public class HeuristicUtil {
         return rating;
     }
 
+    /**
+     * Returns whether the specified stack in the storage area is empty.
+     *
+     * @param stackIdx    - the index of the stack to be checked
+     * @param storageArea - the storage area containing the stacks
+     * @return whether or not the specified stack is empty
+     */
     public static boolean stackEmpty(int stackIdx, int[][] storageArea) {
         return storageArea[stackIdx][2] == -1 && storageArea[stackIdx][1] == -1 && storageArea[stackIdx][0] == -1;
     }
 
-    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] costs, int max) {
-        return costs[itemOne][stackIdx] < max && costs[itemTwo][stackIdx] < max;
+    /**
+     * Returns whether the specified pair of items is compatible with the specified stack
+     * which means that both items are feasibly assignable to the stack without contradicting
+     * the placement constraints.
+     *
+     * @param stackIdx         - the index of the stack to be checked
+     * @param itemOne          - the first item of the pair to be checked
+     * @param itemTwo          - the second item of the pair to be checked
+     * @param costMatrix       - the matrix containing the edge costs
+     * @param invalidEdgeCosts - the cost value used to implement the placement constraints
+     * @return
+     */
+    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] costMatrix, int invalidEdgeCosts) {
+        return costMatrix[itemOne][stackIdx] < invalidEdgeCosts && costMatrix[itemTwo][stackIdx] < invalidEdgeCosts;
     }
 
+    /**
+     * Returns whether the specified items are stackable in both directions.
+     *
+     * @param itemOne             - the first item to be checked
+     * @param itemTwo             - the second item to be checked
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @return whether or not the given items are stackable in both directions
+     */
     public static boolean itemsStackableInBothDirections(int itemOne, int itemTwo, int[][] stackingConstraints) {
         return stackingConstraints[itemTwo][itemOne] == 1 && stackingConstraints[itemOne][itemTwo] == 1;
     }
@@ -988,5 +1006,25 @@ public class HeuristicUtil {
         }
 
         return unmatchedItemsSortedByRowRating;
+    }
+
+    public static DefaultUndirectedGraph generateStackingConstraintGraphDeprecated(int[] items, int[][] stackingConstraints) {
+
+        DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
+
+        for (int item : items) {
+            graph.addVertex("v" + item);
+        }
+        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
+        for (int i = 0; i < stackingConstraints.length; i++) {
+            for (int j = 0; j < stackingConstraints[0].length; j++) {
+                if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
+                    if (!graph.containsEdge("v" + j, "v" + i)) {
+                        graph.addEdge("v" + i, "v" + j);
+                    }
+                }
+            }
+        }
+        return graph;
     }
 }
