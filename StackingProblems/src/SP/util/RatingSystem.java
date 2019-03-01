@@ -293,4 +293,18 @@ public class RatingSystem {
         }
         return unmatchedItemsSortedByRowRating;
     }
+
+    /**
+     * Applies each edge rating system to a copy of the item pair list.
+     *
+     * @param itemPairPermutations - the list of item pair permutations
+     */
+    public static void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations, int[][] stackingConstraints) {
+        int idx = 0;
+        RatingSystem.assignRowRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        RatingSystem.assignColRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        RatingSystem.assignMaxRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        RatingSystem.assignMinRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        RatingSystem.assignSumRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+    }
 }
