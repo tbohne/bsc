@@ -104,7 +104,7 @@ public class ThreeCapPermutationHeuristic {
                 Collections.shuffle(initialListOfUnmatchedItems);
 
                 int unsuccessfulShuffleAttempts = 0;
-                while (HeuristicUtil.isAlreadyUsedShuffle(initialListOfUnmatchedItems, this.alreadyUsedShuffles)) {
+                while (HeuristicUtil.alreadyUsedShuffle(initialListOfUnmatchedItems, this.alreadyUsedShuffles)) {
                     System.out.println("already");
                     Collections.shuffle(initialListOfUnmatchedItems);
                     if (unsuccessfulShuffleAttempts == 10) {

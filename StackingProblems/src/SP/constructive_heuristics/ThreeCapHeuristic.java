@@ -136,7 +136,7 @@ public class ThreeCapHeuristic {
 
         // build pairs again
         DefaultUndirectedGraph graph = GraphUtil.generateStackingConstraintGraph(
-            HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
+            HeuristicUtil.getItemArrayFromItemList(unmatchedItems), this.instance.getStackingConstraints(),
             this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
         EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
@@ -150,7 +150,7 @@ public class ThreeCapHeuristic {
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
         graph = GraphUtil.generateStackingConstraintGraph(
-                HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
+                HeuristicUtil.getItemArrayFromItemList(unmatchedItems), this.instance.getStackingConstraints(),
                 this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
         pairs = new EdmondsMaximumCardinalityMatching(graph);

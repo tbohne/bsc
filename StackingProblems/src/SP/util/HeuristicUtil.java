@@ -1,7 +1,6 @@
 package SP.util;
 
 import SP.representations.MCMEdge;
-import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 
 import java.util.*;
 
@@ -44,6 +43,23 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns the list of unmatched items based on the list of matched items.
+     *
+     * @param matchedItems - the list of matched items
+     * @param items        - the list containing every item
+     * @return a list containing the unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsFromMatchedItems(ArrayList<Integer> matchedItems, int[] items) {
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
+        for (int item : items) {
+            if (!matchedItems.contains(item)) {
+                unmatchedItems.add(item);
+            }
+        }
+        return unmatchedItems;
+    }
+
+    /**
      * Returns the list of unmatched items based on the matched items from the triples and pairs.
      * The matched items and the list containing every item are used to determine the unmatched items.
      *
@@ -82,23 +98,6 @@ public class HeuristicUtil {
      */
     public static ArrayList<Integer> getUnmatchedItemsFromPairs(ArrayList<MCMEdge> itemPairs, int[] items) {
         return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromPairs(itemPairs), items);
-    }
-
-    /**
-     * Returns the list of unmatched items based on the list of matched items.
-     *
-     * @param matchedItems - the list of matched items
-     * @param items        - the list containing every item
-     * @return a list containing the unmatched items
-     */
-    public static ArrayList<Integer> getUnmatchedItemsFromMatchedItems(ArrayList<Integer> matchedItems, int[] items) {
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : items) {
-            if (!matchedItems.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
     }
 
     /**
@@ -147,7 +146,7 @@ public class HeuristicUtil {
      * @param alreadyUsedShuffles - the list of already used shuffles
      * @return whether or not the current shuffle was already used
      */
-    public static boolean isAlreadyUsedShuffle(ArrayList<Integer> currentShuffle, List<List<Integer>> alreadyUsedShuffles) {
+    public static boolean alreadyUsedShuffle(ArrayList<Integer> currentShuffle, List<List<Integer>> alreadyUsedShuffles) {
         for (List<Integer> shuffle : alreadyUsedShuffles) {
             if (shuffle.equals(currentShuffle)) {
                 return true;
@@ -157,24 +156,25 @@ public class HeuristicUtil {
     }
 
     /**
-     * Creates an integer array from the given list of integers.
+     * Creates an item array from the given list of items.
      *
-     * @param list - the given list of integers
-     * @return an array of the given integers
+     * @param items - the given list of items
+     * @return an array of the given items
      */
-    public static int[] getArrayFromList(ArrayList<Integer> list) {
-        int[] arr = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            arr[i] = list.get(i);
+    public static int[] getItemArrayFromItemList(ArrayList<Integer> items) {
+        int[] itemArr = new int[items.size()];
+        for (int i = 0; i < items.size(); i++) {
+            itemArr[i] = items.get(i);
         }
-        return arr;
+        return itemArr;
     }
 
     /**
      * Updates the list of completely filled stacks and prepares the corresponding
      * items to be removed from the remaining item pairs.
      *
-     * @param itemPairRemovalList    - the list to keep track of the items that should be removed form the remaining item pairs
+     * @param itemPairRemovalList    - the list to keep track of the items that should
+     *                                 be removed form the remaining item pairs
      * @param itemOneEdge            - the edge (item pair), the first item is assigned to
      * @param itemTwoEdge            - the edge (item pair), the second item is assigned to
      * @param startingPair           - the pair that is going to be assigned
@@ -242,13 +242,15 @@ public class HeuristicUtil {
                     int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
 
                     if (!itemOneAssigned && HeuristicUtil.itemAssignableToPair(
-                            itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)) {
+                        itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
+                    ) {
                         itemOneAssigned = true;
                         itemOneEdge = potentialTargetPair;
                         continue;
                     }
                     if (!itemTwoAssigned && HeuristicUtil.itemAssignableToPair(
-                            itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)) {
+                        itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
+                    ) {
                         itemTwoAssigned = true;
                         itemTwoEdge = potentialTargetPair;
                         continue;
