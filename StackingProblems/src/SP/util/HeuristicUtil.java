@@ -324,7 +324,7 @@ public class HeuristicUtil {
      * @param stacks - the stacks to be checked
      * @return the number of assigned items
      */
-    public static int getNumberOfItemsInStacks(int[][] stacks) {
+    public static int getNumberOfItemsAssignedToStacks(int[][] stacks) {
         int numberOfItems = 0;
         for (int i = 0; i < stacks.length; i++) {
             for (int j = 0; j < stacks[i].length; j++) {
@@ -336,28 +336,24 @@ public class HeuristicUtil {
         return numberOfItems;
     }
 
-    /******************************************************************************************************************/
-    /******************************************************************************************************************/
-    /************************************ DEPRECATED FROM HERE ON *****************************************************/
-    /******************************************************************************************************************/
-    /******************************************************************************************************************/
-
-    public static boolean listContainsDuplicates(List<Integer> items) {
+    /**
+     * Returns whether the specified list of items contains duplicates.
+     *
+     * @param items - ths list of items to be checked
+     * @return whether or not the list contains duplicates
+     */
+    public static boolean itemListContainsDuplicates(List<Integer> items) {
         Set<Integer> set = new HashSet<>(items);
-        if(set.size() < items.size()){
-            return true;
-        }
+        if(set.size() < items.size()){ return true; }
         return false;
     }
 
-    public static void copyStackAssignment(int[][] init, int[][] original, int[][] copy) {
-        for (int i = 0; i < original.length; i++) {
-            for (int j = 0; j < original[0].length; j++) {
-                copy[i][j] = init[i][j];
-            }
-        }
-    }
-
+    /**
+     * Returns a list of items corresponding to the specified array of items.
+     *
+     * @param itemsArr - the array of items to be replaces by a list of items
+     * @return the list of items
+     */
     public static ArrayList<Integer> getArrayListOfItems(int[] itemsArr) {
         ArrayList<Integer> items = new ArrayList<>();
         for (int item : itemsArr) {
@@ -366,67 +362,15 @@ public class HeuristicUtil {
         return items;
     }
 
+    /**
+     * Returns a reversed copy of the specified edge list.
+     *
+     * @param edges - the list of edges to be reversed
+     * @return the reversed edge list
+     */
     public static ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
         ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
         Collections.reverse(edgesRev);
         return edgesRev;
-    }
-
-    public static HashMap parseItemPairStackCombination(EdmondsMaximumCardinalityMatching mcm) {
-
-        HashMap<Integer, ArrayList<Integer>> itemPairStackCombination = new HashMap<>();
-
-        for (Object edge : mcm.getMatching().getEdges()) {
-            int firstItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[0].trim());
-            int secondItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[0].replace(")", "").trim());
-            int stack = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[1].replace("stack", "").replace(")", "").trim());
-
-            ArrayList<Integer> items = new ArrayList<>();
-            items.add(firstItem);
-            items.add(secondItem);
-            itemPairStackCombination.put(stack, items);
-        }
-
-        return itemPairStackCombination;
-    }
-
-    /**
-     * Applies each edge rating system to a copy of the item pair list.
-     *
-     * @param itemPairPermutations - the list of item pair permutations
-     */
-    public static void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations, int[][] stackingConstraints) {
-        int idx = 0;
-        RatingSystem.assignRowRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignColRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignMaxRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignMinRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignSumRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-    }
-
-    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
-    // IDEA:
-    // - choose a number n (20%) of random elements to be replaced
-    // - choose the next n unused elements from the ordered list
-    // - exchange the elements
-    public static ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges, int[][] stacks) {
-
-        ArrayList tmpEdges = new ArrayList(edges);
-
-        int numberOfEdgesToBeReplaced = (int) (0.3 * stacks.length);
-        if (numberOfEdgesToBeReplaced > (edges.size() - stacks.length)) {
-            numberOfEdgesToBeReplaced = edges.size() - stacks.length;
-        }
-
-        ArrayList<Integer> toBeReplaced = new ArrayList<>();
-
-        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, stacks.length - 1));
-        }
-        for (int i = 0; i < toBeReplaced.size(); i++) {
-            Collections.swap(tmpEdges, toBeReplaced.get(i), i + stacks.length);
-        }
-
-        return new ArrayList(tmpEdges);
     }
 }
