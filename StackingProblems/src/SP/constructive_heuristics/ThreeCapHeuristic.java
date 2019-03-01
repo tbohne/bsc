@@ -3,6 +3,7 @@ package SP.constructive_heuristics;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
+import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
@@ -77,12 +78,12 @@ public class ThreeCapHeuristic {
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
         this.addVertices(itemTriples, itemPairs, unmatchedItems, graph, partitionOne, partitionTwo);
-        ArrayList<Integer> dummyItems = HeuristicUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
 
-        HeuristicUtil.addEdgesForItemTriples(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
-        HeuristicUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
-        HeuristicUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
-        HeuristicUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
+        GraphUtil.addEdgesForItemTriples(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
 
         return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
     }
@@ -95,11 +96,11 @@ public class ThreeCapHeuristic {
      * @return list of item compatible item triples
      */
     public ArrayList<ArrayList<Integer>> computeCompatibleItemTriples(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
-        DefaultUndirectedGraph<String, DefaultEdge> graph = HeuristicUtil.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
+        DefaultUndirectedGraph<String, DefaultEdge> graph = GraphUtil.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
                 itemPairs, unmatchedItems, this.instance.getStackingConstraints()
         );
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTriples = HeuristicUtil.parseItemTripleFromMCM(mcm);
+        ArrayList<ArrayList<Integer>> itemTriples = GraphUtil.parseItemTripleFromMCM(mcm);
 
         return itemTriples;
     }
@@ -125,7 +126,7 @@ public class ThreeCapHeuristic {
      */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching) {
 
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(itemMatching);
+        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(itemPairs, this.instance.getItems()));
 
         ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
@@ -134,12 +135,12 @@ public class ThreeCapHeuristic {
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
         // build pairs again
-        DefaultUndirectedGraph graph = HeuristicUtil.generateStackingConstraintGraph(
+        DefaultUndirectedGraph graph = GraphUtil.generateStackingConstraintGraph(
             HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
             this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
         EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
-        itemPairs = HeuristicUtil.parseItemPairFromMCM(pairs);
+        itemPairs = GraphUtil.parseItemPairFromMCM(pairs);
 
         // The remaining unmatched items are not assignable to the pairs,
         // therefore pairs are merged together to form triples if possible.
@@ -148,14 +149,14 @@ public class ThreeCapHeuristic {
         // compute finally unmatched items
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
-        graph = HeuristicUtil.generateStackingConstraintGraph(
+        graph = GraphUtil.generateStackingConstraintGraph(
                 HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
                 this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
         pairs = new EdmondsMaximumCardinalityMatching(graph);
 
         // items that are stored as pairs
-        itemPairs = HeuristicUtil.parseItemPairFromMCM(pairs);
+        itemPairs = GraphUtil.parseItemPairFromMCM(pairs);
 
         // items that are stored in their own stack
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
@@ -165,7 +166,7 @@ public class ThreeCapHeuristic {
 
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(triples, itemPairs, unmatchedItems);
 
-        HeuristicUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
+        GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
         Solution sol = new Solution(0, this.timeLimit, this.instance);
         sol.transformStackAssignmentIntoValidSolutionIfPossible();
@@ -194,7 +195,7 @@ public class ThreeCapHeuristic {
 
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
                 this.instance.getCosts(),

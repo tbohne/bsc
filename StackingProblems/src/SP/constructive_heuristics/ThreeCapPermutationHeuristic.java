@@ -3,6 +3,7 @@ package SP.constructive_heuristics;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
+import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.MapUtil;
 import SP.util.RatingSystem;
@@ -385,8 +386,8 @@ public class ThreeCapPermutationHeuristic {
      */
     public void tryToAssignRemainingItemsAsPairs(List<Integer> unmatchedItems) {
 
-        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForItemList((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
+        EdmondsMaximumCardinalityMatching mcm = GraphUtil.getMCMForItemList((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
+        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(mcm);
 
         ArrayList<Integer> toBeRemoved = new ArrayList<>();
 
@@ -670,11 +671,11 @@ public class ThreeCapPermutationHeuristic {
      */
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
 
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(itemMatching);
+        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {
-            ArrayList<MCMEdge> tmpItemPairs = HeuristicUtil.getCopyOfEdgeList(itemPairs);
+            ArrayList<MCMEdge> tmpItemPairs = GraphUtil.getCopyOfEdgeList(itemPairs);
             itemPairPermutations.add(tmpItemPairs);
         }
         this.applyRatingSystemsToItemPairPermutations(itemPairPermutations);
@@ -788,7 +789,7 @@ public class ThreeCapPermutationHeuristic {
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
                 this.instance.getCosts(),

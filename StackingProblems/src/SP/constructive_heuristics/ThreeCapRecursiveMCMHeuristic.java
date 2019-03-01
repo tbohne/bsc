@@ -3,6 +3,7 @@ package SP.constructive_heuristics;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
+import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
@@ -242,7 +243,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      * @return the parsed and sorted list of item pairs
      */
     public ArrayList<MCMEdge> parseAndSortItemPairs(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
+        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(mcm);
         RatingSystem.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         return itemPairs;
@@ -273,7 +274,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = HeuristicUtil.parseItemTripleFromMCM(itemTriples);
+        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = GraphUtil.parseItemTripleFromMCM(itemTriples);
         this.stackAssignments.addAll(itemTripleStackAssignments);
     }
 
@@ -501,7 +502,7 @@ public class ThreeCapRecursiveMCMHeuristic {
     public void completeStackAssignments() {
         ArrayList<Integer> remainingItems = this.getUnassignedItems();
 
-        EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForItemList(remainingItems, this.instance.getStackingConstraints());
+        EdmondsMaximumCardinalityMatching mcm = GraphUtil.getMCMForItemList(remainingItems, this.instance.getStackingConstraints());
         ArrayList<MCMEdge> itemPairs = this.parseAndSortItemPairs(mcm);
         this.updateRemainingItems(itemPairs, remainingItems);
 
@@ -542,7 +543,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> graph = HeuristicUtil.generateStackingConstraintGraph(
+            DefaultUndirectedGraph<String, DefaultEdge> graph = GraphUtil.generateStackingConstraintGraph(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
                 this.instance.getCosts(),

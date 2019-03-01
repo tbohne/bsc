@@ -3,6 +3,7 @@ package SP.constructive_heuristics;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
+import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
@@ -94,7 +95,7 @@ public class TwoCapHeuristic {
             partitionTwo.add("stack" + stack);
         }
 
-        ArrayList<Integer> dummyItems = HeuristicUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
 
         // item pair - stack edges
         for (int i = 0; i < itemPairs.size(); i++) {
@@ -167,7 +168,7 @@ public class TwoCapHeuristic {
      * @return the generated solution
      */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
+        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(mcm);
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
         this.parseMatchingAndAssignItems(minCostPerfectMatching);
@@ -189,7 +190,7 @@ public class TwoCapHeuristic {
         if (this.instance.getStackCapacity() == 2) {
 
             this.startTime = System.currentTimeMillis();
-            DefaultUndirectedGraph stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(
+            DefaultUndirectedGraph stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
                 this.instance.getItems(), this.instance.getStackingConstraints(), this.instance.getCosts(),
                     Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
             );
