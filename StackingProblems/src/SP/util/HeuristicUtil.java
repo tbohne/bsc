@@ -692,14 +692,19 @@ public class HeuristicUtil {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Returns the list of unmatched items based on the given list of item pairs.
+     *
+     * @param itemPairs - the list of matched items
+     * @param items     - the list containing every item
+     * @return the list of unmatched items
+     */
     public static ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs, int[] items) {
-
         ArrayList<Integer> matchedItems = new ArrayList<>();
         for (MCMEdge edge : itemPairs) {
             matchedItems.add(edge.getVertexOne());
             matchedItems.add(edge.getVertexTwo());
         }
-
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
         for (int item : items) {
             if (!matchedItems.contains(item)) {
@@ -709,6 +714,13 @@ public class HeuristicUtil {
         return unmatchedItems;
     }
 
+    /**
+     * Determines whether the specified current shuffle was already used before.
+     *
+     * @param currentShuffle      - the current shuffle to be checked
+     * @param alreadyUsedShuffles - the list of already used shuffles
+     * @return whether or not the current shuffle was already used
+     */
     public static boolean isAlreadyUsedShuffle(ArrayList<Integer> currentShuffle, List<List<Integer>> alreadyUsedShuffles) {
         for (List<Integer> shuffle : alreadyUsedShuffles) {
             if (shuffle.equals(currentShuffle)) {
@@ -718,7 +730,13 @@ public class HeuristicUtil {
         return false;
     }
 
-    public static ArrayList<MCMEdge> parseItemPairMCM(EdmondsMaximumCardinalityMatching mcm) {
+    /**
+     * Parses item pairs from the given maximum cardinality matching.
+     *
+     * @param mcm - the given maximum cardinality matching
+     * @return the list of matched items (edges)
+     */
+    public static ArrayList<MCMEdge> parseItemPairFromMCM(EdmondsMaximumCardinalityMatching mcm) {
         ArrayList<MCMEdge> matchedItems = new ArrayList<>();
         for (Object edge : mcm.getMatching()) {
             int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
@@ -729,10 +747,14 @@ public class HeuristicUtil {
         return matchedItems;
     }
 
-    public static ArrayList<ArrayList<Integer>> parseItemTripleMCM(EdmondsMaximumCardinalityMatching mcm) {
-
+    /**
+     * Parses item triples from the given maximum cardinality matching.
+     *
+     * @param mcm - the given maximum cardinality matching
+     * @return the list of parsed item triples
+     */
+    public static ArrayList<ArrayList<Integer>> parseItemTripleFromMCM(EdmondsMaximumCardinalityMatching mcm) {
         ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
-
         for (Object edge : mcm.getMatching().getEdges()) {
             String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
             int first = Integer.parseInt(parsedEdge.split(",")[0].trim());
@@ -745,10 +767,15 @@ public class HeuristicUtil {
             currAssignment.add(third);
             itemTriples.add(new ArrayList<>(currAssignment));
         }
-
         return itemTriples;
     }
 
+    /**
+     * Creates an integer array from the given list of integers.
+     *
+     * @param list - the given list of integers
+     * @return an array of the given integers
+     */
     public static int[] getArrayFromList(ArrayList<Integer> list) {
         int[] arr = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -758,26 +785,26 @@ public class HeuristicUtil {
     }
 
     /**
-     * Updates the list of completely filled stacks and prepares the corresponding items to be removed from the remaining item pairs.
+     * Updates the list of completely filled stacks and prepares the corresponding
+     * items to be removed from the remaining item pairs.
      *
-     * @param itemPairRemovalList - the list to keep track of the items that should be removed form the remaining item pairs
-     * @param itemOneEdge - the edge (item pair), the first item is assigned to
-     * @param itemTwoEdge - the edge (item pair), the second item is assigned to
-     * @param startingPair - the pair that is going to be assigned
-     * @param itemOne - the first item to be assigned
-     * @param itemTwo - the second item to be assigned
+     * @param itemPairRemovalList    - the list to keep track of the items that should be removed form the remaining item pairs
+     * @param itemOneEdge            - the edge (item pair), the first item is assigned to
+     * @param itemTwoEdge            - the edge (item pair), the second item is assigned to
+     * @param startingPair           - the pair that is going to be assigned
+     * @param itemOne                - the first item to be assigned
+     * @param itemTwo                - the second item to be assigned
      * @param completelyFilledStacks - the list of completely filled stacks
      */
     public static void updateCompletelyFilledStacks(
-            ArrayList<MCMEdge> itemPairRemovalList,
-            MCMEdge itemOneEdge,
-            MCMEdge itemTwoEdge,
-            MCMEdge startingPair,
-            int itemOne,
-            int itemTwo,
-            ArrayList<ArrayList<Integer>> completelyFilledStacks
+        ArrayList<MCMEdge> itemPairRemovalList,
+        MCMEdge itemOneEdge,
+        MCMEdge itemTwoEdge,
+        MCMEdge startingPair,
+        int itemOne,
+        int itemTwo,
+        ArrayList<ArrayList<Integer>> completelyFilledStacks
     ) {
-
         itemPairRemovalList.add(itemOneEdge);
         itemPairRemovalList.add(itemTwoEdge);
         itemPairRemovalList.add(startingPair);
@@ -796,20 +823,21 @@ public class HeuristicUtil {
         completelyFilledStacks.add(itemTwoStack);
     }
 
-
     /**
      * Generates completely filled stacks from the list of item pairs.
-     * (Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks).
+     * Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks.
      *
-     * @param itemPairs - the list of item pairs
-     * @param itemPairRemovalList - the list of edges (item pairs) to be removed
+     * @param itemPairs              - the list of item pairs
+     * @param itemPairRemovalList    - the list of edges (item pairs) to be removed
      * @param completelyFilledStacks - list to store the completely filled stacks
      */
     public static void generateCompletelyFilledStacks(
-        ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks, int[][] stackingConstraints
+        ArrayList<MCMEdge> itemPairs,
+        ArrayList<MCMEdge> itemPairRemovalList,
+        ArrayList<ArrayList<Integer>> completelyFilledStacks,
+        int[][] stackingConstraints
     ) {
         for (MCMEdge startingPair : itemPairs) {
-
             if (itemPairRemovalList.contains(startingPair)) { continue; }
 
             int itemOne = startingPair.getVertexOne();
@@ -841,9 +869,11 @@ public class HeuristicUtil {
                     }
                 }
             }
-
             if (itemOneAssigned && itemTwoAssigned) {
-                updateCompletelyFilledStacks(itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair, itemOne, itemTwo, completelyFilledStacks);
+                updateCompletelyFilledStacks(
+                    itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair,
+                    itemOne, itemTwo, completelyFilledStacks
+                );
             }
         }
     }
@@ -851,13 +881,12 @@ public class HeuristicUtil {
     /**
      * Returns whether the given item is validly assignable to the given pair.
      *
-     * @param item - the item to be checked
+     * @param item        - the item to be checked
      * @param pairItemOne - the first item of the pair
      * @param pairItemTwo - the second item of the pair
      * @return whether or not the item is assignable to the pair
      */
     public static boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo, int[][] stackingConstraints) {
-
         // pair stackable in both directions
         if (HeuristicUtil.itemsStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
             if (stackingConstraints[item][pairItemOne] == 1) {
@@ -891,10 +920,16 @@ public class HeuristicUtil {
         return false;
     }
 
-    public static void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching matching, int[][] stacks) {
-
-        for (Object edge : matching.getMatching().getEdges()) {
-
+    /**
+     * Parses the given minimum weight perfect matching and assigns it to the given stacks.
+     *
+     * @param mwpm   - the minimum weight perfect matching to be parsed
+     * @param stacks - the stacks the parsed items are going to be assigned to
+     */
+    public static void parseAndAssignMinCostPerfectMatching(
+        KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks
+    ) {
+        for (Object edge : mwpm.getMatching().getEdges()) {
             if (edge.toString().contains("triple")) {
                 int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[0].replace("[", "".trim()));
                 int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[1].trim());
@@ -904,7 +939,6 @@ public class HeuristicUtil {
                 stacks[stack][0] = itemOne;
                 stacks[stack][1] = itemTwo;
                 stacks[stack][2] = itemThree;
-
             } else if (edge.toString().contains("pair")) {
                 int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
                 int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
@@ -919,6 +953,72 @@ public class HeuristicUtil {
                 stacks[stack][0] = item;
             }
         }
+    }
+
+    /**
+     * Returns a random value in between the specified limits.
+     *
+     * @param min - the lower bound of the value
+     * @param max - the upper bound of the value
+     * @return the random value in between the specified limits
+     */
+    public static int getRandomValueInBetween(int min, int max) {
+        Random r = new Random();
+        return r.nextInt(max - min) + min;
+    }
+
+    /**
+     * Returns the number of items that are assigned to a stack in the storage area.
+     *
+     * @param stacks - the stacks to be checked
+     * @return the number of assigned items
+     */
+    public static int getNumberOfItemsInStacks(int[][] stacks) {
+        int numberOfItems = 0;
+        for (int i = 0; i < stacks.length; i++) {
+            for (int j = 0; j < stacks[i].length; j++) {
+                if (stacks[i][j] != -1) {
+                    numberOfItems++;
+                }
+            }
+        }
+        return numberOfItems;
+    }
+
+    /******************************************************************************************************************/
+    /******************************************************************************************************************/
+    /************************************ DEPRECATED FROM HERE ON *****************************************************/
+    /******************************************************************************************************************/
+    /******************************************************************************************************************/
+
+    public static boolean listContainsDuplicates(List<Integer> items) {
+        Set<Integer> set = new HashSet<>(items);
+        if(set.size() < items.size()){
+            return true;
+        }
+        return false;
+    }
+
+    public static void copyStackAssignment(int[][] init, int[][] original, int[][] copy) {
+        for (int i = 0; i < original.length; i++) {
+            for (int j = 0; j < original[0].length; j++) {
+                copy[i][j] = init[i][j];
+            }
+        }
+    }
+
+    public static ArrayList<Integer> getArrayListOfItems(int[] itemsArr) {
+        ArrayList<Integer> items = new ArrayList<>();
+        for (int item : itemsArr) {
+            items.add(item);
+        }
+        return items;
+    }
+
+    public static ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
+        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
+        Collections.reverse(edgesRev);
+        return edgesRev;
     }
 
     public static HashMap parseItemPairStackCombination(EdmondsMaximumCardinalityMatching mcm) {
@@ -938,59 +1038,6 @@ public class HeuristicUtil {
 
         return itemPairStackCombination;
     }
-
-    public static ArrayList<Integer> getArrayListOfItems(int[] itemsArr) {
-        ArrayList<Integer> items = new ArrayList<>();
-        for (int item : itemsArr) {
-            items.add(item);
-        }
-        return items;
-    }
-
-    public static ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
-        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
-        Collections.reverse(edgesRev);
-        return edgesRev;
-    }
-
-    public static int getRandomValueInBetween(int low, int high) {
-        Random r = new Random();
-        return r.nextInt(high - low) + low;
-    }
-
-    public static void copyStackAssignment(int[][] init, int[][] original, int[][] copy) {
-        for (int i = 0; i < original.length; i++) {
-            for (int j = 0; j < original[0].length; j++) {
-                copy[i][j] = init[i][j];
-            }
-        }
-    }
-
-    public static int getNumberOfItemsInStacks(int[][] stacks) {
-        int numberOfItems = 0;
-        for (int i = 0; i < stacks.length; i++) {
-            for (int j = 0; j < stacks[i].length; j++) {
-                if (stacks[i][j] != -1) {
-                    numberOfItems++;
-                }
-            }
-        }
-        return numberOfItems;
-    }
-
-    public static boolean listContainsDuplicates(List<Integer> items) {
-        Set<Integer> set = new HashSet<>(items);
-        if(set.size() < items.size()){
-            return true;
-        }
-        return false;
-    }
-
-    /******************************************************************************************************************/
-    /******************************************************************************************************************/
-    /************************************ DEPRECATED FROM HERE ON *****************************************************/
-    /******************************************************************************************************************/
-    /******************************************************************************************************************/
 
     /**
      * Applies each edge rating system to a copy of the item pair list.

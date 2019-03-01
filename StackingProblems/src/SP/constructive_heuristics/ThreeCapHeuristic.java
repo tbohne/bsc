@@ -99,7 +99,7 @@ public class ThreeCapHeuristic {
                 itemPairs, unmatchedItems, this.instance.getStackingConstraints()
         );
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTriples = HeuristicUtil.parseItemTripleMCM(mcm);
+        ArrayList<ArrayList<Integer>> itemTriples = HeuristicUtil.parseItemTripleFromMCM(mcm);
 
         return itemTriples;
     }
@@ -125,7 +125,7 @@ public class ThreeCapHeuristic {
      */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching) {
 
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(itemMatching);
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItems(itemPairs, this.instance.getItems()));
 
         ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
@@ -139,7 +139,7 @@ public class ThreeCapHeuristic {
             this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
         EdmondsMaximumCardinalityMatching pairs = new EdmondsMaximumCardinalityMatching(graph);
-        itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
+        itemPairs = HeuristicUtil.parseItemPairFromMCM(pairs);
 
         // The remaining unmatched items are not assignable to the pairs,
         // therefore pairs are merged together to form triples if possible.
@@ -155,7 +155,7 @@ public class ThreeCapHeuristic {
         pairs = new EdmondsMaximumCardinalityMatching(graph);
 
         // items that are stored as pairs
-        itemPairs = HeuristicUtil.parseItemPairMCM(pairs);
+        itemPairs = HeuristicUtil.parseItemPairFromMCM(pairs);
 
         // items that are stored in their own stack
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());

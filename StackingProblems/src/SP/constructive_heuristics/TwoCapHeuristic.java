@@ -167,7 +167,7 @@ public class TwoCapHeuristic {
      * @return the generated solution
      */
     public Solution generateSolution(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
         ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
         KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
         this.parseMatchingAndAssignItems(minCostPerfectMatching);

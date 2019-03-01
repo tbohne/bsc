@@ -385,7 +385,7 @@ public class ThreeCapPermutationHeuristic {
     public void tryToAssignRemainingItemsAsPairs(List<Integer> unmatchedItems) {
 
         EdmondsMaximumCardinalityMatching mcm = HeuristicUtil.getMCMForItemList((ArrayList<Integer>) unmatchedItems, this.instance.getStackingConstraints());
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
 
         ArrayList<Integer> toBeRemoved = new ArrayList<>();
 
@@ -669,7 +669,7 @@ public class ThreeCapPermutationHeuristic {
      */
     public ArrayList<ArrayList<MCMEdge>> getItemPairPermutations(EdmondsMaximumCardinalityMatching itemMatching) {
 
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(itemMatching);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(itemMatching);
 
         ArrayList<ArrayList<MCMEdge>> itemPairPermutations = new ArrayList<>();
         for (int i = 0; i < NUMER_OF_USED_EDGE_RATING_SYSTEMS; i++) {

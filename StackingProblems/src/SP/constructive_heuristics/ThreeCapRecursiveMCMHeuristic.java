@@ -148,45 +148,6 @@ public class ThreeCapRecursiveMCMHeuristic {
     }
 
     /**
-     * Updates the list of completely filled stacks and prepares the corresponding items to be removed from the remaining item pairs.
-     *
-     * @param itemPairRemovalList - the list to keep track of the items that should be removed form the remaining item pairs
-     * @param itemOneEdge - the edge (item pair), the first item is assigned to
-     * @param itemTwoEdge - the edge (item pair), the second item is assigned to
-     * @param startingPair - the pair that is going to be assigned
-     * @param itemOne - the first item to be assigned
-     * @param itemTwo - the second item to be assigned
-     * @param completelyFilledStacks - the list of completely filled stacks
-     */
-    public void updateCompletelyFilledStacks(
-            ArrayList<MCMEdge> itemPairRemovalList,
-            MCMEdge itemOneEdge,
-            MCMEdge itemTwoEdge,
-            MCMEdge startingPair,
-            int itemOne,
-            int itemTwo,
-            ArrayList<ArrayList<Integer>> completelyFilledStacks
-    ) {
-
-        itemPairRemovalList.add(itemOneEdge);
-        itemPairRemovalList.add(itemTwoEdge);
-        itemPairRemovalList.add(startingPair);
-
-        ArrayList<Integer> itemOneStack = new ArrayList<>();
-        itemOneStack.add(itemOne);
-        itemOneStack.add(itemOneEdge.getVertexOne());
-        itemOneStack.add(itemOneEdge.getVertexTwo());
-
-        ArrayList<Integer> itemTwoStack = new ArrayList<>();
-        itemTwoStack.add(itemTwo);
-        itemTwoStack.add(itemTwoEdge.getVertexOne());
-        itemTwoStack.add(itemTwoEdge.getVertexTwo());
-
-        completelyFilledStacks.add(itemOneStack);
-        completelyFilledStacks.add(itemTwoStack);
-    }
-
-    /**
      * Generates completely filled stacks from the list of item pairs.
      * (Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks).
      *
@@ -228,7 +189,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             }
 
             if (itemOneAssigned && itemTwoAssigned) {
-                this.updateCompletelyFilledStacks(itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair, itemOne, itemTwo, completelyFilledStacks);
+                HeuristicUtil.updateCompletelyFilledStacks(itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair, itemOne, itemTwo, completelyFilledStacks);
             }
         }
     }
@@ -280,7 +241,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      * @return the parsed and sorted list of item pairs
      */
     public ArrayList<MCMEdge> parseAndSortItemPairs(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairMCM(mcm);
+        ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
         HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         return itemPairs;
@@ -311,7 +272,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         this.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(graph, itemPairs, unmatchedItems);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemTriples = new EdmondsMaximumCardinalityMatching<>(graph);
-        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = HeuristicUtil.parseItemTripleMCM(itemTriples);
+        ArrayList<ArrayList<Integer>> itemTripleStackAssignments = HeuristicUtil.parseItemTripleFromMCM(itemTriples);
         this.stackAssignments.addAll(itemTripleStackAssignments);
     }
 
