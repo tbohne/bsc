@@ -129,43 +129,51 @@ public class HeuristicUtil {
     }
 
     /**
+     * Adds the edges from unmatched items to stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge means that the item is assignable
+     * to the stack. Each item is assignable to every stack initially. Forbidden assignments are indirectly
+     * avoided by the minimum weight perfect matching through high edge costs.
      *
-     *
-     * @param graph
-     * @param unmatchedItems
+     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
+     * @param unmatchedItems - the unmatched items to be connected to the stacks
+     * @param stacks         - the stacks the items are going to be connected to
+     * @param costMatrix     - the matrix containing the costs for item-stack-assignments
      */
     public static void addEdgesForUnmatchedItems(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
-            ArrayList<Integer> unmatchedItems,
-            int[][] stacks,
-            int[][] costsArr
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        ArrayList<Integer> unmatchedItems,
+        int[][] stacks,
+        int[][] costMatrix
     ) {
-        // edges from unmatched items to stacks
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < stacks.length; stack++) {
-                if (!graph.containsEdge("item" + item, "stack" + stack)) {
-                    DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
-                    int costs = costsArr[item][stack];
-                    graph.setEdgeWeight(edge, costs);
+                // TODO: check necessary?
+                if (!bipartiteGraph.containsEdge("item" + item, "stack" + stack)) {
+                    DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "stack" + stack);
+                    int costs = costMatrix[item][stack];
+                    bipartiteGraph.setEdgeWeight(edge, costs);
                 }
             }
         }
     }
 
     /**
+     * Introduces dummy vertices to the given bipartite graph.
      *
-     * @param graph
-     * @param partitionOne
-     * @param partitionTwo
-     * @return
+     * @param bipartiteGraph - the given bipartite graph consisting of items and stacks
+     * @param partitionOne   - the bipartite graph's first partition
+     * @param partitionTwo   - the bipartite graph's second partition
+     * @return the created list of dummy items corresponding to the dummy vertices
      */
     public static ArrayList<Integer> introduceDummyVertices(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
-
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        Set<String> partitionOne,
+        Set<String> partitionTwo
+    ) {
         int cnt = 0;
         ArrayList<Integer> dummyItems = new ArrayList<>();
         while (partitionOne.size() < partitionTwo.size()) {
-            graph.addVertex("dummy" + cnt);
+            bipartiteGraph.addVertex("dummy" + cnt);
             partitionOne.add("dummy" + cnt);
             dummyItems.add(cnt);
             cnt++;
@@ -174,111 +182,55 @@ public class HeuristicUtil {
     }
 
     /**
-     * Applies each edge rating system to a copy of the item pair list.
+     * Adds an edge to the graph if the given unmatched item can be assigned
+     * to the given pair to build up a valid item triple.
      *
-     * @param itemPairPermutations - the list of item pair permutations
+     * @param graph               - the graph to be extended
+     * @param lowerItemOfPair     - the lower item of the pair
+     * @param unmatchedItem       - the unmatched item to be assigned to the pair
+     * @param upperItemOfPair     - the upper item of the pair
+     * @param itemPair            - the edge that represents the pair
+     * @param stackingConstraints - the stacking constraints to be respected
      */
-    public static void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations, int[][] stackingConstraints) {
-        int idx = 0;
-        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-    }
-
-    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
-    // IDEA:
-    // - choose a number n (20%) of random elements to be replaced
-    // - choose the next n unused elements from the ordered list
-    // - exchange the elements
-    public static ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges, int[][] stacks) {
-
-        ArrayList tmpEdges = new ArrayList(edges);
-
-        int numberOfEdgesToBeReplaced = (int) (0.3 * stacks.length);
-        if (numberOfEdgesToBeReplaced > (edges.size() - stacks.length)) {
-            numberOfEdgesToBeReplaced = edges.size() - stacks.length;
-        }
-
-        ArrayList<Integer> toBeReplaced = new ArrayList<>();
-
-        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, stacks.length - 1));
-        }
-        for (int i = 0; i < toBeReplaced.size(); i++) {
-            Collections.swap(tmpEdges, toBeReplaced.get(i), i + stacks.length);
-        }
-
-        return new ArrayList(tmpEdges);
-    }
-
-    /**
-     * Returns the list of unmatched items increasingly sorted by col rating.
-     *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
-     */
-    public static ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
-        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
-        for (int item : unmatchedItems) {
-            unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, stackingConstraints));
-        }
-        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
-        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
-        for (int item : sortedItemColRatings.keySet()) {
-            unmatchedItemsSortedByColRating.add(item);
-        }
-        return unmatchedItemsSortedByColRating;
-    }
-
-    /**
-     * Returns the list of unmatched items increasingly sorted by row rating.
-     *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
-     */
-    public static ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
-
-        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
-        for (int item : unmatchedItems) {
-            int rating = HeuristicUtil.computeRowRatingForUnmatchedItem(item, stackingConstraints);
-            unmatchedItemRowRatings.put(item, rating);
-        }
-        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
-        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
-        for (int item : sortedItemRowRatings.keySet()) {
-            unmatchedItemsSortedByRowRating.add(item);
-        }
-
-        return unmatchedItemsSortedByRowRating;
-    }
-
     public static void addEdgeForCompatibleItemTriple(
-            DefaultUndirectedGraph<String, DefaultEdge> graph, int pairItemOne, int unmatchedItem, int pairItemTwo, MCMEdge itemPair, int[][] stackingConstraints
+        DefaultUndirectedGraph<String, DefaultEdge> graph,
+        int lowerItemOfPair,
+        int unmatchedItem,
+        int upperItemOfPair,
+        MCMEdge itemPair,
+        int[][] stackingConstraints
     ) {
-
-        if (stackingConstraints[pairItemOne][unmatchedItem] == 1
-                || stackingConstraints[unmatchedItem][pairItemTwo] == 1) {
-
+        if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 || stackingConstraints[unmatchedItem][upperItemOfPair] == 1) {
             if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
                 graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
             }
         }
     }
 
-    public static ArrayList<Integer> getMatchedItemsFromPairs(ArrayList<MCMEdge> pairs) {
+    /**
+     * Returns a list containing all the matched items that are part of an item pair.
+     *
+     * @param itemPairs - the pairs of items
+     * @return a list containing all the matched items
+     */
+    public static ArrayList<Integer> getMatchedItemsFromPairs(ArrayList<MCMEdge> itemPairs) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (MCMEdge pair : pairs) {
+        for (MCMEdge pair : itemPairs) {
             matchedItems.add(pair.getVertexOne());
             matchedItems.add(pair.getVertexTwo());
         }
         return matchedItems;
     }
 
-    public static ArrayList<Integer> getMatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples) {
+    /**
+     * Returns a list containing all the matched items that are part of an item triple.
+     *
+     * @param itemTriples - the triples of items
+     * @return a list containing all the matched items
+     */
+    public static ArrayList<Integer> getMatchedItemsFromTriples(ArrayList<ArrayList<Integer>> itemTriples) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (ArrayList<Integer> triple : triples) {
+        for (ArrayList<Integer> triple : itemTriples) {
             for (int item : triple) {
                 matchedItems.add(item);
             }
@@ -286,23 +238,43 @@ public class HeuristicUtil {
         return matchedItems;
     }
 
-    public static ArrayList<Integer> getUnmatchedItemsFromTriplesAndPairs(ArrayList<ArrayList<Integer>> triples, ArrayList<MCMEdge> pairs, int[] items) {
+    /**
+     * Returns the list of unmatched items based on the matched items from the triples and pairs.
+     * The matched items and the list containing every item are used to determine the unmatched items.
+     *
+     * @param itemTriples - the list of item triples
+     * @param itemPairs   - the list of item pairs
+     * @param items       - the list of all items
+     * @return a list containing the unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsFromTriplesAndPairs(
+        ArrayList<ArrayList<Integer>> itemTriples,
+        ArrayList<MCMEdge> itemPairs,
+        int[] items
+    ) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
-        matchedItems.addAll(getMatchedItemsFromTriples(triples));
-        matchedItems.addAll(getMatchedItemsFromPairs(pairs));
+        matchedItems.addAll(getMatchedItemsFromTriples(itemTriples));
+        matchedItems.addAll(getMatchedItemsFromPairs(itemPairs));
         return getUnmatchedItemsFromMatchedItems(matchedItems, items);
     }
 
     /**
      * Returns a list of unmatched items based on the list of matched triples.
      *
-     * @param triples - the list of matched triples
-     * @return list of unmatched items
+     * @param itemTriples - the list of item triples
+     * @return a list containing the unmatched items
      */
-    public static ArrayList<Integer> getUnmatchedItemsFromTriples(ArrayList<ArrayList<Integer>> triples, int[] items) {
-        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromTriples(triples), items);
+    public static ArrayList<Integer> getUnmatchedItemsFromTriples(ArrayList<ArrayList<Integer>> itemTriples, int[] items) {
+        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromTriples(itemTriples), items);
     }
 
+    /**
+     * Returns the list of unmatched items based on the list of matched items.
+     *
+     * @param matchedItems - the list of matched items
+     * @param items        - the list containing every item
+     * @return a list containing the unmatched items
+     */
     public static ArrayList<Integer> getUnmatchedItemsFromMatchedItems(ArrayList<Integer> matchedItems, int[] items) {
         ArrayList<Integer> unmatchedItems = new ArrayList<>();
         for (int item : items) {
@@ -313,50 +285,71 @@ public class HeuristicUtil {
         return unmatchedItems;
     }
 
-
     /**
+     * Generates the bipartite graph containing pairs of items in
+     * one partition and unmatched items in the other one.
      *
-     *
-     * @param itemPairs
-     * @param unmatchedItems
-     * @return
+     * @param itemPairs           - the list of item pairs
+     * @param unmatchedItems      - the list of unmatched items
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @return the generated bipartite graph
      */
     public static DefaultUndirectedGraph<String, DefaultEdge> generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
-            ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems, int[][] stackingConstraints
+        ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems, int[][] stackingConstraints
     ) {
 
-        DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        DefaultUndirectedGraph<String, DefaultEdge> bipartiteGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
         // adding the item pairs as nodes to the graph
         for (int i = 0; i < itemPairs.size(); i++) {
-            graph.addVertex("edge" + itemPairs.get(i));
+            bipartiteGraph.addVertex("edge" + itemPairs.get(i));
         }
-
         // adding the unmatched items as nodes to the graph
         for (int i : unmatchedItems) {
-            graph.addVertex("v" + i);
+            bipartiteGraph.addVertex("v" + i);
         }
 
-        for (int i = 0; i < itemPairs.size(); i++) {
-            for (int j = 0; j < unmatchedItems.size(); j++) {
+        for (int itemPair = 0; itemPair < itemPairs.size(); itemPair++) {
+            for (int unmatchedItem = 0; unmatchedItem < unmatchedItems.size(); unmatchedItem++) {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
-                if (stackingConstraints[itemPairs.get(i).getVertexOne()][itemPairs.get(i).getVertexTwo()] == 1) {
-                    addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexTwo(), unmatchedItems.get(j),
-                            itemPairs.get(i).getVertexOne(), itemPairs.get(i), stackingConstraints
+                if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1) {
+                    HeuristicUtil.addEdgeForCompatibleItemTriple(
+                        bipartiteGraph,
+                        itemPairs.get(itemPair).getVertexTwo(),
+                        unmatchedItems.get(unmatchedItem),
+                        itemPairs.get(itemPair).getVertexOne(),
+                        itemPairs.get(itemPair),
+                        stackingConstraints
                     );
                 } else {
-                    addEdgeForCompatibleItemTriple(graph, itemPairs.get(i).getVertexOne(), unmatchedItems.get(j),
-                            itemPairs.get(i).getVertexTwo(), itemPairs.get(i), stackingConstraints
+                    HeuristicUtil.addEdgeForCompatibleItemTriple(
+                        bipartiteGraph,
+                        itemPairs.get(itemPair).getVertexOne(),
+                        unmatchedItems.get(unmatchedItem),
+                        itemPairs.get(itemPair).getVertexTwo(),
+                        itemPairs.get(itemPair),
+                        stackingConstraints
                     );
                 }
             }
         }
-        return graph;
+        return bipartiteGraph;
     }
 
-    public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraphNewWay(
-            int[] items, int[][] stackingConstraints, int[][] costs, int max, int[][] stacks
+    /**
+     *
+     *
+     *
+     * @param items
+     * @param stackingConstraints
+     * @param costs
+     * @param max
+     * @param stacks
+     * @return
+     */
+    public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph(
+        int[] items, int[][] stackingConstraints, int[][] costs, int max, int[][] stacks
     ) {
 
         DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
@@ -397,7 +390,7 @@ public class HeuristicUtil {
         return graph;
     }
 
-    public static DefaultUndirectedGraph generateStackingConstraintGraph(int[] items, int[][] stackingConstraints) {
+    public static DefaultUndirectedGraph generateStackingConstraintGraphDeprecated(int[] items, int[][] stackingConstraints) {
 
         DefaultUndirectedGraph graph = new DefaultUndirectedGraph(DefaultEdge.class);
 
@@ -908,5 +901,92 @@ public class HeuristicUtil {
             return true;
         }
         return false;
+    }
+
+    /******************************************************************************************************************/
+    /******************************************************************************************************************/
+    /************************************ DEPRECATED FROM HERE ON *****************************************************/
+    /******************************************************************************************************************/
+    /******************************************************************************************************************/
+
+    /**
+     * Applies each edge rating system to a copy of the item pair list.
+     *
+     * @param itemPairPermutations - the list of item pair permutations
+     */
+    public static void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations, int[][] stackingConstraints) {
+        int idx = 0;
+        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
+    }
+
+    // TODO: exchange certain elements of this sequence with other (unused) ones (EXPERIMENTAL APPROACH)
+    // IDEA:
+    // - choose a number n (20%) of random elements to be replaced
+    // - choose the next n unused elements from the ordered list
+    // - exchange the elements
+    public static ArrayList<MCMEdge> edgeExchange(List<MCMEdge> edges, int[][] stacks) {
+
+        ArrayList tmpEdges = new ArrayList(edges);
+
+        int numberOfEdgesToBeReplaced = (int) (0.3 * stacks.length);
+        if (numberOfEdgesToBeReplaced > (edges.size() - stacks.length)) {
+            numberOfEdgesToBeReplaced = edges.size() - stacks.length;
+        }
+
+        ArrayList<Integer> toBeReplaced = new ArrayList<>();
+
+        for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
+            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, stacks.length - 1));
+        }
+        for (int i = 0; i < toBeReplaced.size(); i++) {
+            Collections.swap(tmpEdges, toBeReplaced.get(i), i + stacks.length);
+        }
+
+        return new ArrayList(tmpEdges);
+    }
+
+    /**
+     * Returns the list of unmatched items increasingly sorted by col rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
+        for (int item : unmatchedItems) {
+            unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, stackingConstraints));
+        }
+        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
+        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
+        for (int item : sortedItemColRatings.keySet()) {
+            unmatchedItemsSortedByColRating.add(item);
+        }
+        return unmatchedItemsSortedByColRating;
+    }
+
+    /**
+     * Returns the list of unmatched items increasingly sorted by row rating.
+     *
+     * @param unmatchedItems - the unsorted list of unmatched items
+     * @return the sorted list of unmatched items
+     */
+    public static ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+
+        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
+        for (int item : unmatchedItems) {
+            int rating = HeuristicUtil.computeRowRatingForUnmatchedItem(item, stackingConstraints);
+            unmatchedItemRowRatings.put(item, rating);
+        }
+        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
+        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
+        for (int item : sortedItemRowRatings.keySet()) {
+            unmatchedItemsSortedByRowRating.add(item);
+        }
+
+        return unmatchedItemsSortedByRowRating;
     }
 }

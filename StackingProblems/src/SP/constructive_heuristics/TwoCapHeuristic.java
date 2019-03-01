@@ -189,7 +189,7 @@ public class TwoCapHeuristic {
         if (this.instance.getStackCapacity() == 2) {
 
             this.startTime = System.currentTimeMillis();
-            DefaultUndirectedGraph stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+            DefaultUndirectedGraph stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(
                 this.instance.getItems(), this.instance.getStackingConstraints(), this.instance.getCosts(),
                     Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
             );

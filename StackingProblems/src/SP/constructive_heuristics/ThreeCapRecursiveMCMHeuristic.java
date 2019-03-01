@@ -580,7 +580,7 @@ public class ThreeCapRecursiveMCMHeuristic {
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+            DefaultUndirectedGraph<String, DefaultEdge> graph = HeuristicUtil.generateStackingConstraintGraph(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
                 this.instance.getCosts(),

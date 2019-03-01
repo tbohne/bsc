@@ -134,7 +134,7 @@ public class ThreeCapHeuristic {
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
         // build pairs again
-        DefaultUndirectedGraph graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+        DefaultUndirectedGraph graph = HeuristicUtil.generateStackingConstraintGraph(
             HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
             this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
@@ -148,7 +148,7 @@ public class ThreeCapHeuristic {
         // compute finally unmatched items
         unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
 
-        graph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+        graph = HeuristicUtil.generateStackingConstraintGraph(
                 HeuristicUtil.getArrayFromList(unmatchedItems), this.instance.getStackingConstraints(),
                 this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
         );
@@ -194,7 +194,7 @@ public class ThreeCapHeuristic {
 
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraphNewWay(
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = HeuristicUtil.generateStackingConstraintGraph(
                 this.instance.getItems(),
                 this.instance.getStackingConstraints(),
                 this.instance.getCosts(),
