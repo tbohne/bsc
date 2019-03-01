@@ -4,6 +4,7 @@ import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.HeuristicUtil;
+import SP.util.RatingSystem;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
@@ -242,7 +243,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      */
     public ArrayList<MCMEdge> parseAndSortItemPairs(EdmondsMaximumCardinalityMatching mcm) {
         ArrayList<MCMEdge> itemPairs = HeuristicUtil.parseItemPairFromMCM(mcm);
-        HeuristicUtil.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         return itemPairs;
     }
@@ -291,7 +292,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             ArrayList<ArrayList<Integer>> listsOfRemainingItems
     ) {
 
-        HeuristicUtil.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdgesNewWay(edges, this.instance.getStackingConstraints());
         Collections.sort(edges);
 
         // TODO: remove hard coded value

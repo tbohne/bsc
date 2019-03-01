@@ -5,6 +5,7 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.HeuristicUtil;
 import SP.util.MapUtil;
+import SP.util.RatingSystem;
 import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -126,7 +127,7 @@ public class ThreeCapPermutationHeuristic {
 
         HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
         for (int item : unmatchedItems) {
-            int rating = HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints());
+            int rating = RatingSystem.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints());
             unmatchedItemRowRatings.put(item, rating);
         }
         ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
@@ -147,7 +148,7 @@ public class ThreeCapPermutationHeuristic {
     public ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems) {
         HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
         for (int item : unmatchedItems) {
-            unmatchedItemColRatings.put(item, HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
+            unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
         }
         Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
         ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
@@ -291,8 +292,8 @@ public class ThreeCapPermutationHeuristic {
     public boolean prioritizeInflexibleItems(List<Integer> unmatchedItems) {
         for (int item : unmatchedItems) {
 
-            if (HeuristicUtil.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor
-                && HeuristicUtil.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
+            if (RatingSystem.computeRowRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor
+                && RatingSystem.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()) <= this.priorizationFactor) {
 //                    System.out.println("prioritizing: " + item);
                     this.unstackableItems.add(item);
                     if (!this.assignItemToFirstPossiblePosition(item)) {
@@ -560,8 +561,8 @@ public class ThreeCapPermutationHeuristic {
         if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, this.instance.getStackingConstraints())) {
 
             // The maximum is the most promising order.
-            switch (HeuristicUtil.getRatingsMapForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints()).get(
-                HeuristicUtil.getExtremeOfRelevantRatingsForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints(), false))) {
+            switch (RatingSystem.getRatingsMapForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints()).get(
+                RatingSystem.getExtremeOfRelevantRatingsForItemPair(itemOne, itemTwo, this.instance.getStackingConstraints(), false))) {
 
                     case "itemOneRow":
                         // not ground - item one below - desirable: good row rating for item one
@@ -653,11 +654,11 @@ public class ThreeCapPermutationHeuristic {
      */
     public void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations) {
         int idx = 0;
-        HeuristicUtil.assignRowRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignColRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignMaxRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignMinRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
-        HeuristicUtil.assignSumRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        RatingSystem.assignRowRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        RatingSystem.assignMaxRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        RatingSystem.assignMinRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
+        RatingSystem.assignSumRatingToEdges(itemPairPermutations.get(idx++), this.instance.getStackingConstraints());
     }
 
     /**
