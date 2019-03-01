@@ -265,7 +265,7 @@ public class RatingSystem {
         for (int item : unmatchedItems) {
             unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForUnmatchedItem(item, stackingConstraints));
         }
-        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
+        Map<Integer, Integer> sortedItemColRatings = HeuristicUtil.sortMapByValue(unmatchedItemColRatings);
         ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
         for (int item : sortedItemColRatings.keySet()) {
             unmatchedItemsSortedByColRating.add(item);
@@ -287,7 +287,7 @@ public class RatingSystem {
             unmatchedItemRowRatings.put(item, rating);
         }
         ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
-        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
+        Map<Integer, Integer> sortedItemRowRatings = HeuristicUtil.sortMapByValue(unmatchedItemRowRatings);
         for (int item : sortedItemRowRatings.keySet()) {
             unmatchedItemsSortedByRowRating.add(item);
         }

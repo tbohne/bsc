@@ -5,7 +5,6 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
-import SP.util.MapUtil;
 import SP.util.RatingSystem;
 import com.google.common.collect.Collections2;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
@@ -132,7 +131,7 @@ public class ThreeCapPermutationHeuristic {
             unmatchedItemRowRatings.put(item, rating);
         }
         ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
-        Map<Integer, Integer> sortedItemRowRatings = MapUtil.sortByValue(unmatchedItemRowRatings);
+        Map<Integer, Integer> sortedItemRowRatings = HeuristicUtil.sortMapByValue(unmatchedItemRowRatings);
         for (int item : sortedItemRowRatings.keySet()) {
             unmatchedItemsSortedByRowRating.add(item);
         }
@@ -151,7 +150,7 @@ public class ThreeCapPermutationHeuristic {
         for (int item : unmatchedItems) {
             unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForUnmatchedItem(item, this.instance.getStackingConstraints()));
         }
-        Map<Integer, Integer> sortedItemColRatings = MapUtil.sortByValue(unmatchedItemColRatings);
+        Map<Integer, Integer> sortedItemColRatings = HeuristicUtil.sortMapByValue(unmatchedItemColRatings);
         ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
         for (int item : sortedItemColRatings.keySet()) {
             unmatchedItemsSortedByColRating.add(item);
