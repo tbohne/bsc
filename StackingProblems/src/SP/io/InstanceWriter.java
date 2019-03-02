@@ -1,4 +1,7 @@
-package SP.representations;
+package SP.io;
+
+import SP.representations.Instance;
+import SP.representations.Position;
 
 import java.io.*;
 

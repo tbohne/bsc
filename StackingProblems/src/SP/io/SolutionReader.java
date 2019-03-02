@@ -1,4 +1,8 @@
-package SP.representations;
+package SP.io;
+
+import SP.representations.Instance;
+import SP.representations.Solution;
+import SP.io.InstanceReader;
 
 import java.io.BufferedReader;
 import java.io.File;
