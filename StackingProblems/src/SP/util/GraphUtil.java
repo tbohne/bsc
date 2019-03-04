@@ -210,6 +210,60 @@ public class GraphUtil {
     }
 
     /**
+     * Adds the item-pair vertices to the given bipartite graph.
+     *
+     * @param itemPairs      - the item pairs to be added as vertices
+     * @param bipartiteGraph - the bipartite graph to be extended
+     * @param partitionOne   - the partition the vertices are added to
+     */
+    public static void addVerticesForItemPairs(
+        ArrayList<MCMEdge> itemPairs,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        Set<String> partitionOne
+    ) {
+        for (MCMEdge edge : itemPairs) {
+            bipartiteGraph.addVertex("edge" + edge);
+            partitionOne.add("edge" + edge);
+        }
+    }
+
+    /**
+     * Adds the unmatched-item vertices to the given bipartite graph.
+     *
+     * @param unmatchedItems - the unmatched items to be added as vertices
+     * @param bipartiteGraph - the bipartite graph to be extended
+     * @param partitionOne   - the partition the vertices are added to
+     */
+    public static void addVerticesForUnmatchedItems(
+        ArrayList<Integer> unmatchedItems,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        Set<String> partitionOne
+    ) {
+        for (int item : unmatchedItems) {
+            bipartiteGraph.addVertex("item" + item);
+            partitionOne.add("item" + item);
+        }
+    }
+
+    /**
+     * Adds the stacks as vertices to the given bipartite graph.
+     *
+     * @param stacks         - the stacks to be added as vertices
+     * @param bipartiteGraph - the bipartite graph to be extended
+     * @param partitionTwo   - the partition the vertices are added to
+     */
+    public static void addVerticesForStacks(
+        int[][] stacks,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        Set<String> partitionTwo
+    ) {
+        for (int stack = 0; stack < stacks.length; stack++) {
+            bipartiteGraph.addVertex("stack" + stack);
+            partitionTwo.add("stack" + stack);
+        }
+    }
+
+    /**
      * Generates the bipartite graph containing pairs of items in
      * one partition and unmatched items in the other one.
      *
