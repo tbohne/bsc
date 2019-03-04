@@ -6,10 +6,8 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
-import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
-import org.jgrapht.alg.partition.BipartitePartitioning;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
@@ -20,8 +18,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Constructive heuristic to efficiently generate solutions of stacking
- * problems with a stack capacity of 2.
+ * Constructive heuristic to efficiently generate feasible solutions to stacking
+ * problems with a stack capacity of 2. The goal is to minimize the transport costs
+ * while respecting all given constraints.
  *
  * @author Tim Bohne
  */
@@ -87,6 +86,21 @@ public class TwoCapHeuristic {
     }
 
     /**
+     * Encapsulates the stacking constraint graph generation.
+     *
+     * @return the generated stacking constraint graph
+     */
+    public DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph() {
+        return GraphUtil.generateStackingConstraintGraph(
+            this.instance.getItems(),
+            this.instance.getStackingConstraints(),
+            this.instance.getCosts(),
+            (Integer.MAX_VALUE / this.instance.getItems().length),
+            this.instance.getStacks()
+        );
+    }
+
+    /**
      * Solves the stacking problem with an approach that uses a maximum cardinality matching followed by a minimum
      * weight perfect matching to feasibly assign all items to the storage area while minimizing the costs.
      * Basic idea:
@@ -106,25 +120,22 @@ public class TwoCapHeuristic {
 
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
-                this.instance.getItems(),
-                this.instance.getStackingConstraints(),
-                this.instance.getCosts(),
-                (Integer.MAX_VALUE / this.instance.getItems().length),
-                this.instance.getStacks()
-            );
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
+            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching =
+                new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
+
             ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
-            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(itemPairs, this.instance.getItems());
-
-            BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
-            KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = new KuhnMunkresMinimalWeightBipartitePerfectMatching(
-                bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
+            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
+                itemPairs, this.instance.getItems()
             );
-
+            BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
+            KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
+                new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
+                    bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
+                )
+            ;
             GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
-
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
