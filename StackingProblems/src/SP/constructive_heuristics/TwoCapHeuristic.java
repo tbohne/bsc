@@ -5,8 +5,10 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
+import org.jgrapht.alg.partition.BipartitePartitioning;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
@@ -16,12 +18,24 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Constructive heuristic to efficiently generate solutions of stacking
+ * problems with a stack capacity of 2.
+ *
+ * @author Tim Bohne
+ */
 public class TwoCapHeuristic {
 
     private Instance instance;
     private double startTime;
     private int timeLimit;
 
+    /**
+     * Constructor
+     *
+     * @param instance  - the instance of the stacking problem to be solved
+     * @param timeLimit - the time limit for the solving procedure
+     */
     public TwoCapHeuristic(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
@@ -43,96 +57,38 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Returns the list of unmatched items based on the list of item pairs.
+     * Generates the complete bipartite graph consisting of the item partition and the stack partition.
+     * Since the two partitions aren't necessarily equally sized and the used algorithm to compute the
+     * Min-Cost-Perfect-Matching expects a complete bipartite graph, there are dummy items that are used to
+     * make the graph complete bipartite. These items have no influence on the costs and are ignored in later steps.
      *
-     * @param itemPairs - the list of item pairs (matched items)
-     * @return the list of unmatched items
-     */
-    public ArrayList<Integer> getUnmatchedItems(ArrayList<MCMEdge> itemPairs) {
-
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (MCMEdge edge : itemPairs) {
-            matchedItems.add(edge.getVertexOne());
-            matchedItems.add(edge.getVertexTwo());
-        }
-
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : this.instance.getItems()) {
-            if (!matchedItems.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
-    }
-
-    /**
-     * Generates the complete bipartite graph consisting of the item partition and the stack partition
-     * and computes the minimum cost perfect matching for this graph.
-     * Since the two partitions aren't equally sized and the used algorithm to compute the MinCostPerfectMatching
-     * expects a complete bipartite graph, there are dummy items that are used to make the graph complete bipartite.
-     * These items have no influence on the costs and are ignored in later steps.
-     *
-     * @param itemPairs - the pairs of items that are assigned to a stack together
+     * @param itemPairs      - the pairs of items that are assigned to a stack together
      * @param unmatchedItems - the items that are assigned to their own stack
-     * @return the minimum cost perfect matching between items and stacks
+     * @return the generated bipartite graph
      */
-    public KuhnMunkresMinimalWeightBipartitePerfectMatching getMinCostPerfectMatching(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
-
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    public DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> generateBipartiteGraph(
+        ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems
+    ) {
+        BipartitePartitioning<String, DefaultWeightedEdge> bipartiteGraph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
 
-        for (MCMEdge edge : itemPairs) {
-            graph.addVertex("edge" + edge);
-            partitionOne.add("edge" + edge);
-        }
-        for (int item : unmatchedItems) {
-            graph.addVertex("item" + item);
-            partitionOne.add("item" + item);
-        }
-        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-            graph.addVertex("stack" + stack);
-            partitionTwo.add("stack" + stack);
-        }
+        GraphUtil.addVerticesForItemPairs(itemPairs, bipartiteGraph, partitionOne);
+        GraphUtil.addVerticesForUnmatchedItems(unmatchedItems, bipartiteGraph, partitionOne);
+        GraphUtil.addVerticesForStacks(this.instance.getStacks(), bipartiteGraph, partitionTwo);
 
-        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(bipartiteGraph, partitionOne, partitionTwo);
+        GraphUtil.addEdgesForItemPairs(bipartiteGraph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForUnmatchedItems(bipartiteGraph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForDummyItems(bipartiteGraph, dummyItems, this.instance.getStacks());
 
-        // item pair - stack edges
-        for (int i = 0; i < itemPairs.size(); i++) {
-            for (int j = 0; j < this.instance.getStacks().length; j++) {
-                if (!graph.containsEdge("edge" + itemPairs.get(i), "stack" + j)) {
-                    DefaultWeightedEdge edge = graph.addEdge("edge" + itemPairs.get(i), "stack" + j);
-                    int costs = this.instance.getCosts()[itemPairs.get(i).getVertexOne()][j] + this.instance.getCosts()[itemPairs.get(i).getVertexTwo()][j];
-                    graph.setEdgeWeight(edge, costs);
-                }
-            }
-        }
-        // unmatched item - stack edges
-        for (int item : unmatchedItems) {
-            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                if (!graph.containsEdge("item" + item, "stack" + stack)) {
-                    DefaultWeightedEdge edge = graph.addEdge("item" + item, "stack" + stack);
-                    int costs = this.instance.getCosts()[item][stack];
-                    graph.setEdgeWeight(edge, costs);
-                }
-            }
-        }
-
-        // dummy items can be stored in every stack with no costs
-        for (int item : dummyItems) {
-            for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-                DefaultWeightedEdge edge = graph.addEdge("dummy" + item, "stack" + stack);
-                int costs = 0;
-                graph.setEdgeWeight(edge, costs);
-            }
-        }
-
-        return new KuhnMunkresMinimalWeightBipartitePerfectMatching(graph,partitionOne, partitionTwo);
+        return bipartiteGraph;
     }
 
     /**
      * Parses the minimum cost perfect matching and assigns the items to the specified stacks.
      * The dummy items are ignored here, because they're not relevant for the assignment.
+     * TODO: could be partially used in 3cap (unify and move to GraphUtil)
      *
      * @param minCostPM - the minimum cost perfect matching determining the stack assignments
      */
@@ -158,46 +114,43 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Generates a solution to the SP using the item pairs given by the MCM.
-     * The item pairs are used to determine the unmatched items.
-     * A minimum cost perfect matching in the bipartite graph consisting of the set of items (and item pairs) and the set
-     * of stacks is computed and interpreted as stack assignments. Finally, the order in the stacks is fixed
-     * to respect the stacking  constraints.
-     *
-     * @param mcm - the maximum cardinality matching determining the pairs of items
-     * @return the generated solution
-     */
-    public Solution generateSolution(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(mcm);
-        ArrayList<Integer> unmatchedItems = this.getUnmatchedItems(itemPairs);
-        KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = this.getMinCostPerfectMatching(itemPairs, unmatchedItems);
-        this.parseMatchingAndAssignItems(minCostPerfectMatching);
-        this.fixOrderInStacks();
-
-        return new Solution(0, this.timeLimit, this.instance);
-    }
-
-    /**
-     * Solves the SP with an approach that uses a maximum cardinality matching followed by a minimum cost perfect matching
-     * to feasibly assign all items to the storage area while minimizing the costs.
+     * Solves the stacking problem with an approach that uses a maximum cardinality matching followed by a minimum
+     * weight perfect matching to feasibly assign all items to the storage area while minimizing the costs.
+     * Basic idea:
+     *      - generate stacking constraint graph
+     *      - compute MCM and interpret edges as item pairs
+     *      - generate bipartite graph (items, stacks)
+     *      - compute MWPM and interpret edges as stack assignments
+     *      - fix order of items inside the stacks
      *
      * @return the generated solution
      */
     public Solution solve() {
-
         Solution sol = new Solution();
-
         if (this.instance.getStackCapacity() == 2) {
-
             this.startTime = System.currentTimeMillis();
-            DefaultUndirectedGraph stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
-                this.instance.getItems(), this.instance.getStackingConstraints(), this.instance.getCosts(),
-                    Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
-            );
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
-            sol = generateSolution(itemMatching);
-            sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
 
+            DefaultUndirectedGraph stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
+                this.instance.getItems(),
+                this.instance.getStackingConstraints(),
+                this.instance.getCosts(),
+                (Integer.MAX_VALUE / this.instance.getItems().length),
+                this.instance.getStacks()
+            );
+
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
+            ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
+            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(itemPairs, this.instance.getItems());
+
+
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
+            KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm = new KuhnMunkresMinimalWeightBipartitePerfectMatching(
+                    bipartiteGraph, partitionOne, partitionTwo
+            );
+
+            this.parseMatchingAndAssignItems(minCostPerfectMatching);
+            this.fixOrderInStacks();
+            sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
         }

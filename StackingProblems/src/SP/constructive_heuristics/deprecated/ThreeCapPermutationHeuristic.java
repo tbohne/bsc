@@ -1,4 +1,4 @@
-package SP.constructive_heuristics;
+package SP.constructive_heuristics.deprecated;
 
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
