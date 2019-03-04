@@ -9,22 +9,37 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
 import ilog.cplex.IloCplex.Param;
 
+/**
+ * Represents the three-index formulation (MIP) of stacking problems to be used with CPLEX.
+ *
+ * @author Tim Bohne
+ */
 public class ThreeIndexFormulation {
 
     private Instance instance;
     private int timeLimit;
 
+    /**
+     * Constructor
+     *
+     * @param instance  - the instance to be solved
+     * @param timeLimit - the time limit for the solving procedure
+     */
     public ThreeIndexFormulation(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }
 
+    /**
+     * Solves the stacking problem using the bin-packing formulation.
+     *
+     * @return the generated solution to the stacking problem
+     */
     public Solution solve() {
 
         Solution sol = new Solution();
 
         try {
-
             // Defines a new model.
             IloCplex cplex = new IloCplex();
 
@@ -118,6 +133,9 @@ public class ThreeIndexFormulation {
         return sol;
     }
 
+    /**
+     * Reverses the item order for each stack to be consistent with the other solvers.
+     */
     public void reverseItemOrderForEachStack() {
         for (int i = 0; i < this.instance.getStacks().length; i++) {
             for (int j = 0; j < this.instance.getStacks()[i].length / 2; j++) {
@@ -128,6 +146,12 @@ public class ThreeIndexFormulation {
         }
     }
 
+    /**
+     * Sets the stacks based on the CPLEX variables.
+     *
+     * @param cplex - the CPLEX model
+     * @param x     - the variable x_iq
+     */
     public void setStacks(IloCplex cplex, IloIntVar[][][] x) {
 
         for (int i = 0; i < this.instance.getItems().length; i++) {
