@@ -256,12 +256,12 @@ stack 119:    264 243 220
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapPermutationHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic
 Problem not solved.
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic
 time limit: 600 s
 time to solve: 0,07 s
 objective value: 35614.0

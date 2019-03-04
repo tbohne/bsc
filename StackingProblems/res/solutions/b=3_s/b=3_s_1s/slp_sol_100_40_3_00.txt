@@ -8,7 +8,7 @@ Problem not solved.
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapPermutationHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic
 time limit: 1 s
 time to solve: 0.38 s
 objective value: 4172.0
@@ -57,7 +57,7 @@ stack 39:    99 13
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic
 time limit: 1 s
 time to solve: 0.02 s
 objective value: 4383.0

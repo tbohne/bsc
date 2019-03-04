@@ -132,12 +132,12 @@ stack 119:    9 190 145
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapPermutationHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic
 Problem not solved.
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic
 time limit: 180 s
 time to solve: 0,05 s
 objective value: 1564.0

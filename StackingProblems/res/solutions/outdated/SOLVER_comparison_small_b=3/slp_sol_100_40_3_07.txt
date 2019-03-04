@@ -96,7 +96,7 @@ stack 39:    99 90 80
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapPermutationHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic
 time limit: 30 s
 time to solve: 0.21 s
 objective value: 483.0
@@ -145,7 +145,7 @@ stack 39:    74 51
 
 #####################################################
 
-solved with: SP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic
+solved with: SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic
 time limit: 30 s
 time to solve: 0.00 s
 objective value: 473.0
