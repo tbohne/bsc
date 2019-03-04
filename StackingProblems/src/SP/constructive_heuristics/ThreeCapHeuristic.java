@@ -169,7 +169,7 @@ public class ThreeCapHeuristic {
         GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
         Solution sol = new Solution(0, this.timeLimit, this.instance);
-        sol.transformStackAssignmentIntoValidSolutionIfPossible();
+        sol.transformStackAssignmentsIntoValidSolutionIfPossible();
         return sol;
     }
 

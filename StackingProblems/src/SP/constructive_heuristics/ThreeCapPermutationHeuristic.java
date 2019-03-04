@@ -692,7 +692,7 @@ public class ThreeCapPermutationHeuristic {
      * @param sol - the solution to be checked
      */
     public void updateBestSolution(Solution sol) {
-        if (sol.isFeasible() && sol.getCost() < this.bestSolution.getCost()) {
+        if (sol.isFeasible() && sol.computeCosts() < this.bestSolution.computeCosts()) {
             this.bestSolution = new Solution(sol);
         }
     }

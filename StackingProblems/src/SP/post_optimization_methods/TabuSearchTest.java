@@ -1,9 +1,9 @@
 package SP.post_optimization_methods;
 
 import SP.representations.Instance;
-import SP.representations.InstanceReader;
+import SP.io.InstanceReader;
 import SP.representations.Solution;
-import SP.representations.SolutionReader;
+import SP.io.SolutionReader;
 
 import java.util.ArrayList;
 

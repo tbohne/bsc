@@ -2,6 +2,7 @@ package SP.util;
 
 import SP.representations.MCMEdge;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -390,5 +391,20 @@ public class HeuristicUtil {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;
+    }
+
+    /**
+     * Creates a string containing the names of all solutions.
+     *
+     * @return string containing the names of all solutions
+     */
+    public static String createStringContainingAllSolutionNames(String prefix) {
+        File dir = new File(prefix);
+        File[] dirListing = dir.listFiles();
+        String str = "";
+        for (File f : dirListing) {
+            str += f.toString() + " ";
+        }
+        return str;
     }
 }

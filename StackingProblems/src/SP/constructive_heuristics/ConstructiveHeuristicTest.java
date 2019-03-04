@@ -1,7 +1,7 @@
 package SP.constructive_heuristics;
 
 import SP.representations.Instance;
-import SP.representations.InstanceReader;
+import SP.io.InstanceReader;
 import SP.representations.Solution;
 
 public class ConstructiveHeuristicTest {
@@ -22,10 +22,13 @@ public class ConstructiveHeuristicTest {
 //        // System.out.println(instance);
 //
         ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT);
+
+        System.out.println(instance);
+
         Solution sol = solver.solve();
 //
         System.out.println("feasible: " + sol.isFeasible());
-        System.out.println("cost: " + sol.getCost());
+        System.out.println("cost: " + sol.computeCosts());
 
 //        System.out.println("COST: " + Integer.MAX_VALUE / 100);
     }
