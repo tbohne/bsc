@@ -1,8 +1,8 @@
 package SP.experiments;
 
 import SP.constructive_heuristics.ThreeCapHeuristic;
-import SP.constructive_heuristics.ThreeCapPermutationHeuristic;
-import SP.constructive_heuristics.ThreeCapRecursiveMCMHeuristic;
+import SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic;
+import SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic;
 import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
 import SP.representations.Instance;
