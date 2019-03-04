@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Provides functionalities to read instances of stacking problems from files.
+ * Provides functionalities to read instances of stacking problems from the file system.
  *
  * @author Tim Bohne
  */
