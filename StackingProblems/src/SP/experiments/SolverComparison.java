@@ -1,10 +1,18 @@
 package SP.experiments;
 
-import java.io.File;
+import java.util.ArrayList;
 
-public class SolverComparison {
+/**
+ * Defines several fields used to compare the different solvers.
+ *
+ * @author Tim Bohne
+ */
+public interface SolverComparison {
 
-    public enum Solver {
+    /**
+     * Enumeration containing the names of the different solvers.
+     */
+    enum Solver {
         MIP_BINPACKING,
         MIP_THREEINDEX,
         CONSTRUCTIVE_TWO_CAP,
@@ -13,21 +21,16 @@ public class SolverComparison {
         CONSTRUCTIVE_THREE_CAP_RECURSION
     }
 
-    public static final String INSTANCE_PREFIX = "res/instances/";
-    public static final String SOLUTION_PREFIX = "res/solutions/";
+    String INSTANCE_PREFIX = "res/instances/";
+    String SOLUTION_PREFIX = "res/solutions/";
 
     // Specifies the time limit for the solving process in seconds.
-    public static final int TIME_LIMIT = 3600;
+    int TIME_LIMIT = 3600;
 
-    public static String createStringWithAllSolutionNames() {
-        File dir = new File(SOLUTION_PREFIX);
-        File[] dirListing = dir.listFiles();
-
-        String str = "";
-
-        for (File f : dirListing) {
-            str += f.toString() + " ";
-        }
-        return str;
-    }
+    /**
+     * Compares the specified solvers (runtime, solution quality, ...).
+     *
+     * @param solversToBeCompared - determines the solvers that are supposed to be compared
+     */
+    void compareSolvers(ArrayList<Solver> solversToBeCompared);
 }
