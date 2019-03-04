@@ -12,8 +12,19 @@ import java.io.*;
 
 import static SP.experiments.SolverComparison3Cap.*;
 
+/**
+ * Provides functionalities to write solutions of stacking problems to the file system.
+ *
+ * @author Tim Bohne
+ */
 public class SolutionWriter {
 
+    /**
+     * Returns the name of the solver used to create the solution.
+     *
+     * @param solver - specifies the used solver
+     * @return the name of the used solver
+     */
     public static String getNameOfSolver(Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
@@ -33,7 +44,13 @@ public class SolutionWriter {
         }
     }
 
-    public static String getNameOfSolverCSV(Solver solver) {
+    /**
+     * Returns the abbreviated name of the solver used to create the solution.
+     *
+     * @param solver - specifies the used solver
+     * @return the abbreviated name of the used solver
+     */
+    public static String getAbbreviatedNameOfSolver(Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
                 return "BinP";
@@ -52,32 +69,35 @@ public class SolutionWriter {
         }
     }
 
+    /**
+     * Writes the specified solution as CSV to the specified file.
+     *
+     * @param filename - the file to be written to
+     * @param sol      - the solution to be written to the file
+     * @param solver   - the solver used to create the solution
+     */
     public static void writeSolutionAsCSV(String filename, Solution sol, Solver solver) {
         try {
-
             File file = new File(filename);
             boolean newFile = false;
-
             if (!file.exists()) {
                 file.createNewFile();
                 newFile = true;
             }
-
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
-
             if (newFile) {
                 bw.write("instance,solver,time,val\n");
             }
-
-            String mip = getNameOfSolverCSV(solver);
+            String mip = getAbbreviatedNameOfSolver(solver);
             if (sol.isFeasible()) {
-                bw.write(sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
+                bw.write(
+                    sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
                     + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n"
                 );
             }
             bw.close();
-
+            fw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -85,34 +105,35 @@ public class SolutionWriter {
         }
     }
 
+    /**
+     * Writes the specified solution to the specified file.
+     *
+     * @param filename - the file to be written to
+     * @param sol      - the solution to be written to the file
+     * @param solver   - the solver used to create the solution
+     */
     public static void writeSolution(String filename, Solution sol, Solver solver) {
-
         try {
             File file = new File(filename);
-
             boolean appendNewLines = true;
-
             if (!file.exists()) {
                 file.createNewFile();
                 appendNewLines = false;
             }
-
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
 
             String solverName = getNameOfSolver(solver);
-
             if (appendNewLines) {
                 bw.newLine();
                 bw.write("#####################################################\n");
                 bw.newLine();
             }
-
             bw.write("solved with: " + solverName + "\n");
             bw.write(sol.toString());
 
             bw.close();
-
+            fw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
