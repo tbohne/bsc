@@ -68,7 +68,9 @@ public class TwoCapHeuristic {
      * @return the generated bipartite graph
      */
     public BipartiteGraph generateBipartiteGraph(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
+            DefaultWeightedEdge.class
+        );
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
 
@@ -82,34 +84,6 @@ public class TwoCapHeuristic {
         GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
 
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
-    }
-
-    /**
-     * Parses the minimum cost perfect matching and assigns the items to the specified stacks.
-     * The dummy items are ignored here, because they're not relevant for the assignment.
-     * TODO: could be partially used in 3cap (unify and move to GraphUtil)
-     *
-     * @param minCostPM - the minimum cost perfect matching determining the stack assignments
-     */
-    public void parseMatchingAndAssignItems(KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPM) {
-
-        for (Object edge : minCostPM.getMatching().getEdges()) {
-
-            // item case
-            if (edge.toString().contains("item")) {
-                int item = Integer.parseInt(edge.toString().split(":")[0].replace("(item", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-                this.instance.getStacks()[stack][0] = item;
-
-            // item pair case
-            } else if (edge.toString().contains("edge")) {
-                int itemOne = Integer.parseInt(edge.toString().split(":")[0].split(",")[0].replace("(edge(", "").trim());
-                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].split(",")[1].replace(")", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-                this.instance.getStacks()[stack][0] = itemOne;
-                this.instance.getStacks()[stack][1] = itemTwo;
-            }
-        }
     }
 
     /**
@@ -147,7 +121,8 @@ public class TwoCapHeuristic {
             KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching = new KuhnMunkresMinimalWeightBipartitePerfectMatching(
                 bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
             );
-            this.parseMatchingAndAssignItems(minCostPerfectMatching);
+
+            GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
 
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
