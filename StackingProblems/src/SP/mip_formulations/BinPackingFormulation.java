@@ -8,16 +8,32 @@ import ilog.concert.IloLinearIntExpr;
 import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
 
+/**
+ * Represents the bin-packing formulation (MIP) of stacking problems to be used with CPLEX.
+ *
+ * @author Tim Bohne
+ */
 public class BinPackingFormulation {
 
     private Instance instance;
     private int timeLimit;
 
+    /**
+     * Constructor
+     *
+     * @param instance  - the instance to be solved
+     * @param timeLimit - the time limit for the solving procedure
+     */
     public BinPackingFormulation(Instance instance, int timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }
 
+    /**
+     * Solves the stacking problem using the bin-packing formulation.
+     *
+     * @return the generated solution to the stacking problem
+     */
     public Solution solve() {
 
         Solution sol = new Solution();
@@ -83,7 +99,7 @@ public class BinPackingFormulation {
             }
 
             System.out.println();
-//            cplex.setOut(null);
+            //cplex.setOut(null);
 
             // Sets a time limit of 5 minutes.
             cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
@@ -103,10 +119,13 @@ public class BinPackingFormulation {
         } catch (IloException e) {
             e.printStackTrace();
         }
-
         return sol;
     }
 
+    /**
+     * Extracts a feasible solution that respects the stacking constraints from the generated stack assignments.
+     * It is guaranteed that such a solution is obtainable from the generated assignments.
+     */
     public void getSolutionFromStackAssignment() {
 
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
@@ -133,13 +152,16 @@ public class BinPackingFormulation {
         }
     }
 
+    /**
+     * Sets the stacks based on the CPLEX variables.
+     *
+     * @param cplex - the cplex model
+     * @param x     - the variables x_iq
+     */
     public void setStacks(IloCplex cplex, IloIntVar[][] x) {
         for (int i = 0; i < x.length; i++) {
             for (int q = 0; q < x[0].length; q++) {
                 try {
-
-//                    System.out.println("x[" + i + "][" + q + "]: " + Math.round(cplex.getValue(x[i][q])));
-
                     if (Math.round(cplex.getValue(x[i][q])) == 1) {
                         int idx = 0;
                         while (this.instance.getStacks()[q][idx] != -1) {
