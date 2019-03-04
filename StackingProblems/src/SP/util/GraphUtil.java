@@ -221,9 +221,9 @@ public class GraphUtil {
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
         Set<String> partitionOne
     ) {
-        for (MCMEdge edge : itemPairs) {
-            bipartiteGraph.addVertex("edge" + edge);
-            partitionOne.add("edge" + edge);
+        for (MCMEdge pair : itemPairs) {
+            bipartiteGraph.addVertex("pair" + pair);
+            partitionOne.add("pair" + pair);
         }
     }
 
@@ -422,7 +422,7 @@ public class GraphUtil {
      * @param stacks - the stacks the parsed items are going to be assigned to
      */
     public static void parseAndAssignMinCostPerfectMatching(
-            KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks
+        KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks
     ) {
         for (Object edge : mwpm.getMatching().getEdges()) {
             if (edge.toString().contains("triple")) {
