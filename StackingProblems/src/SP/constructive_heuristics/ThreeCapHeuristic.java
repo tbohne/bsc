@@ -123,77 +123,60 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Generates the solution to the given instance of the SP by applying the heuristic described in solve().
+     * Encapsulates the stacking constraint graph generation.
      *
-     * @param itemMatching - matching containing the item pairs
-     * @return the generated solution
+     * @return the generated stacking constraint graph
      */
-    public Solution generateSolution(EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching) {
-
-        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
-        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItemsFromPairs(itemPairs, this.instance.getItems()));
-
-        ArrayList<ArrayList<Integer>> triples = this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
-
-        // items that are not part of a triple
-        unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
-
-        // build pairs again
-        DefaultUndirectedGraph<String, DefaultEdge> graph = GraphUtil.generateStackingConstraintGraph(
-            HeuristicUtil.getItemArrayFromItemList(unmatchedItems), this.instance.getStackingConstraints(),
-            this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
+    public DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph(int[] items) {
+        return GraphUtil.generateStackingConstraintGraph(
+                items,
+                this.instance.getStackingConstraints(),
+                this.instance.getCosts(),
+                Integer.MAX_VALUE / this.instance.getItems().length,
+                this.instance.getStacks()
         );
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> pairs = new EdmondsMaximumCardinalityMatching<>(graph);
-        itemPairs = GraphUtil.parseItemPairFromMCM(pairs);
-
-        // The remaining unmatched items are not assignable to the pairs,
-        // therefore pairs are merged together to form triples if possible.
-        triples.addAll(this.mergeItemPairs(itemPairs));
-
-        // compute finally unmatched items
-        unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
-
-        graph = GraphUtil.generateStackingConstraintGraph(
-                HeuristicUtil.getItemArrayFromItemList(unmatchedItems), this.instance.getStackingConstraints(),
-                this.instance.getCosts(), Integer.MAX_VALUE / this.instance.getItems().length, this.instance.getStacks()
-        );
-        pairs = new EdmondsMaximumCardinalityMatching<>(graph);
-
-        // items that are stored as pairs
-        itemPairs = GraphUtil.parseItemPairFromMCM(pairs);
-
-        // items that are stored in their own stack
-        unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(triples, itemPairs, this.instance.getItems());
-
-        // unable to assign the items feasibly to the given number of stacks
-        if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) { return new Solution(); }
-
-        BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(triples, itemPairs, unmatchedItems);
-
-        KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
-            new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
-                bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
-            )
-        ;
-
-        GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
-
-        Solution sol = new Solution(0, this.timeLimit, this.instance);
-        sol.transformStackAssignmentsIntoValidSolutionIfPossible();
-        return sol;
     }
 
     /**
-     * Solves the given instance of the SP. The objective is to minimize the transport costs
+     * Generates compatible item pairs that are stackable in at least one direction.
+     *
+     * @param items - the items to build up pairs from
+     * @return the generated item pairs
+     */
+    public ArrayList<MCMEdge> generateItemPairs(int[] items) {
+        DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph(items);
+        EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
+                stackingConstraintGraph
+        );
+        return GraphUtil.parseItemPairFromMCM(itemMatching);
+    }
+
+    /**
+     * Generates compatible item triples that are stackable in at least one order.
+     *
+     * @param itemPairs - the item pairs to be extended to triples
+     * @return the generated item triples
+     */
+    public ArrayList<ArrayList<Integer>> generateItemTriples(ArrayList<MCMEdge> itemPairs) {
+        ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItemsFromPairs(
+                itemPairs, this.instance.getItems())
+        );
+        return this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
+    }
+
+    /**
+     * Solves the given instance of the stacking problem. The objective is to minimize the transport costs
      * which is achieved by computing a min-cost-perfect-matching in the end.
      *
-     * The heuristic is based on the following major steps:
-     *      - compute item triples from unmatched items
-     *      - compute item pairs from still unmatched items
-     *      - compute still unmatched items
-     *      - create bipartite graph between items and stacks
-     *      - compute min-cost-perfect matching
-     *      - assign items according to edges of MCPM
+     * Basic idea:
+     *      - generate item pairs via MCM
+     *      - generate item triples via MCM
+     *      - merge remaining pairs to triples
+     *      - generate pairs again via MCM
+     *      - consider remaining items to be unmatched
+     *      - generate bipartite graph (items, stacks)
+     *      - compute MWPM and interpret edges as stack assignments
+     *      - fix order of items inside the stacks
      *
      * @return the solution generated by the heuristic
      */
@@ -205,16 +188,47 @@ public class ThreeCapHeuristic {
 
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = GraphUtil.generateStackingConstraintGraph(
-                this.instance.getItems(),
-                this.instance.getStackingConstraints(),
-                this.instance.getCosts(),
-                Integer.MAX_VALUE / this.instance.getItems().length,
-                this.instance.getStacks()
+            ArrayList<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
+            ArrayList<ArrayList<Integer>> triples = this.generateItemTriples(itemPairs);
+
+            // items that are not part of a triple
+            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(
+                    triples, this.instance.getItems()
             );
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
-            sol = generateSolution(itemMatching);
-            sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
+            // build pairs again from the unmatched items
+            itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
+
+            // The remaining unmatched items are not assignable to the pairs,
+            // therefore pairs are merged together to form triples if possible.
+            triples.addAll(this.mergeItemPairs(itemPairs));
+
+            // update unmatched items
+            unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(triples, this.instance.getItems());
+
+            // items that are stored as pairs
+            itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
+
+            // items that are stored in their own stack
+            unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(
+                    triples, itemPairs, this.instance.getItems()
+            );
+
+            // unable to assign the items feasibly to the given number of stacks
+            if (triples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
+                return sol;
+            }
+
+            BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(triples, itemPairs, unmatchedItems);
+            KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
+                new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
+                    bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
+                )
+            ;
+            GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
+
+            sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+            sol.transformStackAssignmentsIntoValidSolutionIfPossible();
+
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }
