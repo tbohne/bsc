@@ -200,11 +200,31 @@ public class GraphUtil {
             int unmatchedItem,
             int upperItemOfPair,
             MCMEdge itemPair,
-            int[][] stackingConstraints
+            int[][] stackingConstraints,
+            boolean pairStackableInBothDirections
     ) {
-        if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 || stackingConstraints[unmatchedItem][upperItemOfPair] == 1) {
-            if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
-                graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+        // all permutations to be tested
+        if (pairStackableInBothDirections) {
+            if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
+                    || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
+                    || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
+                    || stackingConstraints[unmatchedItem][unmatchedItem] == 1
+                    || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
+                    || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1
+            ) {
+                    if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+                        graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+                    }
+            }
+        } else {
+            if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
+                    || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
+                    || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
+            ) {
+
+                if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+                    graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+                }
             }
         }
     }
@@ -285,7 +305,6 @@ public class GraphUtil {
     public static DefaultUndirectedGraph<String, DefaultEdge> generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
             ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems, int[][] stackingConstraints
     ) {
-
         DefaultUndirectedGraph<String, DefaultEdge> bipartiteGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
         // adding the item pairs as nodes to the graph
@@ -297,27 +316,50 @@ public class GraphUtil {
             bipartiteGraph.addVertex("v" + i);
         }
 
+        System.out.println(itemPairs.size());
+
         for (int itemPair = 0; itemPair < itemPairs.size(); itemPair++) {
             for (int unmatchedItem = 0; unmatchedItem < unmatchedItems.size(); unmatchedItem++) {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
-                if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1) {
+
+                // stackable in both directions
+                if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1
+                        && stackingConstraints[itemPairs.get(itemPair).getVertexTwo()][itemPairs.get(itemPair).getVertexOne()] == 1) {
+
                     GraphUtil.addEdgeForCompatibleItemTriple(
                             bipartiteGraph,
                             itemPairs.get(itemPair).getVertexTwo(),
                             unmatchedItems.get(unmatchedItem),
                             itemPairs.get(itemPair).getVertexOne(),
                             itemPairs.get(itemPair),
-                            stackingConstraints
+                            stackingConstraints,
+                            true
                     );
-                } else {
+
+                // one on top of two
+                } else if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1) {
+
+                    GraphUtil.addEdgeForCompatibleItemTriple(
+                            bipartiteGraph,
+                            itemPairs.get(itemPair).getVertexTwo(),
+                            unmatchedItems.get(unmatchedItem),
+                            itemPairs.get(itemPair).getVertexOne(),
+                            itemPairs.get(itemPair),
+                            stackingConstraints,
+                            false
+                    );
+
+                // two on top of one
+                } else if (stackingConstraints[itemPairs.get(itemPair).getVertexTwo()][itemPairs.get(itemPair).getVertexOne()] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
                             bipartiteGraph,
                             itemPairs.get(itemPair).getVertexOne(),
                             unmatchedItems.get(unmatchedItem),
                             itemPairs.get(itemPair).getVertexTwo(),
                             itemPairs.get(itemPair),
-                            stackingConstraints
+                            stackingConstraints,
+                            false
                     );
                 }
             }
