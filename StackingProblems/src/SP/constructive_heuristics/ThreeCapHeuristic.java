@@ -97,7 +97,6 @@ public class ThreeCapHeuristic {
      * @return list of compatible item triples
      */
     public ArrayList<ArrayList<Integer>> computeCompatibleItemTriples(ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
-
         DefaultUndirectedGraph<String, DefaultEdge> graph = GraphUtil.generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
             itemPairs, unmatchedItems, this.instance.getStackingConstraints()
         );
@@ -189,6 +188,8 @@ public class ThreeCapHeuristic {
             this.startTime = System.currentTimeMillis();
 
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
+
+            // TODO: check whether triples is always empty here! are there cases with unmatched items at all?
             ArrayList<ArrayList<Integer>> triples = this.generateItemTriples(itemPairs);
 
             // items that are not part of a triple

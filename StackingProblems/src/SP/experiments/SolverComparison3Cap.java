@@ -69,7 +69,7 @@ public class SolverComparison3Cap implements SolverComparison {
      */
     public void solveWithThreeCapRec(Instance instance, String solutionName) {
         ThreeCapRecursiveMCMHeuristic recMCMSolver = new ThreeCapRecursiveMCMHeuristic(instance, TIME_LIMIT);
-        Solution sol = recMCMSolver.solve(false);
+        Solution sol = recMCMSolver.solve();
         SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP_RECURSION);
         SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP_RECURSION);
     }
