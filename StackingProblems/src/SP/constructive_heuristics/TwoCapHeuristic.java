@@ -121,8 +121,9 @@ public class TwoCapHeuristic {
             this.startTime = System.currentTimeMillis();
 
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
-            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching =
-                new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
+            EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
+                    stackingConstraintGraph
+            );
 
             ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(

@@ -13,6 +13,13 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
 
 import java.util.*;
 
+/**
+ * Constructive heuristic to efficiently generate feasible solutions to stacking
+ * problems with a stack capacity of 3. The goal is to minimize the transport costs
+ * while respecting all given constraints.
+ *
+ * @author Tim Bohne
+ */
 public class ThreeCapPermutationHeuristic {
 
     private final int COMPLETE_PERMUTATION_LIMIT = 8;
