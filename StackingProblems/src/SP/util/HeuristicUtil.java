@@ -279,30 +279,34 @@ public class HeuristicUtil {
         // pair stackable in both directions
         if (HeuristicUtil.itemsStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
             if (stackingConstraints[item][pairItemOne] == 1) {
-                // itemOne above itemOneNew above itemTwoNew --> itemOne assigned
                 return true;
             } else if (stackingConstraints[pairItemOne][item] == 1) {
-                // itemTwoNew above itemOneNew above itemOne --> itemOne assigned
                 return true;
             } else if (stackingConstraints[pairItemTwo][item] == 1) {
-                // itemOneNew above itemTwoNew above itemOne --> itemOne assigned
                 return true;
             } else if (stackingConstraints[item][pairItemTwo] == 1) {
-                // itemOne above itemTwoNew above itemOneNew --> itemOne assigned
+                return true;
+            } else if (stackingConstraints[pairItemOne][item] == 1 && stackingConstraints[item][pairItemTwo] == 1) {
+                return true;
+            } else if (stackingConstraints[pairItemTwo][item] == 1 && stackingConstraints[item][pairItemOne] == 1) {
                 return true;
             }
-            // pairItemOne above pairItemTwo
+        // pairItemOne above pairItemTwo
         } else if (stackingConstraints[pairItemOne][pairItemTwo] == 1) {
             if (stackingConstraints[item][pairItemOne] == 1) {
                 return true;
             } else if (stackingConstraints[pairItemTwo][item] == 1) {
                 return true;
+            } else if (stackingConstraints[pairItemOne][item] == 1 && stackingConstraints[item][pairItemTwo] == 1) {
+                return true;
             }
-            // pairItemTwo above pairItemOne
+        // pairItemTwo above pairItemOne
         } else {
             if (stackingConstraints[item][pairItemTwo] == 1) {
                 return true;
             } else if (stackingConstraints[pairItemOne][item] == 1) {
+                return true;
+            } else if (stackingConstraints[pairItemTwo][item] == 1 && stackingConstraints[item][pairItemOne] == 1) {
                 return true;
             }
         }
