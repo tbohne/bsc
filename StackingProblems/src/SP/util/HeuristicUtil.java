@@ -210,6 +210,41 @@ public class HeuristicUtil {
         completelyFilledStacks.add(itemTwoStack);
     }
 
+    public static MCMEdge getBestPairForItem(
+        int[] items, ArrayList<MCMEdge> potentialTargetPairs, int[][] costs, int[][] stacks, int item
+    ) {
+
+        MCMEdge bestTargetPair = new MCMEdge(0, 0, 0);
+        if (potentialTargetPairs.size() > 0) {
+            bestTargetPair = potentialTargetPairs.get(0);
+        }
+
+//        int maxNumberOfCompatibleStacks = 0;
+//        int numberOfCompatibleStacks;
+//        int invalidCostFactor = Integer.MAX_VALUE / items.length;
+//
+//        for (MCMEdge targetPair : potentialTargetPairs) {
+//
+//            numberOfCompatibleStacks = 0;
+//
+//            for (int stack = 0; stack < stacks.length; stack++) {
+//                if (costs[item][stack] < invalidCostFactor
+//                        && costs[targetPair.getVertexOne()][stack] < invalidCostFactor
+//                        && costs[targetPair.getVertexTwo()][stack] < invalidCostFactor) {
+//
+//                    numberOfCompatibleStacks++;
+//                }
+//            }
+//
+//            if (numberOfCompatibleStacks > maxNumberOfCompatibleStacks) {
+//                maxNumberOfCompatibleStacks = numberOfCompatibleStacks;
+//                bestTargetPair = targetPair;
+//            }
+//        }
+
+        return bestTargetPair;
+    }
+
     /**
      * Generates completely filled stacks from the list of item pairs.
      * Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks.
@@ -222,46 +257,83 @@ public class HeuristicUtil {
         ArrayList<MCMEdge> itemPairs,
         ArrayList<MCMEdge> itemPairRemovalList,
         ArrayList<ArrayList<Integer>> completelyFilledStacks,
-        int[][] stackingConstraints
+        int[][] stackingConstraints,
+        int[][] stacks,
+        int[][] costs,
+        int[] items
     ) {
-        for (MCMEdge startingPair : itemPairs) {
-            if (itemPairRemovalList.contains(startingPair)) { continue; }
+        for (MCMEdge splitPair : itemPairs) {
 
-            int itemOne = startingPair.getVertexOne();
-            int itemTwo = startingPair.getVertexTwo();
+            if (itemPairRemovalList.contains(splitPair)) { continue; }
+
+            int itemOne = splitPair.getVertexOne();
+            int itemTwo = splitPair.getVertexTwo();
             boolean itemOneAssigned = false;
             boolean itemTwoAssigned = false;
-            MCMEdge itemOneEdge = new MCMEdge(0, 0, 0);
-            MCMEdge itemTwoEdge = new MCMEdge(0, 0, 0);
+            MCMEdge itemOneEdge;
+            MCMEdge itemTwoEdge;
+
+            ArrayList<MCMEdge> potentialItemOneEdges = new ArrayList<>();
+            ArrayList<MCMEdge> potentialItemTwoEdges = new ArrayList<>();
 
             for (MCMEdge potentialTargetPair : itemPairs) {
-                if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
-                if (itemOneAssigned && itemTwoAssigned) { break; }
 
-                if (startingPair != potentialTargetPair) {
+                if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
+//                if (itemOneAssigned && itemTwoAssigned) { break; }
+
+                if (splitPair != potentialTargetPair) {
                     int potentialTargetPairItemOne = potentialTargetPair.getVertexOne();
                     int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
 
-                    if (!itemOneAssigned && HeuristicUtil.itemAssignableToPair(
-                        itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
+                    if (/*!itemOneAssigned*/ !potentialItemOneEdges.contains(potentialTargetPair)
+                            && !potentialItemTwoEdges.contains(potentialTargetPair) && HeuristicUtil.itemAssignableToPair(
+                            itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
                     ) {
-                        itemOneAssigned = true;
-                        itemOneEdge = potentialTargetPair;
+//                        itemOneAssigned = true;
+//                        itemOneEdge = potentialTargetPair;
+                        potentialItemOneEdges.add(potentialTargetPair);
                         continue;
                     }
-                    if (!itemTwoAssigned && HeuristicUtil.itemAssignableToPair(
-                        itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
+                    if (/*!itemTwoAssigned*/ !potentialItemOneEdges.contains(potentialTargetPair)
+                            && !potentialItemTwoEdges.contains(potentialTargetPair) && HeuristicUtil.itemAssignableToPair(
+                            itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
                     ) {
-                        itemTwoAssigned = true;
-                        itemTwoEdge = potentialTargetPair;
+//                        itemTwoAssigned = true;
+//                        itemTwoEdge = potentialTargetPair;
+                        potentialItemTwoEdges.add(potentialTargetPair);
                         continue;
                     }
                 }
             }
+
+            /////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
+            MCMEdge itemOneTargetPair = getBestPairForItem(items, potentialItemOneEdges, costs, stacks, itemOne);
+            if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo()== 0)) {
+                itemOneAssigned = true;
+            }
+
+            // find item two edge to use (all edges that are usable by two and not used by one should be added to potential two)
+            for (MCMEdge pot : potentialItemOneEdges) {
+                if (pot != itemOneTargetPair && HeuristicUtil.itemAssignableToPair(
+                    itemTwo, pot.getVertexOne(), pot.getVertexTwo(), stackingConstraints)
+                ) {
+                    potentialItemTwoEdges.add(pot);
+                }
+            }
+
+            MCMEdge itemTwoTargetPair = getBestPairForItem(items, potentialItemTwoEdges, costs, stacks, itemTwo);
+
+            if (!(itemTwoTargetPair.getVertexOne() == 0 && itemTwoTargetPair.getVertexTwo() == 0)) {
+                itemTwoAssigned = true;
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
             if (itemOneAssigned && itemTwoAssigned) {
                 updateCompletelyFilledStacks(
-                    itemPairRemovalList, itemOneEdge, itemTwoEdge, startingPair,
-                    itemOne, itemTwo, completelyFilledStacks
+                    itemPairRemovalList, itemOneTargetPair, itemTwoTargetPair, splitPair, itemOne, itemTwo, completelyFilledStacks
                 );
             }
         }
