@@ -218,29 +218,27 @@ public class HeuristicUtil {
         if (potentialTargetPairs.size() > 0) {
             bestTargetPair = potentialTargetPairs.get(0);
         }
+        int bestCostVal = Integer.MAX_VALUE / items.length;
+        int invalidCostFactor = Integer.MAX_VALUE / items.length;
+        System.out.println("item " + item);
 
-//        int maxNumberOfCompatibleStacks = 0;
-//        int numberOfCompatibleStacks;
-//        int invalidCostFactor = Integer.MAX_VALUE / items.length;
-//
-//        for (MCMEdge targetPair : potentialTargetPairs) {
-//
-//            numberOfCompatibleStacks = 0;
-//
-//            for (int stack = 0; stack < stacks.length; stack++) {
-//                if (costs[item][stack] < invalidCostFactor
-//                        && costs[targetPair.getVertexOne()][stack] < invalidCostFactor
-//                        && costs[targetPair.getVertexTwo()][stack] < invalidCostFactor) {
-//
-//                    numberOfCompatibleStacks++;
-//                }
-//            }
-//
-//            if (numberOfCompatibleStacks > maxNumberOfCompatibleStacks) {
-//                maxNumberOfCompatibleStacks = numberOfCompatibleStacks;
-//                bestTargetPair = targetPair;
-//            }
-//        }
+        for (MCMEdge targetPair : potentialTargetPairs) {
+            ArrayList<Integer> costValues = new ArrayList<>();
+
+            for (int stack = 0; stack < stacks.length; stack++) {
+                if (costs[item][stack] < invalidCostFactor
+                    && costs[targetPair.getVertexOne()][stack] < invalidCostFactor
+                    && costs[targetPair.getVertexTwo()][stack] < invalidCostFactor
+                ) {
+
+                    costValues.add(costs[item][stack] + costs[targetPair.getVertexOne()][stack] + costs[targetPair.getVertexTwo()][stack]);
+                }
+            }
+            if (Collections.min(costValues) < bestCostVal) {
+                bestCostVal = Collections.min(costValues);
+                bestTargetPair = targetPair;
+            }
+        }
 
         return bestTargetPair;
     }
@@ -310,7 +308,7 @@ public class HeuristicUtil {
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             MCMEdge itemOneTargetPair = getBestPairForItem(items, potentialItemOneEdges, costs, stacks, itemOne);
-            if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo()== 0)) {
+            if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo() == 0)) {
                 itemOneAssigned = true;
             }
 
