@@ -6,7 +6,6 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
-import SP.util.RatingSystem;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -107,7 +106,20 @@ public class ThreeCapHeuristic {
         return itemTriples;
     }
 
-    public static MCMEdge getBestPairForItem(
+    /**
+     * Returns an item pair the given item can be assigned to based on a best-fit strategy.
+     * For each triple that results from assigning the given item to a potential target pair,
+     * the cost value for the cheapest feasible stack assignment is used to update the overall
+     * minimum cost value. Finally, the target pair that leads to the cheapest assignment is chosen.
+     *
+     * @param items                - the list of items that are part of the instance
+     * @param potentialTargetPairs - the list of item pairs the item could be assigned to
+     * @param costs                - the matrix containing the costs of item-stack assignments
+     * @param stacks               - the available stacks
+     * @param item                 - the item to be assigned to a pair
+     * @return
+     */
+    public static MCMEdge getTargetPairForItemBestFit(
             int[] items, ArrayList<MCMEdge> potentialTargetPairs, int[][] costs, int[][] stacks, int item
     ) {
 
@@ -115,29 +127,109 @@ public class ThreeCapHeuristic {
         if (potentialTargetPairs.size() > 0) {
             bestTargetPair = potentialTargetPairs.get(0);
         }
-        int bestCostVal = Integer.MAX_VALUE / items.length;
-        int invalidCostFactor = Integer.MAX_VALUE / items.length;
-        System.out.println("item " + item);
+        int minCost = Integer.MAX_VALUE / items.length;
+        int costsForIncompatibleStack = Integer.MAX_VALUE / items.length;
 
         for (MCMEdge targetPair : potentialTargetPairs) {
             ArrayList<Integer> costValues = new ArrayList<>();
 
             for (int stack = 0; stack < stacks.length; stack++) {
-                if (costs[item][stack] < invalidCostFactor
-                        && costs[targetPair.getVertexOne()][stack] < invalidCostFactor
-                        && costs[targetPair.getVertexTwo()][stack] < invalidCostFactor
-                        ) {
-
-                    costValues.add(costs[item][stack] + costs[targetPair.getVertexOne()][stack] + costs[targetPair.getVertexTwo()][stack]);
+                if (costs[item][stack] < costsForIncompatibleStack
+                    && costs[targetPair.getVertexOne()][stack] < costsForIncompatibleStack
+                    && costs[targetPair.getVertexTwo()][stack] < costsForIncompatibleStack
+                ) {
+                    costValues.add(costs[item][stack]
+                        + costs[targetPair.getVertexOne()][stack]
+                        + costs[targetPair.getVertexTwo()][stack]
+                    );
                 }
             }
-            if (Collections.min(costValues) < bestCostVal) {
-                bestCostVal = Collections.min(costValues);
+            if (Collections.min(costValues) < minCost) {
+                minCost = Collections.min(costValues);
                 bestTargetPair = targetPair;
             }
         }
-
         return bestTargetPair;
+    }
+
+    /**
+     * Extends the potential item pairs for the second item of the splitted pair in the merge step
+     * with the pairs from the first item that are not used and also compatible with the second item.
+     *
+     * @param potentialItemOnePairs - the list of potential item pairs the first item can be assigned to
+     * @param itemOneTargetPair     - the pair the first item gets assigned to
+     * @param itemTwo               - the item whose potential target pairs gets updated
+     * @param potentialItemTwoPairs - the list of potential item pairs the second item can be assigned to
+     */
+    public void extendPotentialItemPairsForSecondItem(
+            ArrayList<MCMEdge> potentialItemOnePairs,
+            MCMEdge itemOneTargetPair,
+            int itemTwo,
+            ArrayList<MCMEdge> potentialItemTwoPairs
+    ) {
+        for (MCMEdge potentialPair : potentialItemOnePairs) {
+            if (potentialPair != itemOneTargetPair && HeuristicUtil.itemAssignableToPair(
+                    itemTwo,
+                    potentialPair.getVertexOne(),
+                    potentialPair.getVertexTwo(),
+                    this.instance.getStackingConstraints()
+            )) {
+                potentialItemTwoPairs.add(potentialPair);
+            }
+        }
+    }
+
+    /**
+     * Assigns the items of the splitted pair to their most promising target pairs.
+     *
+     * @param potentialItemOnePairs  - list of pairs item one is assignable to
+     * @param potentialItemTwoPairs  - list of pairs item two is assignable to
+     * @param splitPair              - the pair to be splitted
+     * @param completelyFilledStacks - the list of item triples
+     * @param itemPairRemovalList    - the list of item pairs to be removed
+     * @param itemOne                - the first item of the splitted pair
+     * @param itemTwo                - the second item of the splitted pair
+     */
+    public void assignItemsToPairs(
+            ArrayList<MCMEdge> potentialItemOnePairs,
+            ArrayList<MCMEdge> potentialItemTwoPairs,
+            MCMEdge splitPair,
+            ArrayList<ArrayList<Integer>> completelyFilledStacks,
+            ArrayList<MCMEdge> itemPairRemovalList,
+            int itemOne,
+            int itemTwo
+    ) {
+
+        boolean itemOneAssigned = false;
+        boolean itemTwoAssigned = false;
+
+        MCMEdge itemOneTargetPair = getTargetPairForItemBestFit(
+                this.instance.getItems(),
+                potentialItemOnePairs,
+                this.instance.getCosts(),
+                this.instance.getStacks(),
+                itemOne
+        );
+
+        if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo() == 0)) {
+            itemOneAssigned = true;
+        }
+
+        this.extendPotentialItemPairsForSecondItem(potentialItemOnePairs, itemOneTargetPair, itemTwo, potentialItemTwoPairs);
+
+        MCMEdge itemTwoTargetPair = getTargetPairForItemBestFit(
+                this.instance.getItems(), potentialItemTwoPairs, this.instance.getCosts(), this.instance.getStacks(), itemTwo
+        );
+
+        if (!(itemTwoTargetPair.getVertexOne() == 0 && itemTwoTargetPair.getVertexTwo() == 0)) {
+            itemTwoAssigned = true;
+        }
+
+        if (itemOneAssigned && itemTwoAssigned) {
+            HeuristicUtil.updateCompletelyFilledStacks(
+                    itemPairRemovalList, itemOneTargetPair, itemTwoTargetPair, splitPair, itemOne, itemTwo, completelyFilledStacks
+            );
+        }
     }
 
 
@@ -152,11 +244,7 @@ public class ThreeCapHeuristic {
     public void generateCompletelyFilledStacks(
             ArrayList<MCMEdge> itemPairs,
             ArrayList<MCMEdge> itemPairRemovalList,
-            ArrayList<ArrayList<Integer>> completelyFilledStacks,
-            int[][] stackingConstraints,
-            int[][] stacks,
-            int[][] costs,
-            int[] items
+            ArrayList<ArrayList<Integer>> completelyFilledStacks
     ) {
         for (MCMEdge splitPair : itemPairs) {
 
@@ -164,74 +252,34 @@ public class ThreeCapHeuristic {
 
             int itemOne = splitPair.getVertexOne();
             int itemTwo = splitPair.getVertexTwo();
-            boolean itemOneAssigned = false;
-            boolean itemTwoAssigned = false;
-            MCMEdge itemOneEdge;
-            MCMEdge itemTwoEdge;
-
-            ArrayList<MCMEdge> potentialItemOneEdges = new ArrayList<>();
-            ArrayList<MCMEdge> potentialItemTwoEdges = new ArrayList<>();
+            ArrayList<MCMEdge> potentialItemOnePairs = new ArrayList<>();
+            ArrayList<MCMEdge> potentialItemTwoPairs = new ArrayList<>();
 
             for (MCMEdge potentialTargetPair : itemPairs) {
 
                 if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
-//                if (itemOneAssigned && itemTwoAssigned) { break; }
 
                 if (splitPair != potentialTargetPair) {
                     int potentialTargetPairItemOne = potentialTargetPair.getVertexOne();
                     int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
 
-                    if (/*!itemOneAssigned*/ !potentialItemOneEdges.contains(potentialTargetPair)
-                            && !potentialItemTwoEdges.contains(potentialTargetPair) && HeuristicUtil.itemAssignableToPair(
-                            itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
-                            ) {
-//                        itemOneAssigned = true;
-//                        itemOneEdge = potentialTargetPair;
-                        potentialItemOneEdges.add(potentialTargetPair);
+                    if (HeuristicUtil.itemAssignableToPair(
+                            itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, this.instance.getStackingConstraints()
+                    )) {
+                        potentialItemOnePairs.add(potentialTargetPair);
                         continue;
                     }
-                    if (/*!itemTwoAssigned*/ !potentialItemOneEdges.contains(potentialTargetPair)
-                            && !potentialItemTwoEdges.contains(potentialTargetPair) && HeuristicUtil.itemAssignableToPair(
-                            itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, stackingConstraints)
-                            ) {
-//                        itemTwoAssigned = true;
-//                        itemTwoEdge = potentialTargetPair;
-                        potentialItemTwoEdges.add(potentialTargetPair);
+                    if (HeuristicUtil.itemAssignableToPair(
+                            itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, this.instance.getStackingConstraints()
+                    )) {
+                        potentialItemTwoPairs.add(potentialTargetPair);
                         continue;
                     }
                 }
             }
 
-            /////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
-            MCMEdge itemOneTargetPair = getBestPairForItem(items, potentialItemOneEdges, costs, stacks, itemOne);
-            if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo() == 0)) {
-                itemOneAssigned = true;
-            }
-
-            // find item two edge to use (all edges that are usable by two and not used by one should be added to potential two)
-            for (MCMEdge pot : potentialItemOneEdges) {
-                if (pot != itemOneTargetPair && HeuristicUtil.itemAssignableToPair(
-                        itemTwo, pot.getVertexOne(), pot.getVertexTwo(), stackingConstraints)
-                        ) {
-                    potentialItemTwoEdges.add(pot);
-                }
-            }
-
-            MCMEdge itemTwoTargetPair = getBestPairForItem(items, potentialItemTwoEdges, costs, stacks, itemTwo);
-
-            if (!(itemTwoTargetPair.getVertexOne() == 0 && itemTwoTargetPair.getVertexTwo() == 0)) {
-                itemTwoAssigned = true;
-            }
-            /////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
-            if (itemOneAssigned && itemTwoAssigned) {
-                HeuristicUtil.updateCompletelyFilledStacks(
-                        itemPairRemovalList, itemOneTargetPair, itemTwoTargetPair, splitPair, itemOne, itemTwo, completelyFilledStacks
-                );
-            }
+            this.assignItemsToPairs(potentialItemOnePairs, potentialItemTwoPairs, splitPair, completelyFilledStacks,
+                    itemPairRemovalList, itemOne, itemTwo);
         }
     }
 
@@ -249,10 +297,7 @@ public class ThreeCapHeuristic {
 //        RatingSystem.assignNewRatingToEdges(itemPairs, this.instance.getStackingConstraints());
 //        Collections.sort(itemPairs);
 
-        this.generateCompletelyFilledStacks(
-            itemPairs, itemPairRemovalList, completelyFilledStacks, this.instance.getStackingConstraints(),
-                this.instance.getStacks(), this.instance.getCosts(), this.instance.getItems()
-        );
+        this.generateCompletelyFilledStacks(itemPairs, itemPairRemovalList, completelyFilledStacks);
         return completelyFilledStacks;
     }
 
