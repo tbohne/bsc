@@ -1,5 +1,6 @@
 package SP.representations;
 
+import SP.experiments.SolverComparison;
 import SP.util.RepresentationUtil;
 
 import java.util.ArrayList;
@@ -129,6 +130,7 @@ public class Solution {
             boolean somethingChanged = true;
 
             while (somethingChanged) {
+
                 somethingChanged = false;
 
                 for (int item = 0; item < this.solvedInstance.getStackCapacity() - 1; item++) {
