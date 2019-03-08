@@ -214,17 +214,13 @@ public class ThreeCapHeuristic {
         if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo() == 0)) {
             itemOneAssigned = true;
         }
-
         this.extendPotentialItemPairsForSecondItem(potentialItemOnePairs, itemOneTargetPair, itemTwo, potentialItemTwoPairs);
-
         MCMEdge itemTwoTargetPair = getTargetPairForItemBestFit(
             this.instance.getItems(), potentialItemTwoPairs, this.instance.getCosts(), this.instance.getStacks(), itemTwo
         );
-
         if (!(itemTwoTargetPair.getVertexOne() == 0 && itemTwoTargetPair.getVertexTwo() == 0)) {
             itemTwoAssigned = true;
         }
-
         if (itemOneAssigned && itemTwoAssigned) {
             HeuristicUtil.updateCompletelyFilledStacks(
                 itemPairRemovalList, itemOneTargetPair, itemTwoTargetPair, splitPair, itemOne, itemTwo, completelyFilledStacks
@@ -245,17 +241,6 @@ public class ThreeCapHeuristic {
             ArrayList<MCMEdge> itemPairRemovalList,
             ArrayList<ArrayList<Integer>> completelyFilledStacks
     ) {
-
-//        ArrayList<MCMEdge> splitPairs = new ArrayList<>();
-//        ArrayList<MCMEdge> assignPairs = new ArrayList<>();
-//        for (int i = 0; i < itemPairs.size(); i++) {
-//            if (i < itemPairs.size() / 3) {
-//                splitPairs.add(itemPairs.get(i));
-//            } else {
-//                assignPairs.add(itemPairs.get(i));
-//            }
-//        }
-
         for (MCMEdge splitPair : itemPairs) {
 
             if (itemPairRemovalList.contains(splitPair)) { continue; }
@@ -293,6 +278,13 @@ public class ThreeCapHeuristic {
         }
     }
 
+    public void introduceMinimumNumberOfItemPairLists(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
+        // TODO: think about hard coded value
+        while (itemPairLists.size() < 15) {
+            itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairLists.get(0)));
+        }
+    }
+
     /**
      * Applies the different rating systems to the lists of item pairs.
      * The rating systems are used to sort the lists.
@@ -300,6 +292,10 @@ public class ThreeCapHeuristic {
      * @param itemPairLists - the lists of item pairs to be rated
      */
     public int applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
+
+        if (itemPairLists.size() < 15) {
+            this.introduceMinimumNumberOfItemPairLists(itemPairLists);
+        }
 
         // The first list (idx 0) should be unrated and unsorted.
         int ratingSystemIdx = 1;
@@ -374,8 +370,10 @@ public class ThreeCapHeuristic {
             itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
         }
 
-        int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists);
-        this.sortItemPairListsBasedOnRatings(numberOfItemPairOrders, itemPairLists, numberOfUsedRatingSystems);
+        if (numberOfItemPairOrders > 1) {
+            int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists);
+            this.sortItemPairListsBasedOnRatings(numberOfItemPairOrders, itemPairLists, numberOfUsedRatingSystems);
+        }
 
         for (int i = 0; i < numberOfItemPairOrders; i++) {
             this.generateCompletelyFilledStacks(itemPairLists.get(i), itemPairRemovalLists.get(i), listOfCompletelyFilledStacks.get(i));
@@ -427,6 +425,73 @@ public class ThreeCapHeuristic {
     }
 
     /**
+     * Merges the item pairs to triples. There is a number of differently ordered item pair lists
+     * used in the merge step which results in a number of different resulting list of triples.
+     *
+     * @param numberOfItemPairOrdersInMergeStep - determines the number of different item pair orders
+     * @param itemTriples                       -  the list of item triples generated so far
+     * @param itemPairs                         - the list of item pairs to be merged in different ways
+     * @return the list of the generated item triple lists
+     */
+    public ArrayList<ArrayList<ArrayList<Integer>>> mergePairsToTriples(
+        int numberOfItemPairOrdersInMergeStep, ArrayList<ArrayList<Integer>> itemTriples, ArrayList<MCMEdge> itemPairs
+    ) {
+        ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = new ArrayList<>();
+        for (int i = 0; i < numberOfItemPairOrdersInMergeStep; i++) {
+            itemTripleLists.add(new ArrayList<>());
+        }
+        for (int i = 0; i < itemTripleLists.size(); i++) {
+            itemTripleLists.get(i).addAll(itemTriples);
+        }
+        // The remaining unmatched items are not assignable to the pairs,
+        // therefore pairs are merged together to form triples if possible.
+        for (int i = 0; i < itemTripleLists.size(); i++) {
+            itemTripleLists.get(i).addAll(this.mergeItemPairs(itemPairs, numberOfItemPairOrdersInMergeStep).get(i));
+        }
+        return itemTripleLists;
+    }
+
+    public ArrayList<Solution> generateSolutionsBasedOnListsOfTriples(ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists) {
+
+        ArrayList<Solution> solutions = new ArrayList<>();
+
+        for (ArrayList<ArrayList<Integer>> listOfItemTriples : itemTripleLists) {
+
+            this.instance.resetStacks();
+
+            // update unmatched items
+            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(listOfItemTriples, this.instance.getItems());
+
+            // items that are stored as pairs
+            ArrayList<MCMEdge> itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
+
+            // items that are stored in their own stack
+            unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(
+                    listOfItemTriples, itemPairs, this.instance.getItems()
+            );
+
+            // unable to assign the items feasibly to the given number of stacks
+            if (listOfItemTriples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
+                continue;
+            }
+
+            BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(listOfItemTriples, itemPairs, unmatchedItems);
+            KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
+                    new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
+                            bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
+                    )
+                    ;
+            GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
+
+            Solution sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+            sol.transformStackAssignmentsIntoValidSolutionIfPossible();
+            solutions.add(new Solution(sol));
+        }
+
+        return solutions;
+    }
+
+    /**
      * Solves the given instance of the stacking problem. The objective is to minimize the transport costs
      * which is achieved by computing a min-cost-perfect-matching in the end.
      *
@@ -444,79 +509,26 @@ public class ThreeCapHeuristic {
      */
     public Solution solve(int numberOfItemPairOrdersInMergeStep) {
 
-        Solution sol = new Solution();
         Solution bestSol = new Solution();
 
         if (this.instance.getStackCapacity() == 3) {
 
             this.startTime = System.currentTimeMillis();
-
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
-
             // TODO: check whether triples is always empty here! are there cases with unmatched items at all?
-            ArrayList<ArrayList<Integer>> triples = this.generateItemTriples(itemPairs);
-
-            // items that are not part of a triple
-            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(
-                    triples, this.instance.getItems()
-            );
+            ArrayList<ArrayList<Integer>> itemTriples = this.generateItemTriples(itemPairs);
+            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(itemTriples, this.instance.getItems());
             // build pairs again from the unmatched items
             itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
 
-            ArrayList<ArrayList<ArrayList<Integer>>> listOfTriples = new ArrayList<>();
-            for (int i = 0; i < numberOfItemPairOrdersInMergeStep; i++) {
-                listOfTriples.add(new ArrayList<>());
-            }
-            for (int i = 0; i < listOfTriples.size(); i++) {
-                listOfTriples.get(i).addAll(triples);
-            }
+            ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = this.mergePairsToTriples(
+                    numberOfItemPairOrdersInMergeStep, itemTriples, itemPairs
+            );
 
-            // The remaining unmatched items are not assignable to the pairs,
-            // therefore pairs are merged together to form triples if possible.
-
-            for (int i = 0; i < listOfTriples.size(); i++) {
-                listOfTriples.get(i).addAll(this.mergeItemPairs(itemPairs, numberOfItemPairOrdersInMergeStep).get(i));
-            }
-
-            ArrayList<Solution> solutions = new ArrayList<>();
-
-            for (ArrayList<ArrayList<Integer>> tri : listOfTriples) {
-
-                this.instance.resetStacks();
-
-                // update unmatched items
-                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(tri, this.instance.getItems());
-
-                // items that are stored as pairs
-                itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
-
-                // items that are stored in their own stack
-                unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(
-                        tri, itemPairs, this.instance.getItems()
-                );
-
-                // unable to assign the items feasibly to the given number of stacks
-                if (tri.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
-                    return sol;
-                }
-
-                BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(tri, itemPairs, unmatchedItems);
-                KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
-                        new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
-                                bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
-                        )
-                        ;
-                GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
-
-                sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
-                sol.transformStackAssignmentsIntoValidSolutionIfPossible();
-                solutions.add(new Solution(sol));
-            }
-
-            bestSol = new Solution(sol);
-            for (Solution s : solutions) {
-                if (s.computeCosts() < bestSol.computeCosts()) {
-                    bestSol = s;
+            ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
+            for (Solution sol : solutions) {
+                if (sol.computeCosts() < bestSol.computeCosts()) {
+                    bestSol = sol;
                 }
             }
         } else {
