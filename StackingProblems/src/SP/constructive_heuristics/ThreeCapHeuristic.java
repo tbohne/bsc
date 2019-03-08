@@ -123,7 +123,6 @@ public class ThreeCapHeuristic {
     public static MCMEdge getTargetPairForItemBestFit(
             int[] items, ArrayList<MCMEdge> potentialTargetPairs, int[][] costs, int[][] stacks, int item
     ) {
-
         MCMEdge bestTargetPair = new MCMEdge(0, 0, 0);
         if (potentialTargetPairs.size() > 0) {
             bestTargetPair = potentialTargetPairs.get(0);
@@ -219,7 +218,7 @@ public class ThreeCapHeuristic {
         this.extendPotentialItemPairsForSecondItem(potentialItemOnePairs, itemOneTargetPair, itemTwo, potentialItemTwoPairs);
 
         MCMEdge itemTwoTargetPair = getTargetPairForItemBestFit(
-                this.instance.getItems(), potentialItemTwoPairs, this.instance.getCosts(), this.instance.getStacks(), itemTwo
+            this.instance.getItems(), potentialItemTwoPairs, this.instance.getCosts(), this.instance.getStacks(), itemTwo
         );
 
         if (!(itemTwoTargetPair.getVertexOne() == 0 && itemTwoTargetPair.getVertexTwo() == 0)) {
@@ -228,11 +227,10 @@ public class ThreeCapHeuristic {
 
         if (itemOneAssigned && itemTwoAssigned) {
             HeuristicUtil.updateCompletelyFilledStacks(
-                    itemPairRemovalList, itemOneTargetPair, itemTwoTargetPair, splitPair, itemOne, itemTwo, completelyFilledStacks
+                itemPairRemovalList, itemOneTargetPair, itemTwoTargetPair, splitPair, itemOne, itemTwo, completelyFilledStacks
             );
         }
     }
-
 
     /**
      * Generates completely filled stacks from the list of item pairs.
@@ -296,6 +294,68 @@ public class ThreeCapHeuristic {
     }
 
     /**
+     * Applies the different rating systems to the lists of item pairs.
+     * The rating systems are used to sort the lists.
+     *
+     * @param itemPairLists - the lists of item pairs to be rated
+     */
+    public int applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
+
+        // The first list (idx 0) should be unrated and unsorted.
+        int ratingSystemIdx = 1;
+
+        RatingSystem.assignNewRatingToEdges(
+                itemPairLists.get(ratingSystemIdx++),
+                this.instance.getStackingConstraints(),
+                this.instance.getCosts(),
+                this.instance.getStacks()
+        );
+        RatingSystem.assignMinRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignMaxRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignSumRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdgesNewWay(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignRowRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignNewRatingToEdges(
+                itemPairLists.get(ratingSystemIdx++),
+                this.instance.getStackingConstraints(),
+                this.instance.getCosts(),
+                this.instance.getStacks()
+        );
+        RatingSystem.assignMinRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignMaxRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignSumRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdgesNewWay(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignColRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        RatingSystem.assignRowRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+
+        // -1 because the list with the idx 0 has no rating system
+        return ratingSystemIdx - 1;
+    }
+
+    /**
+     * Sorts the lists of item pairs based on their ratings.
+     * Additionally, a number of random shuffles of item pairs is
+     *
+     * @param numberOfItemPairOrders
+     * @param itemPairLists
+     */
+    public void sortItemPairListsBasedOnRatings(
+            int numberOfItemPairOrders, ArrayList<ArrayList<MCMEdge>> itemPairLists, int numberOfUsedRatingSystems
+    ) {
+        for (int i = 1; i < numberOfItemPairOrders; i++) {
+            if (i <= numberOfItemPairOrders) {
+                Collections.sort(itemPairLists.get(i));
+                if (i >= (numberOfUsedRatingSystems / 2) + 1) {
+                    Collections.reverse(itemPairLists.get(i));
+                }
+            } else {
+                Collections.shuffle(itemPairLists.get(i));
+            }
+        }
+    }
+
+    /**
      * Tries to merge item pairs by splitting up pairs and assigning both items
      * to other pairs to form completely filled stacks.
      *
@@ -314,31 +374,8 @@ public class ThreeCapHeuristic {
             itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
         }
 
-        // sort item pairs here based on rating
-        RatingSystem.assignNewRatingToEdges(itemPairLists.get(1), this.instance.getStackingConstraints(), this.instance.getCosts(), this.instance.getStacks());
-        RatingSystem.assignMinRatingToEdges(itemPairLists.get(2), this.instance.getStackingConstraints());
-        RatingSystem.assignMaxRatingToEdges(itemPairLists.get(3), this.instance.getStackingConstraints());
-        RatingSystem.assignSumRatingToEdges(itemPairLists.get(4), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdgesNewWay(itemPairLists.get(5), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdges(itemPairLists.get(6), this.instance.getStackingConstraints());
-        RatingSystem.assignRowRatingToEdges(itemPairLists.get(7), this.instance.getStackingConstraints());
-        RatingSystem.assignNewRatingToEdges(itemPairLists.get(8), this.instance.getStackingConstraints(), this.instance.getCosts(), this.instance.getStacks());
-        RatingSystem.assignMinRatingToEdges(itemPairLists.get(9), this.instance.getStackingConstraints());
-        RatingSystem.assignMaxRatingToEdges(itemPairLists.get(10), this.instance.getStackingConstraints());
-        RatingSystem.assignSumRatingToEdges(itemPairLists.get(11), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdgesNewWay(itemPairLists.get(12), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdges(itemPairLists.get(13), this.instance.getStackingConstraints());
-        RatingSystem.assignRowRatingToEdges(itemPairLists.get(14), this.instance.getStackingConstraints());
-
-        for (int i = 1; i < numberOfItemPairOrders; i++) {
-            Collections.sort(itemPairLists.get(i));
-            if (i >= 8 && i < 15) {
-                Collections.reverse(itemPairLists.get(i));
-            }
-            if (i >= 15) {
-                Collections.shuffle(itemPairLists.get(i));
-            }
-        }
+        int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists);
+        this.sortItemPairListsBasedOnRatings(numberOfItemPairOrders, itemPairLists, numberOfUsedRatingSystems);
 
         for (int i = 0; i < numberOfItemPairOrders; i++) {
             this.generateCompletelyFilledStacks(itemPairLists.get(i), itemPairRemovalLists.get(i), listOfCompletelyFilledStacks.get(i));
