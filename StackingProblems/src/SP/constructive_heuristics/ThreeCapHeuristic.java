@@ -421,6 +421,7 @@ public class ThreeCapHeuristic {
         ArrayList<Integer> unmatchedItems = new ArrayList<>(HeuristicUtil.getUnmatchedItemsFromPairs(
                 itemPairs, this.instance.getItems())
         );
+        System.out.println(unmatchedItems);
         return this.computeCompatibleItemTriples(itemPairs, unmatchedItems);
     }
 
@@ -429,19 +430,15 @@ public class ThreeCapHeuristic {
      * used in the merge step which results in a number of different resulting list of triples.
      *
      * @param numberOfItemPairOrdersInMergeStep - determines the number of different item pair orders
-     * @param itemTriples                       -  the list of item triples generated so far
      * @param itemPairs                         - the list of item pairs to be merged in different ways
      * @return the list of the generated item triple lists
      */
     public ArrayList<ArrayList<ArrayList<Integer>>> mergePairsToTriples(
-        int numberOfItemPairOrdersInMergeStep, ArrayList<ArrayList<Integer>> itemTriples, ArrayList<MCMEdge> itemPairs
+        int numberOfItemPairOrdersInMergeStep, ArrayList<MCMEdge> itemPairs
     ) {
         ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = new ArrayList<>();
         for (int i = 0; i < numberOfItemPairOrdersInMergeStep; i++) {
             itemTripleLists.add(new ArrayList<>());
-        }
-        for (int i = 0; i < itemTripleLists.size(); i++) {
-            itemTripleLists.get(i).addAll(itemTriples);
         }
         // The remaining unmatched items are not assignable to the pairs,
         // therefore pairs are merged together to form triples if possible.
@@ -451,6 +448,18 @@ public class ThreeCapHeuristic {
         return itemTripleLists;
     }
 
+    /**
+     * Generates solutions to the stacking problem based on the different lists of item triples.
+     * Basic idea:
+     *      - generate pairs again via MCM
+     *      - consider remaining items to be unmatched
+     *      - generate bipartite graph (items, stacks)
+     *      - compute MWPM and interpret edges as stack assignments
+     *      - fix order of items inside the stacks
+     *
+     * @param itemTripleLists - the different lists of item triples
+     * @return the generated solutions based on the given lists of triples
+     */
     public ArrayList<Solution> generateSolutionsBasedOnListsOfTriples(ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists) {
 
         ArrayList<Solution> solutions = new ArrayList<>();
@@ -459,12 +468,9 @@ public class ThreeCapHeuristic {
 
             this.instance.resetStacks();
 
-            // update unmatched items
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(listOfItemTriples, this.instance.getItems());
-
             // items that are stored as pairs
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
-
             // items that are stored in their own stack
             unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(
                     listOfItemTriples, itemPairs, this.instance.getItems()
@@ -477,17 +483,16 @@ public class ThreeCapHeuristic {
 
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(listOfItemTriples, itemPairs, unmatchedItems);
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
-                    new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
-                            bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
-                    )
-                    ;
+                new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
+                        bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
+                )
+            ;
             GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
             Solution sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
             sol.transformStackAssignmentsIntoValidSolutionIfPossible();
             solutions.add(new Solution(sol));
         }
-
         return solutions;
     }
 
@@ -514,15 +519,11 @@ public class ThreeCapHeuristic {
         if (this.instance.getStackCapacity() == 3) {
 
             this.startTime = System.currentTimeMillis();
+
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
-            // TODO: check whether triples is always empty here! are there cases with unmatched items at all?
-            ArrayList<ArrayList<Integer>> itemTriples = this.generateItemTriples(itemPairs);
-            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(itemTriples, this.instance.getItems());
-            // build pairs again from the unmatched items
-            itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
 
             ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = this.mergePairsToTriples(
-                    numberOfItemPairOrdersInMergeStep, itemTriples, itemPairs
+                    numberOfItemPairOrdersInMergeStep, itemPairs
             );
 
             ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
