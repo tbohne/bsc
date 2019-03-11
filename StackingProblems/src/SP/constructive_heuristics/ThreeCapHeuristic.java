@@ -195,8 +195,10 @@ public class ThreeCapHeuristic {
      * @param itemPairLists - the lists of items pairs to be sorted
      */
     public void sortItemPairListsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairLists, int numberOfUsedRatingSystems) {
-        for (int i = 1; i < itemPairLists.size(); i++) {
-            if (i <= numberOfUsedRatingSystems) {
+        for (int i = 0; i < itemPairLists.size(); i++) {
+            if (i == 0) {
+                Collections.reverse(itemPairLists.get(i));
+            } else if (i <= numberOfUsedRatingSystems) {
                 Collections.sort(itemPairLists.get(i));
                 if (i >= (numberOfUsedRatingSystems / 2) + 1) {
                     Collections.reverse(itemPairLists.get(i));
