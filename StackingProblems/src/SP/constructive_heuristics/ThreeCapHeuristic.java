@@ -212,6 +212,34 @@ public class ThreeCapHeuristic {
         }
     }
 
+    public void generateCompletelyFilledStacksTest(
+            ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks
+    ) {
+
+        ArrayList<MCMEdge> splitPairs = new ArrayList<>();
+        ArrayList<MCMEdge> assignPairs = new ArrayList<>();
+        for (int i = 0; i < itemPairs.size(); i++) {
+            if (i < itemPairs.size() / 3.5) {
+                splitPairs.add(itemPairs.get(i));
+            } else {
+                assignPairs.add(itemPairs.get(i));
+            }
+        }
+
+        ArrayList<Integer> unmatchedItems = new ArrayList<>();
+
+        for (MCMEdge splitPair : splitPairs) {
+
+//            if (itemPairRemovalList.contains(splitPair)) { continue; }
+
+            int itemOne = splitPair.getVertexOne();
+            int itemTwo = splitPair.getVertexTwo();
+            unmatchedItems.add(itemOne);
+            unmatchedItems.add(itemTwo);
+        }
+        completelyFilledStacks.addAll(this.computeCompatibleItemTriples(assignPairs, unmatchedItems));
+    }
+
     /**
      * Generates completely filled stacks from the list of item pairs.
      * Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks.
@@ -223,6 +251,7 @@ public class ThreeCapHeuristic {
     public void generateCompletelyFilledStacks(
         ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks
     ) {
+
         for (MCMEdge splitPair : itemPairs) {
 
             if (itemPairRemovalList.contains(splitPair)) { continue; }
@@ -348,7 +377,7 @@ public class ThreeCapHeuristic {
             this.sortItemPairListsBasedOnRatings(numberOfItemPairOrders, itemPairLists, numberOfUsedRatingSystems);
         }
         for (int i = 0; i < numberOfItemPairOrders; i++) {
-            this.generateCompletelyFilledStacks(
+            this.generateCompletelyFilledStacksTest(
                 itemPairLists.get(i),
                 itemPairRemovalLists.get(i),
                 listOfCompletelyFilledStacks.get(i)
@@ -439,8 +468,10 @@ public class ThreeCapHeuristic {
             this.instance.resetStacks();
 
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(itemTriples, this.instance.getItems());
+
             // items that are stored as pairs
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
+
             // items that are stored in their own stack
             unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriplesAndPairs(itemTriples, itemPairs, this.instance.getItems());
 
@@ -455,6 +486,7 @@ public class ThreeCapHeuristic {
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
                 )
             ;
+
             GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
             Solution sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
