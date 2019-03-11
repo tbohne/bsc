@@ -150,6 +150,73 @@ public class RatingSystem {
         }
     }
 
+    public static void assignNewRatingToEdges(
+            ArrayList<MCMEdge> matchedItems,
+            int[][] stackingConstraints,
+            int[][] costs, int[][] stacks
+    ) {
+
+        for (MCMEdge edge : matchedItems) {
+
+            ArrayList<Integer> costEntries = new ArrayList<>();
+//            int itemOne = edge.getVertexOne();
+//            int itemTwo = edge.getVertexTwo();
+            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
+            int avgCosts = 0;
+            int cnt = 0;
+//
+//            for (int stack = 0; stack < stacks.length; stack++) {
+//                if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
+//                    int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
+//                    costEntries.add(currCost);
+//                    avgCosts += costs[itemOne][stack] + costs[itemTwo][stack];
+//                    cnt++;
+//                }
+//            }
+//
+////            edge.setRating(Collections.max(costEntries) * cnt);
+////            edge.setRating(cnt);
+//
+//            int rowRItemOne = computeRowRatingForUnmatchedItem(itemOne, stackingConstraints);
+//            int colRItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
+//            int itemOneExt =  rowRItemOne > colRItemOne ? rowRItemOne : colRItemOne;
+//
+//            int rowRItemTwo = computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints);
+//            int colRItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
+//            int itemTwoExt = rowRItemTwo > colRItemTwo ? rowRItemTwo : colRItemTwo;
+//
+//            edge.setRating(
+//                    (itemOneExt + itemTwoExt) * cnt
+//            );
+
+            // compatibility with other pairs
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            int compatibility = 0;
+
+            for (MCMEdge e : matchedItems) {
+                if (e != edge) {
+                    if (HeuristicUtil.itemAssignableToPair(itemOne, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)
+                            || HeuristicUtil.itemAssignableToPair(itemTwo, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)) {
+                        compatibility++;
+                    }
+                }
+            }
+
+            for (int stack = 0; stack < stacks.length; stack++) {
+                if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
+                    int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
+                    costEntries.add(currCost);
+                    avgCosts += costs[itemOne][stack] + costs[itemTwo][stack];
+                    cnt++;
+                }
+            }
+
+            edge.setRating((compatibility + cnt) / ((avgCosts / cnt) ));
+
+        }
+    }
+
     /**
      * Assigns the sum of the ratings to the specified edges.
      *
