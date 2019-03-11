@@ -142,8 +142,10 @@ public class ThreeCapHeuristic {
      *
      * @param itemPairLists - the lists of item pairs to be initialized
      */
-    public void introduceMinimumNumberOfItemPairLists(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
-        while (itemPairLists.size() < 15) {
+    public void introduceMinimumNumberOfItemPairPermutations(
+        ArrayList<ArrayList<MCMEdge>> itemPairLists, int minimumNumberOfItemPairPermutations
+    ) {
+        while (itemPairLists.size() < minimumNumberOfItemPairPermutations) {
             itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairLists.get(0)));
         }
     }
@@ -156,8 +158,9 @@ public class ThreeCapHeuristic {
      * @return the number of applied rating systems
      */
     public int applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
-        if (itemPairLists.size() < 15) {
-            this.introduceMinimumNumberOfItemPairLists(itemPairLists);
+        int minimumNumberOfItemPairPermutations = 15;
+        if (itemPairLists.size() < minimumNumberOfItemPairPermutations) {
+            this.introduceMinimumNumberOfItemPairPermutations(itemPairLists, minimumNumberOfItemPairPermutations);
         }
         // the first list (idx 0) should be unrated and unsorted
         int ratingSystemIdx = 1;
@@ -316,9 +319,7 @@ public class ThreeCapHeuristic {
         ArrayList<Solution> solutions = new ArrayList<>();
 
         for (ArrayList<ArrayList<Integer>> itemTriples : itemTripleLists) {
-
             this.instance.resetStacks();
-
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(itemTriples, this.instance.getItems());
             // items that are stored as pairs
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(HeuristicUtil.getItemArrayFromItemList(unmatchedItems));
@@ -344,6 +345,22 @@ public class ThreeCapHeuristic {
     }
 
     /**
+     * Returns the best solution from the list of generated solutions.
+     *
+     * @param solutions - the list of generated solutions
+     * @return the best solution based on the costs
+     */
+    public Solution getBestSolution(ArrayList<Solution> solutions) {
+        Solution bestSol = new Solution();
+        for (Solution sol : solutions) {
+            if (sol.computeCosts() < bestSol.computeCosts()) {
+                bestSol = sol;
+            }
+        }
+        return bestSol;
+    }
+
+    /**
      * Solves the given instance of the stacking problem. The objective is to minimize the transport costs.
      *
      * Basic idea:
@@ -365,19 +382,13 @@ public class ThreeCapHeuristic {
         Solution bestSol = new Solution();
 
         if (this.instance.getStackCapacity() == 3) {
-
             this.startTime = System.currentTimeMillis();
-
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
             ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = this.mergePairsToTriples(
                 numberOfItemPairPermutations, itemPairs
             );
             ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
-            for (Solution sol : solutions) {
-                if (sol.computeCosts() < bestSol.computeCosts()) {
-                    bestSol = sol;
-                }
-            }
+            bestSol = this.getBestSolution(solutions);
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }
