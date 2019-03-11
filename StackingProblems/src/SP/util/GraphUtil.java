@@ -208,13 +208,23 @@ public class GraphUtil {
             if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
                     || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
                     || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
-                    || stackingConstraints[unmatchedItem][unmatchedItem] == 1
+                    || stackingConstraints[upperItemOfPair][unmatchedItem] == 1
                     || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
                     || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1
             ) {
-                    if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
-                        graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
-                    }
+
+//                if (unmatchedItem == 3 || unmatchedItem == 4 || unmatchedItem == 11) {
+//                    if (itemPair.getVertexOne() == 3 || itemPair.getVertexOne() == 4 || itemPair.getVertexOne() == 11) {
+//                        if (itemPair.getVertexTwo() == 3 || itemPair.getVertexTwo() == 4 || itemPair.getVertexTwo() == 11) {
+//                            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+//                            System.out.println(itemPair);
+//                        }
+//                    }
+//                }
+
+                if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+                    graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+                }
             }
         } else {
             if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
@@ -316,8 +326,6 @@ public class GraphUtil {
             bipartiteGraph.addVertex("v" + i);
         }
 
-        System.out.println(itemPairs.size());
-
         for (int itemPair = 0; itemPair < itemPairs.size(); itemPair++) {
             for (int unmatchedItem = 0; unmatchedItem < unmatchedItems.size(); unmatchedItem++) {
 
@@ -339,7 +347,6 @@ public class GraphUtil {
 
                 // one on top of two
                 } else if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1) {
-
                     GraphUtil.addEdgeForCompatibleItemTriple(
                             bipartiteGraph,
                             itemPairs.get(itemPair).getVertexTwo(),
