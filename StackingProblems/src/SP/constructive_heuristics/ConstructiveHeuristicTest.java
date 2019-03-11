@@ -12,11 +12,11 @@ import SP.representations.Solution;
 public class ConstructiveHeuristicTest {
 
     public static final int TIME_LIMIT = 300;
-    public static final int NUMBER_OF_ITEM_PAIR_ORDERS_IN_MERGE_STEP = 30;
+    public static final int NUMBER_OF_ITEM_PAIR_ORDERS_IN_MERGE_STEP = 20;
 
     public static void main (String[] args) {
 
-        Instance instance = InstanceReader.readInstance("res/instances/b=3_m/slp_instance_300_120_3_03.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_300_120_3_01.txt");
         System.out.println("working on: " + instance.getName());
 
         ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT);

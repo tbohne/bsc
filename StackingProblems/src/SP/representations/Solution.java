@@ -140,6 +140,7 @@ public class Solution {
                             this.filledStorageArea[stack][item] = this.filledStorageArea[stack][item + 1];
                             this.filledStorageArea[stack][item + 1] = tmp;
                             somethingChanged = true;
+
                             break;
                         }
                     }
