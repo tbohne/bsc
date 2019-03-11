@@ -212,6 +212,18 @@ public class ThreeCapHeuristic {
         }
     }
 
+    /**
+     * Generates completely filled stacks based on the given list of item pairs.
+     * The first x item pairs get splitted and the resulting items are assigned
+     * to the remaining itemPairs.size() - x pairs to build up item triples.
+     * The maximum number of items that could be splitted and theoretically reassigned to
+     * the remaining pairs is itemPairs.size() / 3. However, because of the stacking constraints
+     * there should be more options to assign the items to. Therefore x = itemPairs.size() / 3.4.
+     * The 3.4 is the result of an experimental comparison of the results for different x-values.
+     *
+     * @param itemPairs              - the pairs of items to be merged
+     * @param completelyFilledStacks - the list of completely filled stacks to be generated
+     */
     public void generateCompletelyFilledStacks(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
         ArrayList<MCMEdge> splitPairs = new ArrayList<>();
         ArrayList<MCMEdge> assignPairs = new ArrayList<>();
@@ -347,31 +359,46 @@ public class ThreeCapHeuristic {
     }
 
     /**
+     * Initializes the copies of the lists of completely filled stacks and item pairs.
+     *
+     * @param itemPairs                     - the pairs of items
+     * @param itemPairLists                 - the lists of item pairs (different permutations)
+     * @param listsOfCompletelyFilledStacks - the lists of completely filled stacks to be initialized
+     * @param numberOfItemPairPermutations  - the number of item pair permutations used in the merge step
+     */
+    public void initCopiesForDifferentItemPairPermutations(
+        ArrayList<MCMEdge> itemPairs,
+        ArrayList<ArrayList<MCMEdge>> itemPairLists,
+        ArrayList<ArrayList<ArrayList<Integer>>> listsOfCompletelyFilledStacks,
+        int numberOfItemPairPermutations
+    ) {
+        for (int i = 0; i < numberOfItemPairPermutations; i++) {
+            listsOfCompletelyFilledStacks.add(new ArrayList<>());
+            itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
+        }
+    }
+
+    /**
      * Tries to merge item pairs by splitting up pairs and assigning both items
      * to other pairs to form completely filled stacks.
      *
      * @param itemPairs - the item pairs to be merged
      */
-    public ArrayList<ArrayList<ArrayList<Integer>>> mergeItemPairs(ArrayList<MCMEdge> itemPairs, int numberOfItemPairOrders) {
-        ArrayList<ArrayList<MCMEdge>> itemPairRemovalLists = new ArrayList<>();
-        ArrayList<ArrayList<ArrayList<Integer>>> listOfCompletelyFilledStacks = new ArrayList<>();
-
+    public ArrayList<ArrayList<ArrayList<Integer>>> mergeItemPairs(ArrayList<MCMEdge> itemPairs, int numberOfItemPairPermutations) {
+        ArrayList<ArrayList<ArrayList<Integer>>> listsOfCompletelyFilledStacks = new ArrayList<>();
         ArrayList<ArrayList<MCMEdge>> itemPairLists = new ArrayList<>();
         itemPairLists.add(itemPairs);
-
-        for (int i = 0; i < numberOfItemPairOrders; i++) {
-            itemPairRemovalLists.add(new ArrayList<>());
-            listOfCompletelyFilledStacks.add(new ArrayList<>());
-            itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
-        }
-        if (numberOfItemPairOrders > 1) {
+        this.initCopiesForDifferentItemPairPermutations(
+            itemPairs, itemPairLists, listsOfCompletelyFilledStacks, numberOfItemPairPermutations
+        );
+        if (numberOfItemPairPermutations > 1) {
             int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists);
-            this.sortItemPairListsBasedOnRatings(numberOfItemPairOrders, itemPairLists, numberOfUsedRatingSystems);
+            this.sortItemPairListsBasedOnRatings(numberOfItemPairPermutations, itemPairLists, numberOfUsedRatingSystems);
         }
-        for (int i = 0; i < numberOfItemPairOrders; i++) {
-            this.generateCompletelyFilledStacks(itemPairLists.get(i), listOfCompletelyFilledStacks.get(i));
+        for (int i = 0; i < numberOfItemPairPermutations; i++) {
+            this.generateCompletelyFilledStacks(itemPairLists.get(i), listsOfCompletelyFilledStacks.get(i));
         }
-        return listOfCompletelyFilledStacks;
+        return listsOfCompletelyFilledStacks;
     }
 
     /**
