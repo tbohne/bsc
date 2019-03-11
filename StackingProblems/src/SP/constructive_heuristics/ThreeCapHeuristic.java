@@ -212,10 +212,7 @@ public class ThreeCapHeuristic {
         }
     }
 
-    public void generateCompletelyFilledStacksTest(
-            ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks
-    ) {
-
+    public void generateCompletelyFilledStacks(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> completelyFilledStacks) {
         ArrayList<MCMEdge> splitPairs = new ArrayList<>();
         ArrayList<MCMEdge> assignPairs = new ArrayList<>();
         for (int i = 0; i < itemPairs.size(); i++) {
@@ -225,69 +222,64 @@ public class ThreeCapHeuristic {
                 assignPairs.add(itemPairs.get(i));
             }
         }
-
-        ArrayList<Integer> unmatchedItems = new ArrayList<>();
-
+        ArrayList<Integer> splittedItems = new ArrayList<>();
         for (MCMEdge splitPair : splitPairs) {
+            int splitItemOne = splitPair.getVertexOne();
+            int splitItemTwo = splitPair.getVertexTwo();
+            splittedItems.add(splitItemOne);
+            splittedItems.add(splitItemTwo);
+        }
+        completelyFilledStacks.addAll(this.computeCompatibleItemTriples(assignPairs, splittedItems));
+    }
 
+//    /**
+//     * Generates completely filled stacks from the list of item pairs.
+//     * Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks.
+//     *
+//     * @param itemPairs              - the list of item pairs
+//     * @param itemPairRemovalList    - the list of edges (item pairs) to be removed
+//     * @param completelyFilledStacks - list to store the completely filled stacks
+//     */
+//    public void generateCompletelyFilledStacks(
+//        ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks
+//    ) {
+//
+//        for (MCMEdge splitPair : itemPairs) {
+//
 //            if (itemPairRemovalList.contains(splitPair)) { continue; }
-
-            int itemOne = splitPair.getVertexOne();
-            int itemTwo = splitPair.getVertexTwo();
-            unmatchedItems.add(itemOne);
-            unmatchedItems.add(itemTwo);
-        }
-        completelyFilledStacks.addAll(this.computeCompatibleItemTriples(assignPairs, unmatchedItems));
-    }
-
-    /**
-     * Generates completely filled stacks from the list of item pairs.
-     * Breaks up a pair and tries to assign both items two new pairs to build up completely filled stacks.
-     *
-     * @param itemPairs              - the list of item pairs
-     * @param itemPairRemovalList    - the list of edges (item pairs) to be removed
-     * @param completelyFilledStacks - list to store the completely filled stacks
-     */
-    public void generateCompletelyFilledStacks(
-        ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks
-    ) {
-
-        for (MCMEdge splitPair : itemPairs) {
-
-            if (itemPairRemovalList.contains(splitPair)) { continue; }
-
-            int itemOne = splitPair.getVertexOne();
-            int itemTwo = splitPair.getVertexTwo();
-            ArrayList<MCMEdge> potentialItemOnePairs = new ArrayList<>();
-            ArrayList<MCMEdge> potentialItemTwoPairs = new ArrayList<>();
-
-            for (MCMEdge potentialTargetPair : itemPairs) {
-
-                if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
-
-                if (splitPair != potentialTargetPair) {
-                    int potentialTargetPairItemOne = potentialTargetPair.getVertexOne();
-                    int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
-
-                    if (HeuristicUtil.itemAssignableToPair(
-                        itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, this.instance.getStackingConstraints()
-                    )) {
-                        potentialItemOnePairs.add(potentialTargetPair);
-                        continue;
-                    }
-                    if (HeuristicUtil.itemAssignableToPair(
-                        itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, this.instance.getStackingConstraints()
-                    )) {
-                        potentialItemTwoPairs.add(potentialTargetPair);
-                        continue;
-                    }
-                }
-            }
-            this.assignItemsToPairs(
-                potentialItemOnePairs, potentialItemTwoPairs, splitPair, completelyFilledStacks, itemPairRemovalList, itemOne, itemTwo
-            );
-        }
-    }
+//
+//            int itemOne = splitPair.getVertexOne();
+//            int itemTwo = splitPair.getVertexTwo();
+//            ArrayList<MCMEdge> potentialItemOnePairs = new ArrayList<>();
+//            ArrayList<MCMEdge> potentialItemTwoPairs = new ArrayList<>();
+//
+//            for (MCMEdge potentialTargetPair : itemPairs) {
+//
+//                if (itemPairRemovalList.contains(potentialTargetPair)) { continue; }
+//
+//                if (splitPair != potentialTargetPair) {
+//                    int potentialTargetPairItemOne = potentialTargetPair.getVertexOne();
+//                    int potentialTargetPairItemTwo = potentialTargetPair.getVertexTwo();
+//
+//                    if (HeuristicUtil.itemAssignableToPair(
+//                        itemOne, potentialTargetPairItemOne, potentialTargetPairItemTwo, this.instance.getStackingConstraints()
+//                    )) {
+//                        potentialItemOnePairs.add(potentialTargetPair);
+//                        continue;
+//                    }
+//                    if (HeuristicUtil.itemAssignableToPair(
+//                        itemTwo, potentialTargetPairItemOne, potentialTargetPairItemTwo, this.instance.getStackingConstraints()
+//                    )) {
+//                        potentialItemTwoPairs.add(potentialTargetPair);
+//                        continue;
+//                    }
+//                }
+//            }
+//            this.assignItemsToPairs(
+//                potentialItemOnePairs, potentialItemTwoPairs, splitPair, completelyFilledStacks, itemPairRemovalList, itemOne, itemTwo
+//            );
+//        }
+//    }
 
     public void introduceMinimumNumberOfItemPairLists(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
         // TODO: think about hard coded value
@@ -377,11 +369,7 @@ public class ThreeCapHeuristic {
             this.sortItemPairListsBasedOnRatings(numberOfItemPairOrders, itemPairLists, numberOfUsedRatingSystems);
         }
         for (int i = 0; i < numberOfItemPairOrders; i++) {
-            this.generateCompletelyFilledStacksTest(
-                itemPairLists.get(i),
-                itemPairRemovalLists.get(i),
-                listOfCompletelyFilledStacks.get(i)
-            );
+            this.generateCompletelyFilledStacks(itemPairLists.get(i), listOfCompletelyFilledStacks.get(i));
         }
         return listOfCompletelyFilledStacks;
     }
