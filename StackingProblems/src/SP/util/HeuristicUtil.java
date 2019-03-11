@@ -312,6 +312,14 @@ public class HeuristicUtil {
         return items;
     }
 
+    public static ArrayList<MCMEdge> getCopyOfEdgeList(List<MCMEdge> edges) {
+        ArrayList<MCMEdge> copy = new ArrayList<>();
+        for (MCMEdge edge : edges) {
+            copy.add(new MCMEdge(edge));
+        }
+        return copy;
+    }
+
     /**
      * Returns a reversed copy of the specified edge list.
      *
