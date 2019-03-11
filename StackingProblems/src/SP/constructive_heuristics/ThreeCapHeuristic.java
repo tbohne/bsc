@@ -219,7 +219,7 @@ public class ThreeCapHeuristic {
         ArrayList<MCMEdge> splitPairs = new ArrayList<>();
         ArrayList<MCMEdge> assignPairs = new ArrayList<>();
         for (int i = 0; i < itemPairs.size(); i++) {
-            if (i < itemPairs.size() / 3.5) {
+            if (i < Math.floor(itemPairs.size() / 3.3)) {
                 splitPairs.add(itemPairs.get(i));
             } else {
                 assignPairs.add(itemPairs.get(i));
