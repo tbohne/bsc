@@ -194,7 +194,6 @@ public class ThreeCapHeuristic {
         MCMEdge itemOneTargetPair = getTargetPairForItemBestFit(
             this.instance.getItems(), potentialItemOnePairs, this.instance.getCosts(), this.instance.getStacks(), itemOne
         );
-
         if (!(itemOneTargetPair.getVertexOne() == 0 && itemOneTargetPair.getVertexTwo() == 0)) {
             itemOneAssigned = true;
         }
@@ -214,12 +213,12 @@ public class ThreeCapHeuristic {
 
     /**
      * Generates completely filled stacks based on the given list of item pairs.
-     * The first x item pairs get splitted and the resulting items are assigned
-     * to the remaining itemPairs.size() - x pairs to build up item triples.
-     * The maximum number of items that could be splitted and theoretically reassigned to
-     * the remaining pairs is itemPairs.size() / 3. However, because of the stacking constraints
-     * there should be more options to assign the items to. Therefore x = itemPairs.size() / 3.4.
-     * The 3.4 is the result of an experimental comparison of the results for different x-values.
+     * The first x item pairs get splitted and the resulting items are assigned to the remaining
+     * itemPairs.size() - x pairs to build up item triples.
+     * The maximum number of items that could be splitted and theoretically reassigned to the remaining pairs is
+     * itemPairs.size() / 3. However, because of the stacking constraints there should be more options to assign
+     * the items to. Therefore x = itemPairs.size() / 3.4 is used. The 3.4 is the result of an experimental comparison
+     * of the results for different x-values.
      *
      * @param itemPairs              - the pairs of items to be merged
      * @param completelyFilledStacks - the list of completely filled stacks to be generated
@@ -236,10 +235,8 @@ public class ThreeCapHeuristic {
         }
         ArrayList<Integer> splittedItems = new ArrayList<>();
         for (MCMEdge splitPair : splitPairs) {
-            int splitItemOne = splitPair.getVertexOne();
-            int splitItemTwo = splitPair.getVertexTwo();
-            splittedItems.add(splitItemOne);
-            splittedItems.add(splitItemTwo);
+            splittedItems.add(splitPair.getVertexOne());
+            splittedItems.add(splitPair.getVertexTwo());
         }
         completelyFilledStacks.addAll(this.computeCompatibleItemTriples(assignPairs, splittedItems));
     }
@@ -255,7 +252,6 @@ public class ThreeCapHeuristic {
     public void generateCompletelyFilledStacks(
         ArrayList<MCMEdge> itemPairs, ArrayList<MCMEdge> itemPairRemovalList, ArrayList<ArrayList<Integer>> completelyFilledStacks
     ) {
-
         for (MCMEdge splitPair : itemPairs) {
 
             if (itemPairRemovalList.contains(splitPair)) { continue; }
@@ -293,8 +289,12 @@ public class ThreeCapHeuristic {
         }
     }
 
+    /**
+     * Initializes the item pair lists with the number of applied rating systems.
+     *
+     * @param itemPairLists - the lists of item pairs to be initialized
+     */
     public void introduceMinimumNumberOfItemPairLists(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
-        // TODO: think about hard coded value
         while (itemPairLists.size() < 15) {
             itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairLists.get(0)));
         }
@@ -305,6 +305,7 @@ public class ThreeCapHeuristic {
      * The rating systems are used to sort the lists.
      *
      * @param itemPairLists - the lists of item pairs to be rated
+     * @return the number of applied rating systems
      */
     public int applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
         if (itemPairLists.size() < 15) {
@@ -338,16 +339,16 @@ public class ThreeCapHeuristic {
 
     /**
      * Sorts the lists of item pairs based on their ratings.
-     * Additionally, a number of random shuffles of item pairs is
+     * Additionally, a number of random shuffles of item pairs could be added.
      *
-     * @param numberOfItemPairOrders
-     * @param itemPairLists
+     * @param numberOfItemPairPermutations - the number of used item pair permutations
+     * @param itemPairLists                - the lists of items pairs to be sorted
      */
     public void sortItemPairListsBasedOnRatings(
-        int numberOfItemPairOrders, ArrayList<ArrayList<MCMEdge>> itemPairLists, int numberOfUsedRatingSystems
+        int numberOfItemPairPermutations, ArrayList<ArrayList<MCMEdge>> itemPairLists, int numberOfUsedRatingSystems
     ) {
-        for (int i = 1; i < numberOfItemPairOrders; i++) {
-            if (i <= numberOfItemPairOrders) {
+        for (int i = 1; i < numberOfItemPairPermutations; i++) {
+            if (i <= numberOfItemPairPermutations) {
                 Collections.sort(itemPairLists.get(i));
                 if (i >= (numberOfUsedRatingSystems / 2) + 1) {
                     Collections.reverse(itemPairLists.get(i));
@@ -379,8 +380,9 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Tries to merge item pairs by splitting up pairs and assigning both items
-     * to other pairs to form completely filled stacks.
+     * Generates lists of completely filled stacks by merging the given item pairs to triples.
+     * The given item pairs are sorted based on different rating systems which leads to a number
+     * of different lists of item triples or completely filled stacks.
      *
      * @param itemPairs - the item pairs to be merged
      */
@@ -425,7 +427,7 @@ public class ThreeCapHeuristic {
     public ArrayList<MCMEdge> generateItemPairs(int[] items) {
         DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph(items);
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
-                stackingConstraintGraph
+            stackingConstraintGraph
         );
         return GraphUtil.parseItemPairFromMCM(itemMatching);
     }
