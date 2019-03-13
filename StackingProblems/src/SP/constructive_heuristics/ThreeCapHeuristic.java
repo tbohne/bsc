@@ -157,35 +157,25 @@ public class ThreeCapHeuristic {
      * @param itemPairLists - the lists of item pairs to be rated
      * @return the number of applied rating systems
      */
-    public int applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
-        int minimumNumberOfItemPairPermutations = 15;
-        if (itemPairLists.size() < minimumNumberOfItemPairPermutations) {
-            this.introduceMinimumNumberOfItemPairPermutations(itemPairLists, minimumNumberOfItemPairPermutations);
-        }
+    public int applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists, ArrayList<MCMEdge> itemPairs) {
+
         // the first list (idx 0) should be unrated and unsorted
         int ratingSystemIdx = 1;
 
-        RatingSystem.assignNewRatingToEdges(itemPairLists.get(
-            ratingSystemIdx++), this.instance.getStackingConstraints(), this.instance.getCosts(), this.instance.getStacks()
-        );
-        RatingSystem.assignMinRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignMaxRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignSumRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdgesNewWay(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignRowRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignNewRatingToEdges(
-            itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints(), this.instance.getCosts(), this.instance.getStacks()
-        );
-        RatingSystem.assignMinRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignMaxRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignSumRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdgesNewWay(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignColRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
-        RatingSystem.assignRowRatingToEdges(itemPairLists.get(ratingSystemIdx++), this.instance.getStackingConstraints());
+        for (int deviationThreshold = 65; deviationThreshold < 125; deviationThreshold += 5) {
+            if (itemPairLists.size() == ratingSystemIdx) {
+                itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
+            }
 
-        // -1 because the list with the idx 0 has no rating system
-        return ratingSystemIdx - 1;
+            RatingSystem.assignThreeCapPairRating(
+                itemPairLists.get(ratingSystemIdx++),
+                this.instance.getStackingConstraints(),
+                this.instance.getCosts(),
+                this.instance.getStacks(),
+                deviationThreshold
+            );
+        }
+        return ratingSystemIdx;
     }
 
     /**
@@ -200,9 +190,10 @@ public class ThreeCapHeuristic {
                 Collections.reverse(itemPairLists.get(i));
             } else if (i <= numberOfUsedRatingSystems) {
                 Collections.sort(itemPairLists.get(i));
-                if (i >= (numberOfUsedRatingSystems / 2) + 1) {
-                    Collections.reverse(itemPairLists.get(i));
-                }
+                Collections.reverse(itemPairLists.get(i));
+//                if (i >= (numberOfUsedRatingSystems / 2) + 1) {
+//                    Collections.reverse(itemPairLists.get(i));
+//                }
             } else {
                 Collections.shuffle(itemPairLists.get(i));
             }
@@ -236,17 +227,17 @@ public class ThreeCapHeuristic {
      *
      * @param itemPairs - the item pairs to be merged
      */
-    public ArrayList<ArrayList<ArrayList<Integer>>> generateCompletelyFilledStacks(ArrayList<MCMEdge> itemPairs, int numberOfItemPairPermutations) {
+    public ArrayList<ArrayList<ArrayList<Integer>>> generateCompletelyFilledStacks(ArrayList<MCMEdge> itemPairs) {
         ArrayList<ArrayList<ArrayList<Integer>>> listsOfCompletelyFilledStacks = new ArrayList<>();
         ArrayList<ArrayList<MCMEdge>> itemPairLists = new ArrayList<>();
-        this.initCopiesForDifferentItemPairPermutations(
-            itemPairs, itemPairLists, listsOfCompletelyFilledStacks, numberOfItemPairPermutations
-        );
-        if (numberOfItemPairPermutations > 1) {
-            int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists);
-            this.sortItemPairListsBasedOnRatings(itemPairLists, numberOfUsedRatingSystems);
-        }
-        for (int i = 0; i < numberOfItemPairPermutations; i++) {
+        itemPairLists.add(itemPairs);
+        int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists, itemPairs);
+        this.sortItemPairListsBasedOnRatings(itemPairLists, numberOfUsedRatingSystems);
+
+        for (int i = 0; i < numberOfUsedRatingSystems; i++) {
+            if (numberOfUsedRatingSystems >= listsOfCompletelyFilledStacks.size()) {
+                listsOfCompletelyFilledStacks.add(new ArrayList<>());
+            }
             this.mergeItemPairs(itemPairLists.get(i), listsOfCompletelyFilledStacks.get(i));
         }
         return listsOfCompletelyFilledStacks;
@@ -290,14 +281,8 @@ public class ThreeCapHeuristic {
      * @return the list of the generated item triple lists
      */
     public ArrayList<ArrayList<ArrayList<Integer>>> mergePairsToTriples(int numberOfItemPairPermutations, ArrayList<MCMEdge> itemPairs) {
-        ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = new ArrayList<>();
-        for (int i = 0; i < numberOfItemPairPermutations; i++) {
-            itemTripleLists.add(new ArrayList<>());
-        }
-        for (int i = 0; i < itemTripleLists.size(); i++) {
-            itemTripleLists.get(i).addAll(this.generateCompletelyFilledStacks(itemPairs, numberOfItemPairPermutations).get(i));
-        }
-        return itemTripleLists;
+
+        return this.generateCompletelyFilledStacks(itemPairs);
     }
 
     public String getUsedRatingSystem(int idx) {
@@ -536,14 +521,9 @@ public class ThreeCapHeuristic {
 
         ArrayList<ArrayList<ArrayList<Integer>>> listsOfCompletelyFilledStacks = new ArrayList<>();
         ArrayList<ArrayList<MCMEdge>> itemPairLists = new ArrayList<>();
-        itemPairLists.add(itemPairs);
-        this.initCopiesForDifferentItemPairPermutations(
-                itemPairs, itemPairLists, listsOfCompletelyFilledStacks, numberOfItemPairPermutations
-        );
-        if (numberOfItemPairPermutations > 1) {
-            int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists);
-            this.sortItemPairListsBasedOnRatings(itemPairLists, numberOfUsedRatingSystems);
-        }
+
+        int numberOfUsedRatingSystems = this.applyRatingSystems(itemPairLists, itemPairs);
+        this.sortItemPairListsBasedOnRatings(itemPairLists, numberOfUsedRatingSystems);
 
         for (int i = 0; i < numberOfItemPairPermutations; i++) {
 
