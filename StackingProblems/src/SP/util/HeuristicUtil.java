@@ -211,6 +211,18 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns the percentage deviation between the expected and the actual value.
+     *
+     * @param expected - the expected value
+     * @param actual   - the actual value
+     * @return the percentage deviation between the expected and the actual value
+     */
+    public static int getPercentageDeviation(float expected, float actual) {
+        float diff = Math.abs(expected - actual);
+        return Math.round(diff / expected * 100);
+    }
+
+    /**
      * Returns whether the given item is validly assignable to the given pair.
      *
      * @param item        - the item to be checked
