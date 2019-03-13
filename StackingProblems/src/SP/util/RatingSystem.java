@@ -2,6 +2,7 @@ package SP.util;
 
 import SP.representations.MCMEdge;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -150,44 +151,212 @@ public class RatingSystem {
         }
     }
 
-    public static void assignNewRatingToEdges(
-            ArrayList<MCMEdge> matchedItems,
-            int[][] stackingConstraints,
-            int[][] costs, int[][] stacks
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Rates the given edges based on their items' compatibility to other edges.
+     *
+     * @param matchedItems        - the edges (pairs) to be rated
+     * @param stackingConstraints - the stacking constraints to be respected
+     */
+    public static void assignCompatibilityRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            int compatibility = 0;
+
+            for (MCMEdge e : matchedItems) {
+                if (e != edge) {
+                    if (HeuristicUtil.itemAssignableToPair(itemOne, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)
+                        || HeuristicUtil.itemAssignableToPair(itemTwo, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)) {
+                            compatibility++;
+                    }
+                }
+            }
+            edge.setRating(compatibility);
+        }
+    }
+
+    /**
+     * Rates the given edges based on their extreme cost values.
+     *
+     * @param matchedItems        - the edges (pairs) to be rated
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @param costs               - the cost matrix
+     * @param stacks              - the available stacks
+     * @param max                 - determines whether the max value is used (min otherwise)
+     */
+    public static void assignExtremeCostRatingToEdges(
+        ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks, boolean max
     ) {
+        for (MCMEdge edge : matchedItems) {
+            ArrayList<Integer> costEntries = new ArrayList<>();
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
+
+            for (int stack = 0; stack < stacks.length; stack++) {
+                if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
+                    int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
+                    costEntries.add(currCost);
+                }
+            }
+            if (max) {
+                edge.setRating(Collections.max(costEntries));
+            } else {
+                edge.setRating(Collections.min(costEntries));
+            }
+        }
+    }
+
+    /**
+     * Computes the average costs to assign the given pairs.
+     * An incompatible stack is penalized with a high cost value of 1000.
+     *
+     * @param stacks       - the available stacks
+     * @param costs        - the cost matrix
+     * @param itemOne      - the first item of the pair
+     * @param itemTwo      - the second item of the pair
+     * @param forbiddenVal - the value indicating incompatible stacks
+     * @return
+     */
+    public static int computeAvgCosts(int[][] stacks, int[][] costs, int itemOne, int itemTwo, int forbiddenVal) {
+        int avgCosts = 0;
+        for (int stack = 0; stack < stacks.length; stack++) {
+            if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
+                int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
+                avgCosts += currCost;
+            } else {
+                avgCosts += 1000;
+            }
+        }
+        return avgCosts / stacks.length;
+    }
+
+    /**
+     * Computes an item's pair compatibility which is the number of other edges it is assignable to.
+     *
+     * @param pairs               - the list of item pairs to be checked
+     * @param item                - the item to compute the compatibility for
+     * @param stackingConstraints - the stacking constraints to compatibility is based on
+     * @param itemEdge            - the edge the item to be checked is part of
+     * @return
+     */
+    public static int computePairCompatibility(ArrayList<MCMEdge> pairs, int item, int[][] stackingConstraints, MCMEdge itemEdge) {
+        int pairCompatibility = 0;
+        for (MCMEdge pair : pairs) {
+            if (itemEdge != pair) {
+                if (HeuristicUtil.itemAssignableToPair(item, pair.getVertexOne(), pair.getVertexTwo(), stackingConstraints)) {
+                    pairCompatibility++;
+                }
+            }
+        }
+        return pairCompatibility;
+    }
+
+    public static int getAvg(ArrayList<Integer> values) {
+        int avg = 0;
+        for (int val : values) {
+            avg += val;
+        }
+        return avg / values.size();
+    }
+
+    /**
+     * A rating system developed for the 3Cap heuristic.
+     *
+     * @param matchedItems        - the edges (pairs) to be rated
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @param costs               - the cost matrix
+     * @param stacks              - the available stacks
+     * @param deviationThreshold  - determines whether an edge is rated higher then 0
+     */
+    public static void assignThreeCapPairRating(
+        ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks, int deviationThreshold
+    ) {
+        ArrayList<ArrayList<Integer>> listOfPairRatings = new ArrayList<>();
+        ArrayList<Integer> compatibilities = new ArrayList<>();
+        ArrayList<Integer> avgCostValues = new ArrayList<>();
 
         for (MCMEdge edge : matchedItems) {
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
 
+            int pairCompatibilityItemOne = computePairCompatibility(matchedItems, itemOne, stackingConstraints, edge);
+            int pairCompatibilityItemTwo = computePairCompatibility(matchedItems, itemTwo, stackingConstraints, edge);
+            int worstCompatibility = pairCompatibilityItemOne > pairCompatibilityItemTwo ? pairCompatibilityItemTwo : pairCompatibilityItemOne;
+
+            int avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
+
+            ArrayList<Integer> pairRatings = new ArrayList<>();
+            pairRatings.add(worstCompatibility);
+            pairRatings.add(avgCosts);
+
+            listOfPairRatings.add(pairRatings);
+            compatibilities.add(worstCompatibility);
+            avgCostValues.add(avgCosts);
+        }
+
+        int avgCompatibility = getAvg(compatibilities);
+        int avgCosts = getAvg(avgCostValues);
+
+        for (int i = 0; i < matchedItems.size(); i++) {
+            int rating = 0;
+            if (listOfPairRatings.get(i).get(0) > avgCompatibility && listOfPairRatings.get(i).get(1) > avgCosts) {
+                int compatibilityDeviation = HeuristicUtil.getPercentageDeviation(avgCompatibility, listOfPairRatings.get(i).get(0));
+                int costDeviation = HeuristicUtil.getPercentageDeviation(avgCosts, listOfPairRatings.get(i).get(1));
+                if (compatibilityDeviation + costDeviation > deviationThreshold) {
+                    rating = compatibilityDeviation + costDeviation;
+                }
+            }
+            matchedItems.get(i).setRating(rating);
+        }
+    }
+
+    /**
+     * Rates the pairs based on their avg costs and a bonus if the items are stackable in both directions.
+     *
+     * @param matchedItems        - the edges (pairs) to be rated
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @param costs               - the cost matrix
+     * @param stacks              - the available stacks
+     */
+    public static void assignAvgCostsRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks) {
+        for (MCMEdge edge : matchedItems) {
+            int itemOne = edge.getVertexOne();
+            int itemTwo = edge.getVertexTwo();
+            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
+
+            int bonus = 0;
+            // items that are stackable in both directions shouldn't be separated
+            if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+                bonus = 1500;
+            }
+            int avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
+            int rating = avgCosts - bonus;
+            edge.setRating(rating);
+        }
+    }
+
+    /**
+     * Rates the edges based on a combination of several relevant values.
+     *
+     * @param matchedItems        - the edges (pairs) to be rated
+     * @param stackingConstraints - the stacking constraints to be respected
+     * @param costs               - the cost matrix
+     * @param stacks              - the available stacks
+     */
+    public static void assignNewRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks) {
+
+        for (MCMEdge edge : matchedItems) {
             ArrayList<Integer> costEntries = new ArrayList<>();
-//            int itemOne = edge.getVertexOne();
-//            int itemTwo = edge.getVertexTwo();
             int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
             int avgCosts = 0;
             int cnt = 0;
-//
-//            for (int stack = 0; stack < stacks.length; stack++) {
-//                if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
-//                    int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
-//                    costEntries.add(currCost);
-//                    avgCosts += costs[itemOne][stack] + costs[itemTwo][stack];
-//                    cnt++;
-//                }
-//            }
-//
-////            edge.setRating(Collections.max(costEntries) * cnt);
-////            edge.setRating(cnt);
-//
-//            int rowRItemOne = computeRowRatingForUnmatchedItem(itemOne, stackingConstraints);
-//            int colRItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
-//            int itemOneExt =  rowRItemOne > colRItemOne ? rowRItemOne : colRItemOne;
-//
-//            int rowRItemTwo = computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints);
-//            int colRItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
-//            int itemTwoExt = rowRItemTwo > colRItemTwo ? rowRItemTwo : colRItemTwo;
-//
-//            edge.setRating(
-//                    (itemOneExt + itemTwoExt) * cnt
-//            );
 
             // compatibility with other pairs
             int itemOne = edge.getVertexOne();
@@ -197,12 +366,11 @@ public class RatingSystem {
             for (MCMEdge e : matchedItems) {
                 if (e != edge) {
                     if (HeuristicUtil.itemAssignableToPair(itemOne, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)
-                            || HeuristicUtil.itemAssignableToPair(itemTwo, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)) {
-                        compatibility++;
+                        || HeuristicUtil.itemAssignableToPair(itemTwo, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)) {
+                            compatibility++;
                     }
                 }
             }
-
             for (int stack = 0; stack < stacks.length; stack++) {
                 if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
                     int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
@@ -211,11 +379,14 @@ public class RatingSystem {
                     cnt++;
                 }
             }
-
             edge.setRating((compatibility + cnt) / ((avgCosts / cnt) ));
-
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Assigns the sum of the ratings to the specified edges.
