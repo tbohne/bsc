@@ -1688,7 +1688,7 @@ Mit einer durchschnittlichen Laufzeit von nur $0.2s$ löst diese sämtliche Inst
 damit um mehrere Größenordnungen.
 
 Für die Kosten gilt, wie man Abb. \ref{fig:b=3_m_costs} entnehmen kann, dass die Heuristik, wie in vorherigen Experimenten,
-eine Abweichung von den Optimalwerten der MIP-Formulierungen im einstelligen Prozentbereich besitzt.
+eine Abweichung von den Optimalwerten der MIP-Formulierungen von durchschnittlich unter einem Prozent besitzt.
 
 \begin{figure}[H]
 \centering
@@ -1713,12 +1713,11 @@ dass beide MIP-Formulierungen bei einem Zeitlimit von $10$ Minuten nur wenige In
 Instanzen optimal lösen.
 Besser wird es bei einem Zeitlimit von $20$ Minuten, bei welchem die Bin-Packing-Formulierung mit einer durchschnittlichen
 Laufzeit von ca. $13$ Minuten sämtliche Instanzen optimal löst. Somit ist diese der 3-Index-Formulierung hier klar zu bevorzugen,
-die selbst bei einem Zeitlimit von $30$ Minuten nur $35 \%$ der Instanzen optimal löst (vlg. Abb. \ref{fig:mip_results_b=3_m_b},
-\ref{fig:mip_results_b=3_m_c}).
+die selbst bei einem Zeitlimit von $30$ Minuten nur $40 \%$ der Instanzen optimal löst (vlg. Abb. \ref{fig:mip_results_b=3_m_c}).
 
 Die Heuristik benötigt durchschnittlich eine Laufzeit von nur $0.2s$ und weicht dabei um durchschnittlich
-$1.02 \%$ vom Optimum ab. Wie bereits im $b = 2$ Szenario, ist dieser erhebliche Laufzeitunterschied
-um mehrere Größenordnungen wohl hinreichende Motivation, um diese jeweils geringe Abweichung vom Optimum in Kauf zu nehmen.
+$0.36 \%$ vom Optimum ab. Wie bereits im $b = 2$ Szenario, ist dieser erhebliche Laufzeitunterschied
+um mehrere Größenordnungen wohl hinreichende Motivation, um diese jeweils sehr geringe Abweichung vom Optimum in Kauf zu nehmen.
 
 \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
@@ -1727,8 +1726,8 @@ um mehrere Größenordnungen wohl hinreichende Motivation, um diese jeweils geri
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{mygreen}{20 \%}$ & $ \textcolor{red}{10 \%}$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{583.7 s}$ & \O $\thinspace \textcolor{mygreen}{554.3 s}$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{50 \%}$ & $ \textcolor{red}{25 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{583.7 s}$ & \O $\thinspace \textcolor{mygreen}{554.4 s}$ \\ \hline
     \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.2 \%}$ & \O $\thinspace \textcolor{mygreen}{0.01 \%}$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Zeitlimit} $10min$}
@@ -1741,7 +1740,7 @@ um mehrere Größenordnungen wohl hinreichende Motivation, um diese jeweils geri
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{30 \%}$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{40 \%}$ \\ \hline
     \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{791.4 s}$ & \O $\thinspace \textcolor{red}{795.4 s}$ \\ \hline
     \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
 \end{tabular}}
@@ -1756,7 +1755,7 @@ um mehrere Größenordnungen wohl hinreichende Motivation, um diese jeweils geri
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{35 \%}$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{40 \%}$ \\ \hline
     \textbf{Laufzeit} & \O $\thinspace \textcolor{mygreen}{766.4 s}$ & \O $\thinspace \textcolor{red}{874.0 s}$ \\ \hline
     \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
 \end{tabular}}
