@@ -587,32 +587,37 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 \label{sec:two_cap_heuristic}
 
 In diesem Abschnitt wird eine konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$
-vorgestellt.
+vorgestellt. Diese erweitert den Ansatz aus dem Beweis zu Theorem 1 aus \textquote{Complexity Results for Storage Loading Problems with Stacking Constraints}, welches 2015 von \citet{Bruns2015} veröffentlicht wurde.
 
 Zunächst wird ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
 enthält eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ in mindestens einer Richtung stackbar sind, d.h.
-wenn $s_{ij} + s_{ji} \geq 1$.
+wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für einen Stack $q \in Q$ gilt.
 
 Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Stacks, welche die beiden Knoten, die durch
-die Kanten verbunden werden, als Items enthalten, so erhält man die größtmögliche Anzahl von vollständig gefüllten Stacks.
-Die Items, die nicht gematcht werden, werden auf dem Ground-Level platziert.
+die Kanten verbunden werden, als Items enthalten, so erhält man eine größtmögliche Anzahl von vollständig gefüllten Stacks.
+Die Items, die nicht gematcht werden, werden auf dem Ground-Level eines eigenen Stacks platziert.
 Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet.
-Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching plus der Anzahl der nicht gematchten Knoten nicht größer ist als $m$. Da die Anzahl der Knoten $n$ beträgt, kann ein \textsc{MCM} in der Laufzeit $O(n^{2.5})$ berechnet werden, wie Even und Kariv bereits 1975 zeigten.
+Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching plus der Anzahl der nicht gematchten Knoten nicht größer ist als $m$. Da die Anzahl der Knoten $n$ beträgt, kann ein \textsc{MCM} in der Laufzeit $O(n^{2.5})$ berechnet werden, wie \citet{Even1975} bereits 1975 zeigten.
 
-Dies entspricht dem Vorgehen aus dem Beweis zu Theorem 1 aus dem Paper "Complexity Results for Storage Loading Problems with Stacking Constraints", welches 2015 von Bruns et al. veröffentlicht wurde.
-
-Augrund der Placement Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
+Aufgrund der Placement Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
 Items- und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in der sämtliche Items möglichst günstig einem Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ generiert, wobei die Partition $V_1$ den Items bestehend aus Item-Paaren und Unmatched Items entspricht und $V_2$ den zur Verfügung stehenden Stacks.
 
 Für alle $i \in V_1$ und $q \in V_2$ existiert eine Kante $\{i, q\} \in A$. Das Gewicht $c_{iq}$ dieser Kante ist definiert als die Kosten
-des Transports des Items $i$ von seiner Originalposition $O_i$ zum Stack $q$.
+des Transports des Items $i$ von seiner Originalposition $O_i$ zum Stack $q$. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
+Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
+
+Da die Implementation des verwendeten Algorithmus zur Berechnung des \textsc{MWPM} in $G_1$ einen vollständig bipartiten Graphen als Eingabe
+erwartet und die beiden Partitionen nicht notwendigerweise dieselbe Größe besitzen, werden Dummy-Items eingeführt, die den Graphen
+vollständig bipartit machen. Diese Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack
+verbinden das Gewicht $0$ besitzen und somit kein echtes Item oder Item-Paar durch ein Dummy-Item von einer günstigeren Zuweisung
+abgehalten wird.
 
 Nun wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als Stackzuweisungen interpretiert werden.
 Da es sich um ein Perfect-Matching handelt, werden sämtliche Items einem Stack zugewiesen. Die Minimum-Weight-Variante eines
 Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items zu Stacks handelt, da die Kantenkosten
-den Transportkosten der Items entsprechen. Sollte kein \textsc{MWPM} existieren, so existiert auch keine zulässige Zuweisung
-der generierten Item-Paare und Unmatched Items zu den Stacks, welche die Placement Constraints respektiert.
-Abschließend muss ggf. die Reihenfolge innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist,
+den Transportkosten der Items und Item-Paare entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert
+keine zulässige Zuweisung der generierten Item-Paare und Unmatched Items zu den Stacks, welche die Placement Constraints respektiert.
+Abschließend muss ggf. die Reihenfolge der Items innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist,
 dass sie kompatibel und somit in mindestens einer Richtung stackbar sind. Die Richtung, in welcher sie stackbar sind, wurde bei der Zuweisung
 jedoch noch nicht berücksichtigt.
 
