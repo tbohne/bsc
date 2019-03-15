@@ -461,6 +461,82 @@ von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen Vergleich der 
 In \ref{sec:three_cap_heuristic} geht es dann um die konstruktive Heuristik für eine Stack-Kapazität von $b=3$, auf
 die erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
 
+\subsection{Exkurs: Bipartiter Graph}
+\label{sec:digression_bipartite_graph}
+
+Ein Graph $G = (V, E)$ heißt bipartit (vgl. Abb. \ref{fig:digression_bipartite_graph}), wenn die Knotenmenge in zwei disjunkte Teilmengen zerfällt
+$(V = S \cup T$ mit $S \cap T = \emptyset$), sodass jede Kante einen Knoten aus $S$ mit einem Knoten aus $T$ verbindet. \cite{HochschuleDarmstadt}\newline
+Es lassen sich folgende Äquivalenzen festhalten \cite{Leighton2010}:
+\begin{itemize}
+  \item $G$ bipartit $\iff$ $G$ 2-färbbar
+  \item $G$ bipartit $\iff$ keine Kreise ungerader Länge in $G$
+\end{itemize}
+In Abb. \ref{fig:digression_bipartite_graph} ist die 2-Färbbarkeit eines bipartiten Graphen, bei der die eine Teilmenge
+in grün und die andere Teilmenge in rot gefärbt ist, visualisiert. Man kann daran gut erkennen, dass es in solchen Graphen
+ausschließlich Kanten gibt, die einen Knoten der einen Teilmenge (rot) mit einem Knoten der anderen Teilmenge (grün) verbinden,
+jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.6, transform shape, node distance=3cm]
+  \node[state] [green] (A) {};
+  \node[state] [red] (B) [above right of=A] {};
+  \node[state] [green] (C) [below right of=B] {};
+  \node[state] [red] (D) [below of=B] {};
+  \node[state] [red] (E) [below of=A] {};
+  \node[state] [green] (F) [right of=E] {};
+
+  \path (A) edge node {} (B)
+        (B) edge node {} (C)
+        (C) edge node {} (D)
+        (A) edge node {} (D)
+        (A) edge node {} (E)
+        (E) edge node {} (F)
+        (D) edge node {} (F);
+
+\end{tikzpicture}
+\caption{\textsc{Bipartiter Graph.}}
+\label{fig:digression_bipartite_graph}
+\end{figure}
+
+\subsection{Exkurs: Minimum-Weight-Perfect-Matching}
+\label{sec:digression_mwpm}
+
+Bei einem Perfect-Matching handelt es sich um ein Matching, welches sämtliche Knoten des Graphen matcht.
+Jeder Knoten des Graphen ist dabei inzident zu genau einer Kante des Matchings (vgl. Abb. \ref{fig:perfect_matching}).
+Daher ist ein Perfect-Matching nur für Graphen mit einer geraden Anzahl an Knoten möglich.
+Ein Minimum-Weight-Perfect-Matching ist ein günstigstes Perfect-Matching basierend auf den Kantenkosten.
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[-, scale=0.6, transform shape, node distance=3cm]
+    \node[state] (A) {};
+    \node[state] (B) [above right of=A] {};
+    \node[state] (C) [below right of=A] {};
+    \node[state] (D) [right of=B] {};
+    \node[state] (E) [right of=D] {};
+    \node[state] (F) [right of=C] {};
+
+    \path (A) edge [red] node {} (B)
+          (A) edge node {} (C)
+          (B) edge node {} (D)
+          (B) edge node {} (C)
+          (D) edge [red] node {} (E)
+          (D) edge node {} (F)
+          (C) edge [red] node {} (F);
+\end{tikzpicture}
+\caption{\textsc{Beispiel für ein Perfect-Matching (rot).}}
+\label{fig:perfect_matching}
+\end{figure}
+
+Der Algorithmus zur Berechnung von Minimum-Weight-Perfect-Matchings, welcher in den im Folgenden
+vorgestellten Heuristiken Anwendung findet, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT}, trägt
+den Namen \textit{KuhnMunkresMinimalWeightBipartitePerfectMatching} und ist eine Implementation der
+sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen auf bipartiten Graphen.
+Die Laufzeitkomplexität der Implementation beträgt $O(n^3)$, wobei $n$ der Anzahl der Knoten im Graphen entspricht.
+Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cup T, A)$, wobei $S \cap T = \emptyset$ und
+$|S| = |T|$. Außerdem muss jeder Knoten der ersten Partition mit jedem Knoten der zweiten Partition durch eine Kante verbunden sein.
+Die Rückgabe ist ein Perfect-Matching der geringsten Kosten.
+
 \subsection{Exkurs: Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
 
@@ -517,80 +593,12 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
 \end{figure}
 
 Die Implementation eines Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, die in den im Folgenden
-vorgestellten Heuristiken Anwendung findet, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT} und trägt
+vorgestellten Heuristiken Anwendung findet, stammt ebenfalls aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT} und trägt
 den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um eine Implementation von Edmonds' Blossom-Algorithmus,
 welche MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
 Andernfalls wird das größte Non-Perfect-Matching berechnet.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$. Wobei $n$ der Anzahl der Knoten
 und $m$ der Anzahl der Kanten im Graphen entspricht. In der Praxis ist der Algorithmus jedoch in der Regel noch deutlich effizienter.
-
-
-\subsection{Exkurs: Minimum-Weight-Perfect-Matching}
-\label{sec:digression_mwpm}
-
-Bei einem Perfect-Matching handelt es sich um ein Matching, welches sämtliche Knoten des Graphen matcht.
-Jeder Knoten des Graphen ist dabei inzident zu genau einer Kante des Matchings (vgl. Abb. \ref{fig:perfect_matching}).
-Daher ist ein Perfect-Matching nur für Graphen mit einer geraden Anzahl an Knoten möglich.
-Ein Minimum-Weight-Perfect-Matching ist nun ein günstigstes Perfect-Matching basierend auf den Kantenkosten.
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[-, scale=0.6, transform shape, node distance=3cm]
-    \node[state] (A) {};
-    \node[state] (B) [above right of=A] {};
-    \node[state] (C) [below right of=A] {};
-    \node[state] (D) [right of=B] {};
-    \node[state] (E) [right of=D] {};
-    \node[state] (F) [right of=C] {};
-
-    \path (A) edge [red] node {} (B)
-          (A) edge node {} (C)
-          (B) edge node {} (D)
-          (B) edge node {} (C)
-          (D) edge [red] node {} (E)
-          (D) edge node {} (F)
-          (C) edge [red] node {} (F);
-\end{tikzpicture}
-\caption{\textsc{Beispiel für ein Perfect-Matching (rot).}}
-\label{fig:perfect_matching}
-\end{figure}
-
-\subsection{Exkurs: Bipartiter Graph}
-\label{sec:digression_bipartite_graph}
-
-Ein Graph $G = (V, E)$ heißt bipartit (vgl. Abb. \ref{fig:digression_bipartite_graph}), wenn die Knotenmenge in zwei disjunkte Teilmengen zerfällt
-$(V = S \cup T$ mit $S \cap T = \emptyset$), sodass jede Kante einen Knoten aus $S$ mit einem Knoten aus $T$ verbindet. \cite{HochschuleDarmstadt}\newline
-Es lassen sich folgende Äquivalenzen \cite{Leighton2010} festhalten:
-\begin{itemize}
-  \item $G$ bipartit $\iff$ $G$ 2-färbbar
-  \item $G$ bipartit $\iff$ keine Kreise ungerader Länge in $G$
-\end{itemize}
-In Abb. \ref{fig:digression_bipartite_graph} ist die 2-Färbbarkeit eines bipartiten Graphen, bei der die eine Teilmenge
-in grün und die andere Teilmenge in rot gefärbt ist, visualisiert. Man kann daran gut erkennen, dass es in solchen Graphen
-ausschließlich Kanten gibt, die einen Knoten der einen Teilmenge (rot) mit einem Knoten der anderen Teilmenge (grün) verbinden,
-jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=0.6, transform shape, node distance=3cm]
-  \node[state] [green] (A) {};
-  \node[state] [red] (B) [above right of=A] {};
-  \node[state] [green] (C) [below right of=B] {};
-  \node[state] [red] (D) [below of=B] {};
-  \node[state] [red] (E) [below of=A] {};
-  \node[state] [green] (F) [right of=E] {};
-
-  \path (A) edge node {} (B)
-        (B) edge node {} (C)
-        (C) edge node {} (D)
-        (A) edge node {} (D)
-        (A) edge node {} (E)
-        (E) edge node {} (F)
-        (D) edge node {} (F);
-
-\end{tikzpicture}
-\caption{\textsc{Bipartiter Graph.}}
-\label{fig:digression_bipartite_graph}
-\end{figure}
 
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
