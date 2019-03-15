@@ -516,6 +516,15 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
   \label{fig:mcm_examples}
 \end{figure}
 
+Die Implementation eines Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, die in den im Folgenden
+vorgestellten Heuristiken Anwendung findet, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT} und trägt
+den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um eine Implementation von Edmonds' Blossom-Algorithmus,
+welche MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
+Andernfalls wird das größte Non-Perfect-Matching berechnet.
+Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$. Wobei $n$ der Anzahl der Knoten
+und $m$ der Anzahl der Kanten im Graphen entspricht. In der Praxis ist der Algorithmus jedoch in der Regel noch deutlich effizienter.
+
+
 \subsection{Exkurs: Minimum-Weight-Perfect-Matching}
 \label{sec:digression_mwpm}
 
