@@ -499,6 +499,9 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 \label{fig:digression_bipartite_graph}
 \end{figure}
 
+Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen Teilmenge mit jedem Knoten
+der anderen Teilmenge durch eine Kante verbunden ist.
+
 \subsection{Exkurs: Minimum-Weight-Perfect-Matching}
 \label{sec:digression_mwpm}
 
@@ -534,8 +537,8 @@ den Namen \textit{KuhnMunkresMinimalWeightBipartitePerfectMatching} und ist eine
 sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen auf bipartiten Graphen.
 Die Laufzeitkomplexität der Implementation beträgt $O(n^3)$, wobei $n$ der Anzahl der Knoten im Graphen entspricht.
 Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cup T, A)$, wobei $S \cap T = \emptyset$ und
-$|S| = |T|$. Außerdem muss jeder Knoten der ersten Partition mit jedem Knoten der zweiten Partition durch eine Kante verbunden sein.
-Die Rückgabe ist ein Perfect-Matching der geringsten Kosten.
+$\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in A$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
+also $|S| = |T|$. Die Rückgabe ist ein Perfect-Matching der geringsten Kosten.
 
 \subsection{Exkurs: Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
@@ -623,11 +626,9 @@ Für alle $i \in V_1$ und $q \in V_2$ existiert eine Kante $\{i, q\} \in A$. Das
 des Transports des Items $i$ von seiner Originalposition $O_i$ zum Stack $q$. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
 Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 
-Da die Implementation des verwendeten Algorithmus zur Berechnung des \textsc{MWPM} in $G_1$ einen vollständig bipartiten Graphen als Eingabe
-erwartet und die beiden Partitionen nicht notwendigerweise dieselbe Größe besitzen, werden Dummy-Items eingeführt, die den Graphen
-vollständig bipartit machen. Diese Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack
-verbinden das Gewicht $0$ besitzen und somit kein echtes Item oder Item-Paar durch ein Dummy-Item von einer günstigeren Zuweisung
-abgehalten wird.
+Da die Implementation des verwendeten Algorithmus zur Berechnung des \textsc{MWPM} in $G_1$ einen vollständig bipartiten Graphen
+mit gleich großen Partitionen als Eingabe erwartet und die beiden Partitionen nicht notwendigerweise dieselbe Größe besitzen,
+werden Dummy-Items eingeführt. Diese Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack verbinden das Gewicht $0$ besitzen und somit kein echtes Item oder Item-Paar durch ein Dummy-Item von einer günstigeren Zuweisung abgehalten wird.
 
 Nun wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als Stackzuweisungen interpretiert werden.
 Da es sich um ein Perfect-Matching handelt, werden sämtliche Items einem Stack zugewiesen. Die Minimum-Weight-Variante eines
@@ -1351,8 +1352,8 @@ noch in einer die Stacking Constraints respektierenden Weise den Stacks zugewies
 Dies ist nur dann möglich, wenn die Anzahl der Tripel plus die Anzahl der Paare plus die Anzahl der \textquote{Unmatched Items} kleiner
 oder gleich der Anzahl der zur Verfügung stehenden Stacks ist.
 
-Ist dies der Fall, so wird zu diesem Zweck ein bipartiter Graph generiert, welcher die Items, bestehend aus Tripeln, Paaren und Unmatched Items, in der einen Partition und die Stacks in der anderen Partition enthält.
-Da die beiden Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der verwendete Algorithmus zur Berechnung des \textsc{MWPM} allerdings einen vollständig bipartiten Graphen erwartet, werden Dummy-Items eingeführt, die den Graphen, sollte dies nicht bereits der Fall sein, vollständig bipartit machen. Diese Items haben keinen Einfluss auf die Kosten und werden in späteren Schritten ignoriert.
+Ist dies der Fall, so wird zu diesem Zweck ein vollständig bipartiter Graph generiert, welcher die Items, bestehend aus Tripeln, Paaren und Unmatched Items, in der einen Partition und die Stacks in der anderen Partition enthält.
+Da die beiden Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der verwendete Algorithmus zur Berechnung des \textsc{MWPM} dies jedoch fordert, werden Dummy-Items eingeführt, die die Item-Partition gegebenenfalls auffüllen. Diese Items haben keinen Einfluss auf die Lösung und werden in späteren Schritten ignoriert.
 
 Wie schon bei der Heuristik für $b = 2$, existiert initial eine Kante von jedem Tripel, Paar und Item zu jedem Stack. D.h. im Prinzip sind sämtliche Items mit jedem Stack kompatibel. Dies liegt daran, dass die Placement Constraints indirekt über hohe Kostenwerte implementiert wurden und nicht direkt durch ein Vermeiden der entsprechenden Kanten. Der Grund für diese Entscheidung wurde bereits in Kapitel \ref{sec:placement_restrictions} erläutert. Die Kosten dieser Kanten entsprechen jeweils der Summer der Kosten aller beteiligter Items an der Zuweisung. Die Kanten, welche die Dummy-Items mit den Stacks verbinden, besitzen die Kosten $0$.
 Die inkompatiblen Item-Stack-Zuweisungen werden also, sofern möglich, indirekt durch das \textsc{MWPM} ausgeschlossen.
