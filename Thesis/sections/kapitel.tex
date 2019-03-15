@@ -53,7 +53,7 @@ in dieser Arbeit geht es allerdings ausschließlich um die Minimierung der Trans
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Formale Definition}
+\subsection{Formale Definition}
 \label{sec:formal_definition}
 
 Die \textit{Storage-Area} besteht aus \textit{Stacks}, die in einer Reihe angeordnet sind (vgl. Abb. \ref{fig:storage_area}).
@@ -102,7 +102,7 @@ Gegeben sei eine Menge $I = \{1, ..., n\}$ von \textit{Items} und eine Menge $Q 
 Das Ziel ist nun, jedes \textit{Item} $i \in I$ genau einem \textit{Stack} $q \in Q$ zuzuweisen, wobei die \textit{Stacking Constraints} $s_{ij}$,
 die \textit{Placement Constraints} $t_{iq}$ und die \textit{Stack}-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird.
 
-\section{Transportkosten}
+\subsection{Transportkosten}
 \label{sec:transport_costs}
 Die Transportkosten beziehen sich auf die Kosten, die bei der Verladung der \textit{Items} in die \textit{Storage-Area} entstehen
 und sind praktisch zum Beispiel durch Kranbetriebskosten, Wartezeiten oder Arbeitszeiten motiviert.\newline
@@ -121,10 +121,10 @@ D.h. der Eintrag an der Stelle $c_{iq}$ entspricht den Kosten für den Transport
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Nebenbedingungen}
+\subsection{Nebenbedingungen}
 \label{sec:constraints}
 
-\subsection{Stacking Restriktionen}
+\subsubsection{Stacking Restriktionen}
 \label{sec:stacking_restrictions}
 
 Es gibt in der Praxis vielfältige Gründe dafür, dass nicht jedes \textit{Item} auf jedes andere \textit{Item} gestapelt werden darf.
@@ -196,7 +196,7 @@ Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigensc
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Placement Restriktionen}
+\subsubsection{Placement Restriktionen}
 \label{sec:placement_restrictions}
 
 Die im Folgenden als \textit{Placement Constraints} bezeichneten Einschränkungen bezüglich der Position eines \textit{Items} resultieren z.B.
@@ -236,31 +236,13 @@ Die \textit{Placement Constraints} gelten als verletzt, wenn eine Lösung eine \
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Problemstellungen}
-\label{sec:problem_settings}
-
-In diesem Kapitel werden konkret die Problemstellungen eingeführt, die im Folgenden heuristisch gelöst werden.
-Es werden die \textit{Stack}-Kapazitäten $b=2, b=3 $ und $ b=4$ betrachtet, die besonders in Szenarien aus der Praxis, in denen
-es darum geht, Container zu stapeln, von Interesse sind.
-
 \subsection{Komplexität}
 \label{sec:complexity}
 
-Wie \cite{Bruns2015} zeigte, handelt es sich bei dem Zulässigkeitsproblem mit einer \textit{Stack}-Kapazität von $b=3$ und gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ um ein stark NP-vollständiges Problem. Erst kürzlich wurde außerdem gezeigt, dass auch das Problem mit einer \textit{Stack}-Kapazität von $b=2$ mit gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ NP-vollständig ist. Diese Erkenntnis wurde allerdings noch nicht veröffentlicht. Somit sind auch die entsprechenden Stacking-Probleme, bei denen zusätzlich die Transportkosten minimiert werden, NP-vollständig. Für eben diese Probleme werden in dieser Arbeit heuristische Lösungsansätze präsentiert.
+In den folgenden Kapiteln werden Instanzen von Stacking Problemen mit den \textit{Stack}-Kapazitäten $b = 2$ und $b = 3 $ betrachtet,
+die besonders in Szenarien aus der Praxis, in denen es darum geht, Container zu stapeln, von Interesse sind.
 
-\subsection{Instanzgrößen}
-\label{sec:instance_sizes}
-
-Zu Testzwecken werden unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
-Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
-in drei Kategorien unterteilt:
-\begin{itemize}
-  \item klein (\textbf{s}) ($\leq 100$ Items)
-  \item mittelgroß (\textbf{m}) ($\approx 300$ Items)
-  \item groß (\textbf{l}) ($\approx 500$ Items)\newline
-\end{itemize}
-Dies scheinen auch in der Literatur Größenordnungen zu sein, in dem sich praktisch motivierte Stacking-Probleme
-typischerweise bewegen. \cite{Le2016}
+Wie \citet{Bruns2015} zeigten, handelt es sich bei dem Zulässigkeitsproblem mit einer \textit{Stack}-Kapazität von $b=3$ und gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ um ein stark NP-vollständiges Problem. Erst kürzlich wurde außerdem gezeigt, dass auch das Problem mit einer \textit{Stack}-Kapazität von $b=2$ mit gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ NP-vollständig ist. Diese Erkenntnis wurde allerdings noch nicht veröffentlicht. Somit sind auch die entsprechenden Stacking-Probleme, bei denen zusätzlich die Transportkosten minimiert werden, NP-vollständig. Für eben diese Probleme werden in dieser Arbeit heuristische Lösungsansätze präsentiert.
 
 \subsection{Zielfunktion}
 \label{sec:objective}
@@ -277,6 +259,17 @@ Eine Lösung wird dann als zulässig betrachtet, wenn sämtliche \textit{Items} 
 
 \section{Testdaten-Generierung}
 \label{sec:test_data}
+
+Zu Testzwecken werden unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
+Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
+in drei Kategorien unterteilt:
+\begin{itemize}
+  \item klein (\textbf{s}) ($\leq 100$ Items)
+  \item mittelgroß (\textbf{m}) ($\approx 300$ Items)
+  \item groß (\textbf{l}) ($\approx 500$ Items)\newline
+\end{itemize}
+Dies scheinen auch in der Literatur Größenordnungen zu sein, in dem sich praktisch motivierte Stacking-Probleme
+typischerweise bewegen. \cite{Le2016}
 
 Um die entwickelten Lösungsverfahren testen und vergleichen zu können, werden Testinstanzen generiert,
 die im Idealfall nicht allzu weit von realistischen Szenarien entfernt sein sollten.
