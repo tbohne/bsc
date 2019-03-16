@@ -2,17 +2,21 @@
 \label{sec:stacking_problems}
 
 Stacking-Probleme treten in der Praxis zum Beispiel im Umfeld von Lagerhallen und Container-Terminals auf.
-Ankommende \textit{Items}, häufig Container, müssen sogenannten \textit{Stacks} zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden. Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden
+Eintreffende \textit{Items} müssen sogenannten \textit{Stacks} zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden.
+Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden
 darf. Es wird dabei angenommen, dass die im Folgenden als \textit{Storage-Area} bezeichnete Lagerfläche in festen
-\textit{Stacks} organisiert ist, die eine limitierte gemeinsame Höhe besitzen, die im Folgenden als \textit{Stack}-Kapazität bezeichnet wird.
-In der Regel kann nur auf das oberste \textit{Item} eines \textit{Stacks} zugegriffen werden, d.h. der \textit{Item}-Zugriff erfolgt
-nach dem \textquote{Last-In–First-Out}-Prinzip. Ein Zugriff auf \textit{Items} darunter erfordert eine sogenannte \textit{Relocation}-Operation,
-die zeit- und energieaufwendig ist.
+\textit{Stacks} organisiert ist, die eine limitierte gemeinsame Höhe besitzen, die im Folgenden als \textit{Stack}-Kapazität bezeichnet wird
+und der Maximalanzahl an Items, die pro Stack aufeinander gestapelt werden dürfen, entspricht.
 
 In dieser Arbeit wird nur der \textit{Loading}-Prozess betrachtet, währenddem keine \textit{Item}-Entnahme stattfindet.
 Die \textit{Items} werden dabei in die \textit{Storage-Area} geladen, die aus \textit{Stacks} mit einer festen Position besteht, d.h.
 man kann die \textit{Stacks} nicht positionieren, sondern lediglich den \textit{Items} eine Position in einem \textit{Stack} zuweisen.
-Der \textit{Relocation}-Prozess wird typischerweise durch Kräne durchgeführt, die den \textit{Stacks} eine Maximalhöhe auferlegen.
+
+In der Literatur existieren diverse Ansätze für das Konzept der Storage-Area.
+\citet{Jaehn2013} betrachtet beispielsweise eine Lagerfläche, die nicht aus fixierten Stacks besteht, sondern sich in parallele \textquote{Lanes}
+aufteilt, in welchen ein Stack prinzipiell an jeder Position eröffnet werden kann, sofern bestimmte Sicherheitsabstände eingehalten werden.
+Das im Folgenden verwendete Konzept mit fixierten Stacks, welches auf viele praktische Szenarien anwendbar ist,
+basiert auf der Beschreibung von \citet{Lehnfeld2014}.
 
 Neben der Tatsache, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden darf, gilt auch, dass es \textit{Items} gibt, die auf bestimmte Positionen beschränkt sind, weil sie zum Beispiel eine Energiequelle benötigen.
 Abbildung \ref{fig:storage_area} zeigt den Aufbau der \textit{Storage-Area} bestehend aus $m$ fixierten
@@ -46,7 +50,7 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m,
 \end{figure}
 
 Das Ziel von Stacking-Problemen ist es, jedes ankommende \textit{Item} einer zulässigen Position in einem
-\textit{Stack} zuzuordnen, sodass eine gegebene Zielfunktion optimiert wird. Es gibt eine ganze Reihe praktisch relevanter Zielfunktionen,
+\textit{Stack} zuzuordnen, sodass eine gegebene Zielfunktion optimiert wird. Es gibt eine Vielzahl praktisch relevanter Zielfunktionen,
 in dieser Arbeit geht es allerdings ausschließlich um die Minimierung der Transportkosten, die bei der Verladung der \textit{Items} von ihrer Originalposition zur zugewiesenen Stackposition entstehen.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -454,7 +458,9 @@ von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen Vergleich der 
 In \ref{sec:three_cap_heuristic} geht es dann um die konstruktive Heuristik für eine Stack-Kapazität von $b=3$, auf
 die erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
 
-\subsection{Exkurs: Bipartiter Graph}
+\subsection{Hintergrund}
+
+\subsubsection{Bipartiter Graph}
 \label{sec:digression_bipartite_graph}
 
 Ein Graph $G = (V, E)$ heißt bipartit (vgl. Abb. \ref{fig:digression_bipartite_graph}), wenn die Knotenmenge in zwei disjunkte Teilmengen zerfällt
@@ -495,7 +501,7 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen Teilmenge mit jedem Knoten
 der anderen Teilmenge durch eine Kante verbunden ist.
 
-\subsection{Exkurs: Minimum-Weight-Perfect-Matching}
+\subsubsection{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 \label{sec:digression_mwpm}
 
 Bei einem Perfect-Matching handelt es sich um ein Matching, welches sämtliche Knoten des Graphen matcht.
@@ -533,7 +539,7 @@ Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cu
 $\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in A$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
 also $|S| = |T|$. Die Rückgabe ist ein Perfect-Matching der geringsten Kosten.
 
-\subsection{Exkurs: Maximum-Cardinality-Matching (MCM)}
+\subsubsection{Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
 
 Gegeben sei ein ungerichteter Graph $G = (V, E)$. Eine Menge $M \subseteq E$ heißt Matching,
@@ -1158,7 +1164,7 @@ In diesem Szenario ist die 3-Index-Formulierung der Bin-Packing-Formulierung fol
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_2700s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_2700s.png}
 \caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_cov_b=2_l_c}
 \end{subfigure}
@@ -1185,14 +1191,14 @@ konkurrenzfähig ist.
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_2700s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_2700s.png}
 \caption{\textsc{Laufzeiten bei $45min$ Limit}}
 \label{fig:b=2_l_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_2700s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_2700s.png}
 \caption{\textsc{Kosten bei $45min$ Limit}}
 \label{fig:b=2_l_costs}
 \end{subfigure}
@@ -1858,7 +1864,7 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
 \caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_coverage_b=3_l_b}
 \end{subfigure}
