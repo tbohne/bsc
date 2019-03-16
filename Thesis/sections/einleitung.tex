@@ -1,42 +1,79 @@
 \section{Einleitung}
 \label{sec:einleitung}
 
-Stacking-Probleme beschreiben Situationen, in denen es darum geht, eine Menge von Items zulässigen Positionen in Stacks zuzuordnen, sodass bestimmte Nebenbedingungen respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird. Sie treten in der Praxis häufig im Umfeld von Lagerhallen und Container-Terminals auf. In dieser Arbeit werden heuristische Lösungsverfahren für verschiedene Varianten von Stacking-Problemen entwickelt, bei denen der Fokus auf der Minimierung der Transportkosten liegt. Dabei werden MIP-Formulierungen zum experimentellen Vergleich genutzt.\newline
+Stacking-Probleme beschreiben Situationen, in denen es darum geht, eine Menge von Items, häufig Container,
+unter Berücksichtigung bestimmter Nebenbedingungen in einer Lagerfläche zu positionieren. Das \textquote{Stacking}
+bezieht sich auf die Tatsache, dass das Stapeln der Items essenziell ist, um möglichst viele Items
+auf geringer Fläche unterzubringen. In der Praxis treten solche Probleme zum Beispiel im Umfeld von Lagerhallen und Container-Terminals auf.
 
-Bei den Items handelt es sich häufig um Container, die in einer Lagerfläche positioniert und gestapelt werden müssen. Das immer weiter steigende Volumen an Waren, die per Container verschifft werden, führt dazu, dass auch der Bedarf an effizienter Handhabung dieser Container immer weiter wächst.
+% Der unter dem Stichwort Containerization zusammengefasste Prozess der immer weiteren Verbreitung des Containertransports in der Logistik...
 
-Diese Arbeit ist dadurch motiviert, dass bisher kaum effiziente Lösungsansätze für Stacking-Probleme vorgestellt wurden. Insbesondere zur effizienten Minimierung der Transportkosten gibt es keine Veröffentlichungen, obwohl dies auch aus praktischer Perspektive ein durchaus relevantes Problem darstellt.\newline
+Das System des intermodalen Frachttransports durch Container spielt eine zentrale Rolle im internationalen Handel.
+Der schnellste und kosteneffektivste Weg, allgemeine Frachten zu verschicken, ist typischerweise der Containertransport. \cite{Briskorn2018}
+Mit steigendem Durchsatz gewinnt die effiziente Verwaltung der Container an Bedeutung.
+Der Containerumschlag am Hamburger Hafen hat sich beispielsweise zwischen 1990 und 2017 annähernd verdreifacht. \cite{Port_of_Hamburg}
+Folglich ergeben sich immer größere Herausforderungen für das sinnvolle Ein- und Auslagern der Container sowie
+ein großer Bedarf, diese Prozesse zu optimieren.
 
-Ziel der Arbeit ist es dementsprechend, effiziente Heursitiken für Stacking-Probleme vorzustellen und zu implementieren, bei denen der Fokus auf Zulässigkeit und geringer Laufzeit liegt.
+Bisher existieren kaum Veröffentlichungen, die effiziente Lösungsverfahren für Stacking-Probleme thematisieren.
+Insbesondere die effiziente Minimierung der Transportkosten, die beim Verladen der Items von den Fahrzeugen,
+mit denen sie geliefert werden, in die Lagerfläche, entstehen, hat in der Literatur noch keine Beachtung gefunden,
+obwohl diese auch aus praktischer Perspektive von Relevanz ist. Ziel dieser Arbeit ist es dementsprechend,
+eben solche heuristischen Verfahren für verschiedene Varianten von Stacking-Problemen zu entwickeln, bei denen der Fokus auf
+Zulässigkeit und geringer Laufzeit liegt.
 
-Es gibt allerdings einige Veröffentlichungen zu Storage Unloading Problemen oder kombinierten Problemen,
-bei denen es um den Loading- und Unloading-Prozess geht.
+Es gibt deutlich mehr Veröffentlichungen zu Unloading-, also Auslagerungs-Problemen und Problemen, bei denen simultan Items
+ein- und ausgelagert werden, als zu reinen Loading-Problemen, welche in dieser Arbeit thematisiert werden.
+Der folgende Überblick beschränkt sich auf Veröffentlichungen zu Loading-Problemen, die bestimmte Konzepte,
+die im Verlauf der Arbeit verwendet oder erweitert werden, etablieren, oder themennahe Problemstellungen behandeln.
 
-\textcite{Caserta2012} haben beispielsweise 2012 ein Paper veröffentlicht, welches sich mit
-einem Unloading Problem beschäftigt, bei dem es darum geht, Items, die bereits in Stacks gelagert sind,
-in einer bestimmten Reihenfolge zu entladen. Sie haben gezeigt, dass die Minimierung der Anzahl
-an \textquote{Reshuffles}, also der Anzahl der Umsortierungen innerhalb der Stacks, NP-schwer ist.
+\citet{Kim2000} betrachten ein Loading-Problem, bei dem es darum geht, eine Menge von Items in eine
+Lagerfläche zu verladen, während die Gewichte der Items in drei Gruppen aufgeteilt werden.
+Die Gruppe für ein Item ist nicht vor Eintreffen des Items bekannt. Die Zielfunktion ist, die erwartete Anzahl an Relocation-,
+also Umordnungs-Operationen innerhalb der Stacks zu minimieren. Es wird ein Ansatz mit dynamischer Programmierung beschrieben,
+der auf der Wahrscheinlichkeit der Gewitchsgruppe des jeweils nächsten Items basiert.
+\citet{Kang2006} beschäftigen sich mit einem ähnlichen Problem und beschreiben einen Simulated Annealing Ansatz.
 
-Eine weitere themennahe Veröffentlichung aus dem Jahr 2012 lieferten Janstrup et al. \cite{Delgado2012},
-die sich mit dem Loading Problem befasst haben, bei dem ein Containerschiff mit einer Menge an Items beladen wird.
-Basierend auf der Stabilität des Schiffs, sind für jeden Stack Gewichts- und Höhenbeschränkungen gegeben.
+\pagebreak
+
+Eine weitere themennahe Veröffentlichung liefern \citet{Delgado2012}, die sich mit einem
+Loading-Problem beschäftigen, bei dem ein Containerschiff mit einer Menge an Items beladen wird.
+Basierend auf der Stabilität des Schiffs sind für jeden Stack Gewichts- und Höhenbeschränkungen gegeben.
 Da einige Container eine Energiequelle benötigen, sind auch bestimmte Restriktionen bezüglich der Positionierung gegeben.
-Durch eine Reduktion vom \textsc{BinPacking} Problem, haben sie gezeigt, dass die Minimierung der Anzahl
-verwendeter Stacks NP-schwer ist.
+Durch eine Reduktion vom \textsc{BinPacking}-Problem haben sie gezeigt, dass die Minimierung der Anzahl verwendeter Stacks NP-schwer ist.
+Außerdem haben sie IP und CP Modelle vorgestellt.
+Die Restriktionen bezüglich der Positionierung bestimmter Items finden sich auch in den Nebenbedingungen,
+die in dieser Arbeit betrachtet werden, wieder.
 
-Im Zusammenhang mit Bahn-Terminals hat \textcite{Jaehn2013} 2013 ein Storage Loading Problem betrachtet,
-bei dem Items von einer Anzahl von Zügen, die gleichzeitig eintreffen, in eine Storage Area
-verladen werden müssen, die aus parallelen \textquote{Lanes} besteht.
-Es wird zunächst die NP-Schwere zweier Modelle gezeigt, woraufhin heuristische Algorithmen vorgestellt werden,
-die mit realen Daten getestet werden.
+Im Zusammenhang mit Bahn-Terminals hat \citet{Jaehn2013} ein Loading-Problem betrachtet,
+bei dem Items von einer Anzahl von Zügen, die gleichzeitig eintreffen,
+in eine Lagerfläche verladen werden, die aus parallelen \textquote{Lanes} besteht. Es
+wird zunächst die NP-Schwere zweier Modelle gezeigt, woraufhin heuristische Algorithmen vorgestellt werden,
+die mit realen Daten getestet werden. Auch wenn es sich prinzipiell um eine der Problemstellung in dieser
+Arbeit nicht ferne Ausgangssituation handelt, gibt es doch einige grundlegende Unterschiede.
+Unter anderem stellt das Stapeln von Containern im dort betrachteten Szenario eher die Ausnahme dar.
 
-Diese Beispiele stehen exemplarisch dafür, dass es sich bei Storage Loading bzw. Unloading Problemen um
+\citet{Bruns2015} haben erste Ergebnisse zur Komplexität verschiedener Stacking-Probleme veröffentlicht.
+Daraus stammt unter anderem die Erkenntnis, dass eine der in dieser Arbeit betrachteten Problemstellungen stark NP-vollständig ist.
+Es wurden dort auch bereits Polynomialzeit-Algorithmen für einige Stacking-Probleme vorgestellt, die zum Teil
+in den im Verlauf der Arbeit entwickelten Heuristiken Anwendung finden.
+
+\citet{Le2016} entwickeln MIP-Formulierungen zur Lösung von Loading-Problemen, bei denen es darum geht,
+die Anzahl der verwendeten Stacks zu minimieren. Außerdem berücksichtigt es Unsicherheiten in den Daten.
+Die dort präsentierten MIP-Formulierungen werden in dieser Arbeit in angepasster Form verwendet,
+um einen experimentellen Vergleich mit den entwickelten Heuristiken in Bezug auf die Lösungsqualität zu ermöglichen.
+
+Diese Beispiele stehen exemplarisch dafür, dass es sich bei Storage-Loading- bzw. Stacking-Problemen um
 ein aktives Forschungsgebiet handelt, welches auch aus praktischer Perspektive von großer Relevanz ist.
+Außerdem wird deutlich, dass der Fokus bisher in der Regel auf der Optimierung anderer Zielfunktionen lag.
 
-Zunächst werden in Kapitel \ref{storage_loading_problems} Storage Loading Probleme im Allgemeinen eingeführt und anschließend
-in Kapitel \ref{slp_definition} formal definiert. Da­r­auf­fol­gend wird in Kapitel \ref{stacking_restrictions} auf die \textquote{Stacking Constraints} eingegangen,
-die in Storage Loading Problemen eine zentrale Rolle spielen. In Kapitel \ref{decision_problem} wird die simpelste Variante eines Storage Loading Problems
-skizziert und in Kapitel \ref{objective_functions} durch mögliche Zielfunktionen ergänzt. Im Anschluss geht es dann in Kapitel \ref{theorems} darum,
-die im Paper hergeleiteten Theoreme und zugehörigen Beweise vorzustellen. Kapitel \ref{conclusion} enthält einige abschließende Bemerkungen.
+Zunächst werden in Kapitel \ref{sec:stacking_problems} Stacking-Probleme im Allgemeinen eingeführt und anschließend formal definiert.
+Da­r­auf­fol­gend geht es in Kapitel \ref{sec:test_data} um die Testdaten, die generiert werden, um die entwickelten Heuristiken testen
+und miteinander vergleichen zu können. Dazu dienen auch die in Kapitel \ref{sec:mip_formulations} eingeführten MIP-Formulierungen,
+die einen experimentellen Vergleich und eine Beurteilung der Lösungsqualität der Heuristiken ermöglichen. In Kapitel \ref{sec:constructive_heuristics} geht es dann schließlich um die entwickelten konstruktiven Heuristiken und Experimente.
+Nachdem die Heuristiken aus Kapitel \ref{sec:constructive_heuristics} initiale Lösungen konstruieren, wird in Kapitel
+\ref{sec:post_optimization} ein Verbesserungsverfahren entwickelt, welches diese Lösungen als Eingabe bekommt
+und basierend auf einer lokalen Suche möglichst noch verbessern soll.
+Abschließend wird in Kapitel \ref{sec:conclusion} ein Fazit formuliert.
 
 \pagebreak
