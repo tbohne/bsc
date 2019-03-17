@@ -448,14 +448,11 @@ Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, währe
 \section{Konstruktive Heuristiken}
 \label{sec:constructive_heuristics}
 
-In diesem Abschnitt werden die entwickelten konstruktiven Heuristiken zur Lösung der in Kapitel \ref{sec:problem_settings}
-beschriebenen Problemstellungen vorgestellt.
-Zunächst werden drei wichtige Konzepte eingeführt, die in den Heuristiken Verwendung finden.
-In \ref{sec:digression_mcm} Maximum-Cardinality-Matchings,
-in \ref{sec:digression_mwpm} Minimum-Weight-Perfect-Matchings und in \ref{sec:digression_bipartite_graph}
-bipartite Graphen. Anschließend geht es in \ref{sec:two_cap_heuristic} um die konstruktive Heuristik für eine Stack-Kapazität
-von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen Vergleich der Solver für eben diese Stack-Kapazität.
-In \ref{sec:three_cap_heuristic} geht es dann um die konstruktive Heuristik für eine Stack-Kapazität von $b=3$, auf
+Bei den entwickelten konstruktiven Heuristiken handelt es sich um Lösungsverfaren für die in Kapitel \ref{sec:stacking_problems}
+beschriebenen Problemstellungen. Zunächst werden drei wichtige Konzepte eingeführt, die in den Heuristiken Verwendung finden.
+In \ref{sec:digression_bipartite_graph} bipartite Graphen, in \ref{sec:digression_mwpm} Minimum-Weight-Perfect-Matchings und in \ref{sec:digression_mcm} Maximum-Cardinality-Matchings. Anschließend geht es in \ref{sec:two_cap_heuristic} um die konstruktive Heuristik
+für eine Stack-Kapazität von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen Vergleich der Solver für eben diese Stack-Kapazität.
+Abschnitt \ref{sec:three_cap_heuristic} handelt von der konstruktiven Heuristik für eine Stack-Kapazität von $b=3$, auf
 die erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
 
 \subsection{Hintergrund}
@@ -504,7 +501,9 @@ der anderen Teilmenge durch eine Kante verbunden ist.
 \subsubsection{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 \label{sec:digression_mwpm}
 
-Bei einem Perfect-Matching handelt es sich um ein Matching, welches sämtliche Knoten des Graphen matcht.
+Gegeben sei ein ungerichteter Graph $G = (V, E)$. Eine Menge $M \subseteq E$ heißt Matching,
+wenn keine zwei Kanten aus $M$ einen Knoten gemeinsam haben. Bei einem Matching handelt es sich also
+um eine Menge unabhängiger Kanten. Ein Perfect-Matching ist wiederum ein Matching, welches sämtliche Knoten des Graphen enthält.
 Jeder Knoten des Graphen ist dabei inzident zu genau einer Kante des Matchings (vgl. Abb. \ref{fig:perfect_matching}).
 Daher ist ein Perfect-Matching nur für Graphen mit einer geraden Anzahl an Knoten möglich.
 Ein Minimum-Weight-Perfect-Matching ist ein günstigstes Perfect-Matching basierend auf den Kantenkosten.
@@ -531,26 +530,25 @@ Ein Minimum-Weight-Perfect-Matching ist ein günstigstes Perfect-Matching basier
 \end{figure}
 
 Der Algorithmus zur Berechnung von Minimum-Weight-Perfect-Matchings, welcher in den im Folgenden
-vorgestellten Heuristiken Anwendung findet, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT}, trägt
+vorgestellten Heuristiken zum Einsatz kommt, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT}, trägt
 den Namen \textit{KuhnMunkresMinimalWeightBipartitePerfectMatching} und ist eine Implementation der
 sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen auf bipartiten Graphen.
 Die Laufzeitkomplexität der Implementation beträgt $O(n^3)$, wobei $n$ der Anzahl der Knoten im Graphen entspricht.
-Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cup T, A)$, wobei $S \cap T = \emptyset$ und
-$\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in A$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
+Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cup T, E)$, wobei $S \cap T = \emptyset$ und
+$\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in E$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
 also $|S| = |T|$. Die Rückgabe ist ein Perfect-Matching der geringsten Kosten.
 
 \subsubsection{Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
 
-Gegeben sei ein ungerichteter Graph $G = (V, E)$. Eine Menge $M \subseteq E$ heißt Matching,
-wenn keine zwei Kanten aus $M$ einen Knoten gemeinsam haben. Falls $M$ als Menge eine maximale Kardinalität unter
+Sei $M$ ein Matching in einem Graphen $G$. Falls $M$ als Menge eine maximale Kardinalität unter
 allen Matchings von $G$ hat, wird dies als Maximum-Cardinality-Matching bezeichnet. \cite{WikiMatching}
 Es kann mehrere unterschiedliche MCMs in einem Graphen geben.
 In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
 \begin{figure}[H]
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.45, transform shape, node distance=2cm]
+    \begin{tikzpicture}[scale=0.55, transform shape, node distance=2cm]
     \node[state] (A) {};
     \node[state] (B) [above right of=A] {};
     \node[state] (C) [below left of=A] {};
@@ -571,7 +569,7 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
   \hfill
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.45, transform shape, node distance=2cm]
+    \begin{tikzpicture}[scale=0.55, transform shape, node distance=2cm]
     \node[state] (A) {};
     \node[state] (B) [right of=A] {};
     \node[state] (C) [right of=B] {};
@@ -594,13 +592,13 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
   \label{fig:mcm_examples}
 \end{figure}
 
-Die Implementation eines Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, die in den im Folgenden
+Der Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, der in den im Folgenden
 vorgestellten Heuristiken Anwendung findet, stammt ebenfalls aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT} und trägt
 den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um eine Implementation von Edmonds' Blossom-Algorithmus,
-welche MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
+welcher MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
 Andernfalls wird das größte Non-Perfect-Matching berechnet.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$. Wobei $n$ der Anzahl der Knoten
-und $m$ der Anzahl der Kanten im Graphen entspricht. In der Praxis ist der Algorithmus jedoch in der Regel noch deutlich effizienter.
+und $m$ der Anzahl der Kanten im Graphen entspricht. Im Average-Case und somit in der Praxis ist der Algorithmus jedoch in der Regel effizienter.
 
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
