@@ -603,24 +603,31 @@ und $m$ der Anzahl der Kanten im Graphen entspricht. Im Average-Case und somit i
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
 
-In diesem Abschnitt wird eine konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$
-vorgestellt. Diese erweitert den Ansatz aus dem Beweis zu Theorem 1 aus \textquote{Complexity Results for Storage Loading Problems with Stacking Constraints}, welches 2015 von \citet{Bruns2015} veröffentlicht wurde.
+Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$ erweitert den Ansatz aus dem Beweis
+zu Theorem 1 aus der einleitend erwähnten Arbeit von \citet{Bruns2015}.
 
 Zunächst wird ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
-enthält eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ in mindestens einer Richtung stackbar sind, d.h.
-wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für einen Stack $q \in Q$ gilt.
+enthält eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints
+in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für
+mindestens einen Stack $q \in Q$ gilt.
 
 Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Stacks, welche die beiden Knoten, die durch
-die Kanten verbunden werden, als Items enthalten, so erhält man eine größtmögliche Anzahl von vollständig gefüllten Stacks.
-Die Items, die nicht gematcht werden, werden auf dem Ground-Level eines eigenen Stacks platziert.
-Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet.
-Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching plus der Anzahl der nicht gematchten Knoten nicht größer ist als $m$. Da die Anzahl der Knoten $n$ beträgt, kann ein \textsc{MCM} in der Laufzeit $O(n^{2.5})$ berechnet werden, wie \citet{Even1975} bereits 1975 zeigten.
+die Kanten verbunden werden, als Items enthalten, so erhält man eine größtmögliche Anzahl an vollständig gefüllten Stacks.
+Items, welche nicht inzident zu einer Kante des Matchings sind, werden auf dem Ground-Level eines eigenen Stacks platziert.
+Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet, denn auch wenn das eigentliche Ziel der Minimierung die Transportkosten
+sind, steht zunächst stets im Vordergrund, überhaupt eine zulässige Lösung zu finden, weshalb die Maximierung der Anzahl der vollständig gefüllten Stacks initial eine gute Strategie darstellt.
+Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching und die Anzahl der nicht gematchten Knoten in der Summe nicht größer ist als $m$.
 
-Aufgrund der Placement Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
-Items- und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in der sämtliche Items möglichst günstig einem Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ generiert, wobei die Partition $V_1$ den Items bestehend aus Item-Paaren und Unmatched Items entspricht und $V_2$ den zur Verfügung stehenden Stacks.
+Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
+Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in der sämtliche Items möglichst günstig einem
+kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
 
-Für alle $i \in V_1$ und $q \in V_2$ existiert eine Kante $\{i, q\} \in A$. Das Gewicht $c_{iq}$ dieser Kante ist definiert als die Kosten
-des Transports des Items $i$ von seiner Originalposition $O_i$ zum Stack $q$. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
+Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern
+indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
+aus $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2 \thinspace \exists \thinspace \{i, q\} \in A$.
+Das Gewicht $c_{iq}$ dieser Kante ist definiert als die Kosten
+des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird, zum Stack $q$
+in der Storage-Area. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
 Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 
 Da die Implementation des verwendeten Algorithmus zur Berechnung des \textsc{MWPM} in $G_1$ einen vollständig bipartiten Graphen
