@@ -1290,29 +1290,41 @@ basierend auf den Stacking-Constraints in mindestens einer Richtung stackbar sin
 und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints
 zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für mindestens einen Stack $q \in Q$ gilt.
 
-Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Paare von kompatiblen Items, so erhält man
-eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind. In der Regel ist es möglich,
-dass dabei sämtliche Items einer Instanz Teil eines Paares sind, denn typischerweise ist die Anzahl der Items gerade.
-Dies hängt allerdings von den gegebenen Stacking-Constraints ab. In der zweiten Variante der Stacking-Constraint-Generierung,
-die in Kapitel \ref{sec:test_data} beschrieben wird und die in sämtlichen Experimenten zum Einsatz kommt,
-verbleiben in der Regel an dieser Stelle keine Unmatched-Items.
-Sei $p = |MCM|$ nun als die Anzahl der resultierenden Item-Paare definiert.
+Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
+$i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind. In der Regel ist es möglich, dass dabei sämtliche Items einer Instanz Teil eines Paares sind, denn typischerweise ist die Anzahl der Items gerade.
+Dies hängt allerdings auch von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung,
+die in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine Unmatched-Items verbleiben.
 
 Da die Stacks nun jedoch nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
-eben solche Tripel von kompatiblen Items zu generieren. Dazu werden Item-Paare zu Item-Tripeln gemergt. Zunächst muss allerdings
+ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden Item-Paare zu Item-Tripeln gemergt. Zunächst muss allerdings
 sinnvoll entschieden werden, welche der zuvor generierten Item-Paare nun wieder separiert werden sollen, um beide Items
 jeweils einem anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare
-mit dem Ziel bewertet, jene Paare zu ermitteln, die spariert werden sollten um zu einem möglichst günstigen Ergebnis zu gelangen.
+mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis separiert werden sollten.
 
 \textbf{Rating-System}
 
-Initial wird jede Kante, also jedes Paar, mit dem Basis-Rating $0$ bewertet.
-
-Anschließend wird für jedes Item-Paar die Kompatibilität seiner Items zu anderen Paaren berechnet.
-Es wird also für jedes Item die Anzahl der anderen Paare bestimmt, mit denen es kompatibel ist, denen es also
-zugewiesen werden kann, um ein Tripel zu bilden. Diese Kompatibilität bezieht sich auf die Stacking-Constraints.
-Eine Menge von Items ist miteinander kompatibel, wenn diese basierend auf den Stacking-Constraints in mindestens einer
+Initial wird jede Kante $\{i, j\} \in M$ , also jedes Item-Paar, mit dem Basis-Rating $0$ bewertet.
+Anschließend wird für jedes dieser Paare die Kompatibilität seiner Items $i, j \in I$ zu anderen Paaren aus $M \textbackslash \{i, j\}$ ermittelt.
+Dementsprechend wird für jedes Item, welches Teil eines Paares ist, die Anzahl der verbleibenden Paare bestimmt, zu denen es kompatibel ist, denen es also zugewiesen werden kann, um ein Tripel zu bilden. Diese Kompatibilität bezieht sich auf die Stacking-Constraints.
+Eine Menge von Items ist zueinander kompatibel, wenn diese basierend auf den Stacking-Constraints in mindestens einer
 Reihenfolge gestapelt werden kann.
+
+Wenn beispielsweise ein Item $i \in I$ einem Paar $\{s, t\} \in M$ zugewiesen werden soll, ergeben sich die folgenden $3!$
+möglichen Permutationen eines Tripels.
+\[
+\begin{bmatrix}
+  \boldsymbol{i} & s & s & \boldsymbol{i} & t & t \\
+  s & \boldsymbol{i} & t & t & \boldsymbol{i} & s \\
+  t & t & \boldsymbol{i} & s & s & \boldsymbol{i}
+\end{bmatrix}
+\]
+Sind die Items $s, t \in I$ in beide Richtungen stackbar, also $s_{st} + s_{ts} = 2$, so sind sämtliche Permutationen zu überprüfen.
+Aufgrund der Transitivität der Stacking-Constraints ist das Item $i$ in diesem Fall kompatibel zum Paar $(s, t)$,
+wenn $s_{is} + s_{it} + s_{si} + s_{ti} \geq 1$ gilt.
+Gilt dagegen $s_{st} = 1$ und $s_{ts} = 0$, so müssen lediglich die ersten drei Permutationen überprüft werden.
+Item $i$ ist dann kompatibel zum Paar $(s, t)$, wenn $s_{is} + s_{ti} \geq 1$ oder $s_{si} + s_{it} = 2$ gilt.
+Der letzte Fall entspricht der Situation, in der $s_{st} = 0$ und $s_{ts} = 1$ gilt. Dort müssen lediglich die letzten drei
+Permutationen überprüft werden und Item $i$ ist kompatibel zum Paar $(s, t)$, wenn $s_{it} + s_{si} \geq 1$ oder $s_{ti} + s_{is} = 2$ gilt.
 
 Ausschlaggebend ist hier die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
 da stets beide Items erneut zugewiesen werden müssen.
@@ -1320,27 +1332,26 @@ Des Weiteren werden für jedes Item-Paar die durchschnittlichen Kosten einer gem
 Die Kosten einer solchen Stackzuweisung entsprechen der Summe der beiden Einzelzuweisungen,
 wobei inkompatible Stacks mit einem hohen Kostenwert bestraft werden.
 
-Anschließend wird über alle Paare hinweg die durchnittliche \textquote{Worst-Compatibility}, also die durchschnittliche
-Kompatibilität des weniger kompatiblen Items, sowie der durchschnittliche Kostenwert berechnet.
-Wenn ein Paar nun eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} sowie einen über dem Durchschnitt
-liegenden Kostenwert besitzt, scheint es gut geeignet für eine Trennung, denn es ist überdurchschnittlich flexibel
-für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer. Dabei ist natürlich nicht garantiert,
-dass für diese Items nach der Trennung eine günstigere Zuweisung existiert.
+Anschließend wird über sämtliche Paare hinweg eine durchschnittliche \textquote{Worst-Compatibility}, also eine durchschnittliche
+Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert berechnet.
+Wenn ein Paar nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} als auch einen über dem Durchschnitt
+liegenden Kostenwert besitzt, scheint es gut geeignet für eine Separation, denn es ist überdurchschnittlich flexibel
+für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer.
+Dabei ist selbstverständlich nicht garantiert, dass für diese Items nach der Trennung eine günstigere Zuweisung existiert.
 
 Wenn die Summe der prozentualen Abweichungen beider Werte vom Durchschnitt eine gewisse Schwelle
-überschreitet, entspricht das Rating eben dieser Summe. Dies sorgt dafür, dass auch die Höhe der Abweichungen eine
-Rolle bei der Bewertung der Paare spielt.
+überschreitet, entspricht das Rating ebendieser Summe. Dies sorgt dafür, dass auch die Höhe der Abweichungen einen
+Einfluss auf die Bewertung der Paare hat.
 
 Diese Schwelle, die im Folgenden als \textquote{Deviation-Threshold} bezeichnet wird, wird dabei in einem bestimmten Wertebereich
 variiert, d.h. der Prozess wird mit unterschiedlichen Schwellen durchgeführt, die zu unterschiedlich bewerteten Listen
 der Item-Paare führen. Dieser Wertebereich wurde experimentell bestimmt und reicht von $65 \%$ bis $125 \%$ Abweichung in der Summe.
-Dabei wird der \textquote{Deviation-Threshold} in jeder Iteration um $5$ inkrementiert. Es entstehen demnach 13 unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Die Listen werden nun absteigend basierend auf ihrer Bewertung sortiert.
+Dabei wird der \textquote{Deviation-Threshold} in jeder Iteration um $5$ inkrementiert. Es entstehen demnach 13 unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
-prozentualen Abweichung vom Durchschnitt in der Summe entspricht. Die dabei entstehenden einzelnen Items werden den verbleibenden $p - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden
-Paaren zugewiesen werden könnten, beträgt $\floor{\frac{p}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl
-verbleibender Paare zu wählen. Dementsprechend sollte $p$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Die ersten $x = \floor{\frac{p}{3.4}}$ Paare werden also separiert.
+prozentualen Abweichung vom Durchschnitt in der Summe entspricht. Die dabei entstehenden einzelnen Items werden den verbleibenden $|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden
+Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare werden also separiert.
 
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
 Dazu wird ein bipartiter Graph bestehend aus den Paaren und separierten Items generiert.
