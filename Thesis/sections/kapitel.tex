@@ -1278,26 +1278,31 @@ derart großen Laufzeiteinparung führt, dass sie eine für die Praxis relevante
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
 
-In diesem Abschnitt wird die konstruktive Heuristik zur Lösung von Stacking-Problemen
-mit Stacks der Kapazität $b = 3$ vorgestellt. Einige Ansätze funktionieren dabei analog zur Heuristik für $b = 2$
-aus Kapitel \ref{sec:two_cap_heuristic}.
+Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b = 3$ funktioniert
+an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} für eine Stack-Kapazität von $b = 2$.
+Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden allerdings
+auch erweiternde Ansätze entwickelt.
 
 Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden. Dazu wird ein
 Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$.
 Dieser Graph besitzt eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$
-in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack
-existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement Constraints zu verletzen,
-also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für einen Stack $q \in Q$ gilt. Nun wird ein \textsc{MCM} in $G$ berechnet,
-dessen Kanten als Paare von Items intepretiert werden, welche in mindestens einer Richtung stackbar sind.
-Sei $p = |MCM|$, also die Anzahl der resultierenden Item-Paare.
+basierend auf den Stacking-Constraints in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$
+und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints
+zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für mindestens einen Stack $q \in Q$ gilt.
+
+Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Paare von kompatiblen Items, so erhält man
+eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind. In der Regel ist es möglich,
+dass dabei sämtliche Items einer Instanz Teil eines Paares sind, denn typischerweise ist die Anzahl der Items gerade.
+Dies hängt allerdings von den gegebenen Stacking-Constraints ab. In der zweiten Variante der Stacking-Constraint-Generierung,
+die in Kapitel \ref{sec:test_data} beschrieben wird und die in sämtlichen Experimenten zum Einsatz kommt,
+verbleiben in der Regel an dieser Stelle keine Unmatched-Items.
+Sei $p = |MCM|$ nun als die Anzahl der resultierenden Item-Paare definiert.
 
 Da die Stacks nun jedoch nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
-eben solche Tripel von kompatiblen Items zu generieren.
-
-Dazu werden Item-Paare zu Tripeln gemergt. Zunächst muss allerdings sinnvoll entschieden werden, welche der generierten
-Item-Paare wieder getrennt werden sollen, um beide Items jeweils einem anderen Paar zuzuweisen und ein Tripel zu bilden.
-Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die
-spariert werden sollten um zu einem möglichst günstigen Ergebnis zu gelangen.
+eben solche Tripel von kompatiblen Items zu generieren. Dazu werden Item-Paare zu Item-Tripeln gemergt. Zunächst muss allerdings
+sinnvoll entschieden werden, welche der zuvor generierten Item-Paare nun wieder separiert werden sollen, um beide Items
+jeweils einem anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare
+mit dem Ziel bewertet, jene Paare zu ermitteln, die spariert werden sollten um zu einem möglichst günstigen Ergebnis zu gelangen.
 
 \textbf{Rating-System}
 
@@ -1305,9 +1310,9 @@ Initial wird jede Kante, also jedes Paar, mit dem Basis-Rating $0$ bewertet.
 
 Anschließend wird für jedes Item-Paar die Kompatibilität seiner Items zu anderen Paaren berechnet.
 Es wird also für jedes Item die Anzahl der anderen Paare bestimmt, mit denen es kompatibel ist, denen es also
-zugewiesen werden kann, um ein Tripel zu bilden. Diese Kompatibilität bezieht sich auf die Stacking Constraints.
-Eine Menge von Items ist miteinander kompatibel, wenn sie in mindestens einer Reihenfolge gestapelt werden kann,
-die nicht die Stacking Constraints verletzt.
+zugewiesen werden kann, um ein Tripel zu bilden. Diese Kompatibilität bezieht sich auf die Stacking-Constraints.
+Eine Menge von Items ist miteinander kompatibel, wenn diese basierend auf den Stacking-Constraints in mindestens einer
+Reihenfolge gestapelt werden kann.
 
 Ausschlaggebend ist hier die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
 da stets beide Items erneut zugewiesen werden müssen.
