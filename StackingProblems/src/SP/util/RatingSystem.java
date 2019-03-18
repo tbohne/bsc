@@ -230,6 +230,7 @@ public class RatingSystem {
                 int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
                 avgCosts += currCost;
             } else {
+                // TODO: shouldn't be a hard coded value (should depend on other value)
                 avgCosts += 1000;
             }
         }

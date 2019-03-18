@@ -25,8 +25,7 @@ public interface SolverComparison {
     String SOLUTION_PREFIX = "res/solutions/";
 
     // Specifies the time limit for the solving process in seconds.
-    int TIME_LIMIT = 3600;
-    int NUMBER_OF_ITEM_PAIR_ORDERS_IN_MERGE_STEP = 20;
+    int TIME_LIMIT = 5400;
 
     /**
      * Compares the specified solvers (runtime, solution quality, ...).

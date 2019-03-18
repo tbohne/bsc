@@ -400,7 +400,7 @@ public class GraphUtil {
 
                 // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1
                 // and if they have at least one compatible stack.
-                if (i != j && stackingConstraints[i][j] == 1 ||stackingConstraints[j][i] == 1) {
+                if (i != j && stackingConstraints[i][j] == 1 || stackingConstraints[j][i] == 1) {
                     int numberOfCompatibleStacks = 0;
                     for (int stackIdx = 0; stackIdx < stacks.length; stackIdx++) {
                         if (costMatrix[i][stackIdx] < invalidEdgeCosts && costMatrix[j][stackIdx] < invalidEdgeCosts) {
@@ -440,7 +440,7 @@ public class GraphUtil {
      * @param mcm - the given maximum cardinality matching
      * @return the list of matched items (edges)
      */
-    public static ArrayList<MCMEdge> parseItemPairFromMCM(EdmondsMaximumCardinalityMatching mcm) {
+    public static ArrayList<MCMEdge> parseItemPairsFromMCM(EdmondsMaximumCardinalityMatching mcm) {
         ArrayList<MCMEdge> matchedItems = new ArrayList<>();
         for (Object edge : mcm.getMatching()) {
             int vertexOne = Integer.parseInt(edge.toString().split(":")[0].replace("(v", "").trim());
