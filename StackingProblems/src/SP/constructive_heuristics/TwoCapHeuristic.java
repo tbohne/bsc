@@ -76,8 +76,8 @@ public class TwoCapHeuristic {
         GraphUtil.addVerticesForItemPairs(itemPairs, graph, partitionOne);
         GraphUtil.addVerticesForUnmatchedItems(unmatchedItems, graph, partitionOne);
         GraphUtil.addVerticesForStacks(this.instance.getStacks(), graph, partitionTwo);
-
         ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+
         GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
@@ -122,10 +122,10 @@ public class TwoCapHeuristic {
 
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
-                    stackingConstraintGraph
+                stackingConstraintGraph
             );
 
-            ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(itemMatching);
+            ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
                 itemPairs, this.instance.getItems()
             );

@@ -243,7 +243,7 @@ public class ThreeCapRecursiveMCMHeuristic {
      * @return the parsed and sorted list of item pairs
      */
     public ArrayList<MCMEdge> parseAndSortItemPairs(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairFromMCM(mcm);
+        ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(mcm);
         RatingSystem.assignColRatingToEdgesNewWay(itemPairs, this.instance.getStackingConstraints());
         Collections.sort(itemPairs);
         return itemPairs;

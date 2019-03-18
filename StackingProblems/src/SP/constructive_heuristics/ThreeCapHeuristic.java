@@ -111,7 +111,7 @@ public class ThreeCapHeuristic {
      * Generates item triples based on the given list of item pairs.
      * The first x item pairs get splitted and the resulting items are assigned to the remaining
      * itemPairs.size() - x pairs to build up item triples.
-     * The maximum number of items that could be splitted and theoretically reassigned to the remaining pairs is
+     * The maximum number of item pairs that could be splitted and theoretically reassigned to the remaining pairs is
      * itemPairs.size() / 3. However, because of the stacking constraints there should be more options to assign
      * the items to. Therefore x = itemPairs.size() / 3.4 is used. The 3.4 is the result of an experimental comparison
      * of the results for different x-values.
@@ -228,7 +228,7 @@ public class ThreeCapHeuristic {
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
             stackingConstraintGraph
         );
-        return GraphUtil.parseItemPairFromMCM(itemMatching);
+        return GraphUtil.parseItemPairsFromMCM(itemMatching);
     }
 
     /**
