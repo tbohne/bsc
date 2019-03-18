@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: SP.experiments.SolverComparison3Cap
+Main-Class: SP.experiments.CompareSolvers
