@@ -213,8 +213,8 @@ public class RatingSystem {
     }
 
     /**
-     * Computes the average costs to assign the given pairs.
-     * An incompatible stack is penalized with a high cost value of 1000.
+     * Computes the average costs to assign the given pair.
+     * An incompatible stack is penalized with a high cost value.
      *
      * @param stacks       - the available stacks
      * @param costs        - the cost matrix
