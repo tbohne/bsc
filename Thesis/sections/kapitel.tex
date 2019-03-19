@@ -1280,8 +1280,8 @@ derart großen Laufzeiteinparung führt, dass sie eine für die Praxis relevante
 
 Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b = 3$ funktioniert
 an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} für eine Stack-Kapazität von $b = 2$.
-Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden allerdings
-auch erweiternde Ansätze entwickelt.
+Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden hingegen
+auch erweiternde Ansätze präsentiert.
 
 Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden. Dazu wird ein
 Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$.
@@ -1294,12 +1294,14 @@ Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dess
 $i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind. In der Regel ist es möglich, dass dabei sämtliche Items einer Instanz Teil eines Paares sind, denn typischerweise ist die Anzahl der Items gerade.
 Dies hängt allerdings auch von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung,
 die in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine Unmatched-Items verbleiben.
+Dieser Sachverhalt hat dazu geführt, dass sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
+um erste Tripel zu bilden, welche in einer früheren Version der Heuristik an dieser Stelle stattfand, als nicht zielführend
+erwies.
 
-Da die Stacks nun jedoch nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
-ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden Item-Paare zu Item-Tripeln gemergt. Zunächst muss allerdings
-sinnvoll entschieden werden, welche der zuvor generierten Item-Paare nun wieder separiert werden sollen, um beide Items
-jeweils einem anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare
-mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis separiert werden sollten.
+Da die Stacks nun nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
+ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die generierten Item-Paare zu Item-Tripeln gemergt.
+Zunächst muss allerdings entschieden werden, welche der zuvor generierten Item-Paare nun sinnvollerweise wieder separiert werden sollten,
+um beide Items jeweils einem anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis separiert werden sollten.
 
 \textbf{Rating-System}
 
@@ -1309,8 +1311,9 @@ Dementsprechend wird für jedes Item, welches Teil eines Paares ist, die Anzahl 
 Eine Menge von Items ist zueinander kompatibel, wenn diese basierend auf den Stacking-Constraints in mindestens einer
 Reihenfolge gestapelt werden kann.
 
-Wenn beispielsweise ein Item $i \in I$ einem Paar $\{s, t\} \in M$ zugewiesen werden soll, ergeben sich die folgenden $3!$
-möglichen Permutationen eines Tripels.
+Wird beispielsweise überprüft, ob ein Item $i \in I$ einem Paar $(s, t)$, welches aus einer Kante $\{s, t\} \in M$ resultiert,
+zugewiesen werden kann, so ergeben sich die in Abb. \ref{fig:triple_permutations} dargestellten $3!$ möglichen Permutationen eines Tripels. Stellt sich eine dieser Permutationen als konform mit den Stacking-Constraints heraus, so kann das Item $i$ zusammen mit dem Paar $(s, t)$ ein zulässiges Tripel bilden.
+\begin{figure}[H]
 \[
 \begin{bmatrix}
   \boldsymbol{i} & s & s & \boldsymbol{i} & t & t \\
@@ -1318,75 +1321,138 @@ möglichen Permutationen eines Tripels.
   t & t & \boldsymbol{i} & s & s & \boldsymbol{i}
 \end{bmatrix}
 \]
-Sind die Items $s, t \in I$ in beide Richtungen stackbar, also $s_{st} + s_{ts} = 2$, so sind sämtliche Permutationen zu überprüfen.
-Aufgrund der Transitivität der Stacking-Constraints ist das Item $i$ in diesem Fall kompatibel zum Paar $(s, t)$,
-wenn $s_{is} + s_{it} + s_{si} + s_{ti} \geq 1$ gilt.
-Gilt dagegen $s_{st} = 1$ und $s_{ts} = 0$, so müssen lediglich die ersten drei Permutationen überprüft werden.
-Item $i$ ist dann kompatibel zum Paar $(s, t)$, wenn $s_{is} + s_{ti} \geq 1$ oder $s_{si} + s_{it} = 2$ gilt.
-Der letzte Fall entspricht der Situation, in der $s_{st} = 0$ und $s_{ts} = 1$ gilt. Dort müssen lediglich die letzten drei
-Permutationen überprüft werden und Item $i$ ist kompatibel zum Paar $(s, t)$, wenn $s_{it} + s_{si} \geq 1$ oder $s_{ti} + s_{is} = 2$ gilt.
+\caption{\textsc{Item-Tripel Permutationen.}}
+\label{fig:triple_permutations}
+\end{figure}
+Sind die Items $s, t \in I$, welche das Paar bilden, in beide Richtungen stackbar, also $s_{st} + s_{ts} = 2$, so sind sämtliche
+Permutationen zu überprüfen.
+Aufgrund der Transitivität der Stacking-Constraints ist das Item $i$ in diesem Fall allerdings bereits dann kompatibel zum Paar $(s, t)$,
+wenn $s_{is} + s_{it} + s_{si} + s_{ti} \geq 1$ gilt.\newline
+Darf Item $s$ auf Item $t$ gestapelt werden, jedoch nicht andersherum, also $s_{st} = 1$ und $s_{ts} = 0$,
+so müssen die ersten drei Permutationen überprüft werden. Item $i$ ist dann kompatibel zum Paar $(s, t)$,
+wenn $s_{is} + s_{ti} \geq 1$ oder $s_{si} + s_{it} = 2$ gilt.\newline
+Gilt umgekehrt, dass lediglich Item $t$ auf Item $s$ gestapelt werden darf, also $s_{st} = 0$ und $s_{ts} = 1$, so
+müssen die letzten drei Permutationen überprüft werden und Item $i$ ist kompatibel zum Paar $(s, t)$,
+wenn $s_{it} + s_{si} \geq 1$ oder $s_{ti} + s_{is} = 2$ gilt.
 
-Ausschlaggebend ist hier die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
-da stets beide Items erneut zugewiesen werden müssen.
+Auf diese Weise wird die Kompatibilität sämtlicher Items zu den verbleibenden Paaren bestimmt.
+Ausschlaggebend ist dabei die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
+da stets beide Items erneut zugewiesen werden müssen. Diese wird im Folgenden als \textquote{Worst-Compatibility}
+$w_{ij}$ des Items $(i, j)$ bezeichnet.
+
 Des Weiteren werden für jedes Item-Paar die durchschnittlichen Kosten einer gemeinsamen Stack-Zuweisung berechnet.
-Die Kosten einer solchen Stackzuweisung entsprechen der Summe der beiden Einzelzuweisungen,
-wobei inkompatible Stacks mit einem hohen Kostenwert bestraft werden.
+Wobei $c_{(i, j)q}$ jeweils den Kosten der gemeinsamen Zuweisung der Items $i$ und $j$ zu Stack $q$ entspricht,
+welche wie folgt definiert sind (TODO: replace constant value):
+\[
+    c_{(i, j)q} \quad := \quad
+\begin{cases}
+    c_{iq} + c_{jq}, & \text{wenn $t_{iq} = 1$ und $t_{jq} = 1$}\\
+    1000, & \text{sonst}
+\end{cases}
+\]
+D.h. die Kosten der Zuweisung entsprechen nur dann der Summe der beiden Einzelzuweisungen, wenn beide Items des Paares basierend
+auf den Placement-Constraints kompatibel zum Stack sind. Ist dies nicht der Fall, so wird die Inkompatibilität durch
+einen Kostenwert von $1000$ bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich wie folgt:
+\[ avgC_{ij} = \frac{\sum_{q \in Q} (c_{(i, j)q})}{|Q|}  \]
 
-Anschließend wird über sämtliche Paare hinweg eine durchschnittliche \textquote{Worst-Compatibility}, also eine durchschnittliche
-Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert berechnet.
-Wenn ein Paar nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} als auch einen über dem Durchschnitt
-liegenden Kostenwert besitzt, scheint es gut geeignet für eine Separation, denn es ist überdurchschnittlich flexibel
-für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer.
+Anschließend wird über sämtliche Paare $\{i, j\} \in M$ hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
+denn es ist überdurchschnittlich flexibel für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer.
 Dabei ist selbstverständlich nicht garantiert, dass für diese Items nach der Trennung eine günstigere Zuweisung existiert.
 
-Wenn die Summe der prozentualen Abweichungen beider Werte vom Durchschnitt eine gewisse Schwelle
-überschreitet, entspricht das Rating ebendieser Summe. Dies sorgt dafür, dass auch die Höhe der Abweichungen einen
-Einfluss auf die Bewertung der Paare hat.
+Wenn die Summe der prozentualen Abweichungen beider Werte $d_{ij}$ des Paares $(i, j)$ vom Durchschnitt eine gewisse Schwelle,
+die im Folgenden als \textquote{Deviation-Threshold} $d_t$ bezeichnet wird,
+überschreitet, entspricht das Rating $r_{ij}$ des Paares ebendieser Summe.
+Die Summe der Abweichungen $d_{ij}$ ist wie folgt definiert:
+\[ d_{ij} = \frac{|avgC - avgC_{ij}|}{avgC * 100} + \frac{|w - w_{ij}|}{w * 100}\]
+Das Rating des Paares $(i, j)$ ergibt sich dementsprechend wie folgt:
+\[
+    r_{ij} \quad := \quad
+\begin{cases}
+    d_{ij}, & \text{wenn $d_{ij} > d_t$}\\
+    0, & \text{sonst}
+\end{cases}
+\]
+Die Tatsache, dass das Rating $r_{ij}$ eines Paares $(i, j)$ direkt der Summe der Abweichungen $d_{ij}$ entspricht,
+sofern diese die Schwelle $d_t$ überschreitet, hat zur Folge, dass auch die Höhe der Abweichungen einen Einfluss auf
+die Bewertung der Paare hat.
 
-Diese Schwelle, die im Folgenden als \textquote{Deviation-Threshold} bezeichnet wird, wird dabei in einem bestimmten Wertebereich
-variiert, d.h. der Prozess wird mit unterschiedlichen Schwellen durchgeführt, die zu unterschiedlich bewerteten Listen
-der Item-Paare führen. Dieser Wertebereich wurde experimentell bestimmt und reicht von $65 \%$ bis $125 \%$ Abweichung in der Summe.
-Dabei wird der \textquote{Deviation-Threshold} in jeder Iteration um $5$ inkrementiert. Es entstehen demnach 13 unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
+Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
+unterschiedlichen Schwellen durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
+Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 125 \%$ Abweichung in der Summe.
+Dabei wird $d_t$ in jeder Iteration um $5$ inkrementiert. Es entstehen demnach $13$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
-prozentualen Abweichung vom Durchschnitt in der Summe entspricht. Die dabei entstehenden einzelnen Items werden den verbleibenden $|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden
-Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare werden also separiert.
+prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden
+$|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
 
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
-Dazu wird ein bipartiter Graph bestehend aus den Paaren und separierten Items generiert.
-Dieser Graph enthält die Paare in der einen Partition und die separierten Items in der anderen.
-Es existiert eine Kante zwischen einem Paar und einem Item, wenn das Item kompatibel zum Paar ist, d.h.,
-wenn die drei Items in einer Weise gestapelt werden können, welche den Stacking Constraints entspricht.
-In diesem Graph wird ein \textsc{MCM} berechnet, dessen Kanten einer größtmöglichen Menge an kompatiblen Item-Tripeln entspricht.
-Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den unterschiedlichen Sortierungen.
+Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E_1)$ bestehend aus den Paaren und separierten Items generiert.
+Dieser Graph enthält die Paare in der Partition $V_1$ und die separierten Items in der Partition $V_2$.
+Es existiert eine Kante zwischen einem Paar $(i, j) \in V_1$ und einem Item $k \in V_2$, wenn das Item $k$ kompatibel zum Paar
+$(i, j)$ ist. Die Überprüfung dieser Kompatibilität findet erneut in geschilderter Weise basierend auf den möglichen Permutationen
+aus Abb. \ref{fig:triple_permutations} statt.
 
+Anschließend wird in $G_1$ ein \textsc{MCM} berechnet, dessen Kanten einer größtmöglichen Menge an kompatiblen Item-Tripeln entspricht.
+Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den unterschiedlichen Sortierungen.
 Nun liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert.
 Für jede dieser Listen wird nun der folgende Prozess durchgeführt.
 
-\pagebreak
-
 Da im Zuge des Merge-Prozesses Unmatched Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
 sämtliche Items zuvor Teil eines Paares waren, werden nun abermals aus allen verbleibenden Items Paare gebildet, was erneut durch ein \textsc{MCM}
-in dem für diese Items generierten Stacking-Constraint-Graphen geschieht. Die dabei verbleibenden Unmatched Items werden schließlich
-im Folgenden auch als solche betrachtet, d.h. sie werden in einem eigenem Stack platziert.
+in dem für diese Items generierten Stacking-Constraint-Graphen geschieht.
+Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level
+eines eigenen Stacks platziert.
+
+Wie bereits in der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} werden auch hier insgesamt auf diese Weise möglichst wenig der zur Verfügung stehenden Stacks verwendet,
+denn auch hier ist das primäre Ziel, zu einer zulässigen Lösung zu gelangen, wofür sich die initiale Maximierung der Anzahl der möglichst
+weit gefüllten Stacks anbietet. Erst wenn möglichst viele Tripel und Paare generiert wurden, geht es darum, diese zusammen mit den verbleibenden Unmatched-Items möglichst günstig den vorhandenen Stacks zuzuweisen.
 
 An dieser Stelle liegt also eine Menge an Tripeln, eine Menge an Paaren und eine Menge an Unmatched Items vor. Diese müssen nun
-noch in einer die Stacking Constraints respektierenden Weise den Stacks zugewiesen werden.
-Dies ist nur dann möglich, wenn die Anzahl der Tripel plus die Anzahl der Paare plus die Anzahl der \textquote{Unmatched Items} kleiner
-oder gleich der Anzahl der zur Verfügung stehenden Stacks ist.
+noch in einer die Placement-Constraints respektierenden Weise den Stacks zugewiesen werden.
+Dies ist nur dann möglich, wenn die Anzahl der Item-Tripel, die Anzahl der Item-Paare und die Anzahl der \textquote{Unmatched Items}
+in der Summe kleiner oder gleich der Anzahl der zur Verfügung stehenden Stacks ist.
 
-Ist dies der Fall, so wird zu diesem Zweck ein vollständig bipartiter Graph generiert, welcher die Items, bestehend aus Tripeln, Paaren und Unmatched Items, in der einen Partition und die Stacks in der anderen Partition enthält.
-Da die beiden Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der verwendete Algorithmus zur Berechnung des \textsc{MWPM} dies jedoch fordert, werden Dummy-Items eingeführt, die die Item-Partition gegebenenfalls auffüllen. Diese Items haben keinen Einfluss auf die Lösung und werden in späteren Schritten ignoriert.
+Ist dies der Fall, so wird zu diesem Zweck ein vollständig bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt,
+dessen erste Partition $V_1$ die Items bestehend aus Item-Tripeln, Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$
+die zur Verfügung stehenden Stacks beinhaltet.
+Eine Kante $\{i, q\} \in A$ zwischen einem Knoten $i \in V_1$ und einem Knoten $q \in V_2$ gibt an, dass das entsprechende Item,
+Item-Parr oder Item-Tripel $i$ dem jeweiligen Stack $q$ zugeordnet werden kann.
+Wie gehabt gilt dabei, dass die Placement-Constraints indirekt durch ein hohes Gewicht einer solchen Kante und nicht durch ein Fehlen dieser
+umgesetzt werden.
+Es existieren daher Kanten zwischen sämtlichen Knoten aud $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2
+\exists \{i, q\} \in A$. Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner
+Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird, zum Stack $q$ in der Storage-Area.
 
 Wie schon bei der Heuristik für $b = 2$, existiert initial eine Kante von jedem Tripel, Paar und Item zu jedem Stack. D.h. im Prinzip sind sämtliche Items mit jedem Stack kompatibel. Dies liegt daran, dass die Placement Constraints indirekt über hohe Kostenwerte implementiert wurden und nicht direkt durch ein Vermeiden der entsprechenden Kanten. Der Grund für diese Entscheidung wurde bereits in Kapitel \ref{sec:placement_restrictions} erläutert. Die Kosten dieser Kanten entsprechen jeweils der Summer der Kosten aller beteiligter Items an der Zuweisung. Die Kanten, welche die Dummy-Items mit den Stacks verbinden, besitzen die Kosten $0$.
 Die inkompatiblen Item-Stack-Zuweisungen werden also, sofern möglich, indirekt durch das \textsc{MWPM} ausgeschlossen.
 
-Im nächsten Schritt wird ebendieses \textsc{MWPM} im bipartiten Graphen berechnet, dessen Kanten
-als Stack-Zuweisungen interpretiert werden und welches indirekt die inkompatiblen Kanten der Kosten $\infty$
-ausschließt, sofern dies möglich ist. Auf diese Weise entstehen nun 14 Lösungen, von denen schließlich die günstigste ausgewählt wird.
+Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports
+beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
+
+Im Fall eines Item-Tripels $(i, j, k) \in V_1$ entspricht das Gewicht der Kante $\{(i, j, k), q\} \in A$ der Summe der Kosten
+des Transports der drei Items, also $c_{(i, j, k)q} = c_{iq} + c_{jq} + c_{kq}$.
+
+Da die Partitionen $V_1$ und $V_2$ nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textit{JGrpahT} bereitgestellte
+Algorithmus, welcher zur Berechnung des \textsc{MWPM} in $G_1$ verwendet wird, dies jedoch fordert, werden Dummy-Items
+eingeführt, die die Item-Partition $V_1$ gegebenenfalls auffüllen.
+
+Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack verbinden,
+das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items, Item-Paars oder Item-Tripels durch ein Dummy-Item
+verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem Stack zu den Kosten $0$ zugewiesen werden können,
+während eine Zuweisung echter Items, Item-Paare und Item-Tripel stets Kosten verursacht. Dementsprechend werden echte Items bei der
+Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zu Kosten $0$ zugewiesen werden.
+
+Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten
+als Stack-Zuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare
+einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung
+sämtlicher Items, Item-Paare und Item-Tripel zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden
+Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung
+der generierten Tripel, Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
+
+Auf diese Weise entstehen nun 14 Lösungen, von denen schließlich die günstigste ausgewählt wird.
 Zuletzt muss dann wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
-dass sie die Stacking Constraints respektiert. Es ist dabei wie zuvor garantiert, dass eine solche
+dass sie die Stacking-Constraints respektiert. Es ist dabei wie zuvor garantiert, dass eine solche
 Reihenfolge existiert und trivial durch den Algorithmus \ref{alg:algo1} ermittelt werden kann.
 
 \textbf{Beispiel}
