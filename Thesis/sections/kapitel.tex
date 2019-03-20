@@ -410,36 +410,36 @@ werden kann, dass eine valide Lösung, die die Stacking Constraints respektiert,
 
 Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, die die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben. Dies kann durch den simplen Algorithmus \ref{alg:algo1} erreicht werden.
 
-\begin{algorithm}
-\fontsize{10pt}{10pt}
+% \begin{algorithm}
+% \fontsize{10pt}{10pt}
 
-\SetAlgoLined
+% \SetAlgoLined
 
-  \ForEach{stack in storageArea}{
+%   \ForEach{stack in storageArea}{
 
-    somethingChanged = true\;
+%     somethingChanged = true\;
 
-    \While{somethingChanged}{
+%     \While{somethingChanged}{
 
-      somethingChanged = false\;
+%       somethingChanged = false\;
 
-      \For{position = 0; position < stack.capacity - 1; position++}{
-          \BlankLine\BlankLine
-          \uIf{stack[position].\Call{isOccupied()}{} \&\& stack[position + 1].\Call{isOccupied()}{{}}}{
-            \uIf{itemAt(stack[position]).\Call{isStackableOn}{itemAt(stack[position + 1])}}{
+%       \For{position = 0; position < stack.capacity - 1; position++}{
+%           \BlankLine\BlankLine
+%           \uIf{stack[position].\Call{isOccupied()}{} \&\& stack[position + 1].\Call{isOccupied()}{{}}}{
+%             \uIf{itemAt(stack[position]).\Call{isStackableOn}{itemAt(stack[position + 1])}}{
 
-                \Call{exchangeItems}{stack[position], stack[position + 1]}\;
-                somethingChanged = true\;
-                break\;
-            }
-          }
-      }
-    }
-  }
+%                 \Call{exchangeItems}{stack[position], stack[position + 1]}\;
+%                 somethingChanged = true\;
+%                 break\;
+%             }
+%           }
+%       }
+%     }
+%   }
 
-\caption{Korrektur der Item Reihenfolge innerhalb der Stacks.}
-\label{alg:algo1}
-\end{algorithm}
+% \caption{Korrektur der Item Reihenfolge innerhalb der Stacks.}
+% \label{alg:algo1}
+% \end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -1384,6 +1384,8 @@ Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit
 prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden
 $|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
 
+\pagebreak
+
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
 Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E_1)$ bestehend aus den Paaren und separierten Items generiert.
 Dieser Graph enthält die Paare in der Partition $V_1$ und die separierten Items in der Partition $V_2$.
@@ -1393,47 +1395,41 @@ aus Abb. \ref{fig:triple_permutations} statt.
 
 Anschließend wird in $G_1$ ein \textsc{MCM} berechnet, dessen Kanten einer größtmöglichen Menge an kompatiblen Item-Tripeln entspricht.
 Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den unterschiedlichen Sortierungen.
-Nun liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert.
+Daraufhin liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert.
 Für jede dieser Listen wird nun der folgende Prozess durchgeführt.
 
-Da im Zuge des Merge-Prozesses Unmatched Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
-sämtliche Items zuvor Teil eines Paares waren, werden nun abermals aus allen verbleibenden Items Paare gebildet, was erneut durch ein \textsc{MCM}
-in dem für diese Items generierten Stacking-Constraint-Graphen geschieht.
-Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level
-eines eigenen Stacks platziert.
+Da im Zuge des Merge-Prozesses Unmatched-Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
+sämtliche Items zuvor Teil eines Paares waren, werden nun abermals durch ein \textsc{MCM} in dem für diese Items generierten Stacking-Constraint-Graphen aus allen verbleibenden Items Paare gebildet. Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level eines eigenen Stacks platziert.
 
-Wie bereits in der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} werden auch hier insgesamt auf diese Weise möglichst wenig der zur Verfügung stehenden Stacks verwendet,
-denn auch hier ist das primäre Ziel, zu einer zulässigen Lösung zu gelangen, wofür sich die initiale Maximierung der Anzahl der möglichst
-weit gefüllten Stacks anbietet. Erst wenn möglichst viele Tripel und Paare generiert wurden, geht es darum, diese zusammen mit den verbleibenden Unmatched-Items möglichst günstig den vorhandenen Stacks zuzuweisen.
+Wie bereits in der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} werden auch hier auf diese Weise insgesamt möglichst wenige der zur Verfügung stehenden Stacks verwendet, denn wie zuvor ist das primäre Ziel, zu einer zulässigen Lösung zu gelangen, wofür sich die initiale Maximierung der Anzahl der möglichst weit gefüllten Stacks anbietet. Erst nachdem möglichst viele Tripel und Paare von Items generiert wurden, geht es darum, diese zusammen mit den verbleibenden Unmatched-Items möglichst günstig den vorhandenen Stacks zuzuweisen.
 
-An dieser Stelle liegt also eine Menge an Tripeln, eine Menge an Paaren und eine Menge an Unmatched Items vor. Diese müssen nun
+An dieser Stelle liegt also eine Menge an Item-Tripeln, eine Menge an Item-Paaren und eine Menge an Unmatched-Items vor. Diese müssen nun
 noch in einer die Placement-Constraints respektierenden Weise den Stacks zugewiesen werden.
-Dies ist nur dann möglich, wenn die Anzahl der Item-Tripel, die Anzahl der Item-Paare und die Anzahl der \textquote{Unmatched Items}
-in der Summe kleiner oder gleich der Anzahl der zur Verfügung stehenden Stacks ist.
+Dies ist nur dann möglich, wenn die Anzahl der Tripel, Paare und Unmatched-Items in der Summe kleiner oder gleich der Anzahl
+der zur Verfügung stehenden Stacks ist.
 
-Ist dies der Fall, so wird zu diesem Zweck ein vollständig bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt,
-dessen erste Partition $V_1$ die Items bestehend aus Item-Tripeln, Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$
-die zur Verfügung stehenden Stacks beinhaltet.
-Eine Kante $\{i, q\} \in A$ zwischen einem Knoten $i \in V_1$ und einem Knoten $q \in V_2$ gibt an, dass das entsprechende Item,
-Item-Parr oder Item-Tripel $i$ dem jeweiligen Stack $q$ zugeordnet werden kann.
-Wie gehabt gilt dabei, dass die Placement-Constraints indirekt durch ein hohes Gewicht einer solchen Kante und nicht durch ein Fehlen dieser
-umgesetzt werden.
-Es existieren daher Kanten zwischen sämtlichen Knoten aud $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2
-\exists \{i, q\} \in A$. Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner
-Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird, zum Stack $q$ in der Storage-Area.
+Ist dies der Fall, so wird zu diesem Zweck ein bipartiter Graph $G_2 = (V_3 \cup V_4, E_2)$ eingeführt,
+dessen erste Partition $V_3$ die Items bestehend aus Item-Tripeln, Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_4$
+die zur Verfügung stehenden Stacks beinhaltet. Da diese Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textit{JGrpahT} bereitgestellte Algorithmus, welcher zur Berechnung des \textsc{MWPM} in $G_2$ verwendet wird, dies jedoch fordert, werden Dummy-Items
+eingeführt, die die Item-Partition $V_3$ gegebenenfalls auffüllen.
 
-Wie schon bei der Heuristik für $b = 2$, existiert initial eine Kante von jedem Tripel, Paar und Item zu jedem Stack. D.h. im Prinzip sind sämtliche Items mit jedem Stack kompatibel. Dies liegt daran, dass die Placement Constraints indirekt über hohe Kostenwerte implementiert wurden und nicht direkt durch ein Vermeiden der entsprechenden Kanten. Der Grund für diese Entscheidung wurde bereits in Kapitel \ref{sec:placement_restrictions} erläutert. Die Kosten dieser Kanten entsprechen jeweils der Summer der Kosten aller beteiligter Items an der Zuweisung. Die Kanten, welche die Dummy-Items mit den Stacks verbinden, besitzen die Kosten $0$.
-Die inkompatiblen Item-Stack-Zuweisungen werden also, sofern möglich, indirekt durch das \textsc{MWPM} ausgeschlossen.
 
-Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports
-beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
+Eine Kante $\{i, q\} \in E_2$ zwischen einem Knoten $i \in V_3$ und einem Knoten $q \in V_4$ gibt an, dass das entsprechende Item, Item-Paar oder Item-Tripel $i$ dem jeweiligen Stack $q$ zugeordnet werden kann. Wie zuvor gilt dabei
+aus genannten Gründen, dass die Placement-Constraints indirekt durch ein hohes Gewicht einer solchen Kante und nicht durch ein Fehlen dieser
+umgesetzt werden. Es existieren daher Kanten zwischen sämtlichen Knoten aus $V_3$ und denen aus $V_4$, also $\forall i \in V_3, q \in V_4
+\exists \{i, q\} \in E_2$, was $G_2$ vollständig bipartit macht.
 
-Im Fall eines Item-Tripels $(i, j, k) \in V_1$ entspricht das Gewicht der Kante $\{(i, j, k), q\} \in A$ der Summe der Kosten
-des Transports der drei Items, also $c_{(i, j, k)q} = c_{iq} + c_{jq} + c_{kq}$.
+Das Gewicht einer solchen Kante $\{i, q\} \in E_2$, die ein Triple, Paar oder Unmatched-Item mit einem Stack verbindet, ist definiert
+als die Summe der Kosten des Transports aller an der Zuweisung beteiligten Items zum jeweiligen Stack. Somit ergeben sich drei Fälle.
 
-Da die Partitionen $V_1$ und $V_2$ nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textit{JGrpahT} bereitgestellte
-Algorithmus, welcher zur Berechnung des \textsc{MWPM} in $G_1$ verwendet wird, dies jedoch fordert, werden Dummy-Items
-eingeführt, die die Item-Partition $V_1$ gegebenenfalls auffüllen.
+Der erste Fall behandelt Kanten $\{i, q\} \in E_2$, die ein Unmatched-Item $i \in V_3$ mit einem Stack $q \in V_4$ verbinden.
+Das Gewicht einer solchen Kante entspricht den Kosten des Transports $c_{iq}$ des Items $i$ in den Stack $q$.\newline
+Fall zwei behandelt Kanten $\{(i, j), q\} \in E_2$, welche ein Item-Paar $(i, j) \in V_3$ mit einem Stack $q \in V_4$
+verbinden. Die Kosten einer solchen Kante ergeben sich aus der Summe der Kosten des Transports beider Items,
+also $c_{(i, j)q} = c_{iq} + c_{jq}$.\newline
+Der dritte und letzte Fall behandelt Kanten $\{(i, j, k), q\} \in E_2$, welche ein Item-Tripel $(i, j, k) \in V_3$
+mit einem Stack $q \in V_4$ verbinden. Die Kosten einer solchen Kante ergeben sich aus der Summe der Kosten des Transports
+der drei Items, also $c_{(i, j, k)q} = c_{iq} + c_{jq} + c_{kq}$.
 
 Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack verbinden,
 das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items, Item-Paars oder Item-Tripels durch ein Dummy-Item
@@ -1441,17 +1437,24 @@ verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem S
 während eine Zuweisung echter Items, Item-Paare und Item-Tripel stets Kosten verursacht. Dementsprechend werden echte Items bei der
 Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zu Kosten $0$ zugewiesen werden.
 
-Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten
-als Stack-Zuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare
-einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung
-sämtlicher Items, Item-Paare und Item-Tripel zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden
-Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung
+Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_2$ berechnet, dessen Kanten
+als Stack-Zuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items, Item-Paare
+und Item-Tripel einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich
+jeweils um eine günstigste Zuweisung handelt, da die Kantenkosten jeweils den Transportkosten entsprechen.
+Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung
 der generierten Tripel, Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
 
-Auf diese Weise entstehen nun 14 Lösungen, von denen schließlich die günstigste ausgewählt wird.
+Auf diese Weise entstehen $14$ Lösungen, von denen schließlich die günstigste ausgewählt wird.
 Zuletzt muss dann wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
-dass sie die Stacking-Constraints respektiert. Es ist dabei wie zuvor garantiert, dass eine solche
-Reihenfolge existiert und trivial durch den Algorithmus \ref{alg:algo1} ermittelt werden kann.
+dass sie die Stacking-Constraints respektiert. Dazu werden sämtliche Stacks, denen mehr als
+ein Item zugewiesen wurde, betrachtet. Für jeden dieser Stacks wird geprüft, ob die aufeinander
+gestapelten Items jeweils paarweise aufeinander gestapelt sein dürfen.
+Werden zwei Items innerhalb eines Stacks gefunden, welche die Stacking-Constraints verletzen, so werden diese
+vertauscht und der Prozess startet für diesen Stack erneut. Ein vollständig gefüllter Stack ist mit dieser
+Strategie nach spätestens drei Tausch-Operationen korrekt sortiert. Durch die bei der Zuweisung geprüfte
+Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
+
+\pagebreak
 
 \textbf{Beispiel}
 
