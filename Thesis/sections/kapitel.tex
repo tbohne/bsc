@@ -607,7 +607,7 @@ Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kap
 zu Theorem 1 aus der einleitend erwähnten Arbeit von \citet{Bruns2015}.
 
 Zunächst wird ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
-enthält eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints
+enthält eine Kante $\{i, j\} \in E$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints
 in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für
 mindestens einen Stack $q \in Q$ gilt.
 
@@ -1280,28 +1280,27 @@ derart großen Laufzeiteinparung führt, dass sie eine für die Praxis relevante
 
 Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b = 3$ funktioniert
 an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} für eine Stack-Kapazität von $b = 2$.
-Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden hingegen
-auch erweiternde Ansätze präsentiert.
+Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden überdies
+erweiternde Ansätze präsentiert.
 
 Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden. Dazu wird ein
 Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$.
-Dieser Graph besitzt eine Kante $\{i, j\}$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$
+Dieser Graph besitzt eine Kante $\{i, j\} \in E$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$
 basierend auf den Stacking-Constraints in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$
 und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints
 zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für mindestens einen Stack $q \in Q$ gilt.
 
 Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
 $i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind. In der Regel ist es möglich, dass dabei sämtliche Items einer Instanz Teil eines Paares sind, denn typischerweise ist die Anzahl der Items gerade.
-Dies hängt allerdings auch von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung,
-die in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine Unmatched-Items verbleiben.
+Dies hängt allerdings zusätzlich von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung, welche in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine Unmatched-Items verbleiben.
 Dieser Sachverhalt hat dazu geführt, dass sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
 um erste Tripel zu bilden, welche in einer früheren Version der Heuristik an dieser Stelle stattfand, als nicht zielführend
 erwies.
 
 Da die Stacks nun nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
-ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die generierten Item-Paare zu Item-Tripeln gemergt.
-Zunächst muss allerdings entschieden werden, welche der zuvor generierten Item-Paare nun sinnvollerweise wieder separiert werden sollten,
-um beide Items jeweils einem anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis separiert werden sollten.
+ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die zuvor gebildeten Item-Paare zu Item-Tripeln gemergt.
+Zunächst muss allerdings entschieden werden, welche dieser Paare sinnvollerweise wieder separiert werden sollten,
+um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis getrennt werden sollten.
 
 \textbf{Rating-System}
 
