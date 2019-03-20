@@ -1304,13 +1304,13 @@ um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. 
 
 \textbf{Rating-System}
 
-Initial wird jede Kante $\{i, j\} \in M$ , also jedes Item-Paar, mit dem Basis-Rating $0$ bewertet.
+Initial wird jede Kante $\{i, j\} \in M$, also jedes Item-Paar, mit dem Basis-Rating $0$ bewertet.
 Anschließend wird für jedes dieser Paare die Kompatibilität seiner Items $i, j \in I$ zu anderen Paaren aus $M \textbackslash \{i, j\}$ ermittelt.
 Dementsprechend wird für jedes Item, welches Teil eines Paares ist, die Anzahl der verbleibenden Paare bestimmt, zu denen es kompatibel ist, denen es also zugewiesen werden kann, um ein Tripel zu bilden. Diese Kompatibilität bezieht sich auf die Stacking-Constraints.
 Eine Menge von Items ist zueinander kompatibel, wenn diese basierend auf den Stacking-Constraints in mindestens einer
 Reihenfolge gestapelt werden kann.
 
-Wird beispielsweise überprüft, ob ein Item $i \in I$ einem Paar $(s, t)$, welches aus einer Kante $\{s, t\} \in M$ resultiert,
+Geht es beispielsweise darum, zu überprüfen, ob ein Item $i \in I$ einem Paar $(s, t)$, welches aus einer Kante $\{s, t\} \in M$ resultiert,
 zugewiesen werden kann, so ergeben sich die in Abb. \ref{fig:triple_permutations} dargestellten $3!$ möglichen Permutationen eines Tripels. Stellt sich eine dieser Permutationen als konform mit den Stacking-Constraints heraus, so kann das Item $i$ zusammen mit dem Paar $(s, t)$ ein zulässiges Tripel bilden.
 \begin{figure}[H]
 \[
@@ -1323,23 +1323,22 @@ zugewiesen werden kann, so ergeben sich die in Abb. \ref{fig:triple_permutations
 \caption{\textsc{Item-Tripel Permutationen.}}
 \label{fig:triple_permutations}
 \end{figure}
-Sind die Items $s, t \in I$, welche das Paar bilden, in beide Richtungen stackbar, also $s_{st} + s_{ts} = 2$, so sind sämtliche
+Sind die Items $s, t \in I$, welche das betrachtete Paar bilden, in beide Richtungen stackbar, also $s_{st} + s_{ts} = 2$, so sind sämtliche
 Permutationen zu überprüfen.
 Aufgrund der Transitivität der Stacking-Constraints ist das Item $i$ in diesem Fall allerdings bereits dann kompatibel zum Paar $(s, t)$,
-wenn $s_{is} + s_{it} + s_{si} + s_{ti} \geq 1$ gilt.\newline
+wenn $s_{is} + s_{it} + s_{si} + s_{ti} \geq 1$ gilt.
 Darf Item $s$ auf Item $t$ gestapelt werden, jedoch nicht andersherum, also $s_{st} = 1$ und $s_{ts} = 0$,
 so müssen die ersten drei Permutationen überprüft werden. Item $i$ ist dann kompatibel zum Paar $(s, t)$,
-wenn $s_{is} + s_{ti} \geq 1$ oder $s_{si} + s_{it} = 2$ gilt.\newline
+wenn $s_{is} + s_{ti} \geq 1$ oder $s_{si} + s_{it} = 2$ gilt.
 Gilt umgekehrt, dass lediglich Item $t$ auf Item $s$ gestapelt werden darf, also $s_{st} = 0$ und $s_{ts} = 1$, so
 müssen die letzten drei Permutationen überprüft werden und Item $i$ ist kompatibel zum Paar $(s, t)$,
-wenn $s_{it} + s_{si} \geq 1$ oder $s_{ti} + s_{is} = 2$ gilt.
-
-Auf diese Weise wird die Kompatibilität sämtlicher Items zu den verbleibenden Paaren bestimmt.
-Ausschlaggebend ist dabei die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
+wenn $s_{it} + s_{si} \geq 1$ oder $s_{ti} + s_{is} = 2$ gilt.\newline
+Auf diese Weise wird die Kompatibilität sämtlicher Items, welche Teil eines Paares sind, zu den verbleibenden Paaren bestimmt.
+Ausschlaggebend ist dabei jeweils die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
 da stets beide Items erneut zugewiesen werden müssen. Diese wird im Folgenden als \textquote{Worst-Compatibility}
 $w_{ij}$ des Items $(i, j)$ bezeichnet.
 
-Des Weiteren werden für jedes Item-Paar die durchschnittlichen Kosten einer gemeinsamen Stack-Zuweisung berechnet.
+Des Weiteren werden für jedes Item-Paar $(i, j)$ die durchschnittlichen Kosten einer gemeinsamen Stack-Zuweisung berechnet.
 Wobei $c_{(i, j)q}$ jeweils den Kosten der gemeinsamen Zuweisung der Items $i$ und $j$ zu Stack $q$ entspricht,
 welche wie folgt definiert sind (TODO: replace constant value):
 \[
@@ -1351,19 +1350,19 @@ welche wie folgt definiert sind (TODO: replace constant value):
 \]
 D.h. die Kosten der Zuweisung entsprechen nur dann der Summe der beiden Einzelzuweisungen, wenn beide Items des Paares basierend
 auf den Placement-Constraints kompatibel zum Stack sind. Ist dies nicht der Fall, so wird die Inkompatibilität durch
-einen Kostenwert von $1000$ bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich wie folgt:
+einen Kostenwert von $1000$ bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
 \[ avgC_{ij} = \frac{\sum_{q \in Q} (c_{(i, j)q})}{|Q|}  \]
 
-Anschließend wird über sämtliche Paare $\{i, j\} \in M$ hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
+Anschließend wird über sämtliche Paare, die sich aus den Kanten $\{i, j\} \in M$ ergeben, hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
 denn es ist überdurchschnittlich flexibel für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer.
 Dabei ist selbstverständlich nicht garantiert, dass für diese Items nach der Trennung eine günstigere Zuweisung existiert.
 
-Wenn die Summe der prozentualen Abweichungen beider Werte $d_{ij}$ des Paares $(i, j)$ vom Durchschnitt eine gewisse Schwelle,
+Wenn die Summe der prozentualen Abweichungen $d_{ij}$ beider Werte des Paares $(i, j)$ vom Durchschnitt eine gewisse Schwelle,
 die im Folgenden als \textquote{Deviation-Threshold} $d_t$ bezeichnet wird,
 überschreitet, entspricht das Rating $r_{ij}$ des Paares ebendieser Summe.
-Die Summe der Abweichungen $d_{ij}$ ist wie folgt definiert:
+Die Summe der prozentualen Abweichungen $d_{ij}$ ist wie folgt definiert:
 \[ d_{ij} = \frac{|avgC - avgC_{ij}|}{avgC * 100} + \frac{|w - w_{ij}|}{w * 100}\]
-Das Rating des Paares $(i, j)$ ergibt sich dementsprechend wie folgt:
+Das Rating des Paares $(i, j)$ ergibt sich dementsprechend folgendermaßen:
 \[
     r_{ij} \quad := \quad
 \begin{cases}
@@ -1371,9 +1370,9 @@ Das Rating des Paares $(i, j)$ ergibt sich dementsprechend wie folgt:
     0, & \text{sonst}
 \end{cases}
 \]
-Die Tatsache, dass das Rating $r_{ij}$ eines Paares $(i, j)$ direkt der Summe der Abweichungen $d_{ij}$ entspricht,
-sofern diese die Schwelle $d_t$ überschreitet, hat zur Folge, dass auch die Höhe der Abweichungen einen Einfluss auf
-die Bewertung der Paare hat.
+Die Tatsache, dass das Rating $r_{ij}$ eines Paares $(i, j)$ direkt der Summe seiner Abweichungen $d_{ij}$
+vom Durchschnitt entspricht, sofern diese die Schwelle $d_t$ überschreitet, hat zur Folge, dass auch die Höhe der Abweichungen
+einen Einfluss auf die Bewertung der Paare hat.
 
 Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
 unterschiedlichen Schwellen durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
