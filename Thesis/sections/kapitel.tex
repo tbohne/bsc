@@ -1399,8 +1399,9 @@ Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den untersch
 Daraufhin liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert.
 Für jede dieser Listen wird nun der folgende Prozess durchgeführt.
 
-Da im Zuge des Merge-Prozesses Unmatched-Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
-sämtliche Items zuvor Teil eines Paares waren, werden nun abermals durch ein \textsc{MCM} in dem für diese Items generierten Stacking-Constraint-Graphen aus allen verbleibenden Items Paare gebildet. Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level eines eigenen Stacks platziert.
+Zunächst werden abermals durch ein \textsc{MCM} in dem für alle verbleibenden Items generierten Stacking-Constraint-Graphen
+Paare gebildet, da im Zuge des Merge-Prozesses Unmatched-Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
+sämtliche Items zuvor Teil eines Paares waren. Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level eines eigenen Stacks platziert.
 
 Wie bereits in der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} werden auch hier auf diese Weise insgesamt möglichst wenige der zur Verfügung stehenden Stacks verwendet, denn wie zuvor ist das primäre Ziel, zu einer zulässigen Lösung zu gelangen, wofür sich die initiale Maximierung der Anzahl der möglichst weit gefüllten Stacks anbietet. Erst nachdem möglichst viele Tripel und Paare von Items generiert wurden, geht es darum, diese zusammen mit den verbleibenden Unmatched-Items möglichst günstig den vorhandenen Stacks zuzuweisen.
 
@@ -1411,23 +1412,21 @@ der zur Verfügung stehenden Stacks ist.
 
 Ist dies der Fall, so wird zu diesem Zweck ein bipartiter Graph $G_2 = (V_3 \cup V_4, E_2)$ eingeführt,
 dessen erste Partition $V_3$ die Items bestehend aus Item-Tripeln, Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_4$
-die zur Verfügung stehenden Stacks beinhaltet. Da diese Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textit{JGrpahT} bereitgestellte Algorithmus, welcher zur Berechnung des \textsc{MWPM} in $G_2$ verwendet wird, dies jedoch fordert, werden Dummy-Items
+die zur Verfügung stehenden Stacks beinhaltet. Da diese Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textit{JGrpahT} bereitgestellte Algorithmus, welcher zur Berechnung eines \textsc{MWPM} in $G_2$ verwendet wird, dies jedoch fordert, werden Dummy-Items
 eingeführt, die die Item-Partition $V_3$ gegebenenfalls auffüllen.
 
 
 Eine Kante $\{i, q\} \in E_2$ zwischen einem Knoten $i \in V_3$ und einem Knoten $q \in V_4$ gibt an, dass das entsprechende Item, Item-Paar oder Item-Tripel $i$ dem jeweiligen Stack $q$ zugeordnet werden kann. Wie zuvor gilt dabei
 aus genannten Gründen, dass die Placement-Constraints indirekt durch ein hohes Gewicht einer solchen Kante und nicht durch ein Fehlen dieser
-umgesetzt werden. Es existieren daher Kanten zwischen sämtlichen Knoten aus $V_3$ und denen aus $V_4$, also $\forall i \in V_3, q \in V_4
-\exists \{i, q\} \in E_2$, was $G_2$ vollständig bipartit macht.
-
-Das Gewicht einer solchen Kante $\{i, q\} \in E_2$, die ein Triple, Paar oder Unmatched-Item mit einem Stack verbindet, ist definiert
+umgesetzt werden. Es existieren daher Kanten zwischen sämtlichen Knoten aus $V_3$ und denen aus $V_4$, d.h. $\forall i \in V_3, q \in V_4
+\thinspace \exists \thinspace \{i, q\} \in E_2$, was dafür sorgt, dass es sich bei $G_2$ um einen vollständig bipartiten Graphen handelt.
+Das Gewicht einer solchen Kante $\{i, q\} \in E_2$, die ein Tripel, Paar oder Unmatched-Item mit einem Stack verbindet, ist definiert
 als die Summe der Kosten des Transports aller an der Zuweisung beteiligten Items zum jeweiligen Stack. Somit ergeben sich drei Fälle.
-
 Der erste Fall behandelt Kanten $\{i, q\} \in E_2$, die ein Unmatched-Item $i \in V_3$ mit einem Stack $q \in V_4$ verbinden.
-Das Gewicht einer solchen Kante entspricht den Kosten des Transports $c_{iq}$ des Items $i$ in den Stack $q$.\newline
+Das Gewicht einer solchen Kante entspricht den Kosten des Transports $c_{iq}$ des Items $i$ in den Stack $q$.
 Fall zwei behandelt Kanten $\{(i, j), q\} \in E_2$, welche ein Item-Paar $(i, j) \in V_3$ mit einem Stack $q \in V_4$
 verbinden. Die Kosten einer solchen Kante ergeben sich aus der Summe der Kosten des Transports beider Items,
-also $c_{(i, j)q} = c_{iq} + c_{jq}$.\newline
+also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 Der dritte und letzte Fall behandelt Kanten $\{(i, j, k), q\} \in E_2$, welche ein Item-Tripel $(i, j, k) \in V_3$
 mit einem Stack $q \in V_4$ verbinden. Die Kosten einer solchen Kante ergeben sich aus der Summe der Kosten des Transports
 der drei Items, also $c_{(i, j, k)q} = c_{iq} + c_{jq} + c_{kq}$.
@@ -1436,7 +1435,7 @@ Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die
 das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items, Item-Paars oder Item-Tripels durch ein Dummy-Item
 verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem Stack zu den Kosten $0$ zugewiesen werden können,
 während eine Zuweisung echter Items, Item-Paare und Item-Tripel stets Kosten verursacht. Dementsprechend werden echte Items bei der
-Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zu Kosten $0$ zugewiesen werden.
+Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
 
 Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_2$ berechnet, dessen Kanten
 als Stack-Zuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items, Item-Paare
