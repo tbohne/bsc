@@ -80,8 +80,8 @@ public class ThreeCapHeuristic {
             Set<String> partitionOne = new HashSet<>();
             Set<String> partitionTwo = new HashSet<>();
             this.addVertices(itemTriples, itemPairs, unmatchedItems, graph, partitionOne, partitionTwo);
-
             ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+
             GraphUtil.addEdgesForItemTriples(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
             GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
             GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
@@ -274,6 +274,7 @@ public class ThreeCapHeuristic {
             sol.transformStackAssignmentsIntoValidSolutionIfPossible();
             solutions.add(new Solution(sol));
         }
+
         return solutions;
     }
 

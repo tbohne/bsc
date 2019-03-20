@@ -238,7 +238,7 @@ public class RatingSystem {
     }
 
     /**
-     * Computes an item's pair compatibility which is the number of other edges it is assignable to.
+     * Computes an item's compatibility to other pairs which is the number of other pairs it is assignable to.
      *
      * @param pairs               - the list of item pairs to be checked
      * @param item                - the item to compute the compatibility for
@@ -279,7 +279,7 @@ public class RatingSystem {
         ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks, int deviationThreshold
     ) {
         ArrayList<ArrayList<Integer>> listOfPairRatings = new ArrayList<>();
-        ArrayList<Integer> compatibilities = new ArrayList<>();
+        ArrayList<Integer> worstCompatibilities = new ArrayList<>();
         ArrayList<Integer> avgCostValues = new ArrayList<>();
 
         for (MCMEdge edge : matchedItems) {
@@ -298,17 +298,17 @@ public class RatingSystem {
             pairRatings.add(avgCosts);
 
             listOfPairRatings.add(pairRatings);
-            compatibilities.add(worstCompatibility);
+            worstCompatibilities.add(worstCompatibility);
             avgCostValues.add(avgCosts);
         }
 
-        int avgCompatibility = getAvg(compatibilities);
+        int avgWorstCompatibility = getAvg(worstCompatibilities);
         int avgCosts = getAvg(avgCostValues);
 
         for (int i = 0; i < matchedItems.size(); i++) {
             int rating = 0;
-            if (listOfPairRatings.get(i).get(0) > avgCompatibility && listOfPairRatings.get(i).get(1) > avgCosts) {
-                int compatibilityDeviation = HeuristicUtil.getPercentageDeviation(avgCompatibility, listOfPairRatings.get(i).get(0));
+            if (listOfPairRatings.get(i).get(0) > avgWorstCompatibility && listOfPairRatings.get(i).get(1) > avgCosts) {
+                int compatibilityDeviation = HeuristicUtil.getPercentageDeviation(avgWorstCompatibility, listOfPairRatings.get(i).get(0));
                 int costDeviation = HeuristicUtil.getPercentageDeviation(avgCosts, listOfPairRatings.get(i).get(1));
                 if (compatibilityDeviation + costDeviation > deviationThreshold) {
                     rating = compatibilityDeviation + costDeviation;
