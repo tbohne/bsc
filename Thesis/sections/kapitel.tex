@@ -1300,7 +1300,8 @@ erwies.
 Da die Stacks nun nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
 ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die zuvor gebildeten Item-Paare zu Item-Tripeln gemergt.
 Zunächst muss allerdings entschieden werden, welche dieser Paare sinnvollerweise wieder separiert werden sollten,
-um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis getrennt werden sollten.
+um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis
+und möglichst vollständig gefüllte Stacks getrennt werden sollten.
 
 \textbf{Rating-System}
 
@@ -1357,12 +1358,12 @@ Anschließend wird über sämtliche Paare, die sich aus den Kanten $\{i, j\} \in
 denn es ist überdurchschnittlich flexibel für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer.
 Dabei ist selbstverständlich nicht garantiert, dass für diese Items nach der Trennung eine günstigere Zuweisung existiert.
 
-Wenn die Summe der prozentualen Abweichungen $d_{ij}$ beider Werte des Paares $(i, j)$ vom Durchschnitt eine gewisse Schwelle,
-die im Folgenden als \textquote{Deviation-Threshold} $d_t$ bezeichnet wird,
+Wenn die Summe der prozentualen Abweichungen $d_{ij}$ beider Werte des Paares $(i, j)$ vom Durchschnitt einen gewissen Schwellenwert,
+welcher im Folgenden als \textquote{Deviation-Threshold} $d_t$ bezeichnet wird,
 überschreitet, entspricht das Rating $r_{ij}$ des Paares ebendieser Summe.
 Die Summe der prozentualen Abweichungen $d_{ij}$ ist wie folgt definiert:
-\[ d_{ij} = \frac{|avgC - avgC_{ij}|}{avgC * 100} + \frac{|w - w_{ij}|}{w * 100}\]
-Das Rating des Paares $(i, j)$ ergibt sich dementsprechend folgendermaßen:
+\[ d_{ij} = \frac{|avgC - avgC_{ij}|}{avgC \cdot 100} + \frac{|w - w_{ij}|}{w \cdot 100}\]
+Das Rating $r_{ij}$ des Paares $(i, j)$ ergibt sich dementsprechend folgendermaßen:
 \[
     r_{ij} \quad := \quad
 \begin{cases}
@@ -1371,13 +1372,13 @@ Das Rating des Paares $(i, j)$ ergibt sich dementsprechend folgendermaßen:
 \end{cases}
 \]
 Die Tatsache, dass das Rating $r_{ij}$ eines Paares $(i, j)$ direkt der Summe seiner Abweichungen $d_{ij}$
-vom Durchschnitt entspricht, sofern diese die Schwelle $d_t$ überschreitet, hat zur Folge, dass auch die Höhe der Abweichungen
+vom Durchschnitt entspricht, sofern diese den Schwellenwert $d_t$ überschreitet, hat zur Folge, dass die Höhe der Abweichungen
 einen Einfluss auf die Bewertung der Paare hat.
 
 Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
-unterschiedlichen Schwellen durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
-Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 125 \%$ Abweichung in der Summe.
-Dabei wird $d_t$ in jeder Iteration um $5$ inkrementiert. Es entstehen demnach $13$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
+unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
+Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$ Abweichung in der Summe.
+Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
@@ -1444,7 +1445,7 @@ jeweils um eine günstigste Zuweisung handelt, da die Kantenkosten jeweils den T
 Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung
 der generierten Tripel, Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
 
-Auf diese Weise entstehen $14$ Lösungen, von denen schließlich die günstigste ausgewählt wird.
+Auf diese Weise entstehen $13$ Lösungen, von denen schließlich die günstigste ausgewählt wird.
 Zuletzt muss dann wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
 dass sie die Stacking-Constraints respektiert. Dazu werden sämtliche Stacks, denen mehr als
 ein Item zugewiesen wurde, betrachtet. Für jeden dieser Stacks wird geprüft, ob die aufeinander
