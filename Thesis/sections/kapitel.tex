@@ -1382,12 +1382,21 @@ unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewertet
 Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$ Abweichung in der Summe.
 Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
+Da die Verwendung des beschriebenen Rating-Systems zu einer durchaus signifikanten Laufzeitverlängerung führt,
+wird in der Implementation ein Parameter \textit{prioritizeRuntime} eingeführt, welcher ein Deaktivieren des
+Rating-Systems ermöglicht um eine möglichst geringe Laufzeit zu gewährleisten. Wird dieser Parameter auf \textit{true}
+gesetzt, so wird das initiale Ergebnis des \textsc{MCM} als einzige Liste von Item-Paaren im Merge-Prozess verwendet und
+resultiert schließlich auch nur in einer einzigen Lösung.
+Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit pro Instanz in der Kategorie der großen
+Instanzen von $.$ auf $.$. Dabei wird nicht in jedem Fall ein besserer Zielfunktionswert erzielt,
+die durchschnittlichen Kosten verringern sich jedoch von $.$ auf $.$.
+
+\pagebreak
+
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
 prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden
 $|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
-
-\pagebreak
 
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
 Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E_1)$ bestehend aus den Paaren und separierten Items generiert.
