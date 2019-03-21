@@ -79,12 +79,28 @@ public class SolverComparison3Cap implements SolverComparison {
      *
      * @param instance     - the instance to be solved
      * @param solutionName - the name of the generated solution
+     * @param writeSol     - determines whether or not the solution should be written to the file system
      */
-    public void solveWithThreeCap(Instance instance, String solutionName) {
+    public void solveWithThreeCap(Instance instance, String solutionName, boolean writeSol) {
         ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT);
         Solution sol = threeCapSolver.solve(false);
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP);
-        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP);
+        if (writeSol) {
+            SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP);
+            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP);
+        }
+    }
+
+    /**
+     * Workaround that triggers the ClassLoader to load all classes that are needed during the solving procedure.
+     * Otherwise the first instance to be solved would have a longer runtime because of the initial class loading.
+     *
+     * @param instanceFile - the file to load the instance from
+     */
+    public void prepareRuntimeMeasurementByPreLoadingAllClasses(File instanceFile) {
+        String instanceName = instanceFile.toString().replace("res/instances/", "").replace(".txt", "");
+        Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
+        String solutionName = instanceName.replace("instance", "sol");
+        this.solveWithThreeCap(instance, solutionName, false);
     }
 
     /**
@@ -102,6 +118,10 @@ public class SolverComparison3Cap implements SolverComparison {
             for (File file : directoryListing) {
                 if (file.toString().contains("slp_instance_") && !allSol.contains(file.toString().replace("res/instances/", ""))) {
 
+                    String instanceNumber = file.getName().split("_")[5].replace(".txt", "").trim();
+                    if (instanceNumber.equals("00")) {
+                        this.prepareRuntimeMeasurementByPreLoadingAllClasses(file);
+                    }
                     String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
                     Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
                     System.out.println("working on: " + instanceName);
@@ -124,7 +144,7 @@ public class SolverComparison3Cap implements SolverComparison {
                         instance.resetStacks();
                     }
                     if (solversToBeCompared.contains(Solver.CONSTRUCTIVE_THREE_CAP)) {
-                        this.solveWithThreeCap(instance, solutionName);
+                        this.solveWithThreeCap(instance, solutionName, true);
                     }
                 }
             }
