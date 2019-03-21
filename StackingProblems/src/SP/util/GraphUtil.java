@@ -397,7 +397,7 @@ public class GraphUtil {
             itemList.add(item);
             stackingConstraintGraph.addVertex("v" + item);
         }
-        System.out.println("runtime: " + (System.currentTimeMillis() - startTime) / 1000.0);
+//        System.out.println("runtime: " + (System.currentTimeMillis() - startTime) / 1000.0);
         for (int i = 0; i < stackingConstraints.length; i++) {
             for (int j = 0; j < stackingConstraints[0].length; j++) {
 
