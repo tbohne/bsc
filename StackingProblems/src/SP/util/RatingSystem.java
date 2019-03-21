@@ -213,6 +213,28 @@ public class RatingSystem {
     }
 
     /**
+     * Computes a value that is used as penalty value for incompatible stacks.
+     * The penalty value is five times the avg costs of a feasible stack assignment.
+     *
+     * @param costs        - the matrix containing the transport costs
+     * @param forbiddenVal - the cost value representing incompatible stacks
+     * @return the computed penalty value
+     */
+    public static int computePenaltyValue(int[][] costs, int forbiddenVal) {
+        int avgFeasibleCosts = 0;
+        int cnt = 0;
+        for (int i = 0; i < costs.length; i++) {
+            for (int j = 0; j < costs[i].length; j++) {
+                if (costs[i][j] < forbiddenVal) {
+                    avgFeasibleCosts += costs[i][j];
+                    cnt++;
+                }
+            }
+        }
+        return avgFeasibleCosts / cnt * 5;
+    }
+
+    /**
      * Computes the average costs to assign the given pair.
      * An incompatible stack is penalized with a high cost value.
      *
@@ -224,14 +246,16 @@ public class RatingSystem {
      * @return
      */
     public static int computeAvgCosts(int[][] stacks, int[][] costs, int itemOne, int itemTwo, int forbiddenVal) {
+
+        int penaltyVal = computePenaltyValue(costs, forbiddenVal);
+
         int avgCosts = 0;
         for (int stack = 0; stack < stacks.length; stack++) {
             if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
                 int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
                 avgCosts += currCost;
             } else {
-                // TODO: shouldn't be a hard coded value (should depend on other value)
-                avgCosts += 1000;
+                avgCosts += penaltyVal;
             }
         }
         return avgCosts / stacks.length;
