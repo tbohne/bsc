@@ -391,10 +391,13 @@ public class GraphUtil {
     ) {
         DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         ArrayList<Integer> itemList = new ArrayList<>();
+        // TODO: remove dbg logs / variables
+        double startTime = System.currentTimeMillis();
         for (int item : items) {
             itemList.add(item);
             stackingConstraintGraph.addVertex("v" + item);
         }
+        System.out.println("runtime: " + (System.currentTimeMillis() - startTime) / 1000.0);
         for (int i = 0; i < stackingConstraints.length; i++) {
             for (int j = 0; j < stackingConstraints[0].length; j++) {
 

@@ -12,8 +12,8 @@ public class CompareSolvers {
     public static void main(String[] args) {
 
         ArrayList<SolverComparison.Solver> solversToBeUsed = new ArrayList<>();
-        solversToBeUsed.add(SolverComparison.Solver.MIP_BINPACKING);
-        solversToBeUsed.add(SolverComparison.Solver.MIP_THREEINDEX);
+//        solversToBeUsed.add(SolverComparison.Solver.MIP_BINPACKING);
+//        solversToBeUsed.add(SolverComparison.Solver.MIP_THREEINDEX);
 //        solversToBeUsed.add(SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP);
         solversToBeUsed.add(SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP);
 
