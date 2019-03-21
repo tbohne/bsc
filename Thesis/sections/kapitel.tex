@@ -1383,13 +1383,12 @@ Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bi
 Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
 Da die Verwendung des beschriebenen Rating-Systems zu einer durchaus signifikanten Laufzeitverlängerung führt,
-wird in der Implementation ein Parameter \textit{prioritizeRuntime} eingeführt, welcher ein Deaktivieren des
-Rating-Systems ermöglicht um eine möglichst geringe Laufzeit zu gewährleisten. Wird dieser Parameter auf \textit{true}
+wird in der Implementation der Heuristik ein Parameter \textit{prioritizeRuntime} eingeführt, welcher ein Deaktivieren des
+Rating-Systems ermöglicht, um eine möglichst geringe Laufzeit zu gewährleisten. Wird dieser Parameter auf \textit{true}
 gesetzt, so wird das initiale Ergebnis des \textsc{MCM} als einzige Liste von Item-Paaren im Merge-Prozess verwendet und
 resultiert schließlich auch nur in einer einzigen Lösung.
 Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit pro Instanz in der Kategorie der großen
-Instanzen von $.$ auf $.$. Dabei wird nicht in jedem Fall ein besserer Zielfunktionswert erzielt,
-die durchschnittlichen Kosten verringern sich jedoch von $.$ auf $.$.
+Instanzen, in welchen es die größte Auswirkung auf die Laufzeiten zeigt, von $.$ auf $.$. Dabei wird nicht in jedem Fall ein besserer Zielfunktionswert erzielt, die durchschnittlichen Kosten verringern sich jedoch von $.$ auf $.$.
 
 \pagebreak
 
