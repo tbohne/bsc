@@ -214,7 +214,7 @@ public class RatingSystem {
 
     /**
      * Computes a value that is used as penalty value for incompatible stacks.
-     * The penalty value is five times the avg costs of a feasible stack assignment.
+     * The penalty value is five times the avg costs of a feasible item-stack assignment.
      *
      * @param costs        - the matrix containing the transport costs
      * @param forbiddenVal - the cost value representing incompatible stacks
@@ -223,10 +223,10 @@ public class RatingSystem {
     public static int computePenaltyValue(int[][] costs, int forbiddenVal) {
         int avgFeasibleCosts = 0;
         int cnt = 0;
-        for (int i = 0; i < costs.length; i++) {
-            for (int j = 0; j < costs[i].length; j++) {
-                if (costs[i][j] < forbiddenVal) {
-                    avgFeasibleCosts += costs[i][j];
+        for (int item = 0; item < costs.length; item++) {
+            for (int stack = 0; stack < costs[item].length; stack++) {
+                if (costs[item][stack] < forbiddenVal) {
+                    avgFeasibleCosts += costs[item][stack];
                     cnt++;
                 }
             }
