@@ -15,12 +15,12 @@ public class ConstructiveHeuristicTest {
 
     public static void main (String[] args) {
 
-        Instance instance = InstanceReader.readInstance("res/instances/b=3_l/slp_instance_500_200_3_19.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/b=3_l/slp_instance_500_200_3_11.txt");
         System.out.println("working on: " + instance.getName());
 
         ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT);
 
-        Solution sol = solver.solve();
+        Solution sol = solver.solve(false);
         System.out.println("feasible: " + sol.isFeasible());
         System.out.println("cost: " + sol.computeCosts());
         System.out.println("time: " + sol.getTimeToSolve());
