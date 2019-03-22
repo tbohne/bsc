@@ -448,12 +448,12 @@ Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, währe
 \section{Konstruktive Heuristiken}
 \label{sec:constructive_heuristics}
 
-Bei den entwickelten konstruktiven Heuristiken handelt es sich um Lösungsverfaren für die in Kapitel \ref{sec:stacking_problems}
-beschriebenen Problemstellungen. Zunächst werden drei wichtige Konzepte eingeführt, die in den Heuristiken Verwendung finden.
+Bei den entwickelten konstruktiven Heuristiken handelt es sich um effiziente Lösungsverfaren für die in Kapitel \ref{sec:stacking_problems}
+beschriebenen Problemstellungen. Zunächst werden drei wichtige Konzepte eingeführt, welche in den Heuristiken Verwendung finden.
 In \ref{sec:digression_bipartite_graph} bipartite Graphen, in \ref{sec:digression_mwpm} Minimum-Weight-Perfect-Matchings und in \ref{sec:digression_mcm} Maximum-Cardinality-Matchings. Anschließend geht es in \ref{sec:two_cap_heuristic} um die konstruktive Heuristik
-für eine Stack-Kapazität von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen Vergleich der Solver für eben diese Stack-Kapazität.
-Abschnitt \ref{sec:three_cap_heuristic} handelt von der konstruktiven Heuristik für eine Stack-Kapazität von $b=3$, auf
-die erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
+für eine Stack-Kapazität von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen experimentellen Vergleich der Solver für
+eben diese Stack-Kapazität in Bezug auf die benötigten Laufzeiten und die Qualität der generierten Lösungen.
+Abschnitt \ref{sec:three_cap_heuristic} behandelt die konstruktive Heuristik für eine Stack-Kapazität von $b=3$, worauf erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
 
 \subsection{Hintergrund}
 
@@ -467,9 +467,9 @@ Es lassen sich folgende Äquivalenzen festhalten \cite{Leighton2010}:
   \item $G$ bipartit $\iff$ $G$ 2-färbbar
   \item $G$ bipartit $\iff$ keine Kreise ungerader Länge in $G$
 \end{itemize}
-In Abb. \ref{fig:digression_bipartite_graph} ist die 2-Färbbarkeit eines bipartiten Graphen, bei der die eine Teilmenge
-in grün und die andere Teilmenge in rot gefärbt ist, visualisiert. Man kann daran gut erkennen, dass es in solchen Graphen
-ausschließlich Kanten gibt, die einen Knoten der einen Teilmenge (rot) mit einem Knoten der anderen Teilmenge (grün) verbinden,
+In Abb. \ref{fig:digression_bipartite_graph} ist die 2-Färbbarkeit eines bipartiten Graphen, bei welcher die eine Teilmenge
+in grün und die andere Teilmenge in rot gefärbt ist, visualisiert. Wie man sieht, existieren in solchen Graphen
+ausschließlich Kanten, welche einen Knoten der einen Teilmenge (rot) mit einem Knoten der anderen Teilmenge (grün) verbinden,
 jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 
 \begin{figure}[H]
@@ -496,7 +496,8 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 \end{figure}
 
 Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen Teilmenge mit jedem Knoten
-der anderen Teilmenge durch eine Kante verbunden ist.
+der anderen Teilmenge durch eine Kante verbunden ist. Der in Abb. \ref{fig:digression_bipartite_graph}
+dargestellte Graph ist dementsprechend nicht vollständig bipartit.
 
 \subsubsection{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 \label{sec:digression_mwpm}
@@ -525,18 +526,18 @@ Ein Minimum-Weight-Perfect-Matching ist ein günstigstes Perfect-Matching basier
           (D) edge node {} (F)
           (C) edge [red] node {} (F);
 \end{tikzpicture}
-\caption{\textsc{Beispiel für ein Perfect-Matching (rot).}}
+\caption{\textsc{Perfect-Matching (dargestellt in rot).}}
 \label{fig:perfect_matching}
 \end{figure}
 
 Der Algorithmus zur Berechnung von Minimum-Weight-Perfect-Matchings, welcher in den im Folgenden
 vorgestellten Heuristiken zum Einsatz kommt, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT}, trägt
 den Namen \textit{KuhnMunkresMinimalWeightBipartitePerfectMatching} und ist eine Implementation der
-sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen auf bipartiten Graphen.
+sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen in bipartiten Graphen.
 Die Laufzeitkomplexität der Implementation beträgt $O(n^3)$, wobei $n$ der Anzahl der Knoten im Graphen entspricht.
 Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cup T, E)$, wobei $S \cap T = \emptyset$ und
 $\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in E$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
-also $|S| = |T|$. Die Rückgabe ist ein Perfect-Matching der geringsten Kosten.
+also $|S| = |T|$. Bei der Rückgabe des Algorithmus handelt es sich um ein Perfect-Matching der geringsten Kosten.
 
 \subsubsection{Maximum-Cardinality-Matching (MCM)}
 \label{sec:digression_mcm}
@@ -588,17 +589,17 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
     \caption{\textsc{$|MCM| = 3$}}
     \label{fig:mcm_2}
   \end{subfigure}
-  \caption{\textsc{Beispiele für MCMs (dargestellt in rot).}}
+  \caption{\textsc{MCMs (dargestellt in rot).}}
   \label{fig:mcm_examples}
 \end{figure}
 
-Der Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, der in den im Folgenden
+Der Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, welcher in den im Folgenden
 vorgestellten Heuristiken Anwendung findet, stammt ebenfalls aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT} und trägt
 den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um eine Implementation von Edmonds' Blossom-Algorithmus,
 welcher MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
-Andernfalls wird das größte Non-Perfect-Matching berechnet.
+Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$. Wobei $n$ der Anzahl der Knoten
-und $m$ der Anzahl der Kanten im Graphen entspricht. Im Average-Case und somit in der Praxis ist der Algorithmus jedoch in der Regel effizienter.
+und $m$ der Anzahl der Kanten im Graphen entspricht. Im \textquote{Average-Case}, also im Regelfall, ist der Algorithmus jedoch effizienter.
 
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
@@ -618,11 +619,11 @@ Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet, denn au
 Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching und die Anzahl der nicht gematchten Knoten in der Summe nicht größer ist als $m$.
 
 Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
-Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in der sämtliche Items möglichst günstig einem
+Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem
 kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
 Eine Kante $\{i, q\} \in A$ zwischen einem Knoten $i \in V_1$ und einem Knoten $q \in V_2$ gibt an, dass das entsprechende Item oder Item-Paar $i$ dem jeweiligen Stack $q$ zugeordnet werden kann. Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
 aus $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2 \thinspace \exists \thinspace \{i, q\} \in A$.
-Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird, zum Stack $q$
+Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird, zum Stack $q$
 in der Storage-Area. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
 Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 
@@ -637,8 +638,7 @@ Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die
 das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items oder Item-Paars durch ein Dummy-Item
 verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem Stack zu den Kosten $0$ zugewiesen
 werden können, während eine Zuweisung echter Items und Item-Paare stets Kosten verursacht. Dementsprechend werden
-echte Items bei der Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zu Kosten $0$ zugewiesen
-werden.
+echte Items bei der Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
 
 Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als
 Stackzuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items und Item-Paare zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung der generierten Item-Paare und Unmatched Items zu den Stacks, welche die Placement-Constraints respektiert.
@@ -649,16 +649,17 @@ jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene St
 überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht.
 Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
 
+\pagebreak
+
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6\}$ sowie eine Stack-Kapazität von $b = 2$.
 Die Anzahl der zur Verfügung stehenden Stacks wird nun, wie in Abschnitt \ref{sec:test_data} geschildert,
 durch $m = \ceil{n / b} + 20 \%$ berechnet und entspricht somit $m = \ceil{7 / 2} + 20 \% = 4$.
-
 Die Stacking-Constraint-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
 Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph
-für die gegebenen Items generiert, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte
-\textsc{MCM} berechnet wird. Das in rot dargestellte Item 0 bleibt dabei unmatched.
+für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte
+\textsc{MCM} berechnet wird. Das in rot dargestellte Item $0$ verbleibt dabei als einziges Unmatched-Item.
 \begin{figure}[H]
   \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -718,7 +719,6 @@ für die gegebenen Items generiert, auf welchem anschließend das in Abb. \ref{f
 
 Die Kanten des in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellten \textsc{MCM} werden nun,
 wie in Abb. \ref{fig:item_pairs_b=2} dargestellt, als kompatible Item-Paare interpretiert.
-Item $0$ verbleibt dabei als einziges Unmatched Item.
 
 \begin{figure}[H]
 \centering
@@ -733,18 +733,19 @@ Item $0$ verbleibt dabei als einziges Unmatched Item.
   \label{fig:item_pairs_b=2}
 \end{figure}
 
-Nun geht es darum, eine Zuweisung der Item-Paare und Unmatched Items zu Stacks zu finden, welche die Placement Constraints
+Nun geht es darum, eine Zuweisung der Item-Paare und Unmatched Items zu Stacks zu finden, welche die Placement-Constraints
 respektiert. Dazu wird zunächst der vollständig bipartite Graph in Abb. \ref{fig:bipartite_graph} generiert, welcher
 die Items in der einen Partition und die Stacks in der anderen Partition enthält.
 Dieser Graph ist, wie in Kapitel \ref{sec:placement_restrictions} erläutert, vollständig bipartit, da die Placement Constraints indirekt
-über hohe Kostenwerte umgesetzt werden. Eine Zuweisung, die den Placement Constraints widerspricht, wird im \textsc{MWPM}
-nur dann vorgenommen, wenn keine günstigere Variante existiert, d.h., wenn eine solche Zuweisung vollführt wird,
+über hohe Kostenwerte umgesetzt werden. Da bereits beide Partitionen gleich groß sind, müssen in diesem
+Fall keine Dummy-Items eingeführt werden. Eine Zuweisung, die den Placement Constraints widerspricht, wird im \textsc{MWPM}
+nur dann vorgenommen, wenn keine günstigere Variante existiert, d.h. wenn eine solche Zuweisung vollführt wird,
 dann existiert keine Lösung, die sämtliche Placement Constraints respektiert.
 
 \pagebreak
 
 Das im bipartiten Graphen berechnete \textsc{MWPM} ist in Abb. \ref{fig:mwpm_b=2} dargestellt. Jede
-Kante entspricht dabei der Zuweisung eines Item-Paars bzw. Unmatched Items zu einem Stack.
+Kante entspricht dabei der Zuweisung eines Item-Paars bzw. Unmatched-Items zu einem Stack.
 Die entsprechende Interpretation als zulässige Stack-Zuweisungen ist in Abb. \ref{fig:stacking_solution} visualisiert.
 
 \begin{figure}[H]
@@ -832,29 +833,26 @@ Die entsprechende Interpretation als zulässige Stack-Zuweisungen ist in Abb. \r
 Zuletzt muss ggf. noch die Reihenfolge innerhalb der Stacks angepasst werden, da es sich bisher nur um zulässige Zuweisungen,
 nicht aber um eine zulässige Ordnung der Items innerhalb der Stacks handelt.
 Da jedoch sichergestellt ist, dass die Item-Paare kompatibel, d.h. in mindestens einer Richtung stackbar sind,
-ist dies trivial durch Anwendung des Algorithmus \ref{alg:algo1} möglich.
+ist dies trivial in beschriebener Weise möglich.
 
 \subsection{Vergleich der $b = 2$ Solver}
 \label{sec:solver_comp_b=2}
 
-In diesem Kapitel werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen.
-Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver
-und Test-Instanz-Konfiguration, die Laufzeit und die jeweilige prozentuale Abweichung vom Optimum.
+In diesem Kapitel werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeit und die jeweilige prozentuale Abweichung des Zielfunktionswerts vom Optimum.
 
 Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von CPLEX 12.8.0 implementiert
 und gelöst. Dabei wurde CPLEX über den Parameter \textsc{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
 Priorität vor der Optimalität hat.\cite{IBM_DOC}
 
-Die in dieser Arbeit entwickelten Heuristiken wurden ebenfalls in der Programmiersprache Java implementiert.
-
-Sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
+Die in dieser Arbeit entwickelten Heuristiken wurden ebenfalls in der Programmiersprache Java implementiert
+und sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
 
 \pagebreak
 
 \textbf{Kleine Instanzen (s)}
 
-Zunächst zum experimentellen Vergleich der Solver für in Kapitel \ref{sec:instance_sizes} als klein definierte Instanzen,
-bei denen es darum geht, 100 eintreffende Items in die Storage-Area zu verladen.
+Zunächst zum experimentellen Vergleich der Solver für in Kapitel \ref{sec:test_data} als klein definierte Instanzen,
+bei denen es darum geht, $100$ eintreffende Items in die Storage-Area zu verladen.
 
 Die Diagramme in Abb. \ref{fig:instance_cov_b=2_s} zeigen jeweils die Instance-Coverage der einzelnen Solver.
 In \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil der gelösten Instanzen pro Solver bei einem Zeitlimit
@@ -917,7 +915,7 @@ Aufgrund der Tatsache, dass CPLEX nur dann vor dem Zeitlimit terminiert, wenn di
 ersichtlich, dass die 3-Index-Formulierung sämtliche Instanzen nach etwa $1s$ optimal löst während die Bin-Packing-Formulierung in wenigen Fällen durch das Zeitlimit gestoppt wird.\newline
 Bei den Instanzen $01$ und $08$, bei denen die Bin-Packing-Formulierung durch das Zeitlimit gestoppt wurde und dementsprechend nicht
 notwendigerweise eine optimale Lösung gefunden hat, konnte die Heuristik, wie man Abb. \ref{fig:b=2_s_costs} entnehmen kann, sogar
-bessere Zielfunktionswerte erzielen, als die Bin-Packing-Formulierung.\newline
+bessere Zielfunktionswerte erzielen als die Bin-Packing-Formulierung.\newline
 Die weiteren Zielfunktionswerte der Bin-Packing-Formulierung sind in Abb. \ref{fig:b=2_s_costs}  deshalb nicht zu erkennen,
 weil sie durch die Zielfunktionswerte der 3-Index-Formulierung verdeckt werden. Da beide Formulierungen die entsprechenden
 Instanzen optimal lösen, kommen sie jeweils zum selben Zielfunktionswert.
@@ -941,9 +939,9 @@ Instanzen optimal lösen, kommen sie jeweils zum selben Zielfunktionswert.
 \end{figure}
 
 Die exakten Ergebnisse der MIP-Formulierungen sind den Tabellen in Abb. \ref{fig:table} zu entnehmen.
-\textquote{Optimal} bezeichnet den prozentualen Anteil der Instanzen, die optimal gelöst wurden. Bei der \textquote{Laufzeit} handelt
-es sich um die durchschnittliche Laufzeit pro Instanz in Sekunden und \textquote{Abweichung} gibt die durchschnittliche prozentuale Abweichung
-vom Optimum pro Instanz an.
+\textquote{Optimal} bezeichnet den prozentualen Anteil der Instanzen, die optimal gelöst wurden. Bei der Laufzeit handelt
+es sich um die durchschnittliche Laufzeit pro Instanz in Sekunden und die Abweichung gibt die durchschnittliche prozentuale Abweichung
+vom optimalen Zielfunktionswert pro Instanz an.
 
 \begin{figure}[H]
 \centering
@@ -995,19 +993,19 @@ vom Optimum pro Instanz an.
 \label{fig:table}
 \end{figure}
 
-Abb. \ref{fig:table} zeigt, dass die 3-Index-Formulierung bei jedem betrachteten Zeitlimit eine geringere Laufzeit benötigt
+Abbildung \ref{fig:table} zeigt, dass die 3-Index-Formulierung bei jedem betrachteten Zeitlimit eine geringere Laufzeit benötigt
 als die Bin-Packing-Formulierung und somit zu besseren Ergebnissen kommt.
 
 Da die Zeitlimits aufgrund der geringen Laufzeit für die Heuristik keine Rolle spielen, kommt diese stets zum selben Ergebnis.
 Sie weicht durchschnittlich um $2.0 \%$ vom Optimum ab und benötigt dafür eine Laufzeit von nur $0.02s$.
 
 Trotz dieser guten Ergebnisse der Heuristik, besteht aufgrund der Tatsache, dass die 3-Index-Formulierung sämtliche Instanzen
-mit einer durchschnittlichen Laufzeit von $1.1s$ optimal löst, aus praktischer Perspektive vermutlich eher kein großer Bedarf für
+mit einer durchschnittlichen Laufzeit von $1.1s$ optimal löst, aus praktischer Perspektive vermutlich kein großer Bedarf für
 eine Laufzeitverbesserung durch eine Heuristik.
 
 \textbf{Mittelgroße Instanzen (m)}
 
-Interessanter wird es bereits beim Vergleich der Solver für in Kapitel \ref{sec:instance_sizes} als mittelgroß bezeichnete Instanzen,
+Interessanter wird es bereits beim Vergleich der Solver für in Kapitel \ref{sec:test_data} als mittelgroß bezeichnete Instanzen,
 bei denen es darum geht, $300$ eintreffende Items in die Storage-Area zu verladen.
 In Abb. \ref{fig:instance_cov_b=2} ist erneut die Instance-Coverage der einzelnen Solver dargestelllt.
 
@@ -1056,9 +1054,9 @@ kommen sie stets zum selben Kostenwert (vgl. Abb \ref{fig:b=2_m_costs}),
 wobei die Bin-Packing-Einträge in der Visualisierung erneut durch die Einträge der 3-Index-Formulierung verdeckt werden.
 In Abb. \ref{fig:b=2_m_runtimes} ist gut zu erkennen, dass die Bin-Packing-Formulierung deutlich längere Laufzeiten als die 3-Index-Formulierung
 und die Heurisktik benötigt, wobei die Heuristik noch einmal deutlich schneller ist. Dabei handelt es sich allerdings um die absoluten Laufeiten.
-Im Wesentlichen ist der Laufzeitunterschied zwischen der Heuristik und der 3-Index-Formulierung deutlich größer, als der zwischen den beiden
-MIP-Formulierungen. Zwischen der Heuristik, die durchschnittlich $0.1s$ benötigt und der 3-Index-Formulierung, die durchschnittlich $107.8s$ benötigt (vgl. Abb. \ref{fig:res_b=2_m_c}), besteht ein Faktor von $1077.0$ während zwischen den beiden MIP-Formulierungen nur ein Faktor von
-$7.1$ besteht. Die absolute Darstellung ist in diesem Fall also etwas irreführend, da die Heuristik deutlich schneller ist als beide MIP-Formulierungen. Trotzdem würde man in diesem Fall aus praktischer Perspektive die 3-Index-Formulierung klar der Bin-Packing-Formulierung vorziehen, dieser Sachverhalt ist in Abb. \ref{fig:b=2_m_runtimes} gut dargestellt.
+Im Wesentlichen ist der Laufzeitunterschied zwischen der Heuristik und der 3-Index-Formulierung deutlich größer, als jener zwischen den beiden
+MIP-Formulierungen. Zwischen der Heuristik, welche durchschnittlich $0.1s$ benötigt und der 3-Index-Formulierung, die durchschnittlich $107.8s$ benötigt (vgl. Abb. \ref{fig:res_b=2_m_c}), besteht ein Faktor von $1077.0$ während zwischen den beiden MIP-Formulierungen nur ein Faktor von
+$7.1$ besteht. Die absolute Darstellung ist in diesem Fall also etwas irreführend, da die Heuristik deutlich schneller ist als beide MIP-Formulierungen. Trotzdem würde man in diesem Fall aus praktischer Perspektive die 3-Index-Formulierung klar der Bin-Packing-Formulierung vorziehen, dieser Sachverhalt ist in Abb. \ref{fig:b=2_m_runtimes} gut erkennbar.
 
 \begin{figure}[H]
 \centering
@@ -1142,11 +1140,12 @@ $73.7s$ um sämtliche Instanzen optimal zu lösen. Die Heuristik dagegen benöti
 mit einer durchschnittlichen Abweichung vom Optimum von $0.8 \%$ zu lösen.
 
 Dieser Laufzeitunterschied ist so erheblich, dass die gerine Abweichung vom Optimum in der Praxis vermutlich in Kauf genommen werden kann,
-wenn sich damit eine derart große Laufzeitersparnis ergibt. In dieser Kategorie präsentiert sich die Heuristik also als sehr gute Alternative.
+wenn sich dadurch eine derart große Laufzeitersparnis ergibt. In dieser Kategorie stellt sich die Heuristik demzufolge als sehr gute Alternative
+heraus.
 
 \textbf{Große Instanzen (l)}
 
-Zuletzt werden die Solver für die in Kapitel \ref{sec:instance_sizes} als groß bezeichneten Instanzen, bei denen es darum geht,
+Zuletzt werden die Solver für die in Kapitel \ref{sec:test_data} als groß bezeichneten Instanzen, bei denen es darum geht,
 $500$ eintreffende Items in die Storage-Area zu verladen, verglichen. In dieser Kategorie wurden noch einmal größere Zeitlimits von
 $15$, $30$ und $45$ Minuten betrachtet.
 
@@ -1173,7 +1172,7 @@ In diesem Szenario ist die 3-Index-Formulierung der Bin-Packing-Formulierung fol
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_2700s.png}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_2700s.png}
 \caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_cov_b=2_l_c}
 \end{subfigure}
@@ -1200,14 +1199,14 @@ konkurrenzfähig ist.
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_2700s.png}
+\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_2700s.png}
 \caption{\textsc{Laufzeiten bei $45min$ Limit}}
 \label{fig:b=2_l_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_2700s.png}
+\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_2700s.png}
 \caption{\textsc{Kosten bei $45min$ Limit}}
 \label{fig:b=2_l_costs}
 \end{subfigure}
@@ -1220,7 +1219,7 @@ entnehmen kann, dass die 3-Index-Formulierung mit einer durchschnittlichen Laufz
 optimal löst (vgl. Abb. \ref{fig:res_b=2_l_c}). Die Heuristik benötigt allerdings nur durchschnittlich $0.7s$ pro Instanz und
 weicht auch nur um im Durchschnitt $0.6 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen,
 noch gravierende Laufzeitunterschied und die nur sehr geringe Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis,
-wenn geringe Abweichungen gestattet sind, bevorzugt werden sollte.
+wenn geringe Abweichungen gestattet sind, klar bevorzugt werden sollte.
 
 \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
@@ -1273,7 +1272,7 @@ wenn geringe Abweichungen gestattet sind, bevorzugt werden sollte.
 Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität $b = 2$ in der Kategorie der kleinen Instanzen
 aufgrund der geringen Laufzeit der MIP-Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht.
 Anders in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik bei nur kleinen Abweichungen zu einer
-derart großen Laufzeiteinparung führt, dass sie eine für die Praxis relevante Alternative darstellt.
+derart großen Laufzeiteinparung führt, dass sie eine in der Praxis relevante Alternative darstellt.
 
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
@@ -1970,21 +1969,21 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_1800s.png}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
 \caption{\textsc{Zeitlimit} $30min$}
 \label{fig:instance_coverage_b=3_l_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_5400s.png}
 \caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_coverage_b=3_l_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/na.png}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_7200s.png}
 \caption{\textsc{Zeitlimit} $60min$}
 \label{fig:instance_coverage_b=3_l_c}
 \end{subfigure}
