@@ -134,7 +134,7 @@ Problem not solved.
 
 solved with: SP.constructive_heuristics.ThreeCapHeuristic
 time limit: 1800 s
-time to solve: 0,16 s
+time to solve: 1.07 s
 objective value: 26223.0
 
 stacks (top to bottom):

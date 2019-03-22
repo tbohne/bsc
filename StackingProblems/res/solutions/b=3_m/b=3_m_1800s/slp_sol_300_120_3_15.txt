@@ -258,7 +258,7 @@ stack 119:    119 185 228
 
 solved with: SP.constructive_heuristics.ThreeCapHeuristic
 time limit: 1800 s
-time to solve: 0,16 s
+time to solve: 1.01 s
 objective value: 26224.0
 
 stacks (top to bottom):
