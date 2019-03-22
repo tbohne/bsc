@@ -330,7 +330,6 @@ public class ThreeCapHeuristic {
             ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
             bestSol = this.getBestSolution(solutions);
             bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
-
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
