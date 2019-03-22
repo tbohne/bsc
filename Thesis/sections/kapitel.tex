@@ -1388,7 +1388,12 @@ Rating-Systems ermöglicht, um eine möglichst geringe Laufzeit zu gewährleiste
 gesetzt, so wird das initiale Ergebnis des \textsc{MCM} als einzige Liste von Item-Paaren im Merge-Prozess verwendet und
 resultiert schließlich auch nur in einer einzigen Lösung.
 Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit pro Instanz in der Kategorie der großen
-Instanzen, in welchen es die größte Auswirkung auf die Laufzeiten zeigt, von $.$ auf $.$. Dabei wird nicht in jedem Fall ein besserer Zielfunktionswert erzielt, die durchschnittlichen Kosten verringern sich jedoch von $.$ auf $.$.
+Instanzen, in welcher es die größte Auswirkung auf die Laufzeiten zeigt, von $0.5 s$ auf $4.2 s$. Dabei verringert
+sich der Zielfunktionswert um durchschnittlich $0.007 \%$. Trotz der vergleichsweise geringen Verbesserung der durchschnittlichen Kosten,
+ist diese im Einzelfall durchaus relevant. Gerade in Anbetracht der ohnehin bereits geringen Abweichung der Heuristik vom Optimum,
+kann diese jenem durch die Option noch einmal näher kommen. Wenn also eine Laufzeit von wenigen Sekunden, welche
+im Vergleich zu den MIP-Formulierungen weiterhin um Größenordnungen schneller ist, akzeptabel ist, kann diese Option
+genutzt werden.
 
 \pagebreak
 
@@ -1682,6 +1687,12 @@ innerhalb der Stacks angepasst werden muss.
 
 In diesem Kapitel werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität
 von $b = 3$ miteinander verglichen. Dabei gilt weiterhin das in Kapitel \ref{sec:solver_comp_b=2} vorgestellte Setup.
+Der in Abschnitt \ref{sec:three_cap_heuristic} eingeführte Parameter \textit{prioritizeRuntime} zur Konfiguration der Heuristik
+wird in den folgenden Experimenten auf \textit{true} gesetzt, weil sowohl die Laufzeiten als auch die Zielfunktionswerte der einzelnen Solver
+miteinander verglichen werden und die Auswirkung dieser Option auf die Laufzeit größer ist, als jene auf den Zielfunktionswert.
+Ist in der Praxis eine Laufzeit von wenigen Sekunden akzeptabel und lediglich der Zielfunktionswert wesentlich,
+so kann dieser Parameter auf \textit{false} gesetzt werden und es lassen sich bei einigen der Instanzen geringfügig bessere
+Zielfunktionswerte erzielen.
 
 \textbf{Kleine Instanzen (s)}
 
