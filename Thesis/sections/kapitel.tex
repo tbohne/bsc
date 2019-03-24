@@ -1394,8 +1394,6 @@ ist diese im Einzelfall durchaus relevant. Gerade in Anbetracht der ohnehin bere
 kann diese jenem durch Verwendung des Rating-Systems noch einmal näher kommen. Wenn also eine Laufzeit von wenigen Sekunden, welche
 die MIP-Formulierungen weiterhin um Größenordnungen unterbietet, akzeptabel ist, sollte dies in Betracht gezogen werden.
 
-\pagebreak
-
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
 prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden
@@ -1468,8 +1466,6 @@ vertauscht und der Prozess startet für diesen Stack erneut. Ein vollständig ge
 Strategie nach spätestens drei Tausch-Operationen korrekt sortiert. Durch die bei der Zuweisung geprüfte
 Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 
-\pagebreak
-
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ sowie eine Stack-Kapazität von $b = 3$. Die Anzahl der
@@ -1536,8 +1532,6 @@ Dementsprechend wird Item $7$ dem Paar $(3, 4)$ zugeordnet.
 \caption{\textsc{MCM aus Item-Paaren und Unmatched-Items.}}
 \label{fig:mcm_for_pairs_and_unmatched}
 \end{figure}
-
-\pagebreak
 
 Abbildung \ref{fig:intermediate_result} zeigt das bis hierher generierte Zwischenergebnis bestehend aus Tripeln, Paaren
 und Unmatched Items.
@@ -1659,8 +1653,6 @@ in Abb. \ref{fig:mwpm} dargestellt ist.
 \caption{}
 \label{}
 \end{figure}
-
-\pagebreak
 
 Die Kanten des \textsc{MWPM} in Abb. \ref{fig:mwpm} werden als Stack-Zuweisungen interpretiert.
 Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet. Wobei wiederum gegebenenfalls die Reihenfolge
@@ -1960,9 +1952,9 @@ um mehrere Größenordnungen wohl hinreichende Motivation, um diese jeweils sehr
 
 \textbf{Große Instanzen (l)}
 
-Zuletzt werden die Solver für die in Kapitel \ref{sec:instance_sizes} als groß bezeichneten Instanzen,
-bei denen es darum geht, 500 eintreffende Items in die Storage-Area zu verladen, verglichen.
-In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
+Zuletzt werden die Solver für die in Kapitel \ref{sec:test_data} als groß bezeichneten Instanzen,
+bei denen es darum geht, $500$ eintreffende Items in die Storage-Area zu verladen, verglichen.
+In dieser Kategorie werden Zeitlimits von $45, 90$ und $120$ Minuten pro Instanz betrachtet.
 
 \begin{figure}[H]
 \centering
@@ -1970,23 +1962,42 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
-\caption{\textsc{Zeitlimit} $30min$}
+\caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_coverage_b=3_l_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_5400s.png}
-\caption{\textsc{Zeitlimit} $45min$}
+\caption{\textsc{Zeitlimit} $90min$}
 \label{fig:instance_coverage_b=3_l_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_7200s.png}
-\caption{\textsc{Zeitlimit} $60min$}
+\caption{\textsc{Zeitlimit} $120min$}
 \label{fig:instance_coverage_b=3_l_c}
 \end{subfigure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_l_7200s.png}
+\caption{\textsc{Laufzeiten bei $120min$ Limit}}
+\label{fig:b=3_l_runtimes}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_l_7200s.png}
+\caption{\textsc{Kosten bei $120min$ Limit}}
+\label{fig:b=3_l_costs}
+\end{subfigure}
+\caption{}
+\label{fig:res_plots_b=3_l}
+\end{figure}
 
 \caption{}
 \label{}
@@ -1999,11 +2010,11 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{red}{0 \%}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
-    \textbf{Abweichung} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
+    \textbf{Optimal} & $ 0 \%$ & $ 0 \%$ \\ \hline
+    \textbf{Laufzeit} & $---$ & $---$ \\ \hline
+    \textbf{Abweichung} & $---$ & $---$ \\ \hline
 \end{tabular}}
-\caption{\textsc{Zeitlimit} $30min$}
+\caption{\textsc{Zeitlimit} $45min$}
 \label{}
 \end{subfigure}
 % $\quad\quad\quad\quad$
@@ -2013,11 +2024,11 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{red}{0 \%}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{---}$ & $\textcolor{red}{---}$ \\ \hline
-    \textbf{Abweichung} & $\textcolor{red}{---}$ &$\textcolor{red}{---}$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{80 \%}$ & $ \textcolor{red}{0 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{mygreen}{4511.5}$ & $\textcolor{red}{---}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{mygreen}{0 \%}$ &$\textcolor{red}{---}$ \\ \hline
 \end{tabular}}
-\caption{\textsc{Zeitlimit} $45min$}
+\caption{\textsc{Zeitlimit} $90min$}
 \label{}
 \end{subfigure}
 % \end{figure}
@@ -2028,14 +2039,21 @@ In dieser Kategorie werden Zeitlimits von $15, 30$ und $45$ Minuten betrachtet.
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $-tbd-$ & $-tbd-$ \\ \hline
-    \textbf{Laufzeit} & $-tbd-$ & $-tbd-$ \\ \hline
-    \textbf{Abweichung} & $-tbd-$ & $-tbd-$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{mygreen}{100 \%}$ & $ \textcolor{red}{15 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{mygreen}{4022.9}$ & $\textcolor{red}{6339.3}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{mygreen}{0 \%}$ &$\textcolor{red}{0.13 \%}$ \\ \hline
 \end{tabular}}
-\caption{\textsc{Zeitlimit} $60min$}
-\label{}
+\caption{\textsc{Zeitlimit} $120min$}
 \end{subfigure}
+\caption{\textsc{MIP-Ergebnisse.}}
+\label{}
 \end{figure}
+
+Die Heuristik ist erneut in keinem Fall vom Zeitlimit betroffen, da diese mit einer durchschnittlichen Laufzeit von
+$3.9s$ pro Instanz sämtliche Instanzen löst. Dabei weicht der Zielfunktionswert im Durchschnitt nur um $0.17 \%$ vom
+Optimum ab.
+
+\textbf{Fazit}
 
 \pagebreak
 
