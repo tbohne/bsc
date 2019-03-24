@@ -251,11 +251,22 @@ Wie \citet{Bruns2015} zeigten, handelt es sich bei dem Zulässigkeitsproblem mit
 \subsection{Zielfunktion}
 \label{sec:objective}
 
-Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine möglichst günstige Einlagerung
-sämtlicher \textit{Items}, d.h. die Zielfunktion entspricht der Minimierung der Transportkosten.
-Dabei haben Zulässigkeit und geringe Laufzeit Priorität.
-Eine Lösung wird dann als zulässig betrachtet, wenn sämtliche \textit{Items} unter Berücksichtigung der \textit{Stacking}- und \textit{Placement-Constraints} sowie der \textit{Stack}-Kapazität, eingelagert wurden.
+Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine möglichst günstige
+Einlagerung sämtlicher Items, d.h. die Zielfunktion entspricht der Minimierung der Transportkosten.
+Dabei haben Zulässigkeit und geringe Laufzeit Priorität. Eine Lösung wird dann als zulässig betrachtet,
+wenn sämtliche Items unter Berücksichtigung der Stacking- und Placement-Constraints sowie der Stack-Kapazität, eingelagert werden.
 
+Der Fokus auf Zulässigkeit äußert sich darin, dass zunächst stets versucht wird, möglichst wenige der zur Verfügung stehenden Stacks zu verwenden, weshalb die Zielfunktion im Grunde zunächst darin besteht, die Anzahl der verwendeten Stacks zu minimieren bzw. die Anzahl der vollständig gefüllten Stacks zu maximieren, damit möglichst jede Instanz zumindest zulässig gelöst wird.
+
+Erst im Anschluss daran werden die Transportkosten minimiert. Im Wesentlichen handelt es sich daher
+um eine Kombination zweier Zielfunktionen. Zunächst geht es darum, den zur Verfügung stehenden Platz in
+der Storage-Area durch initiales Generieren möglichst vieler $b$-Tupel von Items, möglichst ökonomisch zu nutzen.
+Dabei werden noch keine Kosten minimiert. Anschließend geht es darum, diese $b$-Tupel möglichst günstig
+den zur Verfügung stehenden Stacks zuzuweisen.
+
+Ein ausschließlicher Fokus auf Kostenminimierung wäre umsetzbar, indem zuletzt ausgewählte $b$-Tupel
+von Items wieder separiert und jeweils eigenen Stacks zugewiesen würden, solange freie Stacks zur Verfügung
+stünden und sich infolgedessen Kosten einsparen ließen. Davon wird in dieser Arbeit abgesehen, da es in der Praxis durchaus sinnvoll ist, den zur Verfügung stehenden Platz möglichst ökonomisch zu nutzen und nicht bedingungslos Kosten zu minimieren und dabei viele lediglich partiell gefüllte Stacks zu generieren.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -2054,6 +2065,12 @@ $3.9s$ pro Instanz sämtliche Instanzen löst. Dabei weicht der Zielfunktionswer
 Optimum ab.
 
 \textbf{Fazit}
+Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität
+b = 2 in der Kategorie der kleinen Instanzen aufgrund der geringen Laufzeit der MIP-
+Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht. Anders
+in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik
+bei nur kleinen Abweichungen zu einer derart großen Laufzeiteinparung führt, dass sie
+eine in der Praxis relevante Alternative darstellt.
 
 \pagebreak
 
@@ -2166,3 +2183,9 @@ In jeder Iteration wird die gegenwärtige Lösung demnach durch eine benachbarte
 
 \section{Fazit}
 \label{sec:conclusion}
+
+% TODO: to be elaborated
+Die MIP-Formulierungen könnten auch deshalb noch etwas bessere Zielfunktionswerte liefern, weil
+diese ausschließlich die Kosten minimieren.
+Die Heuristiken betrachten, wie in Kapitel \ref{sec:stacking_problems} erläutert, eine Kombination zweier Zielfunktionen
+und gehen dementsprechend über einen reinen Fokus auf Kostenminimierung hinaus.
