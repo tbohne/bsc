@@ -1479,26 +1479,41 @@ Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ sowie eine Stack-Kapazität von $b = 3$. Die Anzahl der
-zur Verfügung stehenden Stacks von $m = 4$ ergibt sich basierend auf der Beschreibung in Abschnitt \ref{sec:test_data}.
+zur Verfügung stehenden Stacks von $m = 4$ ergibt sich basierend auf der Beschreibung aus Abschnitt \ref{sec:test_data}.
 
-Zunächst wird der Stacking-Constraint-Graph für die Item-Menge $I$ generiert, auf welchem dann analog zum Beispiel aus Abschnitt
-\ref{sec:two_cap_heuristic} ein \textsc{MCM} berechnet wird. In Abb. \ref{fig:pairs_and_unmatched} ist das Ergebnis dargestellt,
-welches die Kanten des \textsc{MCM} interpretiert als Item-Paare in grün zeigt. Die als unmatched verbleibenden Items sind in rot dargestellt.
+Zunächst wird, wie in Abschnitt \ref{sec:test_data} beschrieben, der Stacking-Constraint-Graph für die Item-Menge $I$ generiert,
+auf welchem anschließend analog zum Beispiel aus Abschnitt \ref{sec:two_cap_heuristic} ein \textsc{MCM} berechnet wird.
+In Abb. \ref{fig:item_pairs_example_b=3} ist das Ergebnis dargestellt, welches die Kanten des \textsc{MCM} interpretiert
+als Item-Paare zeigt.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0, 2}}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{\textcolor{mygreen}{1, 9}}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{\textcolor{mygreen}{5, 6}}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{\textcolor{red}{7}}$};
-        \node[state] (F) [thick, right of=E] {$\boldsymbol{\textcolor{red}{8}}$};
+        \node[state] (A) [thick] {$\boldsymbol{0, 1}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 3}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{4, 6}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{5, 7}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{8, 9}$};
         \path;
 \end{tikzpicture}
-\caption{\textsc{Item-Paare und Unmatched-Items.}}
-\label{fig:pairs_and_unmatched}
+\caption{\textsc{Resultierende Item-Paare}.}
+\label{fig:item_pairs_example_b=3}
 \end{figure}
+
+Anschließend geht es darum, aus den in Abb. \ref{fig:item_pairs_example_b=3} dargestellten Paaren von Items möglichst viele
+Tripel von Items zu mergen. Zunächst muss allerdings basierend auf dem Rating-System entschieden werden, welche
+Paare wieder separiert werden. Daraus ergeben sich die Folgenden unterschiedlich sortierten Listen von Item-Paaren:
+\begin{figure}[H]
+\begin{gather*}
+  [(8, 9), (5, 7), (4, 6), (2, 3), (0, 1)] \\
+  [(0, 1), (8, 9), (5, 7), (4, 6), (2, 3)]
+\end{gather*}
+\caption{\textsc{Unterschiedlich sortierte Listen der Item-Paare}.}
+\label{fig:lists_of_pairs}
+\end{figure}
+Es ergeben sich dabei in zuvor beschriebenr Weise $13$ potenziell unterschiedlich sortierte Listen von Item-Paaren.
+In diesem Fall ergeben sich aufgrund der geringen Anzahl an Paaren jedoch lediglich zwei voneinander unterschiedliche Sortierungen
+(vgl. Abb. \ref{fig:lists_of_pairs}).
 
 Anschließend wird der in Abb. \ref{fig:graph_for_pairs_and_unmatched} dargestellte Graph generiert, welcher die Paare und
 Unmatched Items als Knoten enthält. Eine Kante zwischen einem Unmatched Item und einem Paar bedeutet, dass dieses Unmatched
