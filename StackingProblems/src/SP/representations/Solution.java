@@ -25,6 +25,7 @@ public class Solution {
      */
     public Solution() {
         this.empty = true;
+        this.filledStorageArea = new int[0][];
     }
 
     /**
@@ -297,7 +298,7 @@ public class Solution {
      */
     public int computeCosts() {
         if (this.empty) {
-            return 9999999;
+            return Integer.MAX_VALUE;
         }
         int costs = 0;
         for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
