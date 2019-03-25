@@ -2064,15 +2064,29 @@ Die Heuristik ist erneut in keinem Fall vom Zeitlimit betroffen, da diese mit ei
 $3.9s$ pro Instanz sämtliche Instanzen löst. Dabei weicht der Zielfunktionswert im Durchschnitt nur um $0.17 \%$ vom
 Optimum ab.
 
-\textbf{Fazit}
+\textbf{Fazit}\newline
+% TODO: write conclusion for b=3 (b=2 template atm)
 Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität
-b = 2 in der Kategorie der kleinen Instanzen aufgrund der geringen Laufzeit der MIP-
+$b = 3$ in der Kategorie der kleinen Instanzen aufgrund der geringen Laufzeit der MIP-
 Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht. Anders
 in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik
 bei nur kleinen Abweichungen zu einer derart großen Laufzeiteinparung führt, dass sie
 eine in der Praxis relevante Alternative darstellt.
 
-\pagebreak
+An jener Stelle in der Heuristik, an welcher das Rating-System zum Einsatz kommt, um unterschiedlich sortierte
+Listen der Item-Paare zu bilden, hätten zusätzlich zufällige \textquote{Shuffles} genutzt werden können,
+um weitere Permutationen zu generieren. Besonders bei einer hohen Anzahl solcher Shuffles,
+kann dabei mitunter ein besserer Zielfunktionswert erzielt werden.
+
+Dieser Ansatz wird jedoch aus zwei Gründen in dieser Arbeit nicht verfolgt.
+Zunächst ist eine verhältnismäßig große Anzahl solcher Shuffles vonnöten um in manchen Fällen
+zu bessren Ergebnissen zu gelangen, was eine erhebliche Verlängerung der Laufzeit zur Folge hat.
+Des Weiteren führt ein solcher stochastischer Ansatz dazu, dass nicht mehr in jedem Fall für eine
+Instanz dasselbe Ergebnis generiert wird. Da es sich bei den theoretisch erreichbaren Verbesserungen
+jedoch in der Regel nur um minimale Verbesserungen handelt, die zum Preis einer extrem erhöhten Laufzeit
+kommen, wird dies nicht in Kauf genommen. Stattdessen handelt es sich bei der Heuristik, wie auch bei der
+Heuristik für $b = 2$ aus Abschnitt \ref{sec:two_cap_heuristic}, um ein deterministisches Verfahren,
+welches bei denselben Rahmenbedingungen stets zum selben Ergebnis kommt.
 
 \section{Verbesserungsverfahren}
 \label{sec:post_optimization}
