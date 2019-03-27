@@ -1486,7 +1486,7 @@ Zunächst wird, ebenfalls basierend auf der Beschreibung aus Abschnitt \ref{sec:
 für die Item-Menge $I$ generiert, auf welchem anschließend analog zum Beispiel aus Abschnitt \ref{sec:two_cap_heuristic} ein
 \textsc{MCM} berechnet wird. Dieser Schritt kann dementsprechend in Abschnitt \ref{sec:two_cap_heuristic} nachvollzogen werden
 und wird in diesem Beispiel übersprungen. In Abb. \ref{fig:item_pairs_example_b=3} ist das Ergebnis dargestellt,
-welches die Kanten dieses \textsc{MCM} interpretiert als Item-Paare zeigt.
+welches die Kanten dieses \textsc{MCM} interpretiert als kompatible Item-Paare zeigt.
 
 \begin{figure}[H]
 \centering
@@ -1666,7 +1666,8 @@ Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel, sowie das Item-Paa
 möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
 Dafür wird zunächst der vollständig bipartite Graph in Abb. \ref{fig:complete_bipartite} eingeführt.
 Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
-und die Stacks in der anderen Partition. Anschließend wird ein \textsc{MWPM} in diesem Graphen berechnet, welches
+und die Stacks in der anderen Partition. Da bereits beide Partitionen dieselbe Größe
+besitzen, müssen in diesem Fall keine Dummy-Items eingeführt werden. Anschließend wird ein \textsc{MWPM} in diesem Graphen berechnet, welches
 in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvor generierten Item-Tupel zu den Stacks entspricht.
 
 \begin{figure}[H]
