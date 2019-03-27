@@ -293,8 +293,8 @@ Pro Konfiguration werden 20 Instanzen generiert, damit aussagekräftige Ergebnis
 \textbf{Anzahl zur Verfügung stehender Stacks}
 
 Die Anzahl der \textit{Items} $n$ sowie die \textit{Stack}-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl
-zur Verfügung stehender \textit{Stacks} $m$ verwendet. Es gilt $m$ = $\ceil{n / b}$ + $20 \%$.
-Bei einer \textit{Stack}anzahl von $m$ = $\ceil{n / b}$ gäbe es überhaupt keinen Spielraum bei der \textit{Item}platzierung. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch unlösbar.
+zur Verfügung stehender \textit{Stacks} $m$ verwendet. Es gilt $m$ = $\ceil{\floor{\frac{n}{b}}$ + $20 \%}$.
+Bei einer \textit{Stack}anzahl von $m$ = $\floor{\frac{n}{b}}$ gäbe es überhaupt keinen Spielraum bei der \textit{Item}platzierung. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch unlösbar.
 Daher wurde zunächst ein durchaus geringer Spielraum von $20 \%$ eingeführt, der in weiteren Betrachtungen erhöht werden könnte.
 
 \textbf{Stacking Constraints}
@@ -666,7 +666,7 @@ Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints gen
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6\}$ sowie eine Stack-Kapazität von $b = 2$.
 Die Anzahl der zur Verfügung stehenden Stacks wird nun, wie in Abschnitt \ref{sec:test_data} geschildert,
-durch $m = \ceil{n / b} + 20 \%$ berechnet und entspricht somit $m = \ceil{7 / 2} + 20 \% = 4$.
+durch $m = \ceil{\floor{\frac{n}{b}} + 20 \%}$ berechnet und entspricht somit $m = \ceil{\floor{\frac{7}{2}} + 20 \%} = 4$.
 Die Stacking-Constraint-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
 Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph
 für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $0$ verbleibt dabei als einziges Unmatched-Item.
@@ -1479,7 +1479,8 @@ Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13\}$ sowie eine Stack-Kapazität von $b = 3$.
-Die Anzahl der zur Verfügung stehenden Stacks von $m = 5$ ergibt sich basierend auf der Beschreibung aus Abschnitt \ref{sec:test_data}.
+Die Anzahl der zur Verfügung stehenden Stacks ergibt sich, wie in Abschnitt \ref{sec:test_data} beschrieben,
+durch $m = \ceil{\floor{\frac{14}{3}} + 20 \%} = 5$.
 
 Zunächst wird, wie in Abschnitt \ref{sec:test_data} beschrieben, der Stacking-Constraint-Graph für die Item-Menge $I$ generiert,
 auf welchem anschließend analog zum Beispiel aus Abschnitt \ref{sec:two_cap_heuristic} ein \textsc{MCM} berechnet wird.
