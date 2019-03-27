@@ -1478,8 +1478,8 @@ Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 
 \textbf{Beispiel}
 
-Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ sowie eine Stack-Kapazität von $b = 3$. Die Anzahl der
-zur Verfügung stehenden Stacks von $m = 4$ ergibt sich basierend auf der Beschreibung aus Abschnitt \ref{sec:test_data}.
+Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13\}$ sowie eine Stack-Kapazität von $b = 3$.
+Die Anzahl der zur Verfügung stehenden Stacks von $m = 5$ ergibt sich basierend auf der Beschreibung aus Abschnitt \ref{sec:test_data}.
 
 Zunächst wird, wie in Abschnitt \ref{sec:test_data} beschrieben, der Stacking-Constraint-Graph für die Item-Menge $I$ generiert,
 auf welchem anschließend analog zum Beispiel aus Abschnitt \ref{sec:two_cap_heuristic} ein \textsc{MCM} berechnet wird.
@@ -1488,12 +1488,14 @@ als Item-Paare zeigt.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 1}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 3}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{4, 6}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{5, 7}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{8, 9}$};
+\begin{tikzpicture}[auto, transform shape, node distance=2cm,every node/.style={draw,fill=gray!40,circle,minimum size=100000mm}]
+        \node[state] (A) [thick] {$\boldsymbol{00, 01}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{02, 05}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{03, 04}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{06, 07}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{08, 09}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{10, 11}$};
+        \node[state] (G) [thick, right of=F] {$\boldsymbol{12, 13}$};
         \path;
 \end{tikzpicture}
 \caption{\textsc{Resultierende Item-Paare}.}
@@ -1505,112 +1507,165 @@ Tripel von Items zu mergen. Zunächst muss allerdings basierend auf dem Rating-S
 Paare wieder separiert werden. Daraus ergeben sich die Folgenden unterschiedlich sortierten Listen von Item-Paaren:
 \begin{figure}[H]
 \begin{gather*}
-  [(8, 9), (5, 7), (4, 6), (2, 3), (0, 1)] \\
-  [(0, 1), (8, 9), (5, 7), (4, 6), (2, 3)]
+  [(12, 13), (10, 11), (8, 9), (6, 7), (3, 4), (2, 5), (0, 1)] \\
+  [(8, 9), (12, 13), (0, 1), (10, 11), (6, 7), (3, 4), (2, 5)] \\
+  [(8, 9), (12, 13), (10, 11), (6, 7), (3, 4), (2, 5), (0, 1)]
 \end{gather*}
 \caption{\textsc{Unterschiedlich sortierte Listen der Item-Paare}.}
 \label{fig:lists_of_pairs}
 \end{figure}
 Es ergeben sich dabei in zuvor beschriebenr Weise $13$ potenziell unterschiedlich sortierte Listen von Item-Paaren.
-In diesem Fall ergeben sich aufgrund der geringen Anzahl an Paaren jedoch lediglich zwei voneinander unterschiedliche Sortierungen
-(vgl. Abb. \ref{fig:lists_of_pairs}).
+In diesem Fall ergeben sich u.a. aufgrund der geringen Anzahl an Paaren jedoch lediglich drei voneinander unterschiedliche
+Sortierungen (vgl. Abb. \ref{fig:lists_of_pairs}).
 
-Anschließend wird der in Abb. \ref{fig:graph_for_pairs_and_unmatched} dargestellte Graph generiert, welcher die Paare und
-Unmatched Items als Knoten enthält. Eine Kante zwischen einem Unmatched Item und einem Paar bedeutet, dass dieses Unmatched
-Item dem Paar zugeordnet werden kann, sodass ein kompatibles Tripel entsteht.
-In diesem Fall ist also lediglich die $7$ kompatibel zu zwei Paaren, zu $(3, 4)$ und zu $(5, 6)$.
+\pagebreak
 
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 2}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 9}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 4}$};
-        \node[state] (D) [thick, right of =C] {$\boldsymbol{5, 6}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{7}$};
-        \node[state] (F) [thick, right of=E] {$\boldsymbol{8}$};
-        \path
-          (E) edge [thick, bend right = 50] node {} (C)
-          (E) edge [thick] node {} (D);
-\end{tikzpicture}
-\caption{\textsc{Resultierender Kompatibilitätsgraph.}}
-\label{fig:graph_for_pairs_and_unmatched}
-\end{figure}
-
-Im Graph aus Abb. \ref{fig:graph_for_pairs_and_unmatched} wird nun ein \textsc{MCM} berechnet, welches
-in Abb. \ref{fig:mcm_for_pairs_and_unmatched} in grün dargestellt ist.
-Dementsprechend wird Item $7$ dem Paar $(3, 4)$ zugeordnet.
+Nun geht es darum, die ersten $\floor{\frac{7}{3.4}} = 2$ Paare zu separieren und möglichst sämtliche der dabei entstehenden
+Items den verbleibenden Paaren zuzuweisen. Für die erste der drei unterschiedlichen Sortierungen ergibt sich
+die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung in Paare, welche separiert werden (vgl. Abb. \ref{fig:split_pairs})
+und jene, denen die daraus resultierenden Items zugewiesen werden um Item-Tripel zu bilden (vgl. Abb. \ref{fig:assign_pairs}).
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{\textcolor{red}{0, 2}}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{\textcolor{red}{1, 9}}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
-        \node[state] (D) [thick, right of =C] {$\boldsymbol{\textcolor{red}{5, 6}}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{\textcolor{mygreen}{7}}$};
-        \node[state] (F) [thick, right of=E] {$\boldsymbol{\textcolor{red}{8}}$};
-        \path
-          (E) edge [thick, mygreen, bend right = 50] node {} (C)
-          (E) edge [thick] node {} (D);
-\end{tikzpicture}
-\caption{\textsc{MCM aus Item-Paaren und Unmatched-Items.}}
-\label{fig:mcm_for_pairs_and_unmatched}
-\end{figure}
-
-Abbildung \ref{fig:intermediate_result} zeigt das bis hierher generierte Zwischenergebnis bestehend aus Tripeln, Paaren
-und Unmatched Items.
-
-\begin{figure}[H]
+\begin{subfigure}[b]{\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{0, 2}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{1, 9}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{5, 6}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{8}$};
+        \node[state] (A) [thick] {$\boldsymbol{12, 13}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{10, 11}$};
         \path;
 \end{tikzpicture}
-\caption{\textsc{Zwischenergebnis.}}
-\label{fig:intermediate_result}
+\caption{\textsc{Split-Pairs}.}
+\label{fig:split_pairs}
+\end{subfigure}
+\begin{subfigure}[b]{\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{08, 09}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{06, 07}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{03, 04}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{02, 05}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{00, 01}$};
+        \path;
+\end{tikzpicture}
+\caption{\textsc{Assign-Pairs}.}
+\label{fig:assign_pairs}
+\end{subfigure}
+\caption{\textsc{Merge Vorbereitung}.}
+\label{fig:pre_merge_step}
 \end{figure}
 
-Es folgt der Schritt, in welchem versucht wird, die in Abb. \ref{fig:item_pairs} dargestellten verbleibenden Paare zu
-kompatiblen Tripeln zu mergen. In diesem Fall ist es möglich, die drei Paare zu den zwei kompatiblen Tripeln in
-\ref{fig:merge_result} zu mergen.
+Anschließend wird der in Abb. \ref{fig:bipartite_graph_pairs_and_unmatched} dargestellte bipartite Graph generiert,
+welcher die Paare in der einen Partition und die einzelnen Items, welche aus der Separation der Paare in Abb. \ref{fig:split_pairs} resultieren, in der anderen Partition enthält. Eine Kante zwischen einem einzelnen Item und einem Paar bedeutet,
+dass dieses Item dem Paar zugeordnet werden kann, sodass ein kompatibles Tripel entsteht.
+In Abb. \ref{fig:item_triple_mcm} ist das auf diesem Graphen berechnete \textsc{MCM} in grün dargestellt, in welchem
+sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(2, 5)$ wird dabei als einziges Paar nicht verwendet
+und verbleibt dementsprechend als Item-Paar.
 
 \begin{figure}[H]
 \centering
+
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 2}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 9}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{5, 6}$};
-        \path;
+        \node[state] (A) [thick] {$\boldsymbol{8, 9}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 4}$};
+        \node[state] (D) [thick, below of =C] {$\boldsymbol{2, 5}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{0, 1}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{12}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{13}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{10}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{11}$};
+        \path
+          (A) edge [thick] node {} (F)
+          (A) edge [thick] node {} (G)
+          (A) edge [thick] node {} (H)
+          (A) edge [thick] node {} (I)
+
+          (B) edge [thick] node {} (F)
+          (B) edge [thick] node {} (H)
+
+          (C) edge [thick] node {} (F)
+          (C) edge [thick] node {} (G)
+          (C) edge [thick] node {} (H)
+
+          (D) edge [thick] node {} (F)
+          (D) edge [thick] node {} (H)
+
+          (E) edge [thick] node {} (F)
+          (E) edge [thick] node {} (G)
+          (E) edge [thick] node {} (H)
+          (E) edge [thick] node {} (I);
 \end{tikzpicture}
-\caption{\textsc{Item-Paare}}
-\label{fig:item_pairs}
+\caption{\textsc{Bipartiter Graph}.}
+\label{fig:bipartite_graph_pairs_and_unmatched}
 \end{subfigure}
 \hspace{10pt}
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 5, 6}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 1, 9}$};
-        \path;
+        \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{8, 9}}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{\textcolor{mygreen}{6, 7}}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{\textcolor{mygreen}{3, 4}}$};
+        \node[state] (D) [thick, below of =C] {$\boldsymbol{\textcolor{red}{2, 5}}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{\textcolor{mygreen}{0, 1}}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{\textcolor{mygreen}{12}}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{\textcolor{mygreen}{13}}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{\textcolor{mygreen}{10}}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{\textcolor{mygreen}{11}}$};
+        \path
+          (A) edge [mygreen, thick] node {} (F)
+          (A) edge [thick] node {} (G)
+          (A) edge [thick] node {} (H)
+          (A) edge [thick] node {} (I)
+
+          (B) edge [thick] node {} (F)
+          (B) edge [mygreen, thick] node {} (H)
+
+          (C) edge [thick] node {} (F)
+          (C) edge [mygreen, thick] node {} (G)
+          (C) edge [thick] node {} (H)
+
+          (D) edge [thick] node {} (F)
+          (D) edge [thick] node {} (H)
+
+          (E) edge [thick] node {} (F)
+          (E) edge [thick] node {} (G)
+          (E) edge [thick] node {} (H)
+          (E) edge [mygreen, thick] node {} (I);
 \end{tikzpicture}
-\caption{\textsc{Merge-Ergebnis}}
-\label{fig:merge_result}
+\caption{\textsc{MCM}.}
+\label{fig:item_triple_mcm}
 \end{subfigure}
-\caption{}
-\label{fig:merge_step}
+
+\caption{\textsc{Item-Tripel Generierung.}}
+\label{fig:item_triple_generation}
 \end{figure}
 
-Dementsprechend existieren nun drei Item-Tripel und ein Unmatched Item, die im Folgenden jeweils einem Stack zugewiesen werden.
+\pagebreak
+
+Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welchem durch das
+\textsc{MCM} zusätzlich zum verbleibenden Item-Paar vier Item-Tripel generiert wurden.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{8, 9, 12}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{6, 7, 10}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 4, 13}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{0, 1, 11}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{2, 5}$};
+        \path;
+\end{tikzpicture}
+\caption{\textsc{Merge-Ergebnis.}}
+\label{fig:merge_result}
+\end{figure}
+
+Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel, sowie das Item-Paar, werden im Folgenden
+möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
 Dafür wird zunächst der vollständig bipartite Graph in Abb. \ref{fig:complete_bipartite} eingeführt.
-Dieser Graph enthält die Items bestehend aus drei Tripeln und einem Unmatched Item in der einen Partition
-und die Stacks in der anderen. Anschließend wird ein \textsc{MWPM} in diesem Graph berechnet, welches
+Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
+und die Stacks in der anderen. Anschließend wird ein \textsc{MWPM} in diesem Graphen berechnet, welches
 in Abb. \ref{fig:mwpm} dargestellt ist.
 
 \begin{figure}[H]
@@ -1618,81 +1673,100 @@ in Abb. \ref{fig:mwpm} dargestellt ist.
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{0, 5, 6}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{2, 1, 9}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{8}$};
+        \node[state] (A) [thick] {$\boldsymbol{8, 9, 12}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 10}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 4, 13}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{0, 1, 11}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{2, 5}$};
 
-        \node[state] (E) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (F) [thick, below of=E] {$\boldsymbol{S_2}$};
-        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_3}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_4}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_2}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_3}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_4}$};
+        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_5}$};
 
         \path
-          (A) edge [thick] node {} (E)
           (A) edge [thick] node {} (F)
           (A) edge [thick] node {} (G)
           (A) edge [thick] node {} (H)
+          (A) edge [thick] node {} (I)
+          (A) edge [thick] node {} (J)
 
-          (B) edge [thick] node {} (E)
           (B) edge [thick] node {} (F)
           (B) edge [thick] node {} (G)
           (B) edge [thick] node {} (H)
+          (B) edge [thick] node {} (I)
+          (B) edge [thick] node {} (J)
 
-          (C) edge [thick] node {} (E)
           (C) edge [thick] node {} (F)
           (C) edge [thick] node {} (G)
           (C) edge [thick] node {} (H)
+          (C) edge [thick] node {} (I)
+          (C) edge [thick] node {} (J)
 
-          (D) edge [thick] node {} (E)
           (D) edge [thick] node {} (F)
           (D) edge [thick] node {} (G)
-          (D) edge [thick] node {} (H);
+          (D) edge [thick] node {} (H)
+          (D) edge [thick] node {} (I)
+          (D) edge [thick] node {} (J)
+
+          (E) edge [thick] node {} (F)
+          (E) edge [thick] node {} (G)
+          (E) edge [thick] node {} (H)
+          (E) edge [thick] node {} (I)
+          (E) edge [thick] node {} (J);
 \end{tikzpicture}
-\caption{\textsc{Vollständig Bipartit}}
+\caption{\textsc{Vollständig Bipartit}.}
 \label{fig:complete_bipartite}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{3, 4, 7}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{0, 5, 6}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{2, 1, 9}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{8}$};
+        \node[state] (A) [thick] {$\boldsymbol{8, 9, 12}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 10}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 4, 13}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{0, 1, 11}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{2, 5}$};
 
-        \node[state] (E) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (F) [thick, below of=E] {$\boldsymbol{S_2}$};
-        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_3}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_4}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_2}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_3}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_4}$};
+        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_5}$};
 
         \path
-          (A) edge [thick] node {} (H)
+          (A) edge [thick] node {} (I)
           (B) edge [thick] node {} (F)
-          (C) edge [thick] node {} (G)
-          (D) edge [thick] node {} (E);
+          (C) edge [thick] node {} (J)
+          (D) edge [thick] node {} (H)
+          (E) edge [thick] node {} (G);
 \end{tikzpicture}
-\caption{\textsc{MWPM}}
+\caption{\textsc{MWPM}.}
 \label{fig:mwpm}
 \end{subfigure}
-\caption{}
+\caption{\textsc{Stack-Zuweisung}.}
 \label{}
 \end{figure}
 
 Die Kanten des \textsc{MWPM} in Abb. \ref{fig:mwpm} werden als Stack-Zuweisungen interpretiert.
-Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet. Wobei wiederum gegebenenfalls die Reihenfolge
-innerhalb der Stacks angepasst werden muss.
+Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet. Wobei die Reihenfolge
+innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
+
+Diese Lösung basiert auf der ersten der drei unterschiedlichen Sortierungen aus Abb. \ref{fig:lists_of_pairs}.
+Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die beiden übrigen Sortierungen
+ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
 
 \begin{figure}[H]
   \centering
   \resizebox{0.3\textwidth}{!}{
-    \begin{tabular}{c|c|c|c|c|}
-    \cline{2-5}
-    $\boldsymbol{L_3}$ & $$ & $6$ & $9$ & $7$ \\ \cline{2-5}
-    $\boldsymbol{L_2}$ & $$ & $5$ & $1$ & $4$ \\ \cline{2-5}
-    $\boldsymbol{L_1}$ & $8$ & $0$ & $2$ & $3$ \\ \cline{2-5}
+    \begin{tabular}{c|c|c|c|c|c|}
+    \cline{2-6}
+    $\boldsymbol{L_3}$ & $6$ & $$ & $0$ & $8$ & $3$ \\ \cline{2-6}
+    $\boldsymbol{L_2}$ & $7$ & $2$ & $1$ & $9$ & $4$ \\ \cline{2-6}
+    $\boldsymbol{L_1}$ & $10$ & $5$ & $11$ & $12$ & $13$ \\ \cline{2-6}
     \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} \\
+    & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} & \multicolumn{1}{c}{$\boldsymbol{S_5}$} \\
     \end{tabular}}
     \caption{\textsc{Zulässige Zuweisungen.}}
     \label{fig:valid_solution}
