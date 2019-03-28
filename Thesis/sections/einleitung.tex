@@ -22,7 +22,7 @@ obwohl diese auch aus praktischer Perspektive von Relevanz ist. Ziel dieser Arbe
 ebensolche heuristische Verfahren für verschiedene Varianten von Stacking-Problemen zu entwickeln, bei denen der Fokus auf
 Zulässigkeit und geringer Laufzeit liegt.\newline
 Es gibt deutlich mehr Veröffentlichungen zu Unloading-, also Auslagerungs-Problemen und Problemen, bei denen simultan Items
-ein- und ausgelagert werden, als zu reinen Loading-Problemen, die Gegenstand dieser Arbeit sind.
+ein- und ausgelagert werden, als zu reinen Loading-Problemen, welche Gegenstand dieser Arbeit sind.
 Der folgende Literaturüberblick beschränkt sich auf Veröffentlichungen zu Loading-Problemen, welche bestimmte Konzepte,
 die im Verlauf der Arbeit verwendet oder erweitert werden, etablieren, oder themennahe Problemstellungen behandeln.
 
@@ -48,12 +48,12 @@ Die betrachtete Zielfunktion entspricht der gewichteten Summe vierer Zielfunktio
 Es werden \textquote{Overstows}\footnote{Container, welche auf einem anderen Container mit früherem Auslagerungszeitpunkt platziert sind.} minimiert und das Platzieren von Containern mit unterschiedlichen Zielhäfen
 im selben Stack, die Eröffnung neuer Stacks sowie das Platzieren eines Containers,
 welcher keine Energiequelle benötigt, an einer Position, an welcher eine solche vorliegt, vermieden.
-Durch eine Reduktion vom \textsc{BinPacking}-Problem haben sie gezeigt,
+Durch eine Reduktion vom \textsc{BinPacking}-Problem wird gezeigt,
 dass die Minimierung der Anzahl verwendeter Stacks NP-schwer ist.
 Die Restriktionen bezüglich der Positionierung bestimmter Items sind auch Teil der Nebenbedingungen,
 welche in dieser Arbeit betrachtet werden.
 
-Im Zusammenhang mit Bahn-Terminals hat \citet{Jaehn2013} ein Loading-Problem betrachtet,
+Im Zusammenhang mit Bahn-Terminals betrachtet \citet{Jaehn2013} ein Loading-Problem,
 bei welchem Items von einer Anzahl von Zügen, welche gleichzeitig eintreffen,
 in eine Lagerfläche verladen werden, welche aus parallelen \textquote{Lanes} mit limitierter Kapazität besteht.
 Es wird zunächst die NP-Schwere zweier Modelle gezeigt, woraufhin heuristische Algorithmen vorgestellt werden,
@@ -66,25 +66,25 @@ Unter anderem stellt das Stapeln von Containern im dort betrachteten Szenario eh
 Daraus stammt unter anderem die Erkenntnis, dass eine der in dieser Arbeit betrachteten Problemstellungen stark NP-vollständig ist.
 Des Weiteren wurden Polynomialzeit-Algorithmen für einige Stacking-Probleme vorgestellt,
 welche zum Teil in den im Verlauf dieser Arbeit entwickelten Heuristiken Anwendung finden.\newline
-Gleichermaßen Verwendung in dieser Arbeit finden die von \citet{Le2016} entwickelten MIP-Formulierungen
-\footnote{MIP: Mixed-Integer-Programming.} zur Lösung von Loading-Problemen, bei welchen es darum geht, die Anzahl der verwendeten Stacks zu minimieren.
-Diese ermöglichen in angepasster Form einen experimentellen Vergleich mit den entwickelten Heuristiken in
-Bezug auf die Lösungsqualität.
+Gleichermaßen Verwendung in dieser Arbeit finden die von \citet{Le2016} entwickelten
+MIP-Formulierungen\footnote{MIP: Mixed-Integer-Programming.} zur Lösung von Loading-Problemen, bei welchen es darum geht,
+die Anzahl der verwendeten Stacks zu minimieren. Diese ermöglichen in angepasster Form einen experimentellen Vergleich mit
+den entwickelten Heuristiken in Bezug auf die Lösungsqualität.
 
 Diese Beispiele stehen exemplarisch dafür, dass es sich bei Storage-Loading- bzw. Stacking-Problemen um
 ein aktives Forschungsgebiet handelt, welches auch aus praktischer Perspektive von großer Relevanz ist.
-Außerdem wird deutlich, dass der Fokus bisher in der Regel auf der Optimierung anderer Zielfunktionen lag.
-
-\pagebreak
+Außerdem verdeutlichen sie, dass der Fokus bisher in der Regel auf der Optimierung anderer Zielfunktionen lag.
 
 Zunächst werden in Kapitel \ref{sec:stacking_problems} Stacking-Probleme im Allgemeinen
 eingeführt und anschließend formal definiert.
 Da­r­auf­fol­gend geht es in Kapitel \ref{sec:test_data} um die Testinstanzen, welche generiert werden,
 um die entwickelten Heuristiken testen und miteinander vergleichen zu können.
 Ebenfalls dem experimentellen Vergleich dienen die in Kapitel \ref{sec:mip_formulations} eingeführten MIP-Formulierungen,
-welche eine Beurteilung der Lösungsqualität der Heuristiken ermöglichen. In Kapitel \ref{sec:constructive_heuristics} werden die entwickelten konstruktiven Heuristiken und Experimente vorgestellt und bewertet.
-Nachdem die in Kapitel \ref{sec:constructive_heuristics} vorgestellten Lösungsverfahren initiale Lösungen konstruieren, wird in Kapitel \ref{sec:post_optimization} ein Verbesserungsverfahren präsentiert, welches diese initialen Lösungen
-als Eingabe bekommt um sie basierend auf einer lokalen Suche möglichst noch zu verbessern.
-Abschließend wird in Kapitel \ref{sec:conclusion} ein Fazit formuliert.
+welche durch Ermittlung der optimalen Zielfunktionswerte eine Beurteilung der Lösungsqualität der Heuristiken ermöglichen.
+In Kapitel \ref{sec:constructive_heuristics} werden die entwickelten konstruktiven Heuristiken vorgestellt und
+die Ergebnisse der experimentellen Vergleiche präsentiert. Anschließend wird in Kapitel \ref{sec:post_optimization} ein Verbesserungsverfahren entwickelt, welches eine von den Heuristiken aus Kapitel \ref{sec:constructive_heuristics} generierte Lösung als Eingabe erhält.
+Dieses Verfahren hat zum Ziel, die Initiallösung basierend auf einer lokalen Suche
+zu verbessern. Abschließend wird in Kapitel \ref{sec:conclusion} ein Fazit formuliert.
+
 
 \pagebreak
