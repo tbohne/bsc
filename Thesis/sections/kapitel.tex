@@ -333,7 +333,14 @@ entsprechend die \textit{Item}- und \textit{Stack}positionen als $x$- und $y$-Ko
 \label{sec:mip_formulations}
 
 In diesem Kapitel werden MIP-Formulierungen eingeführt, die dem experimentellen Vergleich dienen.
-Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit der die Qualität der von den Heuristiken generierten Lösungen beurteilt werden kann. Des Weiteren geht es auch um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander. Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee des MIP im Allgemeinen
+Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit der die Qualität der von den Heuristiken generierten Lösungen beurteilt werden kann. Des Weiteren geht es um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander.
+Es handelt sich dabei um auf die in dieser Arbeit betrachteten Problemstellungen angepasste Formulierungen,
+welche in ihrer ursprünglichen Form von \citet{Le2016} vorgestellt wurden.
+Zusätzlich zu eher marginalen Änderungen an den Nebenbedingungen, welche der etwas anderen Ausgangssituation geschuldet sind,
+wird, wie bereits einleitend erwähnt, mit der Transportkostenminimierung eine jeweils andere Zielfunktion betrachtet.
+In den ursprünglichen Formulierungen entspricht die Zielfunktion jeweils der Minimierung der Anzahl der verwendeten Stacks.
+
+Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee des MIP im Allgemeinen
 eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formulation} und \ref{sec:three_idx_formulation} die beiden in dieser Arbeit betrachteten MIP-Formulierungen im Detail vorzustellen.
 
 \subsection{Mixed Integer Linear Programming (MIP)}
@@ -351,6 +358,8 @@ In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Op
 um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
 zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM. \cite{CPLEX2015}
 
+\pagebreak
+
 \subsection{Bin-Packing-Formulierung}
 \label{sec:bin_packing_formulation}
 
@@ -358,8 +367,6 @@ Die Bin-Packing-Formulierung orientiert sich dem Namen nach am klassichen \texts
 eine Menge von Objekten so auf eine Menge von Behältern zu verteilen, dass die Behälterkapazitäten eingehalten werden.
 Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
 die diesen Behältern zugeordnet werden, wobei die Behälter- bzw. Stack-Kapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
-
-\pagebreak
 
 Es sei eine Menge von Items $I = \{1, ..., n\}$ und eine Menge von Stacks $Q = \{1, ..., m\}$ mit einer Kapazität von $b$ gegeben.
 Außerdem sei $G = (I, A)$ ein transitiver Stacking-Constraint-Graph, bei dem eine Kante $(i, j) \in A$ bedeutet,
@@ -379,7 +386,7 @@ entspricht.
 In (\ref{bin_packing_line_one}) wird die betrachtete Zielfunktion definiert, welche die Summe der Kosten sämtlicher
 Item-Stack-Zuweisungen minimiert, was der Minimierung der Transportkosten entspricht.
 Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass für sämtliche Stacks die Stack-Kapazität eingehalten werden muss, d.h.
-die Summe der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stackbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. Außerdem handelt es sich laut (\ref{bin_packing_line_five}), wie bereits erwähnt, bei den Variablen $x_{iq}$ um Binärvariablen.
+die Summe der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stackbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
 
 \subsection{3-Index-Formulierung}
 \label{sec:three_idx_formulation}
@@ -406,10 +413,13 @@ bei denen $x_{iql} = 1$ bedeutet, dass Item $i$ in Stack $q$ auf Level $l$ platz
 
 In (\ref{three_idx_line_one}) wird die Zielfunktion definiert, die erneut die Summe der Kosten sämtlicher Item-Zuweisungen
 und somit die Transportkosten minimiert.
-Nebenbedingung (\ref{three_idx_line_two}) fordert, dass sich jedes Item in genau einem Stack an genau einer Position (Level) befindet.
+Nebenbedingung (\ref{three_idx_line_two}) fordert, dass sich jedes Item in genau einem Stack an genau einer Position (Level) befindet,
+also im Grunde, dass jedes Item einer Position in einem Stack zugewiesen wird.
 Anschließend wird in (\ref{three_idx_line_three}) gefordert, dass sich an jeder Position in jedem Stack höchstens ein Item befindet und
 (\ref{three_idx_line_four}) formuliert die Einschränkung, dass jedes Item, welches oberhalb des Ground-Levels platziert wird,
-ein Item unter sich hat, welches sich basierend auf den Stacking Constraints dort befinden darf. Schließlich wird in (\ref{three_idx_line_five}) festgehalten, dass es sich bei den $x_{iql}$ um Binärvariablen handelt.
+ein Item unter sich hat, welches sich basierend auf den Stacking-Constraints dort befinden darf.
+Es setzt also die Stacking-Constraints um und sorgt zusätzlich dafür, dass kein Item \textquote{in der Luft} gestapelt wird.
+Schließlich wird in (\ref{three_idx_line_five}) die Domäne der Variablen $x_{iql}$ definiert.
 
 Beide Formulierungen weisen jedem Item einen Stack zu und minimieren dabei die Transportkosten.
 Die Bin-Packing-Formulierung nimmt dabei lediglich Item-Stack-Zuweisungen vor, während die 3-Index-Formulierung die
