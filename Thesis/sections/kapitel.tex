@@ -1310,8 +1310,9 @@ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam p
 zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für mindestens einen Stack $q \in Q$ gilt.
 
 Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
-$i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind. In der Regel ist es möglich, dass dabei sämtliche Items einer Instanz Teil eines Paares sind, denn typischerweise ist die Anzahl der Items gerade.
-Dies hängt allerdings zusätzlich von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung, welche in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine Unmatched-Items verbleiben.
+$i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind.
+In der Regel ist anschließend die Mehrheit oder sogar die Gesamtheit der Items einer Instanz Teil eines Paares.
+Dies hängt allerdings von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung, welche in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine oder wenige Unmatched-Items verbleiben.
 Dieser Sachverhalt hat dazu geführt, dass sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
 um erste Tripel zu bilden, welche in einer früheren Version der Heuristik an dieser Stelle stattfand, als nicht zielführend
 erwies.
