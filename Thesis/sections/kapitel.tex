@@ -193,8 +193,8 @@ als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarr
 In dieser Arbeit werden ausschließlich transitive \textit{Stacking Constraints} betrachtet, d.h.
 wenn \textit{Item} $i$ auf \textit{Item} $j$ und \textit{Item} $j$ auf \textit{Item} $h$ gestapelt werden darf,
 so darf auch \textit{Item} $i$ auf \textit{Item} $h$ gestapelt werden.\newline
-Diese Eigenschaft ist auch in der Praxis häufig gegeben.
-Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was bedeutet, dass diese Restriktionen eine totale Ordnung auf allen \textit{Items} definieren.
+Diese Einschränkung ist auch in der Praxis zumeist gegeben, da die Stacking-Constraints häufig auf dem Gewicht
+oder der Länge der Items basieren. Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was bedeutet, dass diese Restriktionen eine totale Ordnung auf allen \textit{Items} definieren.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -1238,8 +1238,8 @@ In Abb. \ref{fig:res_b=2_l} sind die exakten Ergebnisse der MIP-Formulierungen a
 entnehmen kann, dass die 3-Index-Formulierung mit einer durchschnittlichen Laufzeit von ca. $20$ Minuten sämtliche Instanzen
 optimal löst (vgl. Abb. \ref{fig:res_b=2_l_c}). Die Heuristik benötigt allerdings nur durchschnittlich $0.7s$ pro Instanz und
 weicht auch nur um im Durchschnitt $0.6 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen,
-noch gravierende Laufzeitunterschied und die nur sehr geringe Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis,
-wenn geringe Abweichungen gestattet sind, klar bevorzugt werden sollte.
+noch gravierende Laufzeitunterschied und die nur sehr geringe Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis
+klar bevorzugt werden sollte.
 
 \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
