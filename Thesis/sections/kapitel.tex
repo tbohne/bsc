@@ -1,28 +1,34 @@
 \section{Stacking-Probleme}
 \label{sec:stacking_problems}
 
-Stacking-Probleme treten in der Praxis zum Beispiel im Umfeld von Lagerhallen und Container-Terminals auf.
-Eintreffende \textit{Items} müssen sogenannten \textit{Stacks} zugeordnet werden, sodass bestimmte Nebenbedingungen respektiert werden.
-Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden
-darf. Es wird dabei angenommen, dass die im Folgenden als \textit{Storage-Area} bezeichnete Lagerfläche in festen
-\textit{Stacks} organisiert ist, die eine limitierte gemeinsame Höhe besitzen, die im Folgenden als \textit{Stack}-Kapazität bezeichnet wird
-und der Maximalanzahl an Items, die pro Stack aufeinander gestapelt werden dürfen, entspricht.
+In diesem Kapitel werden die einleitend allgemein und aus praktischer Perspektive beschriebenen Stacking-Probleme
+formal definiert. Diese formale Definition stellt die Grundlage der in den Folgekapiteln vorgestellten Lösungsmethoden dar.
 
-In dieser Arbeit wird nur der \textit{Loading}-Prozess betrachtet, währenddem keine \textit{Item}-Entnahme stattfindet.
-Die \textit{Items} werden dabei in die \textit{Storage-Area} geladen, die aus \textit{Stacks} mit einer festen Position besteht, d.h.
-man kann die \textit{Stacks} nicht positionieren, sondern lediglich den \textit{Items} eine Position in einem \textit{Stack} zuweisen.
+Eintreffende Items müssen sogenannten Stacks in einer Weise zugeordnet werden, welche bestimmte Nebenbedingungen respektiert.
+Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes Item auf jedem anderen Item platziert werden
+darf. Außerdem existieren Items, welche auf bestimmte Positionen beschränkt sind, weil sie zum Beispiel eine Energiequelle benötigen. Es wird dabei angenommen, dass die im Folgenden als Storage-Area bezeichnete Lagerfläche in fixierten
+Stacks organisiert ist, welche eine limitierte gemeinsame Höhe besitzen, die im Folgenden als Stack-Kapazität bezeichnet wird
+und der Maximalanzahl an Items, welche pro Stack aufeinander gestapelt werden dürfen, entspricht.
+Die Items werden dementsprechend in eine Storage-Area verladen, welche aus Stacks mit einer festen Position besteht,
+d.h. es ist nicht möglich, die Stacks zu positionieren, sondern lediglich den Items eine Position innerhalb eines solchen
+Stacks zuweisen. In dieser Arbeit wird nur der Loading-Prozess betrachtet, währenddem keine Item-Entnahme stattfindet.
+Dies entspricht der von \citet{Bruns2015} betrachteten Problemstellung.
 
 In der Literatur existieren diverse Ansätze für das Konzept der Storage-Area.
-\citet{Jaehn2013} betrachtet beispielsweise eine Lagerfläche, die nicht aus fixierten Stacks besteht, sondern sich in parallele \textquote{Lanes}
+\citet{Jaehn2013} betrachtet beispielsweise eine Lagerfläche, welche nicht aus fixierten Stacks besteht,
+sondern sich in parallele \textquote{Lanes}
 aufteilt, in welchen ein Stack prinzipiell an jeder Position eröffnet werden kann, sofern bestimmte Sicherheitsabstände eingehalten werden.
-Das im Folgenden verwendete Konzept mit fixierten Stacks, welches auf viele praktische Szenarien anwendbar ist,
-basiert auf der Beschreibung von \citet{Lehnfeld2014}.
+Das im Folgenden verwendete Konzept der Storage-Area mit fixierten Stacks, welches auf viele praktische
+Szenarien anwendbar ist, basiert auf der Beschreibung von \citet{Lehnfeld2014}.
 
-Neben der Tatsache, dass nicht jedes \textit{Item} auf jedem anderen \textit{Item} platziert werden darf, gilt auch, dass es \textit{Items} gibt, die auf bestimmte Positionen beschränkt sind, weil sie zum Beispiel eine Energiequelle benötigen.
-Abbildung \ref{fig:storage_area} zeigt den Aufbau der \textit{Storage-Area} bestehend aus $m$ fixierten
-\textit{Stacks}, die jeweils $b$ \textit{Level} enthalten. Jedes \textit{Level} innerhalb eines \textit{Stacks} entspricht dabei einer Position, der ein \textit{Item} zugeordnet werden kann.
+Abbildung \ref{fig:storage_area} zeigt den Aufbau der Storage-Area bestehend aus $m$ fixierten
+Stacks, welche jeweils $b$ Level enthalten. Jedes Level innerhalb eines Stacks entspricht dabei einer Position,
+welcher ein Item zugeordnet werden kann.
 
 \begin{figure}[H]
+\centering
+
+\begin{subfigure}[b]{\textwidth}
 \centering
 \resizebox{0.5\textwidth}{!}{
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -30,8 +36,10 @@ Abbildung \ref{fig:storage_area} zeigt den Aufbau der \textit{Storage-Area} best
 $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & ... & $\boldsymbol{S_m}$\\ \cline{1-5}
 \end{tabular}}
 \caption*{\textsc{Draufsicht}}
-\end{figure}
-\begin{figure}[H]
+\label{}
+\end{subfigure}
+\par\bigskip
+\begin{subfigure}[b]{\textwidth}
 \centering
 \resizebox{0.5\textwidth}{!}{
 \begin{tabular}{c|c|c|c|c|c|}
@@ -44,10 +52,14 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m,
 & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{...} & \multicolumn{1}{c}{$\boldsymbol{S_m}$} \\
 \end{tabular}}
 \caption*{\textsc{Seitenansicht}}
+\label{}
+\end{subfigure}
 
-\caption{\textsc{Aufbau der \textit{Storage-Area}}.}
+\caption{\textsc{Aufbau der Storage-Area}.}
 \label{fig:storage_area}
 \end{figure}
+
+\pagebreak
 
 Das Ziel von Stacking-Problemen ist es, jedes ankommende \textit{Item} einer zulässigen Position in einem
 \textit{Stack} zuzuordnen, sodass eine gegebene Zielfunktion optimiert wird. Es gibt eine Vielzahl praktisch relevanter Zielfunktionen,
