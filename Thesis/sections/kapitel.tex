@@ -11,8 +11,8 @@ Stacks organisiert ist, welche eine limitierte gemeinsame Höhe besitzen, die im
 und der Maximalanzahl an Items, welche pro Stack aufeinander gestapelt werden dürfen, entspricht.
 Die Items werden dementsprechend in eine Storage-Area verladen, welche aus Stacks mit einer festen Position besteht,
 d.h. es ist nicht möglich, die Stacks zu positionieren, sondern lediglich den Items eine Position innerhalb eines solchen
-Stacks zuweisen. In dieser Arbeit wird nur der Loading-Prozess betrachtet, währenddem keine Item-Entnahme stattfindet.
-Dies entspricht der von \citet{Bruns2015} betrachteten Problemstellung.
+Stacks zuweisen. In dieser Arbeit wird dabei ausschließlich der Loading-Prozess betrachtet, währenddem keine
+Item-Entnahme stattfindet. Dies entspricht im Wesentlichen der von \citet{Bruns2015} betrachteten Problemstellung.
 
 In der Literatur existieren diverse Ansätze für das Konzept der Storage-Area.
 \citet{Jaehn2013} betrachtet beispielsweise eine Lagerfläche, welche nicht aus fixierten Stacks besteht,
@@ -35,8 +35,8 @@ welcher ein Item zugeordnet werden kann.
 \cline{1-5}
 $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & ... & $\boldsymbol{S_m}$\\ \cline{1-5}
 \end{tabular}}
-\caption*{\textsc{Draufsicht}}
-\label{}
+\caption{\textsc{Draufsicht}}
+\label{fig:topview}
 \end{subfigure}
 \par\bigskip
 \begin{subfigure}[b]{\textwidth}
@@ -51,8 +51,8 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m,
 \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
 & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{...} & \multicolumn{1}{c}{$\boldsymbol{S_m}$} \\
 \end{tabular}}
-\caption*{\textsc{Seitenansicht}}
-\label{}
+\caption{\textsc{Seitenansicht}}
+\label{fig:sideview}
 \end{subfigure}
 
 \caption{\textsc{Aufbau der Storage-Area}.}
@@ -61,13 +61,22 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m,
 
 \pagebreak
 
-Das Ziel von Stacking-Problemen ist es, jedes ankommende \textit{Item} einer zulässigen Position in einem
-\textit{Stack} zuzuordnen, sodass eine gegebene Zielfunktion optimiert wird. Es gibt eine Vielzahl praktisch relevanter Zielfunktionen,
-in dieser Arbeit geht es allerdings ausschließlich um die Minimierung der Transportkosten, die bei der Verladung der \textit{Items} von ihrer Originalposition zur zugewiesenen Stackposition entstehen.
+Obwohl die Storage-Area in der Realität häufig mehr als eine Reihe von Stacks beinhaltet und die in
+Abb. \ref{fig:topview} dargestellte Draufsicht dementsprechend dreidimensional sein kann,
+wird in den Folgekapiteln stets von der in Abb. \ref{fig:storage_area} dargestellten Reihe von Stacks ausgegangen.
+Lediglich für die in Abschnitt \ref{sec:transport_costs} beschriebene Ermittlung der Transportkosten ist es entscheidend,
+an welcher Stelle innerhalb der Storage-Area sich ein Stack befindet. Nachdem die Transportkosten basierend auf der
+Stack-Position für jede Item-Stack-Kombination ermittelt wurden, kann für die eigentliche Lösung des Problems von
+der in Abb. \ref{fig:storage_area} dargestellten zweidimensionalen Reihe von Stacks ausgegangen werden.
+Es ist jedoch auch bei der Betrachtung der Transportkosten eine zweidimensionale Struktur ausreichend, denn dort sind
+die Level innerhalb der Stacks irrelevant, weil die Zuweisung eines Items zu den unterschiedlichen Leveln
+desselben Stacks stets dieselben Kosten verursacht. Daher ist dort einzig die von oben betrachtete zweidimensionale
+Position der Stacks von Bedeutung.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Das Ziel von Stacking-Problemen ist es, jedes ankommende Item einer zulässigen Position in einem
+Stack zuzuordnen, sodass eine gegebene Zielfunktion optimiert wird. Es gibt eine Vielzahl praktisch relevanter Zielfunktionen,
+in dieser Arbeit geht es allerdings ausschließlich um die Minimierung der Transportkosten, welche bei der Verladung der Items von ihrer Originalposition zur zugewiesenen Stackposition entstehen. Wobei das primäre Ziel im Gegensatz zu einer bedingungslosen Kostenminimierung darin besteht, für möglichst viele Probleminstanzen eine zulässige Lösung zu finden. Im Detail wird dies in
+Abschnitt \ref{sec:objective} erläutert.
 
 \subsection{Formale Definition}
 \label{sec:formal_definition}
