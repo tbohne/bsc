@@ -126,6 +126,7 @@ welche aufeinander gestapelt sind, nicht den Stacking-Constraints widersprechen.
 Arbeit betrachteten Problemstellungen für die Zulässigkeit eines Tupels sämtliche Item-Stack-Zuweisungen
 den Placement-Constraints genügen, d.h. für alle $i_\lambda$ eines Tupels bzw. Stacks $q \in Q$ muss
 $t_{i_\lambda q} = 1$ gelten. Jedes Item muss demgemäß mit dem Stack, welchem es zugewiesen wird, kompatibel sein.
+\newline
 
 \textbf{Formulierung des Problems}
 
@@ -135,13 +136,17 @@ Das Ziel ist nun, jedes Item $i \in I$ genau einem Stack $q \in Q$ zuzuweisen, w
 die Placement-Constraints $t_{iq}$ und die Stack-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion
 optimiert wird.
 
+\vfill
+
+\pagebreak
+
 \subsection{Transportkosten}
 \label{sec:transport_costs}
-Die Transportkosten beziehen sich auf die Kosten, die bei der Verladung der \textit{Items} in die \textit{Storage-Area} entstehen
+Die Transportkosten beziehen sich auf jene Kosten, welche bei der Verladung der Items in die Storage-Area entstehen
 und sind praktisch zum Beispiel durch Kranbetriebskosten, Wartezeiten oder Arbeitszeiten motiviert.\newline
-Jeder \textit{Stack} $q \in Q$ besitzt eine fixierte Position $F_q$ in der \textit{Storage-Area}.
-Außerdem besitzt jedes \textit{Item} $i \in I$ eine gegebene Originalposition $O_i$ auf dem Fahrzeug, mit dem es geliefert wird.
-Die Kosten ergeben sich aus der Manhattan-Distanz zwischen \textit{Item}- und zugewiesener \textit{Stack}-Position, da diese der Kranbewegung entspricht. In Abb. \ref{fig:costs} ist ein Beispielszenario visualisiert, in welchem die \textit{Items} auf Zügen geliefert und dann durch Kräne auf die ihnen zugewiesenen \textit{Stack}positionen in der \textit{Storage-Area} verladen werden.
+Jeder Stack $q \in Q$ besitzt eine fixierte Position $F_q$ in der Storage-Area.
+Außerdem besitzt jedes Item $i \in I$ eine gegebene Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird.
+Die Kosten ergeben sich aus der Manhattan-Distanz zwischen Item- und zugewiesener Stack-Position, da diese der Kranbewegung entspricht. In Abb. \ref{fig:costs} ist ein Beispielszenario visualisiert, in welchem die Items auf Zügen geliefert und dann durch Kräne auf die ihnen zugewiesenen Stackpositionen in der Storage-Area verladen werden.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{img/costs.png}
 \caption{Schematische Darstellung eines Bahn-Terminals \cite{Briskorn2018}.}
