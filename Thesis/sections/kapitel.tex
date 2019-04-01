@@ -175,26 +175,28 @@ den Kosten für den Transport des Items $i$ in den Stack $q$.
 \label{sec:constraints}
 
 Bei der Lösung der in dieser Arbeit betrachteten Problemstellungen müssen, wie einleitend erwähnt,
-neben der Kapazität der Stacks zwei weitere Restriktionen berücksichtigt werden, welche in diesem Abschnitt
+neben der Kapazität der Stacks zwei weitere Kategorien von Nebenbedingungen berücksichtigt werden, welche in diesem Abschnitt
 präzisiert werden. Zunächst geht es in Abschnitt \ref{sec:stacking_restrictions} um die Stacking-Constraints
 und anschließend in Abschnitt \ref{sec:placement_restrictions} um die Placement-Constraints.
 
 \subsubsection{Stacking-Constraints}
 \label{sec:stacking_restrictions}
 
-Es gibt in der Praxis vielfältige Gründe dafür, dass nicht jedes \textit{Item} auf jedes andere \textit{Item} gestapelt werden darf.
-Aus diesen resultieren bestimmte Restriktionen, die z.B. wie folgt lauten:
+Es gibt in der Praxis vielfältige Gründe dafür, dass nicht jedes Item auf jedes andere Item gestapelt werden darf.
+Aus diesen resultieren bestimmte Restriktionen, welche auch Teil der von \citet{Bruns2015} betrachteten Problemstellungen
+sind und z.B. wie folgt lauten:
 \begin{itemize}
-  \item schwerere \textit{Items} dürfen nicht auf leichteren \textit{Items} platziert werden
-  \item größere \textit{Items} dürfen nicht auf kleineren \textit{Items} platziert werden
-  \item \textit{Items} bestimmter Materialien oder Zielorte dürfen nicht aufeinander gestapelt werden
+  \item schwerere Items dürfen nicht auf leichteren Items platziert werden
+  \item größere Items dürfen nicht auf kleineren Items platziert werden
+  \item Items best. Materialien oder Zielorte dürfen nicht aufeinander gestapelt werden
 \end{itemize}
 
-All jene Restriktionen, die im Folgenden stets als \textit{Stacking Constraints} bezeichnet werden, werden in einer Binärmatrix $S = (s_{ij})_{n \times n}$ kodiert, wobei:
+All jene Restriktionen, welche unter der Bezeichnung Stacking-Constraints zusammengefasst werden,
+werden in einer Binärmatrix $S = (s_{ij})_{n \times n}$ kodiert, wobei:
 \[
     s_{ij} =
 \begin{cases}
-    1, & \text{wenn $i$ direkt auf $j$ gestapelt werden darf }\\
+    1, & \text{wenn Item $i$ direkt auf Item $j$ gestapelt werden darf }\\
     0, & \text{sonst}
 \end{cases}
 \]
@@ -241,11 +243,12 @@ als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarr
   \caption{\textsc{Repräsentation der Stacking Constraints.}}
   \label{fig:matrix_to_graph}
 \end{figure}
-In dieser Arbeit werden ausschließlich transitive \textit{Stacking Constraints} betrachtet, d.h.
-wenn \textit{Item} $i$ auf \textit{Item} $j$ und \textit{Item} $j$ auf \textit{Item} $h$ gestapelt werden darf,
-so darf auch \textit{Item} $i$ auf \textit{Item} $h$ gestapelt werden.\newline
+In dieser Arbeit werden ausschließlich transitive Stacking-Constraints betrachtet, d.h.
+wenn Item $i$ auf Item $j$ und Item $j$ auf Item $h$ gestapelt werden darf,
+so darf auch Item $i$ auf Item $h$ gestapelt werden.\newline
 Diese Einschränkung ist auch in der Praxis zumeist gegeben, da die Stacking-Constraints häufig auf dem Gewicht
-oder der Länge der Items basieren. Restriktionen bezüglich des Gewichts und der Länge haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was bedeutet, dass diese Restriktionen eine totale Ordnung auf allen \textit{Items} definieren.
+oder der Länge der Items basieren. Restriktionen dieser Art haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was zur Folge hat,
+dass eine totale Ordnung auf allen Items definiert wird (vgl. \citet{Bruns2015}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
