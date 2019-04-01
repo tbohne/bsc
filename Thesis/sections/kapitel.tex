@@ -81,11 +81,13 @@ Abschnitt \ref{sec:objective} erläutert.
 \subsection{Formale Definition}
 \label{sec:formal_definition}
 
-Die \textit{Storage-Area} besteht aus \textit{Stacks}, die in einer Reihe angeordnet sind (vgl. Abb. \ref{fig:storage_area}).
-Prinzipiell kann es mehrere Reihen von Stacks geben, da sich die Schwierigkeit des Problems dadurch jedoch nicht verändert,
-wird im Folgenden immwer von einer Reihe von Stacks ausgegangen.
-Die $x$-Koordinate spezifiziert jeweils den \textit{Stack} und die $y$-Koordinate den \textit{Level} innerhalb des jeweiligen \textit{Stacks}. Es handelt sich also um eine Reihe von $m$ \textit{Stacks} mit jeweils $b$ Positionen pro \textit{Stack}. Abb. \ref{fig:parameters} zeigt eine Liste der
-Parameter, die im weiteren Verlauf der Arbeit verwendet werden, um Stacking-Probleme zu definieren.
+Die in Abb. \ref{fig:parameters} dargestellte Liste der Parameter, welche im weiteren Verlauf der Arbeit verwendet
+werden, um Stacking-Probleme zu definieren, enthält zusätzlich zur bereits erwähnten Anzahl der zur Verfügung stehenden
+Stacks $m$ und der Stack-Kapazität $b$ die Menge der eintreffenden Items $I$, deren Kardinalität $n$, welche der Anzahl
+der zuzuweisenden Items entspricht sowie die Menge der zur Verfügung stehenden Stacks $Q$. Diese und auch im Folgenden
+eingeführte Notationen, welche mit Konzepten aus der Arbeit von \citet{Bruns2015} übereinstimmen,
+werden in dieser Arbeit übernommen.
+
 \begin{figure}[H]
 \centering
 \resizebox{0.6\textwidth}{!}{
@@ -94,38 +96,44 @@ Parameter, die im weiteren Verlauf der Arbeit verwendet werden, um Stacking-Prob
     \textbf{Parameter} & \textbf{Semantik} \\ \hline
     $n$ & Anzahl der Items \\ \hline
     $m$ & Anzahl der Stacks \\ \hline
-    $b$ & Stack Kapazität \\ \hline
+    $b$ & Stack-Kapazität \\ \hline
     $I$ & Menge der Items $ I := \{1, 2, ..., n\}$ \\ \hline
+    $Q$ & Menge der Stacks $ Q := \{1, 2, ..., m\}$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Zur Definition verwendete Parameter}.}
 \label{fig:parameters}
 \end{figure}
-In der Regel gilt $m < n$, d.h. es müssen \textit{Items} gestapelt werden.
+In der Regel gilt $m < n$, d.h. es müssen Items gestapelt werden.
 Außerdem muss die Annahme $n \leq bm$ gelten, denn sonst ist die Instanz des Problems unzulässig,
-weil es mehr \textit{Items} als verfügbare Positionen gibt.\newline
-Für jedes \textit{Item} $i \in I$ ist dessen Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird,
-in $x$- und $y$-Koordinaten gegeben.
-
-Neben den in Abb. \ref{fig:parameters} aufgeführten Parametern, gibt es Nebenbedingungen, die beim Lösen der Stacking-Probleme
-berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_restrictions} vorgestellten Stacking Constraints $s_{ij}$,
-bei denen es sich um Restriktionen handelt, die angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf.
-Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
-Zum anderen die Placement Constraints $t_{iq}$, die in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen
-es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack
-$q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
-
-\textit{Items}, die in einem \textit{Stack} platziert werden, sind durch ein Tupel $(i_k, ..., i_1)$ definiert, wobei
-$i_\lambda$ das \textit{Item} auf \textit{Level} $\lambda$ beschreibt. $\lambda = 1$ beschreibt den \textit{Ground-Level}.
-Ein Tupel ist zulässig, wenn $k \leq b$ und $s_{i_{\lambda + 1}, i_\lambda} = 1 \quad \forall \quad \lambda = 1, ..., k - 1$.
-D.h. ein Tupel ist dann zulässig, wenn die \textit{Stack}-Kapazität eingehalten wird und alle \textit{Items}, die aufeinander gestapelt sind,
-nicht den Stacking Constraints widersprechen. Außerdem müssen sämtliche \textit{Item}-\textit{Stack}-Zuweisungen den Placement Constraints entsprechen, d.h. für alle $i_\lambda$ eines Tupels bzw. Stacks $q \in Q$ muss gelten $t_{i_\lambda q} = 1$. Jedes Item muss also mit dem Stack, dem es zugewiesen wurde, kompatibel sein.
+weil die Anzahl der zuzuweisenden Items die Anzahl der verfügbaren Positionen in der Storage-Area übersteigt.
 
 \pagebreak
 
-\textbf{Formulierung des Problems}\newline
-Gegeben sei eine Menge $I = \{1, ..., n\}$ von \textit{Items} und eine Menge $Q = \{1, ..., m\}$ von \textit{Stacks} mit einer \textit{Stack}-Kapazität von $b$. Außerdem seien \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ gegeben.
-Das Ziel ist nun, jedes \textit{Item} $i \in I$ genau einem \textit{Stack} $q \in Q$ zuzuweisen, wobei die \textit{Stacking Constraints} $s_{ij}$,
-die \textit{Placement Constraints} $t_{iq}$ und die \textit{Stack}-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion optimiert wird.
+Für jedes Item $i \in I$ ist dessen Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird,
+in $x$- und $y$-Koordinaten gegeben. Ebenso ist für jeden Stack $q \in Q$ dessen fixierte Position $F_q$ in der von oben betrachteten Storage-Area in zweidimensionalen Koordinaten gegeben.
+
+Neben den in Abb. \ref{fig:parameters} aufgeführten Parametern existieren Nebenbedingungen, welche beim Lösen der Stacking-Probleme
+berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_restrictions} vorgestellten Stacking-Constraints $s_{ij}$, bei denen es sich um Restriktionen handelt, welche angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
+Zum anderen die Placement-Constraints $t_{iq}$, welche in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack $q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
+
+Items, welche in einem Stack platziert werden, sind durch ein Tupel $(i_k, ..., i_1)$ definiert, wobei
+$i_\lambda$ das Item auf Level $\lambda$ beschreibt. $\lambda = 1$ entspricht dabei dem
+Ground-Level\footnote{Unterste Position (Level) innerhalb eines Stacks.}.
+Ein solches Tupel ist bei \citet{Bruns2015} zulässig, wenn $k \leq b$ und $s_{i_{\lambda + 1} i_\lambda} = 1
+\thinspace \forall \thinspace \lambda = 1, ... , k - 1$ gilt.
+Demzufolge ist ein Tupel dann zulässig, wenn die Stack-Kapazität eingehalten wird und sämtliche Items,
+welche aufeinander gestapelt sind, nicht den Stacking-Constraints widersprechen. Darüber hinaus müssen bei den in dieser
+Arbeit betrachteten Problemstellungen für die Zulässigkeit eines Tupels sämtliche Item-Stack-Zuweisungen
+den Placement-Constraints genügen, d.h. für alle $i_\lambda$ eines Tupels bzw. Stacks $q \in Q$ muss
+$t_{i_\lambda q} = 1$ gelten. Jedes Item muss demgemäß mit dem Stack, welchem es zugewiesen wird, kompatibel sein.
+
+\textbf{Formulierung des Problems}
+
+Gegeben sei eine Menge $I = \{1, ..., n\}$ von Items und eine Menge $Q = \{1, ..., m\}$ von Stacks der Kapazität $b$.
+Außerdem seien Stacking-Constraints $s_{ij}$ und Placement-Constraints $t_{iq}$ gegeben.
+Das Ziel ist nun, jedes Item $i \in I$ genau einem Stack $q \in Q$ zuzuweisen, wobei die Stacking-Constraints $s_{ij}$,
+die Placement-Constraints $t_{iq}$ und die Stack-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion
+optimiert wird.
 
 \subsection{Transportkosten}
 \label{sec:transport_costs}
