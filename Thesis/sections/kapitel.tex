@@ -320,20 +320,20 @@ welche zum Ziel haben, bei möglichst geringer Laufzeit zu möglichst günstigen
 
 Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine möglichst günstige
 Einlagerung sämtlicher Items, d.h. die Zielfunktion entspricht der Minimierung der Transportkosten.
-Dabei haben Zulässigkeit und geringe Laufzeit Priorität. Eine Lösung wird dann als zulässig betrachtet,
+Dabei haben Zulässigkeit und geringe Laufzeit Priorität. Eine Lösung wird als zulässig betrachtet,
 wenn sämtliche Items unter Berücksichtigung der Stacking- und Placement-Constraints sowie der Stack-Kapazität, eingelagert werden.
 
 Der Fokus auf Zulässigkeit äußert sich darin, dass zunächst stets versucht wird, möglichst wenige der zur Verfügung stehenden Stacks zu verwenden, weshalb die Zielfunktion im Grunde zunächst darin besteht, die Anzahl der verwendeten Stacks zu minimieren bzw. die Anzahl der vollständig gefüllten Stacks zu maximieren, damit möglichst jede Instanz zumindest zulässig gelöst wird.
-
 Erst im Anschluss daran werden die Transportkosten minimiert. Im Wesentlichen handelt es sich daher
-um eine Kombination zweier Zielfunktionen. Zunächst geht es darum, den zur Verfügung stehenden Platz in
-der Storage-Area durch initiales Generieren möglichst vieler $b$-Tupel von Items, möglichst ökonomisch zu nutzen.
-Dabei werden noch keine Kosten minimiert. Anschließend geht es darum, diese $b$-Tupel möglichst günstig
-den zur Verfügung stehenden Stacks zuzuweisen.
+um eine Kombination zweier Zielfunktionen. Zu Beginn geht es darum, den zur Verfügung stehenden Platz in
+der Storage-Area durch initiales Generieren möglichst vieler $b$-Tupel von Items, ökonomisch zu nutzen.
+Dabei werden noch keine Kosten minimiert. Erst im Anschluss werden diese $b$-Tupel möglichst günstig
+den zur Verfügung stehenden Stacks zugewiesen.
 
-Ein ausschließlicher Fokus auf Kostenminimierung wäre umsetzbar, indem zuletzt ausgewählte $b$-Tupel
-von Items wieder separiert und jeweils eigenen Stacks zugewiesen würden, solange freie Stacks zur Verfügung
-stünden und sich infolgedessen Kosten einsparen ließen. Davon wird in dieser Arbeit abgesehen, da es in der Praxis durchaus sinnvoll ist, den zur Verfügung stehenden Platz möglichst ökonomisch zu nutzen und nicht bedingungslos Kosten zu minimieren und dabei viele lediglich partiell gefüllte Stacks zu generieren.
+Ein ausschließlicher Fokus auf Kostenminimierung nachdem die Zulässigkeit erreicht ist, wäre umsetzbar,
+indem zuletzt ausgewählte $b$-Tupel von Items wieder separiert und jeweils eigenen Stacks zugewiesen würden,
+solange freie Stacks zur Verfügung stünden und sich infolgedessen Kosten einsparen ließen.
+Davon wird in dieser Arbeit abgesehen, da es in der Praxis durchaus sinnvoll ist, den zur Verfügung stehenden Platz möglichst ökonomisch zu nutzen und nicht bedingungslos Kosten zu minimieren und dabei viele lediglich partiell gefüllte Stacks zu generieren.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
