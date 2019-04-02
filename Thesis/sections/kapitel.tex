@@ -257,27 +257,32 @@ dass eine totale Ordnung auf allen Items definiert wird (vgl. \citet{Bruns2015})
 \subsubsection{Placement-Constraints}
 \label{sec:placement_restrictions}
 
-Die im Folgenden als \textit{Placement Constraints} bezeichneten Einschränkungen bezüglich der Position eines \textit{Items} resultieren z.B.
-aus der Länge oder dem Gewicht der \textit{Items} und den Eigenschaften der \textit{Stacks}. Es gibt allerdings auch \textit{Items} mit speziellen Anforderungen, z.B. Kühlcontainer, die eine Energiequelle benötigen. Solche \textit{Items} können nur \textit{Stacks} mit entsprechender Konfiguration zugewiesen werden. Tendenziell sind dabei mehr \textit{Item}-\textit{Stack}-Zuweisungen erlaubt als verboten. Diese \textit{Placement Constraints} werden allerdings nicht direkt implementiert, sondern indirekt über hohe Kostenwerte.
+Die unter der Bezeichnung Placement-Constraints zusammengefassten Einschränkungen bezüglich der Positionierung eines
+Items resultieren z.B. aus der Länge oder dem Gewicht der Items und den entsprechenden Eigenschaften der Stacks. Es gibt allerdings auch Items mit speziellen Anforderungen, beispielsweise Kühlcontainer, welche eine Energiequelle benötigen. Solche Items können nur Stacks mit entsprechender Konfiguration zugewiesen werden.
 
-Dies hat den Vorteil, dass die Placement Constraints zunächst nur \textquote{Weak Constraints} sind, d.h. es wird auch
-dann eine Lösung gefunden, wenn gegen diese Nebenbedingungen verstoßen wird. Eine solche Lösung wird allerdings nur dann generiert,
-wenn keine Lösung existiert, die sämtliche Placement Constraints respektiert.
-Anschließend kann entschieden werden, ob solche Lösungen als zulässig gelten, oder, ob die Placement Constraints trotzdem
-als \textquote{Hard Constraints} betrachtet und solche Lösungen dementsprechend unzulässig sind. Diese Art der Implementation ist sehr flexibel.
+Die Placement-Constraints werden indirekt über hohe Kostenwerte implementiert. Die Zuweisung eines Items zu einem
+Stack, mit welchem es nicht kompatibel ist, verursacht folglich höhere Kosten als sämtliche zulässigen Zuweisungen.
+Dies hat den Vorteil, dass es sich dabei initial nur um weiche Nebenbedingungen handelt,
+d.h. es wird auch dann eine Lösung gefunden, wenn gegen diese Nebenbedingungen verstoßen wird.
+Eine solche Lösung wird allerdings aufgrund des Kostenminimierungsansatzes nur in Fällen generiert,
+in denen keine Lösung existiert, welche sämtliche Placement-Constraints respektiert.
+Schließlich kann entschieden werden, ob solche Lösungen als zulässig gelten,
+oder, ob die Placement-Constraints dessen ungeachtet als harte Nebenbedingungen und solche
+Lösungen dementsprechend als unzulässig betrachtet werden.
+Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Bei diesem Graphen handelt es sich um einen Kompatibilitätsgraphen, welcher Items durch Kanten mit kompatiblen Stacks verbindet. Insofern muss jedes Item zunächst mit jedem Stack kompatibel sein muss. Da die
+Placement-Constraints genau dies jedoch verhindern, können diese nicht direkt durch ein Fehlen der entsprechenden
+Kanten umgesetzt werden.
 
-Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, die in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Dies bedeutet, dass jedes Item zunächst mit jedem Stack kompatibel sein muss. Da die Placement Constraints genau dies jedoch verhindern, ist es sinnvoll, diese, wie im Folgenden beschrieben, indirekt über hohe Kostenwerte umzusetzen.
-
-Zunächst werden die \textit{Placement Constraints} in einer Binärmatrix $T = (t_{iq})_{n \times m}$ kodiert, wobei:\newline
+Zunächst werden die Placement-Constraints in einer Binärmatrix $T = (t_{iq})_{n \times m}$ kodiert, wobei:
 \[
     t_{iq} =
 \begin{cases}
-    1, & \text{wenn \textit{Item} $i$ in \textit{Stack} $q$ platziert werden darf }\\
+    1, & \text{wenn Item $i$ in Stack $q$ platziert werden darf }\\
     0, & \text{sonst}
 \end{cases}
 \]
 Diese Matrix wird jedoch nicht direkt verwendet, um die Restriktionen zu implementieren. Stattdessen wird
-die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, die in Abschnitt \ref{sec:transport_costs} eingeführt wurde, nun wie folgt erweitert.
+die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, welche in Abschnitt \ref{sec:transport_costs} eingeführt wurde, nun wie folgt modifiziert.
 \[
     c_{iq} =
 \begin{cases}
@@ -285,10 +290,10 @@ die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, die in Abschnitt \ref{se
     \infty, & \text{sonst}
 \end{cases}
 \]
-Der Eintrag an der Stelle $c_{iq}$ enthält also nur noch dann die tatsächlichen Transportkosten, wenn die
-entsprechende \textit{Item}-\textit{Stack}-Zuweisung basierend auf den \textit{Placement Constraints} erlaubt ist und sonst $\infty$.
-
-Die \textit{Placement Constraints} gelten als verletzt, wenn eine Lösung eine \textit{Item}-\textit{Stack}-Zuweisung der Kosten $\infty$ enthält.
+Der Eintrag an der Stelle $c_{iq}$ enthält also nur noch die tatsächlichen Transportkosten, wenn die
+entsprechende Item-Stack-Zuweisung basierend auf den Placement-Constraints zulässig ist und sonst $\infty$.
+Die Placement-Constraints gelten als verletzt, wenn eine Lösung eine Item-Stack-Zuweisung
+der Kosten $\infty$ enthält.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -328,6 +333,8 @@ stünden und sich infolgedessen Kosten einsparen ließen. Davon wird in dieser A
 
 \section{Testdaten-Generierung}
 \label{sec:test_data}
+
+Tendenziell sind dabei mehr Item-Stack-Zuweisungen erlaubt als verboten.
 
 Zu Testzwecken werden unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
 Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
