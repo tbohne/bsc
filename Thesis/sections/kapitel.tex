@@ -302,10 +302,18 @@ der Kosten $\infty$ enthält.
 \subsection{Komplexität}
 \label{sec:complexity}
 
-In den folgenden Kapiteln werden Instanzen von Stacking Problemen mit den \textit{Stack}-Kapazitäten $b = 2$ und $b = 3 $ betrachtet,
-die besonders in Szenarien aus der Praxis, in denen es darum geht, Container zu stapeln, von Interesse sind.
+In den folgenden Kapiteln werden Instanzen von Stacking-Problemen mit Stacks der Kapazitäten $b = 2$
+und $b = 3 $ betrachtet, welche besonders in Szenarien aus der Praxis, in denen es darum geht,
+Container zu stapeln, von Interesse sind.
 
-Wie \citet{Bruns2015} zeigten, handelt es sich bei dem Zulässigkeitsproblem mit einer \textit{Stack}-Kapazität von $b=3$ und gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ um ein stark NP-vollständiges Problem. Erst kürzlich wurde außerdem gezeigt, dass auch das Problem mit einer \textit{Stack}-Kapazität von $b=2$ mit gegebenen transitiven \textit{Stacking Constraints} $s_{ij}$ und \textit{Placement Constraints} $t_{iq}$ NP-vollständig ist. Diese Erkenntnis wurde allerdings noch nicht veröffentlicht. Somit sind auch die entsprechenden Stacking-Probleme, bei denen zusätzlich die Transportkosten minimiert werden, NP-vollständig. Für eben diese Probleme werden in dieser Arbeit heuristische Lösungsansätze präsentiert.
+Wie \citet{Bruns2015} zeigten, handelt es sich bei dem Zulässigkeitsproblem mit einer Stack-Kapazität von $b=3$ und gegebenen transitiven Stacking-Constraints $s_{ij}$ um ein stark NP-vollständiges Problem. Erst kürzlich wurde zudem gezeigt, dass auch das Zulässigkeitsproblem mit einer Stack-Kapazität von $b=2$, gegebenen transitiven
+Stacking-Constraints $s_{ij}$ und Placement-Constraints $t_{iq}$, NP-vollständig ist. Der entsprechende Beweis
+wurde allerdings noch nicht veröffentlicht.
+
+Somit sind die in dieser Arbeit betrachteten Stacking-Probleme, bei welchen zusätzlich die Transportkosten minimiert
+und jeweils Stacking- sowie Placement-Constraints berücksichtigt werden, ebenfalls NP-vollständig.
+Deshalb werden im Folgenden effiziente heuristische Lösungsverfahren für diese Probleme präsentiert,
+welche zum Ziel haben, bei möglichst geringer Laufzeit zu möglichst günstigen Ergebnissen zu gelangen.
 
 \subsection{Zielfunktion}
 \label{sec:objective}
