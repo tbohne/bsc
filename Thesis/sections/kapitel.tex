@@ -342,9 +342,8 @@ Davon wird in dieser Arbeit abgesehen, da es in der Praxis durchaus sinnvoll ist
 \section{Testdaten-Generierung}
 \label{sec:test_data}
 
-Tendenziell sind dabei mehr Item-Stack-Zuweisungen erlaubt als verboten.
-
-Zu Testzwecken werden unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
+Zu Testzwecken werden durch einen im Zuge dieser Arbeit implementierten \textsc{TestDataGenerator}
+unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
 Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
 in drei Kategorien unterteilt:
 \begin{itemize}
@@ -352,12 +351,14 @@ in drei Kategorien unterteilt:
   \item mittelgroß (\textbf{m}) ($\approx 300$ Items)
   \item groß (\textbf{l}) ($\approx 500$ Items)\newline
 \end{itemize}
-Dies scheinen auch in der Literatur Größenordnungen zu sein, in dem sich praktisch motivierte Stacking-Probleme
-typischerweise bewegen. \cite{Le2016}
+Dabei handelt es sich um einen groben Rahmen, in welchem sich praktisch motivierte Stacking-Probleme
+typischerweise bewegen. Dieser findet sich auch in der Literatur wieder (vgl. \citet{Le2016}).
 
-Um die entwickelten Lösungsverfahren testen und vergleichen zu können, werden Testinstanzen generiert,
-die im Idealfall nicht allzu weit von realistischen Szenarien entfernt sein sollten.
-Pro Konfiguration werden 20 Instanzen generiert, damit aussagekräftige Ergebnisse entstehen.
+Um die entwickelten Lösungsverfahren sinnvoll testen und miteinander vergleichen zu können,
+werden Instanzen generiert, welche im Idealfall nicht allzu weit von realistischen Szenarien entfernt
+sein sollten. Dazu stellt der \textsc{TestDataGenerator} eine Reihe von Konfigurationsmöglichkeiten
+bereit, welche im Folgenden vorgestellt werden. Um den Vergleichen eine gewisse Aussagekraft zu verleihen,
+werden Pro Konfiguration $20$ Instanzen generiert.
 
 \textbf{Anzahl zur Verfügung stehender Stacks}
 
@@ -385,6 +386,8 @@ Variante 2 scheint realitätsnäher zu sein und wird deshalb zunächst bevorzugt
 zu einem Anteil von $1$-Einträgen in der Matrix von ca. $25\%$ führt und dieser mit Variante 1 sehr gut konfigurierbar ist, wird Variante 1 nicht verworfen. (TODO: Grund ergänzen...)
 
 \textbf{Placement Constraints}
+
+Tendenziell sind dabei mehr Item-Stack-Zuweisungen erlaubt als verboten.
 
 Die Placement Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
 dass ein Item $i$ in einem Stack $q$ platziert werden darf, $70 \%$ beträgt, da, wie in Kapitel \ref{sec:placement_restrictions} bereits erwähnt, tendenziell mehr Zuweisungen erlaubt als verboten sind.
