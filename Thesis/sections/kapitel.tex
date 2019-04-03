@@ -430,13 +430,20 @@ mit steigenden Intervallgrößen abnimmt.
 \section{MIP-Formulierungen}
 \label{sec:mip_formulations}
 
-In diesem Kapitel werden MIP-Formulierungen eingeführt, die dem experimentellen Vergleich dienen.
-Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit der die Qualität der von den Heuristiken generierten Lösungen beurteilt werden kann. Des Weiteren geht es um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander.
+In diesem Kapitel werden MIP-Formulierungen eingeführt, welche dem experimentellen Vergleich dienen.
+Diese werden verwendet, um die optimalen Zielfunktionswerte der Test-Instanzen zu ermitteln und somit eine Grundlage zu schaffen, mit welcher die Qualität der von den Heuristiken generierten Lösungen beurteilt werden kann. Des Weiteren geht es um einen Vergleich der im Folgenden vorgestellten MIP-Formulierungen untereinander.
 Es handelt sich dabei um auf die in dieser Arbeit betrachteten Problemstellungen angepasste Formulierungen,
 welche in ihrer ursprünglichen Form von \citet{Le2016} vorgestellt wurden.
 Zusätzlich zu eher marginalen Änderungen an den Nebenbedingungen, welche der etwas anderen Ausgangssituation geschuldet sind,
-wird, wie bereits einleitend erwähnt, mit der Transportkostenminimierung eine jeweils andere Zielfunktion betrachtet.
+wird, wie bereits einleitend erwähnt, mit der Transportkostenminimierung jeweils eine andere Zielfunktion betrachtet.
 In den ursprünglichen Formulierungen entspricht die Zielfunktion jeweils der Minimierung der Anzahl der verwendeten Stacks.
+
+Die Zielfunktion der Heuristiken stellt, wie in Abschnitt \ref{sec:objective} geschildert, im Grunde die Kombination
+zweier Zielfunktionen dar, welche initial die Anzahl der verwendeten Stacks minimiert, indem möglichst viele
+$b-$Tupel von Items generiert werden, bevor diese möglichst günstig den Stacks zugewiesen werden.
+Insofern ist zu erwarten, dass die MIP-Formulierungen verglichen mit den Heuristiken prinzipiell,
+vorausgesetzt beide Lösungsverfahren lösen eine Instanz zulässig, zu etwas günstigeren Zielfunktionswerten gelangen,
+dafür jedoch mehr Stacks verwenden.
 
 Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee des MIP im Allgemeinen
 eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formulation} und \ref{sec:three_idx_formulation} die beiden in dieser Arbeit betrachteten MIP-Formulierungen im Detail vorzustellen.
