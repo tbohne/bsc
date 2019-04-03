@@ -389,34 +389,37 @@ da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
 
 \textbf{Transportkosten}
 
-Die Transportkosten eines Items, also die Kosten der Verladung eines Items in einen Stack, entsprechen,
-wie in Abschnitt \ref{sec:transport_costs} erläutert, der auf der Manhattan-Metrik
-basierenden Distanz zwischen diesem Item und dem jeweiligen Stack.
+Die Kosten der Verladung eines Items in einen Stack entsprechen, wie in Abschnitt
+\ref{sec:transport_costs} erläutert, der auf der Manhattan-Metrik basierenden Distanz
+zwischen diesem Item und dem jeweiligen Stack.
 Im Wesentlichen liegen der Transportkostenbestimmung zwei Grids zugrunde. Zum einen die Storage-Area,
-welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf denen die Items geliefert werden.
+welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf welchen die Items geliefert werden.
 Zur Ermittlung der Distanzen zwischen Items und Stacks, sind deren Positionen jeweils als $x$- und $y$-Koordinaten gegeben.
 Diese ergeben sich aus der Länge und Breite der Zellen der beiden Grids, in welchen die Items platziert werden
 bzw. bei ihrer Ankunft platziert sind. Für diese Zellen wird eine einheitliche Größe angenommen,
 welche sowohl für die Storage-Area, als auch für die Fahrzeuge gilt.
 Da die Grids nicht notwendigerweise direkt aneinander grenzen, sondern z.B. wie in Abb. \ref{fig:costs}
 durch \textquote{Driving-} und \textquote{Parking-Lane} voneinander getrennt sind, ist zudem eine Distanz
-zwischen Storage-Area und Fahrzeug gegeben.
+zwischen der Storage-Area und dem Fahrzeug gegeben.
 
-Daraus ergeben sich mehrere Konfigurationsmöglichkeiten, die unterschiedliche Auswirkungen haben.
+Daraus ergeben sich mehrere Konfigurationsmöglichkeiten, welche unterschiedliche Auswirkungen haben.
 Zunächst geht es um die Konfiguration der Zellengröße der beiden Grids. Der als erstes weltweit standardisierte
 Seecontainer ist der 20-Fuß-Container TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).},
-der bis heute international als Maßeinheit
-gebräuchlich ist. Der TEU ist rund $6,06$ Meter lang, $2,44$ Meter breit und $2,59$ Meter hoch (vgl. \citet{ContainerBasis}).
-In grober Orientierung am TEU beträgt die Länge einer Zelle in den Experimenten $6$ Meter und deren Breite $3$ Meter.
+der bis heute international als Maßeinheit gebräuchlich ist. Der TEU ist rund $6,06$ Meter lang, $2,44$ Meter breit und
+$2,59$ Meter hoch (vgl. \citet{ContainerBasis}).
+In grober Orientierung am TEU betragen Länge und Breite einer Zelle in den Experimenten $6$ bzw. $3$ Meter.
 Ebenfalls konfigurierbar ist die erwähnte Distanz zwischen den beiden Grids, welche in den Experimenten dem
 $5-$fachen der Zellenbreite, also in diesem Fall $15$ Metern entspricht.
 
 Bei den Längen und Breiten der Items selbst handelt es sich um zufällige Werte, welche nicht die Zellengröße überschreiten.
-Die Länge eines Items wird dementsprechend zufällige aus dem Intervall $[1, 6]$ generiert und die Breite aus dem
-Intervall $[1, 3]$. Wobei die konkreten Maße eines Items für die Transportkosten keine Rolle spielen und lediglich für die Stacking-Constraints von Bedeutung sind. Die in Variante 2 der Stacking-Constraint-Generierung erwähnten zufälligen
-Längen und Breiten der Items stammen folglich aus diesen Intervallen.
-Damit haben die Zellengrößen direkten Einfluss auf die Stacking-Constraints, weil kleinere Intervalle
-z.B. dazu führen, dass die Wahrscheinlichkeit für Items, welche in beide Richtungen stackbar sind, größer ist.
+Die Länge eines Items wird dementsprechend zufällige aus dem Intervall $[1, 6]$ generiert während die Breite aus dem
+Intervall $[1, 3]$ stammt. Die konkreten Maße der Items sind für die Transportkosten irrelevant und lediglich
+für die Stacking-Constraints von Bedeutung.
+In der zweiten Variante der Stacking-Constraint-Generierung werden zufällige Längen und Breiten der Items
+erwähnt, welche folglich aus diesen Intervallen stammen.
+Somit haben die Zellengrößen direkten Einfluss auf die Stacking-Constraints,
+weil kleinere Intervalle beispielsweise eine größere Wahrscheinlichkeit für Item-Paarungen,
+welche in beide Richtungen stackbar sind, zur Folge haben.
 
 \vfill
 
