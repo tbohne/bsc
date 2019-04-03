@@ -362,40 +362,63 @@ werden Pro Konfiguration $20$ Instanzen generiert.
 
 \textbf{Anzahl zur Verfügung stehender Stacks}
 
-Die Anzahl der \textit{Items} $n$ sowie die \textit{Stack}-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl
-zur Verfügung stehender \textit{Stacks} $m$ verwendet. Es gilt $m$ = $\ceil{\floor{\frac{n}{b}}$ + $20 \%}$.
-Bei einer \textit{Stack}anzahl von $m$ = $\floor{\frac{n}{b}}$ gäbe es überhaupt keinen Spielraum bei der \textit{Item}platzierung. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch unlösbar.
-Daher wurde zunächst ein durchaus geringer Spielraum von $20 \%$ eingeführt, der in weiteren Betrachtungen erhöht werden könnte.
+Die erste vom \textsc{TestDataGenerator} bereitgestellte Konfigurationsmöglichkeit ist die Größe des Spielraums in der Storage-Area, welche die Anzahl der zur Verfügung stehenden Stacks beeinflusst.
+Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl zur Verfügung stehender Stacks $m$ verwendet.
+Es gilt $m$ = $\ceil{\floor{\frac{n}{b}}$ + $20 \%}$. Bei einer Stackanzahl von $m$ = $\floor{\frac{n}{b}}$ gäbe es überhaupt keinen Spielraum bei der Itemplatzierung, d.h. die Itemanzahl wäre identisch mit der Anzahl
+der verfügbaren Stackpositionen. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch unlösbar. Daher wurde für die durchgeführten Experimente ein durchaus geringer Spielraum von $20 \%$ eingeführt, der in weiteren Betrachtungen erhöht werden könnte.
 
-\textbf{Stacking Constraints}
+\textbf{Stacking-Constraints}
 
-Es wurden zwei Varianten der \textit{Stacking-Constraint}-Generierung implementiert, die jeweils spezifische Vor- und Nachteile aufweisen.
+Die zweite Möglichkeit der Konfiguration besteht in der Stacking-Constraint-Generierung,
+von welcher zwei Varianten implementiert wurden, die jeweils spezifische Vor- und Nachteile aufweisen
+und im \textsc{TestDataGenerator} ausgewählt werden können.
 
 \textbf{Variante 1}
 
-Die \textit{Stacking-Constraint}-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt.
-Anschließend werden die $1$-Einträge, die aus Transitivität folgen, ergänzt.
+Die Stacking-Constraint-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt. Anschließend werden jene $1$-Einträge, welche aus Transitivität folgen, ergänzt.
+
+\pagebreak
 
 \textbf{Variante 2}
 
-Für alle $n$ \textit{Items} wird eine zufällige Länge und Breite generiert. \textit{Item} $i$ kann auf \textit{Item} $j$ platziert werden,
-wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq l_j$ und $w_i \leq w_j$.
-Zwei \textit{Items} $i, j$ sind in beide Richtungen stackbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
+\textbf{Placement-Constraints}
 
-Variante 2 scheint realitätsnäher zu sein und wird deshalb zunächst bevorzugt. Aufgrund der Tatsache, dass Variante 2 jedoch stets
-zu einem Anteil von $1$-Einträgen in der Matrix von ca. $25\%$ führt und dieser mit Variante 1 sehr gut konfigurierbar ist, wird Variante 1 nicht verworfen. (TODO: Grund ergänzen...)
-
-\textbf{Placement Constraints}
-
-Tendenziell sind dabei mehr Item-Stack-Zuweisungen erlaubt als verboten.
-
-Die Placement Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
-dass ein Item $i$ in einem Stack $q$ platziert werden darf, $70 \%$ beträgt, da, wie in Kapitel \ref{sec:placement_restrictions} bereits erwähnt, tendenziell mehr Zuweisungen erlaubt als verboten sind.
+Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
+dass ein Item $i$ in einem Stack $q$ platziert werden darf, in der gegenwärtigen Konfiguration $70 \%$ beträgt,
+da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
 
 \textbf{Transportkosten}
 
-Zur Transportkostenberechnung wird, wie in Abschnitt \ref{sec:transport_costs} erläutert, die Manhattan-Metrik verwendet. Dazu sind
-entsprechend die \textit{Item}- und \textit{Stack}positionen als $x$- und $y$-Koordinaten gegeben. Auch die entsprechenden Längen und Breiten sowie die Distanz zwischen \textit{Storage-Area} und den Fahrzeug-Lanes ist jeweils gegeben.
+Die Transportkosten eines Items, also die Kosten der Verladung eines Items in einen Stack, entsprechen,
+wie in Abschnitt \ref{sec:transport_costs} erläutert, der auf der Manhattan-Metrik
+basierenden Distanz zwischen diesem Item und dem jeweiligen Stack.
+Im Wesentlichen liegen der Transportkostenbestimmung zwei Grids zugrunde. Zum einen die Storage-Area,
+welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf denen die Items geliefert werden.
+Zur Ermittlung der Distanzen zwischen Items und Stacks, sind deren Positionen jeweils als $x$- und $y$-Koordinaten gegeben.
+Diese ergeben sich aus der Länge und Breite der Zellen der beiden Grids, in welchen die Items platziert werden
+bzw. bei ihrer Ankunft platziert sind. Für diese Zellen wird eine einheitliche Größe angenommen,
+welche sowohl für die Storage-Area, als auch für die Fahrzeuge gilt.
+Da die Grids nicht notwendigerweise direkt aneinander grenzen, sondern z.B. wie in Abb. \ref{fig:costs}
+durch \textquote{Driving-} und \textquote{Parking-Lane} voneinander getrennt sind, ist zudem eine Distanz
+zwischen Storage-Area und Fahrzeug gegeben.
+
+Daraus ergeben sich mehrere Konfigurationsmöglichkeiten, die unterschiedliche Auswirkungen haben.
+Zunächst geht es um die Konfiguration der Zellengröße der beiden Grids. Der als erstes weltweit standardisierte
+Seecontainer ist der 20-Fuß-Container TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).},
+der bis heute international als Maßeinheit
+gebräuchlich ist. Der TEU ist rund $6,06$ Meter lang, $2,44$ Meter breit und $2,59$ Meter hoch (vgl. \citet{ContainerBasis}).
+In grober Orientierung am TEU beträgt die Länge einer Zelle in den Experimenten $6$ Meter und deren Breite $3$ Meter.
+Ebenfalls konfigurierbar ist die erwähnte Distanz zwischen den beiden Grids, welche in den Experimenten dem
+$5-$fachen der Zellenbreite, also in diesem Fall $15$ Metern entspricht.
+
+Bei den Längen und Breiten der Items selbst handelt es sich um zufällige Werte, welche nicht die Zellengröße überschreiten.
+Die Länge eines Items wird dementsprechend zufällige aus dem Intervall $[1, 6]$ generiert und die Breite aus dem
+Intervall $[1, 3]$. Wobei die konkreten Maße eines Items für die Transportkosten keine Rolle spielen und lediglich für die Stacking-Constraints von Bedeutung sind. Die in Variante 2 der Stacking-Constraint-Generierung erwähnten zufälligen
+Längen und Breiten der Items stammen folglich aus diesen Intervallen.
+Damit haben die Zellengrößen direkten Einfluss auf die Stacking-Constraints, weil kleinere Intervalle
+z.B. dazu führen, dass die Wahrscheinlichkeit für Items, welche in beide Richtungen stackbar sind, größer ist.
+
+\vfill
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
