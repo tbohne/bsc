@@ -391,7 +391,7 @@ da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
 
 Die Kosten der Verladung eines Items in einen Stack entsprechen, wie in Abschnitt
 \ref{sec:transport_costs} erläutert, der auf der Manhattan-Metrik basierenden Distanz
-zwischen diesem Item und dem jeweiligen Stack.
+zwischen der Originalposition dieses Items und der Position des jeweiligen Stacks.
 Im Wesentlichen liegen der Transportkostenbestimmung zwei Grids zugrunde. Zum einen die Storage-Area,
 welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf welchen die Items geliefert werden.
 Zur Ermittlung der Distanzen zwischen Items und Stacks, sind deren Positionen jeweils als $x$- und $y$-Koordinaten gegeben.
@@ -400,12 +400,12 @@ bzw. bei ihrer Ankunft platziert sind. Für diese Zellen wird eine einheitliche 
 welche sowohl für die Storage-Area, als auch für die Fahrzeuge gilt.
 Da die Grids nicht notwendigerweise direkt aneinander grenzen, sondern z.B. wie in Abb. \ref{fig:costs}
 durch \textquote{Driving-} und \textquote{Parking-Lane} voneinander getrennt sind, ist zudem eine Distanz
-zwischen der Storage-Area und dem Fahrzeug gegeben.
+zwischen der Storage-Area und dem zu entladenen Fahrzeug gegeben.
 
 Daraus ergeben sich mehrere Konfigurationsmöglichkeiten, welche unterschiedliche Auswirkungen haben.
 Zunächst geht es um die Konfiguration der Zellengröße der beiden Grids. Der als erstes weltweit standardisierte
 Seecontainer ist der 20-Fuß-Container TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).},
-der bis heute international als Maßeinheit gebräuchlich ist. Der TEU ist rund $6,06$ Meter lang, $2,44$ Meter breit und
+welcher bis heute international als Maßeinheit gebräuchlich ist. Der TEU ist rund $6,06$ Meter lang, $2,44$ Meter breit und
 $2,59$ Meter hoch (vgl. \citet{ContainerBasis}).
 In grober Orientierung am TEU betragen Länge und Breite einer Zelle in den Experimenten $6$ bzw. $3$ Meter.
 Ebenfalls konfigurierbar ist die erwähnte Distanz zwischen den beiden Grids, welche in den Experimenten dem
