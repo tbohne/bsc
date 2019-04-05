@@ -124,7 +124,7 @@ public class HeuristicUtil {
      * @param invalidEdgeCosts - the cost value used to implement the placement constraints
      * @return
      */
-    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, int[][] costMatrix, int invalidEdgeCosts) {
+    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, double[][] costMatrix, int invalidEdgeCosts) {
         return costMatrix[itemOne][stackIdx] < invalidEdgeCosts && costMatrix[itemTwo][stackIdx] < invalidEdgeCosts;
     }
 
@@ -275,9 +275,21 @@ public class HeuristicUtil {
      * @param max - the upper bound of the value
      * @return the random value in between the specified limits
      */
-    public static int getRandomValueInBetween(int min, int max) {
+    public static float getRandomValueInBetween(float min, float max) {
         Random r = new Random();
-        return r.nextInt(max - min) + min;
+        return min + r.nextFloat() * (max - min);
+    }
+
+    /**
+     * Returns a random integer in between the specified limits.
+     *
+     * @param min - the lower bound of the value
+     * @param max - the upper bound of the value
+     * @return the random value in between the specified limits
+     */
+    public static int getRandomIntegerInBetween(int min, int max) {
+        Random r = new Random();
+        return min + r.nextInt() * (max - min);
     }
 
     /**
