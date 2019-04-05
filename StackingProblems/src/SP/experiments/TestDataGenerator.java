@@ -220,7 +220,7 @@ public class TestDataGenerator {
      * @return the number of available stacks
      */
     public static int computeNumberOfStacks() {
-        int numOfStacks = (NUMBER_OF_ITEMS / STACK_CAPACITY);
+        int numOfStacks = (int)Math.ceil((float)NUMBER_OF_ITEMS / (float)STACK_CAPACITY);
         if (ADDITIONAL_STACK_PERCENTAGE > 0) {
             numOfStacks = (int)(Math.ceil(numOfStacks + numOfStacks * ((float)ADDITIONAL_STACK_PERCENTAGE / 100.0)));
         }
