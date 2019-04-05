@@ -19,8 +19,8 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /******************************* CONFIGURATION *************************************/
-    public static final int NUMBER_OF_INSTANCES = 20;
-    public static final int NUMBER_OF_ITEMS = 300;
+    public static final int NUMBER_OF_INSTANCES = 1;
+    public static final int NUMBER_OF_ITEMS = 100;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -32,13 +32,13 @@ public class TestDataGenerator {
 
     // Configuration of 2nd approach to stacking constraint generation:
     public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
-    public static final int ITEM_LENGTH_LB = 1;
-    public static final int ITEM_LENGTH_UB = 5;
-    public static final int ITEM_WIDTH_LB = 1;
-    public static final int ITEM_WIDTH_UB = 5;
-    public static final int STORAGE_AREA_SLOT_LENGTH = 1;
-    public static final int STORAGE_AREA_SLOT_WIDTH = 1;
-    public static final int STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5;
+    public static final float ITEM_LENGTH_LB = 1.00F;
+    public static final float ITEM_LENGTH_UB = 6.06F;
+    public static final float ITEM_WIDTH_LB = 1.00F;
+    public static final float ITEM_WIDTH_UB = 2.44F;
+    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
+    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
+    public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
     /***********************************************************************************/
 
     /**
@@ -50,7 +50,7 @@ public class TestDataGenerator {
      * @param stackPositions - list of stack positions
      * @return manhattan distance between original item position and stack
      */
-    public static int computeManhattanDist(int item, int stack, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
+    public static double computeManhattanDist(int item, int stack, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
         Position itemPosition = itemPositions.get(item);
         Position stackPosition = stackPositions.get(stack);
         return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
@@ -111,8 +111,8 @@ public class TestDataGenerator {
     public static ArrayList<Item> generateItems() {
         ArrayList<Item> items = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            int length = HeuristicUtil.getRandomValueInBetween(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
-            int width = HeuristicUtil.getRandomValueInBetween(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
+            float length = HeuristicUtil.getRandomValueInBetween(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
+            float width = HeuristicUtil.getRandomValueInBetween(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
             Item item = new Item(i, length, width);
             items.add(item);
         }
@@ -237,7 +237,7 @@ public class TestDataGenerator {
      * @param itemPositions  - the positions of the items on the trucks they're arriving with
      * @param stackPositions - the positions of the stacks in the storage area
      */
-    public static void generateCosts(int[][] costs, int numOfStacks, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
+    public static void generateCosts(double[][] costs, int numOfStacks, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             for (int j = 0; j < numOfStacks; j++) {
                 costs[i][j] = computeManhattanDist(i, j, itemPositions, stackPositions);
@@ -268,7 +268,7 @@ public class TestDataGenerator {
 
             ArrayList<Position> itemPositions = generateItemPositions();
             ArrayList<Position> stackPositions = generateStackPositions(numOfStacks);
-            int[][] costs = new int[NUMBER_OF_ITEMS][numOfStacks];
+            double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
             TestDataGenerator.generateCosts(costs, numOfStacks, itemPositions, stackPositions);
 
             String idxString = idx < 10 ? "0" + idx : String.valueOf(idx);
