@@ -8,8 +8,8 @@ package SP.representations;
 public class Item {
 
     private int idx;
-    private int length;
-    private int width;
+    private float length;
+    private float width;
 
     /**
      * Constructor
@@ -18,7 +18,7 @@ public class Item {
      * @param length - the length of the item
      * @param width  - the width of the item
      */
-    public Item(int idx, int length, int width) {
+    public Item(int idx, float length, float width) {
         this.idx = idx;
         this.length = length;
         this.width = width;
@@ -38,7 +38,7 @@ public class Item {
      *
      * @return the item's length
      */
-    public int getLength() {
+    public float getLength() {
         return  this.length;
     }
 
@@ -47,7 +47,7 @@ public class Item {
      *
      * @return the item's width
      */
-    public int getWidth() {
+    public float getWidth() {
         return this.width;
     }
 }

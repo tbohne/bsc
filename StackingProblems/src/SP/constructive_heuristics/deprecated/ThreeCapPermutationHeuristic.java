@@ -66,7 +66,7 @@ public class ThreeCapPermutationHeuristic {
         ArrayList<Integer> toBeReplaced = new ArrayList<>();
 
         for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, this.instance.getStacks().length - 1));
+            toBeReplaced.add(HeuristicUtil.getRandomIntegerInBetween(0, this.instance.getStacks().length - 1));
         }
         for (int i = 0; i < toBeReplaced.size(); i++) {
             Collections.swap(tmpEdges, toBeReplaced.get(i), i + this.instance.getStacks().length);

@@ -17,7 +17,7 @@ public class Instance {
     private ArrayList<Position> itemPositions;
     private ArrayList<Position> stackPositions;
     private int[][] stackingConstraints;
-    private int[][] costs;
+    private double[][] costs;
 
     /**
      * Constructor
@@ -32,7 +32,7 @@ public class Instance {
      * @param name                - the name of the instance
      */
     public Instance(int numberOfItems, int numberOfStacks, ArrayList<Position> itemPositions,
-        ArrayList<Position> stackPositions, int stackCapacity, int[][] stackingConstraints, int[][] costs, String name) {
+        ArrayList<Position> stackPositions, int stackCapacity, int[][] stackingConstraints, double[][] costs, String name) {
 
             this.initItems(numberOfItems);
             this.initStacks(numberOfStacks, stackCapacity);
@@ -168,7 +168,7 @@ public class Instance {
      * @param instance - the instance the costs get copied from
      */
     public void copyCosts(Instance instance) {
-        this.costs = new int[instance.getCosts().length][];
+        this.costs = new double[instance.getCosts().length][];
         for (int i = 0; i < instance.getCosts().length; i++) {
             this.costs[i] = instance.getCosts()[i].clone();
         }
@@ -253,7 +253,7 @@ public class Instance {
      *
      * @return the transport costs
      */
-    public int[][] getCosts() {
+    public double[][] getCosts() {
         return this.costs;
     }
 

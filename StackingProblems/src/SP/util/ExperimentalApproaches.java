@@ -27,7 +27,7 @@ public class ExperimentalApproaches {
         }
         ArrayList<Integer> toBeReplaced = new ArrayList<>();
         for (int i = 0; i < numberOfEdgesToBeReplaced; i++) {
-            toBeReplaced.add(HeuristicUtil.getRandomValueInBetween(0, stacks.length - 1));
+            toBeReplaced.add(HeuristicUtil.getRandomIntegerInBetween(0, stacks.length - 1));
         }
         for (int i = 0; i < toBeReplaced.size(); i++) {
             Collections.swap(tmpEdges, toBeReplaced.get(i), i + stacks.length);

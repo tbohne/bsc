@@ -39,7 +39,7 @@ public class InstanceWriter {
     private static void writeCosts(Instance instance, BufferedWriter bw) throws IOException {
         for (int i = 0; i < instance.getCosts().length; i++) {
             for (int j = 0; j < instance.getCosts()[0].length; j++) {
-                bw.write(instance.getCosts()[i][j] + " ");
+                bw.write(String.format("%.2f", instance.getCosts()[i][j]) + " ");
             }
             bw.newLine();
         }
@@ -126,7 +126,7 @@ public class InstanceWriter {
      */
     public static void writeConfig(String filename, int numOfInstances, int numOfItems, int stackCapacity,
         int additionalStackPercentage, float chanceForOneInStackingConstraints, float chanceForOneInPlacementConstraints,
-        boolean usingStackingConstraintGenerationApproachOne, int itemLengthLB, int itemLengthUB, int itemWidthLB, int itemWidthUB
+        boolean usingStackingConstraintGenerationApproachOne, float itemLengthLB, float itemLengthUB, float itemWidthLB, float itemWidthUB
     ) {
 
         File file = new File(filename);

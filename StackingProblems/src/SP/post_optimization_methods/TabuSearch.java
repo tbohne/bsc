@@ -37,10 +37,10 @@ public class TabuSearch {
 
             Solution neighbor = new Solution(this.currSol);
 
-            int stackIdxItemOne = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea().length);
-            int stackIdxItemTwo = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea().length);
-            int levelItemOne = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemOne].length);
-            int levelItemTwo = HeuristicUtil.getRandomValueInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemTwo].length);
+            int stackIdxItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length);
+            int stackIdxItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length);
+            int levelItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemOne].length);
+            int levelItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemTwo].length);
 
             StorageAreaPosition posOne = new StorageAreaPosition(stackIdxItemOne, levelItemOne);
             StorageAreaPosition posTwo = new StorageAreaPosition(stackIdxItemTwo, levelItemTwo);

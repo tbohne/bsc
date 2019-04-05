@@ -7,8 +7,8 @@ package SP.representations;
  */
 public class Position {
 
-    private int xCoord;
-    private int yCoord;
+    private double xCoord;
+    private double yCoord;
 
     /**
      * Constructor
@@ -16,7 +16,7 @@ public class Position {
      * @param xCoord - the position's x coordinate
      * @param yCoord - the position's y corrdinate
      */
-    public Position(int xCoord, int yCoord) {
+    public Position(double xCoord, double yCoord) {
         this.xCoord = xCoord;
         this.yCoord = yCoord;
     }
@@ -36,7 +36,7 @@ public class Position {
      *
      * @return the position's x coordinate
      */
-    public int getXCoord() {
+    public double getXCoord() {
         return this.xCoord;
     }
 
@@ -45,7 +45,7 @@ public class Position {
      *
      * @return the position's y coordinate
      */
-    public int getYCoord() {
+    public double getYCoord() {
         return this.yCoord;
     }
 
@@ -56,6 +56,6 @@ public class Position {
      */
     @Override
     public String toString() {
-        return "(" + xCoord + "," + yCoord + ")";
+        return "(" + String.format("%.2f", this.xCoord) + "," + String.format("%.2f", this.yCoord) + ")";
     }
 }
