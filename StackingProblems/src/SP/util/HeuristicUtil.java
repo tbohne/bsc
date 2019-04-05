@@ -277,7 +277,7 @@ public class HeuristicUtil {
      */
     public static float getRandomValueInBetween(float min, float max) {
         Random r = new Random();
-        return min + r.nextFloat() * (max - min);
+        return (float)(Math.round(min + r.nextFloat() * (max - min) * 10.0) / 10.0);
     }
 
     /**
