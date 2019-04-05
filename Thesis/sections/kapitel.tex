@@ -385,7 +385,7 @@ Die Stacking-Constraint-Matrix $S$ wird anhand einer definierten Wahrscheinlichk
 
 Für alle $n$ Items wird eine zufällige Länge und Breite generiert. Item $i$ kann auf Item $j$
 platziert werden, wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq l_j$ und $w_i \leq w_j$.
-Zwei Items $i, j$ sind in beide Richtungen stackbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
+Zwei Items $i, j$ sind in beide Richtungen stapelbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
 
 Die zweite Variante erscheint realitätsnäher und wird deshalb in den Experimenten verwendet.
 Aufgrund der Tatsache, dass diese jedoch stets zu einem Anteil von $1$-Einträgen in der
@@ -395,7 +395,7 @@ erwünscht ist, zum Einstaz kommen.
 
 Die zu ungefähr einem Viertel mit $1$-Einträgen gefüllte Matrix $S$ ergibt sich bei partiellen Ordnungen der Dimension 2,
 die hier aufgrund der zwei Werte (Länge, Breite), welche pro Item generiert werden, gegeben sind.
-Die partiellen Ordnungen lassen sich auch als Permutationen darstellen, wobei eine Kante zwischen
+Diese partiellen Ordnungen lassen sich auch als Permutationen darstellen, wobei eine Kante zwischen
 zwei Knoten im Vergleichbarkeitsgraphen existiert, wenn diese in der Permutation
 vertauscht sind. Ein solches ungeordnetes Paar von Elementen einer Permutation wird auch Inversion
 der Permutation genannt. Die erwartete Anzahl von Inversionen in zufälligen Permutationen
@@ -411,8 +411,9 @@ sind ausreichend groß, um zumindest tendenziell ein Viertel $1$-Einträge in $S
 \textbf{Placement-Constraints}
 
 Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
-dass ein Item $i$ in einem Stack $q$ platziert werden darf, in der gegenwärtigen Konfiguration $70 \%$ beträgt,
-da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
+dass ein Item $i$ in einem Stack $q$ platziert werden darf, im \textsc{TestDataGenerator} konfiguriert werden kann.
+Die Konfiguration, welche den Experimenten zugrunde liegt, definiert diese Wahrscheinlichkeit
+als $70 \%$, da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
 
 \textbf{Transportkosten}
 
