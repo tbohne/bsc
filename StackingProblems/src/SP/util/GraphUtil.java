@@ -66,14 +66,14 @@ public class GraphUtil {
             DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
             ArrayList<MCMEdge> itemPairs,
             int[][] stacks,
-            int[][] costMatrix
+            double[][] costMatrix
     ) {
         for (int pair = 0; pair < itemPairs.size(); pair++) {
             for (int stack = 0; stack < stacks.length; stack++) {
                 // TODO: check necessary?
                 if (!bipartiteGraph.containsEdge("pair" + itemPairs.get(pair), "stack" + stack)) {
                     DefaultWeightedEdge edge = bipartiteGraph.addEdge("pair" + itemPairs.get(pair), "stack" + stack);
-                    int costs = costMatrix[itemPairs.get(pair).getVertexOne()][stack] + costMatrix[itemPairs.get(pair).getVertexTwo()][stack];
+                    double costs = costMatrix[itemPairs.get(pair).getVertexOne()][stack] + costMatrix[itemPairs.get(pair).getVertexTwo()][stack];
                     bipartiteGraph.setEdgeWeight(edge, costs);
                 }
             }
@@ -95,12 +95,12 @@ public class GraphUtil {
             DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
             ArrayList<ArrayList<Integer>> itemTriples,
             int[][] stacks,
-            int[][] costMatrix
+            double[][] costMatrix
     ) {
         for (int triple = 0; triple < itemTriples.size(); triple++) {
             for (int stack = 0; stack < stacks.length; stack++) {
                 DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriples.get(triple), "stack" + stack);
-                int costs = costMatrix[itemTriples.get(triple).get(0)][stack]
+                double costs = costMatrix[itemTriples.get(triple).get(0)][stack]
                         + costMatrix[itemTriples.get(triple).get(1)][stack]
                         + costMatrix[itemTriples.get(triple).get(2)][stack];
                 bipartiteGraph.setEdgeWeight(edge, costs);
@@ -145,14 +145,14 @@ public class GraphUtil {
             DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
             ArrayList<Integer> unmatchedItems,
             int[][] stacks,
-            int[][] costMatrix
+            double[][] costMatrix
     ) {
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < stacks.length; stack++) {
                 // TODO: check necessary?
                 if (!bipartiteGraph.containsEdge("item" + item, "stack" + stack)) {
                     DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "stack" + stack);
-                    int costs = costMatrix[item][stack];
+                    double costs = costMatrix[item][stack];
                     bipartiteGraph.setEdgeWeight(edge, costs);
                 }
             }
@@ -387,7 +387,7 @@ public class GraphUtil {
      * @return the generated stacking constraint graph
      */
     public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph(
-            int[] items, int[][] stackingConstraints, int[][] costMatrix, int invalidEdgeCosts, int[][] stacks
+            int[] items, int[][] stackingConstraints, double[][] costMatrix, int invalidEdgeCosts, int[][] stacks
     ) {
         DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
         ArrayList<Integer> itemList = new ArrayList<>();
