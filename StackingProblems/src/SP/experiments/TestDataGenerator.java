@@ -20,7 +20,7 @@ public class TestDataGenerator {
 
     /******************************* CONFIGURATION *************************************/
     public static final int NUMBER_OF_INSTANCES = 1;
-    public static final int NUMBER_OF_ITEMS = 100;
+    public static final int NUMBER_OF_ITEMS = 500;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -32,10 +32,10 @@ public class TestDataGenerator {
 
     // Configuration of 2nd approach to stacking constraint generation:
     public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
-    public static final float ITEM_LENGTH_LB = 1.00F;
-    public static final float ITEM_LENGTH_UB = 6.06F;
-    public static final float ITEM_WIDTH_LB = 1.00F;
-    public static final float ITEM_WIDTH_UB = 2.44F;
+    public static final float ITEM_LENGTH_LB = 1.0F;
+    public static final float ITEM_LENGTH_UB = 6.0F;
+    public static final float ITEM_WIDTH_LB = 1.0F;
+    public static final float ITEM_WIDTH_UB = 2.4F;
     public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
     public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
     public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
