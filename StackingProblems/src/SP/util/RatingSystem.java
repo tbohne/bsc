@@ -220,8 +220,8 @@ public class RatingSystem {
      * @param forbiddenVal - the cost value representing incompatible stacks
      * @return the computed penalty value
      */
-    public static int computePenaltyValue(int[][] costs, int forbiddenVal) {
-        int avgFeasibleCosts = 0;
+    public static double computePenaltyValue(double[][] costs, int forbiddenVal) {
+        double avgFeasibleCosts = 0;
         int cnt = 0;
         for (int item = 0; item < costs.length; item++) {
             for (int stack = 0; stack < costs[item].length; stack++) {
@@ -245,14 +245,14 @@ public class RatingSystem {
      * @param forbiddenVal - the value indicating incompatible stacks
      * @return
      */
-    public static int computeAvgCosts(int[][] stacks, int[][] costs, int itemOne, int itemTwo, int forbiddenVal) {
+    public static double computeAvgCosts(int[][] stacks, double[][] costs, int itemOne, int itemTwo, int forbiddenVal) {
 
-        int penaltyVal = computePenaltyValue(costs, forbiddenVal);
+        double penaltyVal = computePenaltyValue(costs, forbiddenVal);
 
-        int avgCosts = 0;
+        double avgCosts = 0;
         for (int stack = 0; stack < stacks.length; stack++) {
             if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
-                int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
+                double currCost = costs[itemOne][stack] + costs[itemTwo][stack];
                 avgCosts += currCost;
             } else {
                 avgCosts += penaltyVal;
@@ -300,7 +300,7 @@ public class RatingSystem {
      * @param deviationThreshold  - determines whether an edge is rated higher then 0
      */
     public static void assignThreeCapPairRating(
-        ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks, int deviationThreshold
+        ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold
     ) {
         ArrayList<ArrayList<Integer>> listOfPairRatings = new ArrayList<>();
         ArrayList<Integer> worstCompatibilities = new ArrayList<>();
@@ -315,15 +315,15 @@ public class RatingSystem {
             int pairCompatibilityItemTwo = computePairCompatibility(matchedItems, itemTwo, stackingConstraints, edge);
             int worstCompatibility = pairCompatibilityItemOne > pairCompatibilityItemTwo ? pairCompatibilityItemTwo : pairCompatibilityItemOne;
 
-            int avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
+            double avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
 
             ArrayList<Integer> pairRatings = new ArrayList<>();
             pairRatings.add(worstCompatibility);
-            pairRatings.add(avgCosts);
+            pairRatings.add((int)avgCosts);
 
             listOfPairRatings.add(pairRatings);
             worstCompatibilities.add(worstCompatibility);
-            avgCostValues.add(avgCosts);
+            avgCostValues.add((int)avgCosts);
         }
 
         int avgWorstCompatibility = getAvg(worstCompatibilities);
@@ -350,7 +350,7 @@ public class RatingSystem {
      * @param costs               - the cost matrix
      * @param stacks              - the available stacks
      */
-    public static void assignAvgCostsRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks) {
+    public static void assignAvgCostsRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
@@ -361,9 +361,9 @@ public class RatingSystem {
             if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
                 bonus = 1500;
             }
-            int avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
-            int rating = avgCosts - bonus;
-            edge.setRating(rating);
+            double avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
+            double rating = avgCosts - bonus;
+            edge.setRating((int)rating);
         }
     }
 
