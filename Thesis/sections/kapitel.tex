@@ -362,10 +362,12 @@ werden Pro Konfiguration $20$ Instanzen generiert.
 
 \textbf{Anzahl zur Verfügung stehender Stacks}
 
-Die erste vom \textsc{TestDataGenerator} bereitgestellte Konfigurationsmöglichkeit ist die Größe des Spielraums in der Storage-Area, welche die Anzahl der zur Verfügung stehenden Stacks beeinflusst.
-Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl zur Verfügung stehender Stacks $m$ verwendet.
-Es gilt $m$ = $\ceil{\floor{\frac{n}{b}}$ + $20 \%}$. Bei einer Stackanzahl von $m$ = $\floor{\frac{n}{b}}$ gäbe es überhaupt keinen Spielraum bei der Itemplatzierung, d.h. die Itemanzahl wäre identisch mit der Anzahl
-der verfügbaren Stackpositionen. Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen dann jedoch unlösbar. Daher wurde für die durchgeführten Experimente ein durchaus geringer Spielraum von $20 \%$ eingeführt, der in weiteren Betrachtungen erhöht werden könnte.
+Die erste vom \textsc{TestDataGenerator} bereitgestellte Konfigurationsmöglichkeit ist der Spielraum $a$ in der Storage-Area, welcher der Anzahl der zusätzlichen Stacks entspricht, die über die Minimalanzahl hinausgeht.
+Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl zur Verfügung stehender Stacks $m$ verwendet. Es werden mindestens $\ceil{\frac{n}{b}}$ Stacks benötigt, um sämtliche $n$ Items zuzuweisen.
+Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen bei dieser
+Anzahl an Stacks jedoch unlösbar. Daher wird die Minimalanzahl der Stacks um $a$ erhöht und es gilt
+$m = \ceil{\ceil{\frac{n}{b}} + a}$. In den durchgeführten Experimenten wird ein durchaus geringer Spielraum von
+zusätzlichen $20 \%$ betrachtet, also $a = 0.2 \cdot \ceil{\frac{n}{b}}$, welcher in weiteren Betrachtungen erhöht werden könnte.
 
 \textbf{Stacking-Constraints}
 
