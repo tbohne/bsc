@@ -14,7 +14,6 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -104,7 +103,6 @@ public class ThreeCapHeuristic {
         );
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
         ArrayList<ArrayList<Integer>> itemTriples = GraphUtil.parseItemTripleFromMCM(mcm);
-
         return itemTriples;
     }
 
@@ -130,6 +128,7 @@ public class ThreeCapHeuristic {
                 assignPairs.add(itemPairs.get(i));
             }
         }
+
         ArrayList<Integer> splittedItems = new ArrayList<>();
         for (MCMEdge splitPair : splitPairs) {
             splittedItems.add(splitPair.getVertexOne());
@@ -326,6 +325,20 @@ public class ThreeCapHeuristic {
             this.startTime = System.currentTimeMillis();
             ArrayList<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
 
+            // TODO: remove dbg logs
+            ///////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////
+            int cnt = 0;
+            for (MCMEdge e : itemPairs) {
+                if (this.instance.getStackingConstraints()[e.getVertexOne()][e.getVertexTwo()] == 1
+                        && this.instance.getStackingConstraints()[e.getVertexTwo()][e.getVertexOne()] == 1) {
+                    cnt++;
+                }
+            }
+            System.out.println("pairs: " + itemPairs.size() + " both dir: " + cnt);
+            ///////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////
+
             ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = this.mergePairsToTriples(itemPairs, prioritizeRuntime);
             ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
             bestSol = this.getBestSolution(solutions);
@@ -334,6 +347,7 @@ public class ThreeCapHeuristic {
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }
+
         return bestSol;
     }
 
@@ -355,17 +369,17 @@ public class ThreeCapHeuristic {
      * @return
      */
     public static MCMEdge getTargetPairForItemBestFit(
-            int[] items, ArrayList<MCMEdge> potentialTargetPairs, int[][] costs, int[][] stacks, int item
+            int[] items, ArrayList<MCMEdge> potentialTargetPairs, double[][] costs, int[][] stacks, int item
     ) {
         MCMEdge bestTargetPair = new MCMEdge(0, 0, 0);
         if (potentialTargetPairs.size() > 0) {
             bestTargetPair = potentialTargetPairs.get(0);
         }
-        int minCost = Integer.MAX_VALUE / items.length;
+        double minCost = Integer.MAX_VALUE / items.length;
         int costsForIncompatibleStack = Integer.MAX_VALUE / items.length;
 
         for (MCMEdge targetPair : potentialTargetPairs) {
-            ArrayList<Integer> costValues = new ArrayList<>();
+            ArrayList<Double> costValues = new ArrayList<>();
 
             for (int stack = 0; stack < stacks.length; stack++) {
                 if (costs[item][stack] < costsForIncompatibleStack
