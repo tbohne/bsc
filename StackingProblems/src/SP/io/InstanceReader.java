@@ -22,9 +22,9 @@ public class InstanceReader {
      * @param numberOfItems - the number of items that are part of the instance
      * @return the read matrix
      */
-    private static int[][] readMatrix(BufferedReader reader, int numberOfItems) {
+    private static double[][] readMatrix(BufferedReader reader, int numberOfItems) {
 
-        int[][] matrix = new int[numberOfItems][];
+        double[][] matrix = new double[numberOfItems][];
 
         try {
             String line = reader.readLine().trim();
@@ -33,9 +33,9 @@ public class InstanceReader {
             // Reading as long as there are lines belonging to the matrix.
             while (!line.equals("")) {
                 String[] stringOfIntegers = line.split(" ");
-                matrix[row] = new int[stringOfIntegers.length];
+                matrix[row] = new double[stringOfIntegers.length];
                 for (int col = 0; col < stringOfIntegers.length; col++) {
-                    matrix[row][col] = Integer.parseInt(stringOfIntegers[col]);
+                    matrix[row][col] = Double.parseDouble(stringOfIntegers[col]);
                 }
                 line = reader.readLine();
                 line = line == null ? "" : line.trim();
@@ -58,13 +58,29 @@ public class InstanceReader {
             String line = reader.readLine().trim();
             String[] stringOfPositions = line.split(" ");
             for (String position : stringOfPositions) {
-                int xCoord = Integer.parseInt(position.split(",")[0].replace("(", "").trim());
-                int yCoord = Integer.parseInt(position.split(",")[1].replace(")", "").trim());
+                double xCoord = Double.parseDouble(position.split(",")[0].replace("(", "").trim());
+                double yCoord = Double.parseDouble(position.split(",")[1].replace(")", "").trim());
                 positions.add(new Position(xCoord, yCoord));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns the corresponding integer matrix for the given double matrix.
+     *
+     * @param matrix - the matrix whose entries are going to be casted
+     * @return the corresponding integer matrix
+     */
+    public static int[][] castFloatingPointMatrix(double[][] matrix) {
+        int[][] integerMatrix = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                integerMatrix[i][j] = (int)matrix[i][j];
+            }
+        }
+        return integerMatrix;
     }
 
     /**
@@ -80,7 +96,7 @@ public class InstanceReader {
         ArrayList<Position> itemPositions = new ArrayList<>();
         ArrayList<Position> stackPositions = new ArrayList<>();
         int[][] stackingConstraints = new int[numberOfItems][];
-        int[][] costs = new int [numberOfItems][];
+        double[][] costs = new double[numberOfItems][];
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             numberOfItems = Integer.parseInt(reader.readLine().trim());
@@ -88,7 +104,7 @@ public class InstanceReader {
             stackCapacity = Integer.parseInt(reader.readLine().trim());
 
             if (reader.readLine().trim().equals("")) {
-                stackingConstraints = readMatrix(reader, numberOfItems);
+                stackingConstraints = castFloatingPointMatrix(readMatrix(reader, numberOfItems));
             }
             costs = readMatrix(reader, numberOfItems);
             readPositions(itemPositions, reader);
