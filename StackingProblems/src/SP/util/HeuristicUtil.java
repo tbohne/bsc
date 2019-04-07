@@ -281,6 +281,30 @@ public class HeuristicUtil {
     }
 
     /**
+     * Rounds the given value to the next half.
+     *
+     * @param val - the value to be rounded
+     * @return the rounded value
+     */
+    public static float roundToHalf(float val) {
+        return (float)(Math.round(val * 2) / 2.0);
+    }
+
+    /**
+     * Returns a random value in between the specified limits in .5 steps.
+     *
+     * @param min - the lower bound of the value
+     * @param max - the upper bound of the value
+     * @return the random value in between the specified limits
+     */
+    public static float getRandomValueInBetweenHalfSteps(float min, float max) {
+        Random r = new Random();
+        float val = roundToHalf((float)(Math.round(min + r.nextFloat() * (max - min) * 10.0) / 10.0));
+        if (val > max) { val = max; }
+        return val;
+    }
+
+    /**
      * Returns a random integer in between the specified limits.
      *
      * @param min - the lower bound of the value
