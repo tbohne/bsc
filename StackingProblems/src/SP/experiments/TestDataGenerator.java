@@ -8,6 +8,7 @@ import SP.util.HeuristicUtil;
 import javafx.geometry.Pos;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Provides functionalites to configure and generate test instances for stacking problems.
@@ -111,8 +112,8 @@ public class TestDataGenerator {
     public static ArrayList<Item> generateItems() {
         ArrayList<Item> items = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            float length = HeuristicUtil.getRandomValueInBetween(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
-            float width = HeuristicUtil.getRandomValueInBetween(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
+            float length = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
+            float width = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
             Item item = new Item(i, length, width);
             items.add(item);
         }
@@ -134,6 +135,12 @@ public class TestDataGenerator {
         int[][] stackingConstraintMatrix = new int[dimOne][dimTwo];
 
         for (int i = 0; i < dimOne; i++) {
+
+            System.out.println("###########################");
+            System.out.println(items.get(i).getLength());
+            System.out.println(items.get(i).getWidth());
+            System.out.println("###########################");
+
             for (int j = 0; j < dimTwo; j++) {
 
                 if (i == j) { stackingConstraintMatrix[i][j] = 1; }
