@@ -406,7 +406,10 @@ d.h. die erwartete Anzahl der Inversionen entspricht der erwarteten Anzahl an $1
 Dies gilt im Allgemeinen für zufällige Längen und Breiten der Items und ist nicht zwingend der Fall,
 wenn diese Werte jeweils aus kleineren Intervallen gewählt werden.
 Die in den Experimenten betrachteten Intervalle, welche im Folgenden definiert werden,
-sind ausreichend groß, um zumindest tendenziell ein Viertel $1$-Einträge in $S$ zu erhalten.
+führen zu ca. $36\%$ $1$-Einträgen in $S$. Bei Vergrößerung der Intervalle nähert sich dieser
+erwartete Wert den $25\%$ an.
+
+% sind ausreichend groß, um zumindest tendenziell ein Viertel $1$-Einträge in $S$ zu erhalten.
 
 \textbf{Placement-Constraints}
 
@@ -441,8 +444,13 @@ In Orientierung am TEU betragen Länge und Breite einer Zelle in den Experimente
 $2.44 \thinspace m$. Außerdem lässt sich die erwähnte Distanz zwischen den beiden Grids spezifizieren,
 welche in den Experimenten dem Fünffachen der Zellenbreite, also in diesem Fall $12.20 \thinspace m$ entspricht.
 Bei den Längen und Breiten der Items selbst handelt es sich um zufällige Werte, welche nicht die Zellengröße überschreiten.
-Die Länge eines Items wird dementsprechend zufällige aus dem Intervall $[1.0, 6.0]$ generiert während die Breite aus dem
-Intervall $[1.0, 2.4]$ stammt. Die konkreten Maße der Items sind für die Transportkosten irrelevant und lediglich
+Die Länge eines Items wird dementsprechend zufällig aus dem Intervall $[1.0, 6.0]$ generiert während die Breite aus dem
+Intervall $[1.0, 2.4]$ stammt. Da es typischerweise nur eine begrenzte Anzahl unterschiedlicher Item-Typen im selben Lager
+gibt, werden nicht sämtliche Werte aus diesen Intervallen betrachtet, sondern lediglich in Schritten von $0.5$.
+Folglich sind die Item-Längen $\{1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0\}$ und
+die Item-Breiten $\{1.0, 1.5, 2.0\}$ möglich.
+
+ Die konkreten Maße der Items sind für die Transportkosten irrelevant und lediglich
 für die zweite Variante der Stacking-Constraint-Generierung von Bedeutung.
 Somit haben die Zellengrößen direkten Einfluss auf die Stacking-Constraints,
 weil beispielsweise die Wahrscheinlichkeit für Item-Paarungen, welche in beide Richtungen stapelbar sind,
