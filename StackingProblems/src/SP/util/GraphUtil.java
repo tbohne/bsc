@@ -512,6 +512,18 @@ public class GraphUtil {
         }
     }
 
+    public static int parseItemOneOfPair(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
+    }
+
+    public static int parseItemTwoOfPair(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
+    }
+
+    public static int parseStackForPair(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+    }
+
     /**
      * Parses the combination of item pair and compatible stack.
      *
