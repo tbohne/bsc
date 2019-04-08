@@ -172,7 +172,13 @@ public class TwoCapHeuristic {
         );
     }
 
-    public void removeOutdatedItemPos(int item) {
+    /**
+     * Removes the specified item from its outdated position and lowers the other item of the
+     * pair to the ground level if it's stacked "in the air".
+     *
+     * @param item - the item to be removed from its original position in the storage area
+     */
+    public void removeItemFromOutdatedPosition(int item) {
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
             for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
                 if (this.instance.getStacks()[stack][level] == item) {
@@ -187,6 +193,12 @@ public class TwoCapHeuristic {
         }
     }
 
+    /**
+     * Retrieves all the stacks that remain empty in the original solution.
+     *
+     * @param minCostPerfectMatching - the matching the original solution is based on
+     * @return the list of empty stacks
+     */
     public ArrayList<String> findEmptyStacks(KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching) {
         ArrayList<String> emptyStacks = new ArrayList<>();
         for (Object edge : minCostPerfectMatching.getMatching().getEdges()) {
@@ -197,6 +209,12 @@ public class TwoCapHeuristic {
         return emptyStacks;
     }
 
+    /**
+     * Returns the costs for each item assignment before the post-processing step.
+     *
+     * @param minCostPerfectMatching - the matching the original solution is based on
+     * @return hashmap containing the original costs for each item assignment
+     */
     public HashMap<Integer, Double> getCostsBefore(KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching) {
         HashMap<Integer, Double> costsBefore = new HashMap<>();
         for (DefaultWeightedEdge edge : minCostPerfectMatching.getMatching().getEdges()) {
@@ -212,48 +230,54 @@ public class TwoCapHeuristic {
     }
 
     /**
+     * Updates the assignments for a compatible pair after the post-processing step.
      *
+     * @param itemOne - the first item of the pair
+     * @param stack - the stack the pair is placed in
+     * @param itemTwo - the second item of the pair
+     * @param costsBefore - the hashmap containing the original costs for each item assignment
+     */
+    public void updateAssignmentsForCompatiblePair(int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore) {
+        double costsItemOne = this.instance.getCosts()[itemOne][stack];
+        double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+
+        if (savingsItemOne > savingsItemTwo) {
+            this.removeItemFromOutdatedPosition(itemOne);
+            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
+        } else {
+            this.removeItemFromOutdatedPosition(itemTwo);
+            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
+        }
+    }
+
+    /**
+     * Updates the stack assignments based on the matching that results in the maximum savings.
      *
-     * @param maxSavingsMatching
-     * @param costsBefore
+     * @param maxSavingsMatching - the matching that results in the maximum savings
+     * @param costsBefore - the hashmap containing the original costs for each item assignment
      */
     public void updateStackAssignments(
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
         HashMap<Integer, Double> costsBefore
     ) {
-
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
             int itemOne = GraphUtil.parseItemOneOfPair(edge);
             int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
             int stack = GraphUtil.parseStackForPair(edge);
 
-            // BOTH ITEMS COMPATIBLE
+            // both items compatible
             if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
                 && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                double costsItemOne = this.instance.getCosts()[itemOne][stack];
-                double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
-                double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-                double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-
-                if (savingsItemOne > savingsItemTwo) {
-                    this.removeOutdatedItemPos(itemOne);
-                    this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-                } else {
-                    this.removeOutdatedItemPos(itemTwo);
-                    this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
-                }
-
-                // ITEM ONE COMPATIBLE
+                    this.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore);
+            // item one compatible
             } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                this.removeOutdatedItemPos(itemOne);
+                this.removeItemFromOutdatedPosition(itemOne);
                 this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-
-                // ITEM TWO COMPATIBLE
+            // item two compatible
             } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                this.removeOutdatedItemPos(itemTwo);
+                this.removeItemFromOutdatedPosition(itemTwo);
                 this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
             }
         }
