@@ -87,21 +87,63 @@ public class TwoCapHeuristic {
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
-    //////////////////////////////////////////////////////////////////////
+    /**
+     * Returns the maximum savings for the specified pair.
+     *
+     * @param itemPairs - the list of item pairs
+     * @param pairIdx - the index of the pair to be considered
+     * @param costMatrix - the matrix containing the costs for each item-stack-assignment
+     * @param stackIdx - the index of the considered stack
+     * @param costsBefore - the original costs for each item assignment
+     * @return the savings for the specified pair
+     */
+    public double getSavingsForPair(
+        ArrayList<MCMEdge> itemPairs, int pairIdx, double[][] costMatrix, int stackIdx, HashMap<Integer, Double> costsBefore
+    ) {
+        int itemOne = itemPairs.get(pairIdx).getVertexOne();
+        int itemTwo = itemPairs.get(pairIdx).getVertexTwo();
+        double costsItemOne = costMatrix[itemOne][stackIdx];
+        double costsItemTwo = costMatrix[itemTwo][stackIdx];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
+    }
 
     /**
+     * Returns the savings for the specified item.
      *
+     * @param costMatrix - the matrix containing the costs for each item-stack-assignment
+     * @param stackIdx - the index of the considered stack
+     * @param costsBefore - the original costs for each item assignment
+     * @param item - the item the savings are computed for
+     * @return the savings for the specified item
+     */
+    public double getSavingsForItem(double[][] costMatrix, int stackIdx, HashMap<Integer, Double> costsBefore, int item) {
+        double costs = costMatrix[item][stackIdx];
+        return costsBefore.get(item) - costs;
+    }
+
+    /**
+     * Generates the bipartite graph for the post-processing step.
+     * The graph's first partition consists of item-pairs and the second one consists of empty stacks.
+     * An edge between the partitions means that at least one item of the pair is compatible to the empty stack.
+     * The costs of the edges correspond to the maximum savings that are generated if an item of the pair is
+     * assigned to the empty stack.
      *
-     * @param itemPairs
-     * @param emptyStacks
-     * @param costMatrix
-     * @param items
-     * @param costsBefore
-     * @return
+     * @param itemPairs - the list of item pairs
+     * @param emptyStacks - the list of remaining empty stacks
+     * @param costMatrix - the matrix containing the costs for each item-stack-assignment
+     * @param items - the array containing the instance's items
+     * @param costsBefore - the original costs for each item assignment
+     * @return the generated bipartite graph
      */
     public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<MCMEdge> itemPairs, ArrayList<String> emptyStacks, double[][] costMatrix,
-        int[] items, HashMap<Integer, Double> costsBefore
+        ArrayList<MCMEdge> itemPairs,
+        ArrayList<String> emptyStacks,
+        double[][] costMatrix,
+        int[] items,
+        HashMap<Integer,
+        Double> costsBefore
     ) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
@@ -120,42 +162,24 @@ public class TwoCapHeuristic {
                 int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
                 double savings = 0.0;
 
-                // BOTH ITEMS COMPATIBLE
+                // both items compatible
                 if (costMatrix[itemPairs.get(pair).getVertexOne()][stackIdx] < Integer.MAX_VALUE / items.length
                     && costMatrix[itemPairs.get(pair).getVertexTwo()][stackIdx] < Integer.MAX_VALUE / items.length) {
-
-                        int itemOne = itemPairs.get(pair).getVertexOne();
-                        int itemTwo = itemPairs.get(pair).getVertexTwo();
-                        double costsItemOne = costMatrix[itemOne][stackIdx];
-                        double costsItemTwo = costMatrix[itemTwo][stackIdx];
-                        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-                        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-                        savings = savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
-
-                // ITEM ONE COMPATIBLE
+                        savings = this.getSavingsForPair(itemPairs, pair, costMatrix, stackIdx, costsBefore);
+                // item one compatible
                 } else if (costMatrix[itemPairs.get(pair).getVertexOne()][stackIdx] < Integer.MAX_VALUE / items.length) {
-
                     int itemOne = itemPairs.get(pair).getVertexOne();
-                    double costsItemOne = costMatrix[itemOne][stackIdx];
-                    double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-                    savings = savingsItemOne;
-
-                // ITEM TWO COMPATIBLE
+                    savings = this.getSavingsForItem(costMatrix, stackIdx, costsBefore, itemOne);
+                // item two compatible
                 } else if (costMatrix[itemPairs.get(pair).getVertexTwo()][stackIdx] < Integer.MAX_VALUE / items.length) {
-
                     int itemTwo = itemPairs.get(pair).getVertexTwo();
-                    double costsItemTwo = costMatrix[itemTwo][stackIdx];
-                    double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-                    savings = savingsItemTwo;
+                    savings = this.getSavingsForItem(costMatrix, stackIdx, costsBefore, itemTwo);
                 }
                 graph.setEdgeWeight(edge, savings);
             }
         }
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
-
-
-    //////////////////////////////////////////////////////////////////////
 
     /**
      * Encapsulates the stacking constraint graph generation.
