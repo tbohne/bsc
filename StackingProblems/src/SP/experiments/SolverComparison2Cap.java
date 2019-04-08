@@ -54,7 +54,7 @@ public class SolverComparison2Cap implements SolverComparison {
      */
     public void solveWithTwoCap(Instance instance, String solutionName) {
         TwoCapHeuristic twoCapHeuristic = new TwoCapHeuristic(instance, TIME_LIMIT);
-        Solution sol = twoCapHeuristic.solve();
+        Solution sol = twoCapHeuristic.solve(POST_PROCESSING);
         SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_TWO_CAP);
         SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_TWO_CAP);
     }
