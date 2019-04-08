@@ -189,6 +189,24 @@ public class Instance {
     }
 
     /**
+     * Returns the ground level for the instance's stacks.
+     *
+     * @return the ground level for the instance's stacks
+     */
+    public int getGroundLevel() {
+        return this.stackCapacity - 1;
+    }
+
+    /**
+     * Returns the top level for the instance's stacks.
+     *
+     * @return the top level for the instance's stacks
+     */
+    public int getTopLevel() {
+        return 0;
+    }
+
+    /**
      * Removes the specified list of items from the storage area.
      *
      * @param items - the list of items to be removed
