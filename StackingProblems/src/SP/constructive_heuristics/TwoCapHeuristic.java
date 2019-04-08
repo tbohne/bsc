@@ -6,7 +6,6 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
-import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
@@ -207,30 +206,16 @@ public class TwoCapHeuristic {
         return costsBefore;
     }
 
-    public Solution postProcessing(
-        Solution sol,
-        KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching,
-       ArrayList<MCMEdge> itemPairs
+
+    public void updateStackAssignments(
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
+        HashMap<Integer, Double> costsBefore
     ) {
-        System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
-        ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
-        HashMap<Integer, Double> costsBefore = this.getCostsBefore(minCostPerfectMatching);
-
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
-                itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
-        );
-
-        MaximumWeightBipartiteMatching maxSavingsMatching = new MaximumWeightBipartiteMatching(
-            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
-        );
-
-        System.out.println(maxSavingsMatching.getMatching().getEdges().size());
-
-        for (Object edge : maxSavingsMatching.getMatching().getEdges()) {
-            int itemOne = GraphUtil.parseItemOneOfPair((DefaultWeightedEdge) edge);
-            int itemTwo = GraphUtil.parseItemTwoOfPair((DefaultWeightedEdge) edge);
-            int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
+        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
+            int itemOne = GraphUtil.parseItemOneOfPair(edge);
+            int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
+            int stack = GraphUtil.parseStackForPair(edge);
 
             // BOTH ITEMS COMPATIBLE
             if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
@@ -262,26 +247,65 @@ public class TwoCapHeuristic {
                 this.instance.getStacks()[stack][0] = itemTwo;
             }
         }
+    }
 
+    /**
+     * This approach should be used in situations where the number of used stacks is irrelevant
+     * and only the minimization of transport costs matters.
+     *
+     * Takes the generated solution and moves items from completely filled stacks to empty
+     * stacks if it's possible to reduce the total costs by doing so.
+     * Initially, a bipartite graph between item pairs in a completely filled stack and empty stacks is generated.
+     * An edge between the two partitions indicates that at least one of the two items is assignable to the empty stack.
+     * The costs of the edge correspond to the resulting savings if the item that induces higher savings is assigned to
+     * the empty stack. A maximum weight matching is computed on that graph to retrieve an assignment that leads
+     * to a maximum cost reduction.
+     *
+     * @param sol - the generated solution to be processed
+     * @param minCostPerfectMatching - the min-cost-perfect-matching the solution is based on
+     * @param itemPairs - the generated pairs of items
+     * @return the result of the post-processing
+     */
+    public Solution postProcessing(
+        Solution sol,
+        KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching,
+       ArrayList<MCMEdge> itemPairs
+    ) {
+        System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
+        ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
+        HashMap<Integer, Double> costsBefore = this.getCostsBefore(minCostPerfectMatching);
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
+                itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
+        );
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
+            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+        );
+
+        System.out.println(maxSavingsMatching.getMatching().getEdges().size());
+
+        this.updateStackAssignments(maxSavingsMatching, costsBefore);
+        // TODO: items could be stacked "in the air" here
         this.fixOrderInStacks();
         sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
-
-        ///////////////////////////////////////////////////////
     }
 
     /**
      * Solves the stacking problem with an approach that uses a maximum cardinality matching followed by a minimum
      * weight perfect matching to feasibly assign all items to the storage area while minimizing the costs.
+     * Afterwards there's the option to start a post-processing of a solution which means that pairs of items
+     * are separated and items get assigned to remaining empty stacks if that reduces the total costs.
      * Basic idea:
      *      - generate stacking constraint graph
      *      - compute MCM and interpret edges as item pairs
      *      - generate bipartite graph (items, stacks)
      *      - compute MWPM and interpret edges as stack assignments
      *      - fix order of items inside the stacks
+     *      - post-processing
      *
-     * @param postProcessing - determines whether or not a post-processing step should be executed
+     * @param postProcessing - determines whether or not the post-processing step should be executed
      * @return the generated solution
      */
     public Solution solve(boolean postProcessing) {
@@ -296,27 +320,22 @@ public class TwoCapHeuristic {
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
-
             ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
                 itemPairs, this.instance.getItems()
             );
-
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
                 )
             ;
-
             GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
-
             if (postProcessing) {
                 sol = this.postProcessing(sol, minCostPerfectMatching, itemPairs);
             }
-
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
         }
