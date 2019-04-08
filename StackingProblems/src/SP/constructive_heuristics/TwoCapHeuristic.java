@@ -173,10 +173,15 @@ public class TwoCapHeuristic {
     }
 
     public void removeOutdatedItemPos(int item) {
-        for (int i = 0; i < this.instance.getStacks().length; i++) {
-            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
-                if (this.instance.getStacks()[i][j] == item) {
-                    this.instance.getStacks()[i][j] = -1;
+        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+            for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
+                if (this.instance.getStacks()[stack][level] == item) {
+                    this.instance.getStacks()[stack][level] = -1;
+                    // lower item if stacked "in the air"
+                    if (level == this.instance.getGroundLevel() && this.instance.getStacks()[stack][this.instance.getTopLevel()] != -1) {
+                        this.instance.getStacks()[stack][this.instance.getGroundLevel()] = this.instance.getStacks()[stack][this.instance.getTopLevel()];
+                        this.instance.getStacks()[stack][this.instance.getTopLevel()] = -1;
+                    }
                 }
             }
         }
@@ -206,7 +211,12 @@ public class TwoCapHeuristic {
         return costsBefore;
     }
 
-
+    /**
+     *
+     *
+     * @param maxSavingsMatching
+     * @param costsBefore
+     */
     public void updateStackAssignments(
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
         HashMap<Integer, Double> costsBefore
@@ -219,7 +229,7 @@ public class TwoCapHeuristic {
 
             // BOTH ITEMS COMPATIBLE
             if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-                    && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
                 double costsItemOne = this.instance.getCosts()[itemOne][stack];
                 double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
@@ -228,23 +238,23 @@ public class TwoCapHeuristic {
 
                 if (savingsItemOne > savingsItemTwo) {
                     this.removeOutdatedItemPos(itemOne);
-                    this.instance.getStacks()[stack][0] = itemOne;
+                    this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
                 } else {
                     this.removeOutdatedItemPos(itemTwo);
-                    this.instance.getStacks()[stack][0] = itemTwo;
+                    this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
                 }
 
                 // ITEM ONE COMPATIBLE
             } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
                 this.removeOutdatedItemPos(itemOne);
-                this.instance.getStacks()[stack][0] = itemOne;
+                this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
 
                 // ITEM TWO COMPATIBLE
             } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
                 this.removeOutdatedItemPos(itemTwo);
-                this.instance.getStacks()[stack][0] = itemTwo;
+                this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
             }
         }
     }
@@ -271,6 +281,7 @@ public class TwoCapHeuristic {
         KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching,
        ArrayList<MCMEdge> itemPairs
     ) {
+
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
@@ -285,9 +296,9 @@ public class TwoCapHeuristic {
         System.out.println(maxSavingsMatching.getMatching().getEdges().size());
 
         this.updateStackAssignments(maxSavingsMatching, costsBefore);
-        // TODO: items could be stacked "in the air" here
         sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
+
         return sol;
     }
 
