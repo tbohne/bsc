@@ -281,9 +281,10 @@ public class TwoCapHeuristic {
      *      - compute MWPM and interpret edges as stack assignments
      *      - fix order of items inside the stacks
      *
+     * @param postProcessing - determines whether or not a post-processing step should be executed
      * @return the generated solution
      */
-    public Solution solve() {
+    public Solution solve(boolean postProcessing) {
 
         Solution sol = new Solution();
 
@@ -312,7 +313,9 @@ public class TwoCapHeuristic {
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
 
-            sol = this.postProcessing(sol, minCostPerfectMatching, itemPairs);
+            if (postProcessing) {
+                sol = this.postProcessing(sol, minCostPerfectMatching, itemPairs);
+            }
 
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
