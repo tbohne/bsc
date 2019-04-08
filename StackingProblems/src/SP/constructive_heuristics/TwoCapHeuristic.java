@@ -286,7 +286,6 @@ public class TwoCapHeuristic {
 
         this.updateStackAssignments(maxSavingsMatching, costsBefore);
         // TODO: items could be stacked "in the air" here
-        this.fixOrderInStacks();
         sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
