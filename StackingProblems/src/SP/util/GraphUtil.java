@@ -303,6 +303,15 @@ public class GraphUtil {
             }
     }
 
+    public static void addVerticesForEmptyStacks(
+        ArrayList<String> emptyStacks, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
+    ) {
+        for (String emptyStack : emptyStacks) {
+            graph.addVertex(emptyStack);
+            partitionTwo.add(emptyStack);
+        }
+    }
+
     /**
      * Generates the bipartite graph containing pairs of items in
      * one partition and unmatched items in the other one.
