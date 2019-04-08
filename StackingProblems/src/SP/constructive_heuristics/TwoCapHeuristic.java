@@ -148,15 +148,11 @@ public class TwoCapHeuristic {
                     double costsItemTwo = costMatrix[itemTwo][stackIdx];
                     double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
                     savings = savingsItemTwo;
-
                 }
-
                 graph.setEdgeWeight(edge, savings);
             }
         }
-
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
-
     }
 
 
@@ -211,6 +207,70 @@ public class TwoCapHeuristic {
         return costsBefore;
     }
 
+    public Solution postProcessing(
+        Solution sol,
+        KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching,
+       ArrayList<MCMEdge> itemPairs
+    ) {
+        System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
+        ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
+        HashMap<Integer, Double> costsBefore = this.getCostsBefore(minCostPerfectMatching);
+
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
+                itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
+        );
+
+        MaximumWeightBipartiteMatching maxSavingsMatching = new MaximumWeightBipartiteMatching(
+            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+        );
+
+        System.out.println(maxSavingsMatching.getMatching().getEdges().size());
+
+        for (Object edge : maxSavingsMatching.getMatching().getEdges()) {
+            int itemOne = GraphUtil.parseItemOneOfPair((DefaultWeightedEdge) edge);
+            int itemTwo = GraphUtil.parseItemTwoOfPair((DefaultWeightedEdge) edge);
+            int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
+
+            // BOTH ITEMS COMPATIBLE
+            if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                double costsItemOne = this.instance.getCosts()[itemOne][stack];
+                double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
+                double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+                double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+
+                if (savingsItemOne > savingsItemTwo) {
+                    this.removeOutdatedItemPos(itemOne);
+                    this.instance.getStacks()[stack][0] = itemOne;
+                } else {
+                    this.removeOutdatedItemPos(itemTwo);
+                    this.instance.getStacks()[stack][0] = itemTwo;
+                }
+
+                // ITEM ONE COMPATIBLE
+            } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                this.removeOutdatedItemPos(itemOne);
+                this.instance.getStacks()[stack][0] = itemOne;
+
+                // ITEM TWO COMPATIBLE
+            } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                this.removeOutdatedItemPos(itemTwo);
+                this.instance.getStacks()[stack][0] = itemTwo;
+            }
+        }
+
+        this.fixOrderInStacks();
+        sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
+        return sol;
+
+        ///////////////////////////////////////////////////////
+    }
+
     /**
      * Solves the stacking problem with an approach that uses a maximum cardinality matching followed by a minimum
      * weight perfect matching to feasibly assign all items to the storage area while minimizing the costs.
@@ -252,64 +312,7 @@ public class TwoCapHeuristic {
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
 
-            ///////////////////////////////////////////////////////
-
-            System.out.println("costs before post processing: " + sol.getObjectiveValue());
-
-            ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
-            HashMap<Integer, Double> costsBefore = this.getCostsBefore(minCostPerfectMatching);
-
-            BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
-                itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
-            );
-
-            MaximumWeightBipartiteMatching maxSavingsMatching = new MaximumWeightBipartiteMatching(
-                postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
-            );
-
-            System.out.println(maxSavingsMatching.getMatching().getEdges().size());
-
-            for (Object edge : maxSavingsMatching.getMatching().getEdges()) {
-                int itemOne = GraphUtil.parseItemOneOfPair((DefaultWeightedEdge) edge);
-                int itemTwo = GraphUtil.parseItemTwoOfPair((DefaultWeightedEdge) edge);
-                int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
-
-                // BOTH ITEMS COMPATIBLE
-                if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-                    && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                    double costsItemOne = this.instance.getCosts()[itemOne][stack];
-                    double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
-                    double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-                    double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-
-                    if (savingsItemOne > savingsItemTwo) {
-                        this.removeOutdatedItemPos(itemOne);
-                        this.instance.getStacks()[stack][0] = itemOne;
-                    } else {
-                        this.removeOutdatedItemPos(itemTwo);
-                        this.instance.getStacks()[stack][0] = itemTwo;
-                    }
-
-                // ITEM ONE COMPATIBLE
-                } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                    this.removeOutdatedItemPos(itemOne);
-                    this.instance.getStacks()[stack][0] = itemOne;
-
-                // ITEM TWO COMPATIBLE
-                } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                    this.removeOutdatedItemPos(itemTwo);
-                    this.instance.getStacks()[stack][0] = itemTwo;
-                }
-            }
-
-            this.fixOrderInStacks();
-            sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
-            System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
-
-            ///////////////////////////////////////////////////////
+            sol = this.postProcessing(sol, minCostPerfectMatching, itemPairs);
 
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
