@@ -6,14 +6,17 @@ import SP.representations.MCMEdge;
 import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
+import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,6 +88,80 @@ public class TwoCapHeuristic {
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
+    //////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     *
+     * @param itemPairs
+     * @param emptyStacks
+     * @param costMatrix
+     * @param items
+     * @param costsBefore
+     * @return
+     */
+    public BipartiteGraph generatePostProcessingGraph(
+        ArrayList<MCMEdge> itemPairs, ArrayList<String> emptyStacks, double[][] costMatrix,
+        int[] items, HashMap<Integer, Double> costsBefore
+    ) {
+
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
+            DefaultWeightedEdge.class
+        );
+        Set<String> partitionOne = new HashSet<>();
+        Set<String> partitionTwo = new HashSet<>();
+
+        GraphUtil.addVerticesForItemPairs(itemPairs, graph, partitionOne);
+        GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
+
+        for (int pair = 0; pair < itemPairs.size(); pair++) {
+            for (String emptyStack : emptyStacks) {
+
+                DefaultWeightedEdge edge = graph.addEdge("pair" + itemPairs.get(pair), emptyStack);
+                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
+                double savings = 0.0;
+
+                // BOTH ITEMS COMPATIBLE
+                if (costMatrix[itemPairs.get(pair).getVertexOne()][stackIdx] < Integer.MAX_VALUE / items.length
+                    && costMatrix[itemPairs.get(pair).getVertexTwo()][stackIdx] < Integer.MAX_VALUE / items.length) {
+
+                        int itemOne = itemPairs.get(pair).getVertexOne();
+                        int itemTwo = itemPairs.get(pair).getVertexTwo();
+                        double costsItemOne = costMatrix[itemOne][stackIdx];
+                        double costsItemTwo = costMatrix[itemTwo][stackIdx];
+                        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+                        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+                        savings = savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
+
+                // ITEM ONE COMPATIBLE
+                } else if (costMatrix[itemPairs.get(pair).getVertexOne()][stackIdx] < Integer.MAX_VALUE / items.length) {
+
+                    int itemOne = itemPairs.get(pair).getVertexOne();
+                    double costsItemOne = costMatrix[itemOne][stackIdx];
+                    double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+                    savings = savingsItemOne;
+
+                // ITEM TWO COMPATIBLE
+                } else if (costMatrix[itemPairs.get(pair).getVertexTwo()][stackIdx] < Integer.MAX_VALUE / items.length) {
+
+                    int itemTwo = itemPairs.get(pair).getVertexTwo();
+                    double costsItemTwo = costMatrix[itemTwo][stackIdx];
+                    double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+                    savings = savingsItemTwo;
+
+                }
+
+                graph.setEdgeWeight(edge, savings);
+            }
+        }
+
+        return new BipartiteGraph(partitionOne, partitionTwo, graph);
+
+    }
+
+
+    //////////////////////////////////////////////////////////////////////
+
     /**
      * Encapsulates the stacking constraint graph generation.
      *
@@ -98,6 +175,40 @@ public class TwoCapHeuristic {
             (Integer.MAX_VALUE / this.instance.getItems().length),
             this.instance.getStacks()
         );
+    }
+
+    public void removeOutdatedItemPos(int item) {
+        for (int i = 0; i < this.instance.getStacks().length; i++) {
+            for (int j = 0; j < this.instance.getStacks()[i].length; j++) {
+                if (this.instance.getStacks()[i][j] == item) {
+                    this.instance.getStacks()[i][j] = -1;
+                }
+            }
+        }
+    }
+
+    public ArrayList<String> findEmptyStacks(KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching) {
+        ArrayList<String> emptyStacks = new ArrayList<>();
+        for (Object edge : minCostPerfectMatching.getMatching().getEdges()) {
+            if (edge.toString().contains("dummy")) {
+                emptyStacks.add(edge.toString().split(":")[1].replace(")", "").trim());
+            }
+        }
+        return emptyStacks;
+    }
+
+    public HashMap<Integer, Double> getCostsBefore(KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching) {
+        HashMap<Integer, Double> costsBefore = new HashMap<>();
+        for (DefaultWeightedEdge edge : minCostPerfectMatching.getMatching().getEdges()) {
+            if (edge.toString().contains("pair")) {
+                int itemOne = GraphUtil.parseItemOneOfPair(edge);
+                int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
+                int stack = GraphUtil.parseStackForPair(edge);
+                costsBefore.put(itemOne, this.instance.getCosts()[itemOne][stack]);
+                costsBefore.put(itemTwo, this.instance.getCosts()[itemTwo][stack]);
+            }
+        }
+        return costsBefore;
     }
 
     /**
@@ -129,15 +240,77 @@ public class TwoCapHeuristic {
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
                 itemPairs, this.instance.getItems()
             );
+
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
                 )
             ;
+
             GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+
+            ///////////////////////////////////////////////////////
+
+            System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
+            ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
+            HashMap<Integer, Double> costsBefore = this.getCostsBefore(minCostPerfectMatching);
+
+            BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
+                itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
+            );
+
+            MaximumWeightBipartiteMatching maxSavingsMatching = new MaximumWeightBipartiteMatching(
+                postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+            );
+
+            System.out.println(maxSavingsMatching.getMatching().getEdges().size());
+
+            for (Object edge : maxSavingsMatching.getMatching().getEdges()) {
+                int itemOne = GraphUtil.parseItemOneOfPair((DefaultWeightedEdge) edge);
+                int itemTwo = GraphUtil.parseItemTwoOfPair((DefaultWeightedEdge) edge);
+                int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
+
+                // BOTH ITEMS COMPATIBLE
+                if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                    double costsItemOne = this.instance.getCosts()[itemOne][stack];
+                    double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
+                    double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+                    double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+
+                    if (savingsItemOne > savingsItemTwo) {
+                        this.removeOutdatedItemPos(itemOne);
+                        this.instance.getStacks()[stack][0] = itemOne;
+                    } else {
+                        this.removeOutdatedItemPos(itemTwo);
+                        this.instance.getStacks()[stack][0] = itemTwo;
+                    }
+
+                // ITEM ONE COMPATIBLE
+                } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                    this.removeOutdatedItemPos(itemOne);
+                    this.instance.getStacks()[stack][0] = itemOne;
+
+                // ITEM TWO COMPATIBLE
+                } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                    this.removeOutdatedItemPos(itemTwo);
+                    this.instance.getStacks()[stack][0] = itemTwo;
+                }
+            }
+
+            this.fixOrderInStacks();
+            sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+            System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
+
+            ///////////////////////////////////////////////////////
+
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
         }
