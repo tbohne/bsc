@@ -324,20 +324,27 @@ Dabei haben Zulässigkeit und geringe Laufzeit Priorität. Eine Lösung wird als
 wenn sämtliche Items unter Berücksichtigung der Stacking- und Placement-Constraints sowie der Stack-Kapazität, eingelagert werden.
 
 Der Fokus auf Zulässigkeit äußert sich darin, dass zunächst stets versucht wird, möglichst wenige der zur Verfügung stehenden Stacks zu verwenden, weshalb die Zielfunktion im Grunde zunächst darin besteht, die Anzahl der verwendeten Stacks zu minimieren bzw. die Anzahl der vollständig gefüllten Stacks zu maximieren, damit möglichst jede Instanz zumindest zulässig gelöst wird.
-Erst im Anschluss daran werden die Transportkosten minimiert. Im Wesentlichen handelt es sich daher
-um eine Kombination zweier Zielfunktionen. Zu Beginn geht es darum, den zur Verfügung stehenden Platz in
-der Storage-Area durch initiales Generieren möglichst vieler $b$-Tupel von Items, ökonomisch zu nutzen.
-Dabei werden noch keine Kosten minimiert. Erst im Anschluss werden diese $b$-Tupel möglichst günstig
-den zur Verfügung stehenden Stacks zugewiesen.
+Erst im Anschluss daran werden die Transportkosten minimiert.
+Im Wesentlichen handelt es sich daher um eine Kombination zweier Zielfunktionen,
+welche im Sinne der lexikographischen Optimierung mit eine Präferenzordnung ausgestattet sind.
+Zu Beginn geht es darum, den zur Verfügung stehenden Platz in der Storage-Area durch initiales Generieren
+möglichst vieler $b$-Tupel von Items, ökonomisch zu nutzen. Anschließend werden diese $b$-Tupel
+möglichst günstig den zur Verfügung stehenden Stacks zugewiesen.
 
-Ein ausschließlicher Fokus auf Kostenminimierung nachdem die Zulässigkeit erreicht ist, wäre umsetzbar,
-indem zuletzt ausgewählte $b$-Tupel von Items wieder separiert und jeweils eigenen Stacks zugewiesen würden,
-solange freie Stacks zur Verfügung stünden und sich infolgedessen Kosten einsparen ließen.
-Davon wird in dieser Arbeit abgesehen, da es in der Praxis durchaus sinnvoll ist, den zur Verfügung stehenden Platz möglichst ökonomisch zu nutzen und nicht bedingungslos Kosten zu minimieren und dabei viele lediglich partiell gefüllte Stacks zu generieren.
+Ein ausschließlicher Fokus auf Kostenminimierung nachdem die Zulässigkeit erreicht ist, ist durch
+einen Postprocessing-Schritt umsetzbar, in welchem zuletzt ausgewählte $b$-Tupel von Items wieder separiert
+und einzelne Items jeweils eigenen Stacks zugewiesen werden, solange freie Stacks zur Verfügung stehen
+und sich infolgedessen Kosten einsparen lassen.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Es kann in der Praxis durchaus sinnvoll sein, den zur Verfügung stehenden Platz möglichst ökonomisch zu nutzen
+und nicht bedingungslos Kosten zu minimieren und dabei viele lediglich partiell gefüllte Stacks zu generieren.
+Ebenso kann allerdings auch ein reiner Fokus auf Kostenminimierung erwünscht sein. Da sich für beide Varianten
+entsprechende Szenarien aus der Praxis finden, stellen die konstruktiven Heuristiken,
+welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, beide Varianten bereit.
+Angesichts der primären Betrachtung der Transportkostenminimierung in dieser Arbeit,
+wird der Postprocessing-Schritt in den Experimenten stets durchgeführt.
 
 \section{Testdaten-Generierung}
 \label{sec:test_data}
@@ -369,6 +376,8 @@ Anzahl an Stacks jedoch unlösbar. Daher wird die Minimalanzahl der Stacks um $a
 $m = \ceil{\ceil{\frac{n}{b}} + a}$. In den durchgeführten Experimenten wird ein durchaus geringer Spielraum von
 zusätzlichen $20 \%$ betrachtet, also $a = 0.2 \cdot \ceil{\frac{n}{b}}$, welcher in weiteren Betrachtungen erhöht werden könnte.
 
+\pagebreak
+
 \textbf{Stacking-Constraints}
 
 Die zweite Möglichkeit der Konfiguration besteht in der Stacking-Constraint-Generierung,
@@ -378,8 +387,6 @@ und im \textsc{TestDataGenerator} ausgewählt werden können.
 \textbf{Variante 1}
 
 Die Stacking-Constraint-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt. Anschließend werden jene $1$-Einträge, welche aus Transitivität folgen, ergänzt.
-
-\pagebreak
 
 \textbf{Variante 2}
 
@@ -417,6 +424,8 @@ Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichke
 dass ein Item $i$ in einem Stack $q$ platziert werden darf, im \textsc{TestDataGenerator} konfiguriert werden kann.
 Die Konfiguration, welche den Experimenten zugrunde liegt, definiert diese Wahrscheinlichkeit
 als $70 \%$, da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
+
+\pagebreak
 
 \textbf{Transportkosten}
 
