@@ -821,6 +821,37 @@ Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints gen
 
 \pagebreak
 
+Wie bereits in Abschnitt \ref{sec:objective} erwähnt, bietet die Heuristik über den Parameter
+\textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
+auf die Transportkostenminimierung ermöglicht. Wird dieser Wert auf \textit{true} gesetzt, so werden
+ausgewählte Items aus den vollständig gefüllten Stacks entfernt und in einen freien
+Stack verschoben, sofern ein solcher vorliegt und sich dadurch eine Kostenersparnis ergibt.
+Diese Option sollte in Betracht gezogen werden, wenn die Anzahl der verwendeten Stacks keine Rolle spielt
+und lediglich die entstehenden Transportkosten von Relevanz sind.
+
+\textbf{Postprocessing-Schritt}
+
+Zunächst wird ein weiterer bipartiter Graph generiert, welcher die Paare, welche gemeinsam in einem Stack
+platziert wurden in der einen Partition und die verbleibenden leeren Stacks in der anderen Partition enthält.
+Es existiert eine Kante von einem solchen Paar zu einem leeren Stack, wenn mindestens eines der beiden Items
+zu diesem Stack kompatibel ist. Die Kosten dieser Kanten entsprechen der Kostenersparnis der Zuweisung des
+kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items.
+Sind beide Items eines Paares kompatibel, so entsprechen die Kosten der größeren Ersparnis, da jeweils das Item mit
+der größten Ersparnis verschoben wird.
+
+Auf diesem Graphen wird ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Paare von Items
+mit leeren Stacks verbinden, welche mit diesen Stacks kompatibel sind und die größte Kostenersparnis mit sich bringen.
+Insgesamt handelt es sich dabei also um eine maximale Kostenreduktion.
+Anschließend wird jeweils das kompatible Item des Paares bzw. jenes, welches zur größeren Ersparnis führt auf
+den Ground-Level des leeren Stacks verschoben.
+Wird das Item eines Paars, welches sich auf dem Ground-Level eines Stacks befindet in einen
+leeren Stack verschoben, so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
+um anschließend erneut eine zulässige Stacking-Lösung zu erhalten.
+
+\vfill
+
+\pagebreak
+
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6\}$ sowie eine Stack-Kapazität von $b = 2$.
