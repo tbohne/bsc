@@ -7,6 +7,7 @@ import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -338,17 +339,19 @@ public class ThreeCapHeuristic {
         return originalCosts;
     }
 
-    public BipartiteGraph generatePostProcessingGraph() {
+    public BipartiteGraph generatePostProcessingGraph(
+        ArrayList<String> emptyStacks, ArrayList<ArrayList<Integer>> itemTriples, ArrayList<ArrayList<Integer>> itemPairs
+    ) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
-                DefaultWeightedEdge.class
+            DefaultWeightedEdge.class
         );
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
 
-        // need triples
-        // need pairs
-        // need empty stacks
+        GraphUtil.addVerticesForItemTriples(itemTriples, graph, partitionOne);
+        GraphUtil.addVerticesForListOfItemPairs(itemPairs, graph, partitionOne);
+        GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
 
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
@@ -417,7 +420,7 @@ public class ThreeCapHeuristic {
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph();
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(emptyStacks, itemTriples, itemPairs);
 
 
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
