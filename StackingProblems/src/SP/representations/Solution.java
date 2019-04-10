@@ -249,11 +249,11 @@ public class Solution {
      */
     public boolean isFeasible() {
         if (!this.empty) {
-            System.out.println("all items assigned: " + this.allItemsAssigned());
-            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
-            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
-            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
-            System.out.println("contains duplicates: " + this.containsDuplicates());
+//            System.out.println("all items assigned: " + this.allItemsAssigned());
+//            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
+//            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
+//            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
+//            System.out.println("contains duplicates: " + this.containsDuplicates());
         }
         return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
             && this.placementConstraintsRespected() && !this.containsDuplicates();
@@ -296,11 +296,11 @@ public class Solution {
      *
      * @return the solution's costs
      */
-    public int computeCosts() {
+    public double computeCosts() {
         if (this.empty) {
-            return Integer.MAX_VALUE;
+            return Double.MAX_VALUE;
         }
-        int costs = 0;
+        double costs = 0.0;
         for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
             for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
                 int item = this.filledStorageArea[stack][level];
