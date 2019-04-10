@@ -320,10 +320,29 @@ public class ThreeCapHeuristic {
         return emptyStacks;
     }
 
+    /**
+     * Returns the costs for each item's assignment in the original solution.
+     *
+     * @param sol - the original solution
+     * @return hashmap containing the original costs for each item assignment
+     */
+    public HashMap<Integer, Double> getOriginalCosts(Solution sol) {
+        HashMap<Integer, Double> originalCosts = new HashMap<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            for (int entry : sol.getFilledStorageArea()[stack]) {
+                if (entry != -1) {
+                    originalCosts.put(entry, this.instance.getCosts()[entry][stack]);
+                }
+            }
+        }
+        return originalCosts;
+    }
+
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         ArrayList<String> emptyStacks = this.retrieveEmptyStacks(sol);
+        HashMap<Integer, Double> originalCosts = this.getOriginalCosts(sol);
 
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
