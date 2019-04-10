@@ -338,11 +338,59 @@ public class ThreeCapHeuristic {
         return originalCosts;
     }
 
+    public BipartiteGraph generatePostProcessingGraph() {
+
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
+                DefaultWeightedEdge.class
+        );
+        Set<String> partitionOne = new HashSet<>();
+        Set<String> partitionTwo = new HashSet<>();
+
+        // need triples
+        // need pairs
+        // need empty stacks
+
+        return new BipartiteGraph(partitionOne, partitionTwo, graph);
+    }
+
+    /**
+     * Retrieves all the pairs of items from the storage area of the original solution.
+     *
+     * @param sol - the original solution
+     * @return the list of item pairs
+     */
+    public ArrayList<ArrayList<Integer>> retrieveItemPairs(Solution sol) {
+        ArrayList<ArrayList<Integer>> itemPairs = new ArrayList<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            ArrayList<Integer> stackEntries = new ArrayList<>();
+            for (int entry : sol.getFilledStorageArea()[stack]) {
+                stackEntries.add(entry);
+            }
+            ArrayList<Integer> itemPair = new ArrayList<>();
+            if (Collections.frequency(stackEntries, -1) == 1) {
+                for (int entry : stackEntries) {
+                    if (entry != -1) {
+                        itemPair.add(entry);
+                    }
+                }
+            }
+            if (itemPair.size() == 2) {
+                itemPairs.add(itemPair);
+            }
+        }
+        return itemPairs;
+    }
+
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         ArrayList<String> emptyStacks = this.retrieveEmptyStacks(sol);
         HashMap<Integer, Double> originalCosts = this.getOriginalCosts(sol);
+
+        ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
+
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph();
+
 
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
