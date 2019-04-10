@@ -10,6 +10,7 @@ import SP.util.RatingSystem;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
+import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
@@ -584,6 +585,81 @@ public class ThreeCapHeuristic {
         return itemTriples;
     }
 
+    public void updateStackAssignmentsForTriples(int itemOne, int itemTwo, int itemThree, int stack) {
+
+        // all three items compatible
+        if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+            && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+            && this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        // zero and one compatible
+        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+            && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        // one and two compatible
+        } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+            && this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        // zero and two compatible
+        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+            && this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        // zero compatible
+        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        // one compatible
+        } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        // two compatible
+        } else if (this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+            // ...
+
+        }
+    }
+
+    public void updateStackAssignmentsForPairs() {
+
+    }
+
+    public void updateStackAssignments(
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
+        HashMap<Integer, Double> originalCosts
+    ) {
+
+        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
+
+            // triple edge
+            if (edge.toString().contains("triple")) {
+                int itemOne = GraphUtil.parseItemOneOfTriple(edge);
+                int itemTwo = GraphUtil.parseItemTwoOfTriple(edge);
+                int itemThree = GraphUtil.parseItemThreeOfTriple(edge);
+                int stack = GraphUtil.parseStackForTriple(edge);
+
+                this.updateStackAssignmentsForTriples(itemOne, itemTwo, itemThree, stack);
+
+            // pair edge
+            } else {
+                int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
+                int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
+                int stack = GraphUtil.parseStackForPair(edge);
+            }
+        }
+
+    }
+
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
@@ -593,6 +669,15 @@ public class ThreeCapHeuristic {
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(emptyStacks, itemTriples, itemPairs, originalCosts);
+
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
+                postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+        );
+
+        System.out.println(maxSavingsMatching.getMatching().getEdges().size());
+
+        this.updateStackAssignments(maxSavingsMatching, originalCosts);
+        sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
 
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
