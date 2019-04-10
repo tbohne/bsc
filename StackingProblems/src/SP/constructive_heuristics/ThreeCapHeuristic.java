@@ -585,7 +585,7 @@ public class ThreeCapHeuristic {
         return itemTriples;
     }
 
-    public void updateStackAssignmentsForTriples(int itemOne, int itemTwo, int itemThree, int stack) {
+        public void updateStackAssignmentsForTriples(int itemOne, int itemTwo, int itemThree, int stack) {
 
         // all three items compatible
         if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
@@ -630,8 +630,49 @@ public class ThreeCapHeuristic {
         }
     }
 
-    public void updateStackAssignmentsForPairs() {
+    public void removeItemFromOutdatedPosition(int item) {
+        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+            for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
 
+                if (this.instance.getStacks()[stack][level] == item) {
+                    this.instance.getStacks()[stack][level] = -1;
+                    // TODO: lower all items that are stacked in the air
+                }
+            }
+        }
+    }
+
+    public void updateAssignmentsForCompatiblePair(int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore) {
+        double costsItemOne = this.instance.getCosts()[itemOne][stack];
+        double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+
+        if (savingsItemOne > savingsItemTwo) {
+            this.removeItemFromOutdatedPosition(itemOne);
+            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
+        } else {
+            this.removeItemFromOutdatedPosition(itemTwo);
+            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
+        }
+    }
+
+    public void updateStackAssignmentsForPairs(int itemOne, int itemTwo, int stack, HashMap<Integer, Double> costsBefore) {
+        // both items compatible
+        if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
+            && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                this.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore);
+
+        // item one compatible
+        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+            this.removeItemFromOutdatedPosition(itemOne);
+            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
+        // item two compatible
+        } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
+            this.removeItemFromOutdatedPosition(itemTwo);
+            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
+        }
     }
 
     public void updateStackAssignments(
@@ -655,6 +696,8 @@ public class ThreeCapHeuristic {
                 int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
                 int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
                 int stack = GraphUtil.parseStackForPair(edge);
+
+                this.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, originalCosts);
             }
         }
 
