@@ -339,8 +339,79 @@ public class ThreeCapHeuristic {
         return originalCosts;
     }
 
+    /**
+     * Returns the maximum savings for the specified pair.
+     *
+     * @param itemPairs - the list of item pairs
+     * @param pairIdx - the index of the pair to be considered
+     * @param stackIdx - the index of the considered stack
+     * @param costsBefore - the original costs for each item assignment
+     * @return the savings for the specified pair
+     */
+    public double getSavingsForPair(
+        ArrayList<ArrayList<Integer>> itemPairs, int pairIdx, int stackIdx, HashMap<Integer, Double> costsBefore
+    ) {
+        int itemOne = itemPairs.get(pairIdx).get(0);
+        int itemTwo = itemPairs.get(pairIdx).get(1);
+        double costsItemOne = this.instance.getCosts()[itemOne][stackIdx];
+        double costsItemTwo = this.instance.getCosts()[itemTwo][stackIdx];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
+    }
+
+    /**
+     * Returns the savings for the specified item.
+     *
+     * @param stackIdx - the index of the considered stack
+     * @param costsBefore - the original costs for each item assignment
+     * @param item - the item the savings are computed for
+     * @return the savings for the specified item
+     */
+    public double getSavingsForItem(int stackIdx, HashMap<Integer, Double> costsBefore, int item) {
+        double costs = this.instance.getCosts()[item][stackIdx];
+        return costsBefore.get(item) - costs;
+    }
+
+    public void addEdgesForItemPairs(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
+        ArrayList<ArrayList<Integer>> itemPairs,
+        ArrayList<String> emptyStacks,
+        HashMap<Integer, Double> originalCosts
+    ) {
+
+        for (int pair = 0; pair < itemPairs.size(); pair++) {
+            for (String emptyStack : emptyStacks) {
+
+                DefaultWeightedEdge edge = graph.addEdge("pair" + itemPairs.get(pair), emptyStack);
+                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
+                double savings = 0.0;
+
+                // both items compatible
+                if (this.instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                        savings = this.getSavingsForPair(itemPairs, pair, stackIdx, originalCosts);
+
+                // item one compatible
+                } else if (this.instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                    int itemOne = itemPairs.get(pair).get(0);
+                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemOne);
+                // item two compatible
+                } else if (this.instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                    int itemTwo = itemPairs.get(pair).get(1);
+                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTwo);
+                }
+                graph.setEdgeWeight(edge, savings);
+            }
+        }
+    }
+
     public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<String> emptyStacks, ArrayList<ArrayList<Integer>> itemTriples, ArrayList<ArrayList<Integer>> itemPairs
+        ArrayList<String> emptyStacks,
+        ArrayList<ArrayList<Integer>> itemTriples,
+        ArrayList<ArrayList<Integer>> itemPairs,
+        HashMap<Integer, Double> originalCosts
     ) {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
@@ -352,6 +423,10 @@ public class ThreeCapHeuristic {
         GraphUtil.addVerticesForItemTriples(itemTriples, graph, partitionOne);
         GraphUtil.addVerticesForListOfItemPairs(itemPairs, graph, partitionOne);
         GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
+
+        this.addEdgesForItemPairs(graph, itemPairs, emptyStacks, originalCosts);
+
+        System.out.println(graph);
 
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
@@ -420,7 +495,7 @@ public class ThreeCapHeuristic {
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(emptyStacks, itemTriples, itemPairs);
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(emptyStacks, itemTriples, itemPairs, originalCosts);
 
 
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
