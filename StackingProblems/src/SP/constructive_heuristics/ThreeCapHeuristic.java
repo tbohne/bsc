@@ -339,6 +339,42 @@ public class ThreeCapHeuristic {
         return originalCosts;
     }
 
+    public double getSavingsForTriple(
+        ArrayList<ArrayList<Integer>> itemTriples, int tripleIdx, int stackIdx, HashMap<Integer, Double> costsBefore
+    ) {
+        int itemOne = itemTriples.get(tripleIdx).get(0);
+        int itemTwo = itemTriples.get(tripleIdx).get(1);
+        int itemThree = itemTriples.get(tripleIdx).get(2);
+
+        double costsItemOne = this.instance.getCosts()[itemOne][stackIdx];
+        double costsItemTwo = this.instance.getCosts()[itemTwo][stackIdx];
+        double costsItemThree = this.instance.getCosts()[itemThree][stackIdx];
+
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
+
+//        System.out.println("empty stack: " + stackIdx);
+//        System.out.println("item one: " + itemOne);
+//        System.out.println("item two: " + itemTwo);
+//        System.out.println("item three: " + itemThree);
+//
+//        System.out.println("before: " + costsBefore.get(itemOne));
+//        System.out.println("before: " + costsBefore.get(itemTwo));
+//        System.out.println("before: " + costsBefore.get(itemThree));
+//
+//        System.out.println("now: " + costsItemOne);
+//        System.out.println("now: " + costsItemTwo);
+//        System.out.println("now: " + costsItemThree);
+//
+//        System.out.println("savings1: " + savingsItemOne);
+//        System.out.println("savings2: " + savingsItemTwo);
+//        System.out.println("savings3: " + savingsItemThree);
+
+        ArrayList<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
+        return Collections.max(savings);
+    }
+
     /**
      * Returns the maximum savings for the specified pair.
      *
@@ -353,6 +389,14 @@ public class ThreeCapHeuristic {
     ) {
         int itemOne = itemPairs.get(pairIdx).get(0);
         int itemTwo = itemPairs.get(pairIdx).get(1);
+        double costsItemOne = this.instance.getCosts()[itemOne][stackIdx];
+        double costsItemTwo = this.instance.getCosts()[itemTwo][stackIdx];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
+    }
+
+    public double getSavingsForPair(int itemOne, int itemTwo, int stackIdx, HashMap<Integer, Double> costsBefore) {
         double costsItemOne = this.instance.getCosts()[itemOne][stackIdx];
         double costsItemTwo = this.instance.getCosts()[itemTwo][stackIdx];
         double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
@@ -407,6 +451,60 @@ public class ThreeCapHeuristic {
         }
     }
 
+    public void addEdgesForItemTriples(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph,
+        ArrayList<ArrayList<Integer>> itemTriples,
+        ArrayList<String> emptyStacks,
+        HashMap<Integer, Double> originalCosts
+    ) {
+
+        for (int triple = 0; triple < itemTriples.size(); triple++) {
+            for (String emptyStack : emptyStacks) {
+
+                DefaultWeightedEdge edge = graph.addEdge("triple" + itemTriples.get(triple), emptyStack);
+                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
+                double savings = 0.0;
+
+                // all three items compatible
+                if (this.instance.getCosts()[itemTriples.get(triple).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTriples.get(triple).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                        savings = this.getSavingsForTriple(itemTriples, triple, stackIdx, originalCosts);
+
+                // zero and one compatible
+                } else if (this.instance.getCosts()[itemTriples.get(triple).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTriples.get(triple).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                        savings = this.getSavingsForPair(itemTriples.get(triple).get(0), itemTriples.get(triple).get(1), stackIdx, originalCosts);
+
+                // one and two compatible
+                } else if (this.instance.getCosts()[itemTriples.get(triple).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                        savings = this.getSavingsForPair(itemTriples.get(triple).get(1), itemTriples.get(triple).get(2), stackIdx, originalCosts);
+
+                // zero and two compatible
+                } else if (this.instance.getCosts()[itemTriples.get(triple).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
+                    && this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                        savings = this.getSavingsForPair(itemTriples.get(triple).get(0), itemTriples.get(triple).get(2), stackIdx, originalCosts);
+                // zero compatible
+                } else if (this.instance.getCosts()[itemTriples.get(triple).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(0));
+                // one compatible
+                } else if (this.instance.getCosts()[itemTriples.get(triple).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(1));
+                // two compatible
+                } else if (this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(2));
+                }
+
+                graph.setEdgeWeight(edge, savings);
+            }
+        }
+    }
+
     public BipartiteGraph generatePostProcessingGraph(
         ArrayList<String> emptyStacks,
         ArrayList<ArrayList<Integer>> itemTriples,
@@ -425,8 +523,7 @@ public class ThreeCapHeuristic {
         GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
 
         this.addEdgesForItemPairs(graph, itemPairs, emptyStacks, originalCosts);
-
-        System.out.println(graph);
+        this.addEdgesForItemTriples(graph, itemTriples, emptyStacks, originalCosts);
 
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
@@ -496,7 +593,6 @@ public class ThreeCapHeuristic {
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(emptyStacks, itemTriples, itemPairs, originalCosts);
-
 
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
