@@ -337,6 +337,8 @@ public class TwoCapHeuristic {
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
                 itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
         );
+
+
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
@@ -344,7 +346,7 @@ public class TwoCapHeuristic {
         System.out.println(maxSavingsMatching.getMatching().getEdges().size());
 
         this.updateStackAssignments(maxSavingsMatching, costsBefore);
-        sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+        sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
 
         return sol;

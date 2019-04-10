@@ -221,6 +221,10 @@ public class Instance {
         }
     }
 
+    public void lowerAllItemsThatAreStackedInTheAir() {
+        // ...
+    }
+
     /**
      * Returns the instance's items.
      *
