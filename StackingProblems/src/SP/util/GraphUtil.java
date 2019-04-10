@@ -255,6 +255,16 @@ public class GraphUtil {
             }
     }
 
+    public static void addVerticesForListOfItemPairs(ArrayList<ArrayList<Integer>> itemPairs,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
+
+            for (ArrayList<Integer> pair : itemPairs) {
+                bipartiteGraph.addVertex("pair" + pair);
+                partitionOne.add("pair" + pair);
+            }
+
+    }
+
     /**
      * Adds the item-pair vertices to the given bipartite graph.
      *
