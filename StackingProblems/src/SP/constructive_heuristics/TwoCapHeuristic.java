@@ -322,7 +322,7 @@ public class TwoCapHeuristic {
      * @param sol - the generated solution to be processed
      * @param minCostPerfectMatching - the min-cost-perfect-matching the solution is based on
      * @param itemPairs - the generated pairs of items
-     * @return the result of the post-processing
+     * @return the result of the post-processing procedure
      */
     public Solution postProcessing(
         Solution sol,
@@ -337,8 +337,6 @@ public class TwoCapHeuristic {
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
                 itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
         );
-
-
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );

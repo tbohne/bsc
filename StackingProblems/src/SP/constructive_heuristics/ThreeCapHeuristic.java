@@ -675,34 +675,48 @@ public class ThreeCapHeuristic {
         }
     }
 
+    /**
+     * Updates the stack assignments based on the matching that results in the maximum savings.
+     *
+     * @param maxSavingsMatching - matching that results in the maximum savings
+     * @param originalCosts - hashmap containing the original costs for each item assignment
+     */
     public void updateStackAssignments(
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
-        HashMap<Integer, Double> originalCosts
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, HashMap<Integer, Double> originalCosts
     ) {
-
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-
             // triple edge
             if (edge.toString().contains("triple")) {
                 int itemOne = GraphUtil.parseItemOneOfTriple(edge);
                 int itemTwo = GraphUtil.parseItemTwoOfTriple(edge);
                 int itemThree = GraphUtil.parseItemThreeOfTriple(edge);
                 int stack = GraphUtil.parseStackForTriple(edge);
-
                 this.updateStackAssignmentsForTriples(itemOne, itemTwo, itemThree, stack);
-
             // pair edge
             } else {
                 int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
                 int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
                 int stack = GraphUtil.parseStackForPair(edge);
-
                 this.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, originalCosts);
             }
         }
-
     }
 
+    /**
+     * This approach should be used in situations where the number of used stacks is irrelevant
+     * and only the minimization of transport costs matters.
+     *
+     * Takes the generated solution and moves items from completely filled stacks to empty
+     * stacks if it's possible to reduce the total costs by doing so.
+     * Initially, a bipartite graph between item pairs and triples and empty stacks is generated.
+     * An edge between the two partitions indicates that at least one of the items in the tuple is assignable to
+     * the empty stack. The costs of the edge correspond to the resulting savings if the item that induces higher
+     * savings is assigned to the empty stack. A maximum weight matching is computed on that graph to retrieve an
+     * assignment that leads to a maximum cost reduction.
+     *
+     * @param sol - the original solution
+     * @return the result of the post-processing procedure
+     */
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
@@ -711,17 +725,17 @@ public class ThreeCapHeuristic {
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(emptyStacks, itemTriples, itemPairs, originalCosts);
-
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
+            emptyStacks, itemTriples, itemPairs, originalCosts
+        );
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
-                postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
 
-        System.out.println(maxSavingsMatching.getMatching().getEdges().size());
+        System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
 
         this.updateStackAssignments(maxSavingsMatching, originalCosts);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
     }
