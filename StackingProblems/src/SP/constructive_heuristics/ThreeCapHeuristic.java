@@ -381,13 +381,41 @@ public class ThreeCapHeuristic {
         return itemPairs;
     }
 
+    /**
+     * Retrieves all the triples of items from the storage area of the original solution.
+     *
+     * @param sol - the original solution
+     * @return the list of item triples
+     */
+    public ArrayList<ArrayList<Integer>> retrieveItemTriples(Solution sol) {
+        ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            ArrayList<Integer> stackEntries = new ArrayList<>();
+            for (int entry : sol.getFilledStorageArea()[stack]) {
+                stackEntries.add(entry);
+            }
+            ArrayList<Integer> itemTriple = new ArrayList<>();
+            if (Collections.frequency(stackEntries, -1) == 0) {
+                for (int entry : stackEntries) {
+                    if (entry != -1) {
+                        itemTriple.add(entry);
+                    }
+                }
+            }
+            if (itemTriple.size() == 3) {
+                itemTriples.add(itemTriple);
+            }
+        }
+        return itemTriples;
+    }
+
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         ArrayList<String> emptyStacks = this.retrieveEmptyStacks(sol);
         HashMap<Integer, Double> originalCosts = this.getOriginalCosts(sol);
-
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
+        ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph();
 
