@@ -531,6 +531,22 @@ public class GraphUtil {
         }
     }
 
+    public static int parseItemOneOfTriple(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].split(",")[0].replace("(triple[", "").trim());
+    }
+
+    public static int parseItemTwoOfTriple(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].split(",")[1].trim());
+    }
+
+    public static int parseItemThreeOfTriple(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].split(",")[2].replace("]", "").trim());
+    }
+
+    public static int parseStackForTriple(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+    }
+
     public static int parseItemOneOfPair(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
     }
@@ -541,6 +557,14 @@ public class GraphUtil {
 
     public static int parseStackForPair(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+    }
+
+    public static int parseItemOneOfPairOther(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].split(",")[0].replace("(pair[", "").trim());
+    }
+
+    public static int parseItemTwoOfPairOther(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].split(",")[1].replace("]", "").trim());
     }
 
     /**
