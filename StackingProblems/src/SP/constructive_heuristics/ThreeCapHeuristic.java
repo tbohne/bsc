@@ -14,6 +14,7 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -300,6 +301,35 @@ public class ThreeCapHeuristic {
     }
 
     /**
+     * Retrieves all the stacks that remain empty in the original solution.
+     *
+     * @param sol - the original solution
+     * @return the list of empty stacks
+     */
+    public ArrayList<String> retrieveEmptyStacks(Solution sol) {
+        ArrayList<String> emptyStacks = new ArrayList<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            int sumOfEntries = 0;
+            for (int entry : sol.getFilledStorageArea()[stack]) {
+                sumOfEntries += entry;
+            }
+            if (sumOfEntries == -3) {
+                emptyStacks.add("stack" + stack);
+            }
+        }
+        return emptyStacks;
+    }
+
+    public Solution postProcessing(Solution sol) {
+        System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
+        ArrayList<String> emptyStacks = this.retrieveEmptyStacks(sol);
+
+        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
+        return sol;
+    }
+
+    /**
      * Solves the given instance of the stacking problem. The objective is to minimize the transport costs.
      *
      * Basic idea:
@@ -348,7 +378,7 @@ public class ThreeCapHeuristic {
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
 
             if (postProcessing) {
-//                bestSol = this.postProcessing(bestSol);
+                bestSol = this.postProcessing(bestSol);
             }
 
         } else {
