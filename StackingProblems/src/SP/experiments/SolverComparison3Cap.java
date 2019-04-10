@@ -83,7 +83,7 @@ public class SolverComparison3Cap implements SolverComparison {
      */
     public void solveWithThreeCap(Instance instance, String solutionName, boolean writeSol) {
         ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT);
-        Solution sol = threeCapSolver.solve(false);
+        Solution sol = threeCapSolver.solve(PRIORITIZE_RUNTIME, POST_PROCESSING);
         if (writeSol) {
             SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP);
             SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP);
