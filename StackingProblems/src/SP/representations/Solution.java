@@ -240,6 +240,22 @@ public class Solution {
         this.timeToSolve = duration;
     }
 
+    public void lowerItemsThatAreStackedInTheAir() {
+        for (int i = 0; i < this.filledStorageArea.length; i++) {
+            boolean loweredItem = true;
+            while (loweredItem) {
+                loweredItem = false;
+                for (int j = this.filledStorageArea[i].length - 1; j > 0; j--) {
+                    if (this.filledStorageArea[i][j] == -1 && this.filledStorageArea[i][j - 1] != -1) {
+                        this.filledStorageArea[i][j] = this.filledStorageArea[i][j - 1];
+                        this.filledStorageArea[i][j - 1] = -1;
+                        loweredItem = true;
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Returns whether the solution is feasible which means that all items have been
      * assigned to a position in a stack in a way that respects the stacking- and
@@ -249,11 +265,11 @@ public class Solution {
      */
     public boolean isFeasible() {
         if (!this.empty) {
-//            System.out.println("all items assigned: " + this.allItemsAssigned());
-//            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
-//            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
-//            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
-//            System.out.println("contains duplicates: " + this.containsDuplicates());
+            System.out.println("all items assigned: " + this.allItemsAssigned());
+            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
+            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
+            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
+            System.out.println("contains duplicates: " + this.containsDuplicates());
         }
         return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
             && this.placementConstraintsRespected() && !this.containsDuplicates();
