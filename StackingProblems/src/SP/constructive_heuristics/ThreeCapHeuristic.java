@@ -642,27 +642,12 @@ public class ThreeCapHeuristic {
         }
     }
 
-    public void updateAssignmentsForCompatiblePair(int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore) {
-        double costsItemOne = this.instance.getCosts()[itemOne][stack];
-        double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-
-        if (savingsItemOne > savingsItemTwo) {
-            this.removeItemFromOutdatedPosition(itemOne);
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-        } else {
-            this.removeItemFromOutdatedPosition(itemTwo);
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
-        }
-    }
-
     public void updateStackAssignmentsForPairs(int itemOne, int itemTwo, int stack, HashMap<Integer, Double> costsBefore) {
         // both items compatible
         if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
             && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
-                this.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore);
+            HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore, this.instance);
 
         // item one compatible
         } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {

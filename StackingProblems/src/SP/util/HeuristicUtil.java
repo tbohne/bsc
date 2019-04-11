@@ -1,5 +1,6 @@
 package SP.util;
 
+import SP.representations.Instance;
 import SP.representations.MCMEdge;
 
 import java.io.File;
@@ -168,6 +169,36 @@ public class HeuristicUtil {
             itemArr[i] = items.get(i);
         }
         return itemArr;
+    }
+
+    public static void removeItemFromOutdatedPosition(int item, int[][] stacks) {
+        for (int stack = 0; stack < stacks.length; stack++) {
+            for (int level = 0; level < stacks[stack].length; level++) {
+
+                if (stacks[stack][level] == item) {
+                    stacks[stack][level] = -1;
+                    // TODO: lower all items that are stacked in the air
+                }
+            }
+        }
+    }
+
+    public static void updateAssignmentsForCompatiblePair(
+        int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore, Instance instance
+    ) {
+
+        double costsItemOne = instance.getCosts()[itemOne][stack];
+        double costsItemTwo = instance.getCosts()[itemTwo][stack];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+
+        if (savingsItemOne > savingsItemTwo) {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
+        } else {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+        }
     }
 
     /**
