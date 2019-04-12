@@ -1668,6 +1668,34 @@ vertauscht und der Prozess startet für diesen Stack erneut. Ein vollständig ge
 Strategie nach spätestens drei Tausch-Operationen korrekt sortiert. Durch die bei der Zuweisung geprüfte
 Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 
+Wie bereits die Heuristik aus Abschnitt \ref{sec:two_cap_heuristic}, bietet auch diese Heuristik über den Parameter
+\textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
+auf die Transportkostenminimierung ermöglicht. Wird dieser Wert auf \textit{true} gesetzt, so werden
+ausgewählte Items aus den zu zwei Dritteln bzw. vollständig gefüllten Stacks entfernt und in einen leeren
+Stack verschoben, sofern ein solcher vorliegt und sich dadurch eine Kostenersparnis ergibt.
+
+\textbf{Postprocessing-Schritt}
+
+Zunächst wird ein bipartiter Postprocessing-Graph generiert, welcher die Tripel und Paare von Items,
+welche gemeinsam in einem Stack platziert wurden, in der einen Partition und die verbleibenden leeren
+Stacks in der anderen Partition enthält.
+
+Es existiert eine Kante von einem solchen Tripel oder Paar zu einem leeren Stack, wenn mindestens
+eines der im Tupel enthaltenen Items zu diesem Stack kompatibel ist. Die Kosten dieser Kanten entsprechen der Kostenersparnis der Zuweisung des kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den
+Kosten der gegenwärtigen Zuweisung dieses Items.
+Sind mehrere Items eines Tupels kompatibel, so entsprechen die Kosten der größten Ersparnis, da jeweils
+das Item mit der größten Ersparnis verschoben wird.
+
+Auf diesem Graphen wird ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Tupel von Items
+mit leeren Stacks verbinden, welche mit diesen Stacks kompatibel sind und die größte Kostenersparnis mit sich bringen. Insgesamt handelt es sich dabei also um eine maximale Kostenreduktion.
+Anschließend wird jeweils das kompatible Item des Tupels bzw. jenes, welches zur größeren Ersparnis führt auf
+den Ground-Level des leeren Stacks verschoben.
+Wird ein Item eines Tupels, welches sich auf dem Ground-Level eines Stacks befindet in einen
+leeren Stack verschoben, so werden die darüber platzierten Items auf den Ground-Level heruntergezogen,
+um anschließend erneut eine zulässige Stacking-Lösung zu erhalten.
+
+\pagebreak
+
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13\}$ sowie eine Stack-Kapazität von $b = 3$.
