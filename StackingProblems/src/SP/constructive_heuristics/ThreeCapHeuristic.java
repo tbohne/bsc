@@ -340,76 +340,6 @@ public class ThreeCapHeuristic {
         return originalCosts;
     }
 
-    public double getSavingsForTriple(
-        ArrayList<ArrayList<Integer>> itemTriples, int tripleIdx, int stackIdx, HashMap<Integer, Double> costsBefore
-    ) {
-        int itemOne = itemTriples.get(tripleIdx).get(0);
-        int itemTwo = itemTriples.get(tripleIdx).get(1);
-        int itemThree = itemTriples.get(tripleIdx).get(2);
-
-        double costsItemOne = this.instance.getCosts()[itemOne][stackIdx];
-        double costsItemTwo = this.instance.getCosts()[itemTwo][stackIdx];
-        double costsItemThree = this.instance.getCosts()[itemThree][stackIdx];
-
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-        double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
-
-//        System.out.println("empty stack: " + stackIdx);
-//        System.out.println("item one: " + itemOne);
-//        System.out.println("item two: " + itemTwo);
-//        System.out.println("item three: " + itemThree);
-//
-//        System.out.println("before: " + costsBefore.get(itemOne));
-//        System.out.println("before: " + costsBefore.get(itemTwo));
-//        System.out.println("before: " + costsBefore.get(itemThree));
-//
-//        System.out.println("now: " + costsItemOne);
-//        System.out.println("now: " + costsItemTwo);
-//        System.out.println("now: " + costsItemThree);
-//
-//        System.out.println("savings1: " + savingsItemOne);
-//        System.out.println("savings2: " + savingsItemTwo);
-//        System.out.println("savings3: " + savingsItemThree);
-
-        ArrayList<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
-        return Collections.max(savings);
-    }
-
-    /**
-     * Returns the maximum savings for the specified pair.
-     *
-     * @param itemPairs - the list of item pairs
-     * @param pairIdx - the index of the pair to be considered
-     * @param stackIdx - the index of the considered stack
-     * @param costsBefore - the original costs for each item assignment
-     * @return the savings for the specified pair
-     */
-    public double getSavingsForPair(
-        ArrayList<ArrayList<Integer>> itemPairs, int pairIdx, int stackIdx, HashMap<Integer, Double> costsBefore
-    ) {
-        int itemOne = itemPairs.get(pairIdx).get(0);
-        int itemTwo = itemPairs.get(pairIdx).get(1);
-        double costsItemOne = this.instance.getCosts()[itemOne][stackIdx];
-        double costsItemTwo = this.instance.getCosts()[itemTwo][stackIdx];
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-        return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
-    }
-
-    /**
-     * Returns the savings for the specified item.
-     *
-     * @param stackIdx - the index of the considered stack
-     * @param costsBefore - the original costs for each item assignment
-     * @param item - the item the savings are computed for
-     * @return the savings for the specified item
-     */
-    public double getSavingsForItem(int stackIdx, HashMap<Integer, Double> costsBefore, int item) {
-        double costs = this.instance.getCosts()[item][stackIdx];
-        return costsBefore.get(item) - costs;
-    }
-
     /**
      * Adds the edges for item pairs in the post-processing graph.
      * The costs for each edge correspond to the maximum savings for
@@ -438,16 +368,18 @@ public class ThreeCapHeuristic {
                 if (this.instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
                     && this.instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
-                        savings = this.getSavingsForPair(itemPairs, pair, stackIdx, originalCosts);
+                        savings = HeuristicUtil.getSavingsForPair(
+                            itemPairs.get(pair).get(0), itemPairs.get(pair).get(1), stackIdx, originalCosts, this.instance.getCosts()
+                        );
 
                 // item one compatible
                 } else if (this.instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
                     int itemOne = itemPairs.get(pair).get(0);
-                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemOne);
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemOne, this.instance.getCosts());
                 // item two compatible
                 } else if (this.instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
                     int itemTwo = itemPairs.get(pair).get(1);
-                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTwo);
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTwo, this.instance.getCosts());
                 }
                 postProcessingGraph.setEdgeWeight(edge, savings);
             }
@@ -483,7 +415,7 @@ public class ThreeCapHeuristic {
                     && this.instance.getCosts()[itemTriples.get(triple).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
                     && this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
-                        savings = this.getSavingsForTriple(itemTriples, triple, stackIdx, originalCosts);
+                        savings = HeuristicUtil.getSavingsForTriple(itemTriples, triple, stackIdx, originalCosts, this.instance.getCosts());
 
                 // zero and one compatible
                 } else if (this.instance.getCosts()[itemTriples.get(triple).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
@@ -511,13 +443,13 @@ public class ThreeCapHeuristic {
 
                 // zero compatible
                 } else if (this.instance.getCosts()[itemTriples.get(triple).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(0));
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(0), this.instance.getCosts());
                 // one compatible
                 } else if (this.instance.getCosts()[itemTriples.get(triple).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(1));
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(1), this.instance.getCosts());
                 // two compatible
                 } else if (this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                    savings = this.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(2));
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(2), this.instance.getCosts());
                 }
 
                 postProcessingGraph.setEdgeWeight(edge, savings);

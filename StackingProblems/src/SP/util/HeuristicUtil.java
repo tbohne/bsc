@@ -183,12 +183,54 @@ public class HeuristicUtil {
         }
     }
 
+    /**
+     * Returns the savings for the specified item.
+     *
+     * @param stackIdx - the index of the considered stack
+     * @param costsBefore - the original costs for each item assignment
+     * @param item - the item the savings are computed for
+     * @return the savings for the specified item
+     */
+    public static double getSavingsForItem(int stackIdx, HashMap<Integer, Double> costsBefore, int item, double[][] costMatrix) {
+        double costs = costMatrix[item][stackIdx];
+        return costsBefore.get(item) - costs;
+    }
+
+    /**
+     * Returns the maximum savings for the specified pair.
+     *
+     * @param itemOne - the first item of the pair
+     * @param itemTwo - the second item of the pair
+     * @param stackIdx - the target stack
+     * @param costsBefore - the original costs for each item assignment
+     * @param costMatrix - the costs for each item-stack assignment
+     * @return the savings for the specified pair
+     */
     public static double getSavingsForPair(int itemOne, int itemTwo, int stackIdx, HashMap<Integer, Double> costsBefore, double[][] costMatrix) {
         double costsItemOne = costMatrix[itemOne][stackIdx];
         double costsItemTwo = costMatrix[itemTwo][stackIdx];
         double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
         double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
         return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
+    }
+
+    public static double getSavingsForTriple(
+        ArrayList<ArrayList<Integer>> itemTriples, int tripleIdx, int stackIdx, HashMap<Integer, Double> costsBefore, double[][] costMatrix
+    ) {
+        int itemOne = itemTriples.get(tripleIdx).get(0);
+        int itemTwo = itemTriples.get(tripleIdx).get(1);
+        int itemThree = itemTriples.get(tripleIdx).get(2);
+
+        double costsItemOne = costMatrix[itemOne][stackIdx];
+        double costsItemTwo = costMatrix[itemTwo][stackIdx];
+        double costsItemThree = costMatrix[itemThree][stackIdx];
+
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
+
+        ArrayList<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
+        return Collections.max(savings);
     }
 
     public static void updateAssignmentsForCompatibleTriple(
