@@ -7,7 +7,6 @@ import SP.representations.Solution;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
-import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
@@ -16,7 +15,6 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -300,26 +298,6 @@ public class ThreeCapHeuristic {
             }
         }
         return bestSol;
-    }
-
-    /**
-     * Retrieves all the stacks that remain empty in the original solution.
-     *
-     * @param sol - the original solution
-     * @return the list of empty stacks
-     */
-    public ArrayList<String> retrieveEmptyStacks(Solution sol) {
-        ArrayList<String> emptyStacks = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            int sumOfEntries = 0;
-            for (int entry : sol.getFilledStorageArea()[stack]) {
-                sumOfEntries += entry;
-            }
-            if (sumOfEntries == -3) {
-                emptyStacks.add("stack" + stack);
-            }
-        }
-        return emptyStacks;
     }
 
     /**
@@ -679,7 +657,7 @@ public class ThreeCapHeuristic {
         this.instance.resetStacks();
         this.restoreStorageAreaForBestOriginalSolution(sol);
 
-        ArrayList<String> emptyStacks = this.retrieveEmptyStacks(sol);
+        ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
         HashMap<Integer, Double> originalCosts = this.getOriginalCosts(sol);
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
@@ -751,7 +729,6 @@ public class ThreeCapHeuristic {
             if (postProcessing) {
                 bestSol = this.postProcessing(bestSol);
             }
-
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }

@@ -2,6 +2,7 @@ package SP.util;
 
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
+import SP.representations.Solution;
 
 import java.io.File;
 import java.util.*;
@@ -315,6 +316,29 @@ public class HeuristicUtil {
 
         completelyFilledStacks.add(itemOneStack);
         completelyFilledStacks.add(itemTwoStack);
+    }
+
+    /**
+     * Retrieves all the stacks that remain empty in the original solution.
+     *
+     * @param sol - the original solution
+     * @return the list of empty stacks
+     */
+    public static ArrayList<String> retrieveEmptyStacks(Solution sol) {
+
+        int stackCapacity = sol.getFilledStorageArea()[0].length;
+
+        ArrayList<String> emptyStacks = new ArrayList<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            int sumOfEntries = 0;
+            for (int entry : sol.getFilledStorageArea()[stack]) {
+                sumOfEntries += entry;
+            }
+            if (sumOfEntries == -stackCapacity) {
+                emptyStacks.add("stack" + stack);
+            }
+        }
+        return emptyStacks;
     }
 
     /**
