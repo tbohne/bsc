@@ -88,42 +88,6 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Returns the maximum savings for the specified pair.
-     *
-     * @param itemPairs - the list of item pairs
-     * @param pairIdx - the index of the pair to be considered
-     * @param costMatrix - the matrix containing the costs for each item-stack-assignment
-     * @param stackIdx - the index of the considered stack
-     * @param costsBefore - the original costs for each item assignment
-     * @return the savings for the specified pair
-     */
-    public double getSavingsForPair(
-        ArrayList<MCMEdge> itemPairs, int pairIdx, double[][] costMatrix, int stackIdx, HashMap<Integer, Double> costsBefore
-    ) {
-        int itemOne = itemPairs.get(pairIdx).getVertexOne();
-        int itemTwo = itemPairs.get(pairIdx).getVertexTwo();
-        double costsItemOne = costMatrix[itemOne][stackIdx];
-        double costsItemTwo = costMatrix[itemTwo][stackIdx];
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-        return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
-    }
-
-    /**
-     * Returns the savings for the specified item.
-     *
-     * @param costMatrix - the matrix containing the costs for each item-stack-assignment
-     * @param stackIdx - the index of the considered stack
-     * @param costsBefore - the original costs for each item assignment
-     * @param item - the item the savings are computed for
-     * @return the savings for the specified item
-     */
-    public double getSavingsForItem(double[][] costMatrix, int stackIdx, HashMap<Integer, Double> costsBefore, int item) {
-        double costs = costMatrix[item][stackIdx];
-        return costsBefore.get(item) - costs;
-    }
-
-    /**
      * Generates the bipartite graph for the post-processing step.
      * The graph's first partition consists of item-pairs and the second one consists of empty stacks.
      * An edge between the partitions means that at least one item of the pair is compatible to the empty stack.
@@ -132,53 +96,24 @@ public class TwoCapHeuristic {
      *
      * @param itemPairs - the list of item pairs
      * @param emptyStacks - the list of remaining empty stacks
-     * @param costMatrix - the matrix containing the costs for each item-stack-assignment
-     * @param items - the array containing the instance's items
      * @param costsBefore - the original costs for each item assignment
      * @return the generated bipartite graph
      */
     public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<MCMEdge> itemPairs,
+        ArrayList<ArrayList<Integer>> itemPairs,
         ArrayList<String> emptyStacks,
-        double[][] costMatrix,
-        int[] items,
         HashMap<Integer,
         Double> costsBefore
     ) {
-
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(
             DefaultWeightedEdge.class
         );
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
-
-        GraphUtil.addVerticesForItemPairs(itemPairs, graph, partitionOne);
-        GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
-
-        for (int pair = 0; pair < itemPairs.size(); pair++) {
-            for (String emptyStack : emptyStacks) {
-
-                DefaultWeightedEdge edge = graph.addEdge("pair" + itemPairs.get(pair), emptyStack);
-                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
-                double savings = 0.0;
-
-                // both items compatible
-                if (costMatrix[itemPairs.get(pair).getVertexOne()][stackIdx] < Integer.MAX_VALUE / items.length
-                    && costMatrix[itemPairs.get(pair).getVertexTwo()][stackIdx] < Integer.MAX_VALUE / items.length) {
-                        savings = this.getSavingsForPair(itemPairs, pair, costMatrix, stackIdx, costsBefore);
-                // item one compatible
-                } else if (costMatrix[itemPairs.get(pair).getVertexOne()][stackIdx] < Integer.MAX_VALUE / items.length) {
-                    int itemOne = itemPairs.get(pair).getVertexOne();
-                    savings = this.getSavingsForItem(costMatrix, stackIdx, costsBefore, itemOne);
-                // item two compatible
-                } else if (costMatrix[itemPairs.get(pair).getVertexTwo()][stackIdx] < Integer.MAX_VALUE / items.length) {
-                    int itemTwo = itemPairs.get(pair).getVertexTwo();
-                    savings = this.getSavingsForItem(costMatrix, stackIdx, costsBefore, itemTwo);
-                }
-                graph.setEdgeWeight(edge, savings);
-            }
-        }
-        return new BipartiteGraph(partitionOne, partitionTwo, graph);
+        GraphUtil.addVerticesForListOfItemPairs(itemPairs, postProcessingGraph, partitionOne);
+        GraphUtil.addVerticesForEmptyStacks(emptyStacks, postProcessingGraph, partitionTwo);
+        HeuristicUtil.addEdgesForItemPairs(postProcessingGraph, itemPairs, emptyStacks, costsBefore, this.instance);
+        return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
 
     /**
@@ -207,11 +142,28 @@ public class TwoCapHeuristic {
         HashMap<Integer, Double> costsBefore
     ) {
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int itemOne = GraphUtil.parseItemOneOfPair(edge);
-            int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
+            int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
+            int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
             int stack = GraphUtil.parseStackForPair(edge);
             HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, costsBefore, this.instance);
         }
+    }
+
+    /**
+     * Returns the list of item pairs based on the list of MCM edges.
+     *
+     * @param edges - the list of edges
+     * @return the list of item pairs
+     */
+    public ArrayList<ArrayList<Integer>> getListOfPairsFromEdges(ArrayList<MCMEdge> edges) {
+        ArrayList<ArrayList<Integer>> itemPairs = new ArrayList<>();
+        for (MCMEdge e : edges) {
+            ArrayList<Integer> itemPair = new ArrayList<>();
+            itemPair.add(e.getVertexOne());
+            itemPair.add(e.getVertexTwo());
+            itemPairs.add(itemPair);
+        }
+        return itemPairs;
     }
 
     /**
@@ -227,29 +179,19 @@ public class TwoCapHeuristic {
      * to a maximum cost reduction.
      *
      * @param sol - the generated solution to be processed
-     * @param minCostPerfectMatching - the min-cost-perfect-matching the solution is based on
      * @param itemPairs - the generated pairs of items
      * @return the result of the post-processing procedure
      */
-    public Solution postProcessing(
-        Solution sol,
-        KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching,
-       ArrayList<MCMEdge> itemPairs
-    ) {
-
+    public Solution postProcessing(Solution sol, ArrayList<MCMEdge> itemPairs) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
-
         ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
-            itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
-        );
+        ArrayList<ArrayList<Integer>> itemPairsList = this.getListOfPairsFromEdges(itemPairs);
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(itemPairsList, emptyStacks, costsBefore);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-
         System.out.println(maxSavingsMatching.getMatching().getEdges().size());
-
         this.updateStackAssignments(maxSavingsMatching, costsBefore);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
@@ -299,7 +241,7 @@ public class TwoCapHeuristic {
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
             if (postProcessing) {
-                sol = this.postProcessing(sol, minCostPerfectMatching, itemPairs);
+                sol = this.postProcessing(sol, itemPairs);
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");

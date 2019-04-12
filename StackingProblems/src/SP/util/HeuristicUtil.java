@@ -417,17 +417,17 @@ public class HeuristicUtil {
 
                 // both items compatible
                 if (instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length
-                        && instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
+                    && instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
 
-                    savings = HeuristicUtil.getSavingsForPair(
+                        savings = HeuristicUtil.getSavingsForPair(
                             itemPairs.get(pair).get(0), itemPairs.get(pair).get(1), stackIdx, originalCosts, instance.getCosts()
-                    );
+                        );
 
-                    // item one compatible
+                // item one compatible
                 } else if (instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
                     int itemOne = itemPairs.get(pair).get(0);
                     savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemOne, instance.getCosts());
-                    // item two compatible
+                // item two compatible
                 } else if (instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
                     int itemTwo = itemPairs.get(pair).get(1);
                     savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTwo, instance.getCosts());
