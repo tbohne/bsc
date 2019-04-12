@@ -630,18 +630,6 @@ public class ThreeCapHeuristic {
         }
     }
 
-    public void removeItemFromOutdatedPosition(int item) {
-        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-            for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
-
-                if (this.instance.getStacks()[stack][level] == item) {
-                    this.instance.getStacks()[stack][level] = -1;
-                    // TODO: lower all items that are stacked in the air
-                }
-            }
-        }
-    }
-
     public void updateStackAssignmentsForPairs(int itemOne, int itemTwo, int stack, HashMap<Integer, Double> costsBefore) {
         // both items compatible
         if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
@@ -651,11 +639,11 @@ public class ThreeCapHeuristic {
 
         // item one compatible
         } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            this.removeItemFromOutdatedPosition(itemOne);
+            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, this.instance.getStacks());
             this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
         // item two compatible
         } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            this.removeItemFromOutdatedPosition(itemTwo);
+            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, this.instance.getStacks());
             this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
         }
     }
@@ -687,6 +675,13 @@ public class ThreeCapHeuristic {
         }
     }
 
+    /**
+     * Restores the storage area of the specified solution.
+     * Since the last generated solution is not necessarily the best one,
+     * in many cases the storage area in the instance for the best original solution has to be restored.
+     *
+     * @param sol - the solution to restore the storage area from
+     */
     public void restoreStorageAreaForBestOriginalSolution(Solution sol) {
         for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
             this.instance.getStacks()[i] = sol.getFilledStorageArea()[i].clone();
