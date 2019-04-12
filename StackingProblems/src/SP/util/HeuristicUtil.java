@@ -183,6 +183,14 @@ public class HeuristicUtil {
         }
     }
 
+    public static double getSavingsForPair(int itemOne, int itemTwo, int stackIdx, HashMap<Integer, Double> costsBefore, double[][] costMatrix) {
+        double costsItemOne = costMatrix[itemOne][stackIdx];
+        double costsItemTwo = costMatrix[itemTwo][stackIdx];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
+    }
+
     public static void updateAssignmentsForCompatibleTriple(
         int itemOne, int itemTwo, int itemThree, int stack, HashMap<Integer, Double> costsBefore, Instance instance
     ) {
