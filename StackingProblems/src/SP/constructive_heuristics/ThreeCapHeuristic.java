@@ -687,6 +687,12 @@ public class ThreeCapHeuristic {
         }
     }
 
+    public void restoreStorageAreaForBestOriginalSolution(Solution sol) {
+        for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
+            this.instance.getStacks()[i] = sol.getFilledStorageArea()[i].clone();
+        }
+    }
+
     /**
      * This approach should be used in situations where the number of used stacks is irrelevant
      * and only the minimization of transport costs matters.
@@ -705,6 +711,11 @@ public class ThreeCapHeuristic {
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
+        // Since the last generated solution is not necessarily the best one,
+        // the stack assignments for the best solution have to be restored before post-processing.
+        this.instance.resetStacks();
+        this.restoreStorageAreaForBestOriginalSolution(sol);
+
         ArrayList<String> emptyStacks = this.retrieveEmptyStacks(sol);
         HashMap<Integer, Double> originalCosts = this.getOriginalCosts(sol);
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
@@ -721,6 +732,7 @@ public class ThreeCapHeuristic {
 
         this.updateStackAssignments(maxSavingsMatching, originalCosts);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
+        sol.lowerItemsThatAreStackedInTheAir();
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
     }

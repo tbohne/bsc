@@ -1,6 +1,5 @@
 package SP.representations;
 
-import SP.experiments.SolverComparison;
 import SP.util.RepresentationUtil;
 
 import java.util.ArrayList;
