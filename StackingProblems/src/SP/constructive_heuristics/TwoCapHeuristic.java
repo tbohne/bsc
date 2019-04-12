@@ -197,86 +197,6 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Removes the specified item from its outdated position and lowers the other item of the
-     * pair to the ground level if it's stacked "in the air".
-     *
-     * @param item - the item to be removed from its original position in the storage area
-     */
-    public void removeItemFromOutdatedPosition(int item) {
-        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-            for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
-                if (this.instance.getStacks()[stack][level] == item) {
-                    this.instance.getStacks()[stack][level] = -1;
-                    // lower item if stacked "in the air"
-                    if (level == this.instance.getGroundLevel() && this.instance.getStacks()[stack][this.instance.getTopLevel()] != -1) {
-                        this.instance.getStacks()[stack][this.instance.getGroundLevel()] = this.instance.getStacks()[stack][this.instance.getTopLevel()];
-                        this.instance.getStacks()[stack][this.instance.getTopLevel()] = -1;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Retrieves all the stacks that remain empty in the original solution.
-     *
-     * @param minCostPerfectMatching - the matching the original solution is based on
-     * @return the list of empty stacks
-     */
-    public ArrayList<String> findEmptyStacks(KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching) {
-        ArrayList<String> emptyStacks = new ArrayList<>();
-        for (Object edge : minCostPerfectMatching.getMatching().getEdges()) {
-            if (edge.toString().contains("dummy")) {
-                emptyStacks.add(edge.toString().split(":")[1].replace(")", "").trim());
-            }
-        }
-        return emptyStacks;
-    }
-
-    /**
-     * Returns the costs for each item assignment before the post-processing step.
-     *
-     * @param minCostPerfectMatching - the matching the original solution is based on
-     * @return hashmap containing the original costs for each item assignment
-     */
-    public HashMap<Integer, Double> getCostsBefore(KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching) {
-        HashMap<Integer, Double> costsBefore = new HashMap<>();
-        for (DefaultWeightedEdge edge : minCostPerfectMatching.getMatching().getEdges()) {
-            if (edge.toString().contains("pair")) {
-                int itemOne = GraphUtil.parseItemOneOfPair(edge);
-                int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
-                int stack = GraphUtil.parseStackForPair(edge);
-                costsBefore.put(itemOne, this.instance.getCosts()[itemOne][stack]);
-                costsBefore.put(itemTwo, this.instance.getCosts()[itemTwo][stack]);
-            }
-        }
-        return costsBefore;
-    }
-
-    /**
-     * Updates the assignments for a compatible pair after the post-processing step.
-     *
-     * @param itemOne - the first item of the pair
-     * @param stack - the stack the pair is placed in
-     * @param itemTwo - the second item of the pair
-     * @param costsBefore - the hashmap containing the original costs for each item assignment
-     */
-    public void updateAssignmentsForCompatiblePair(int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore) {
-        double costsItemOne = this.instance.getCosts()[itemOne][stack];
-        double costsItemTwo = this.instance.getCosts()[itemTwo][stack];
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-
-        if (savingsItemOne > savingsItemTwo) {
-            this.removeItemFromOutdatedPosition(itemOne);
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-        } else {
-            this.removeItemFromOutdatedPosition(itemTwo);
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
-        }
-    }
-
-    /**
      * Updates the stack assignments based on the matching that results in the maximum savings.
      *
      * @param maxSavingsMatching - the matching that results in the maximum savings
@@ -290,8 +210,7 @@ public class TwoCapHeuristic {
             int itemOne = GraphUtil.parseItemOneOfPair(edge);
             int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
             int stack = GraphUtil.parseStackForPair(edge);
-
-           HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, costsBefore, this.instance);
+            HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, costsBefore, this.instance);
         }
     }
 
