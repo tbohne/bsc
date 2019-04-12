@@ -360,6 +360,35 @@ public class HeuristicUtil {
     }
 
     /**
+     * Updates the stack assignments for the specified pair.
+     *
+     * @param itemOne - the first item of the pair
+     * @param itemTwo - the second item of the pair
+     * @param stack - the target stack
+     * @param costsBefore - the costs for the original item assignments
+     * @param instance - the considered instance of the stacking problem
+     */
+    public static void updateStackAssignmentsForPairs(
+        int itemOne, int itemTwo, int stack, HashMap<Integer, Double> costsBefore, Instance instance
+    ) {
+        // both items compatible
+        if (instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / instance.getItems().length
+                && instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / instance.getItems().length) {
+
+            HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore, instance);
+
+            // item one compatible
+        } else if (instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / instance.getItems().length) {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
+            // item two compatible
+        } else if (instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / instance.getItems().length) {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+        }
+    }
+
+    /**
      * Returns the percentage deviation between the expected and the actual value.
      *
      * @param expected - the expected value

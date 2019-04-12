@@ -524,32 +524,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Updates the stack assignments for the specified pair.
-     *
-     * @param itemOne - the first item of the pair
-     * @param itemTwo - the second item of the pair
-     * @param stack - the target stack
-     * @param costsBefore - the costs for the original item assignments
-     */
-    public void updateStackAssignmentsForPairs(int itemOne, int itemTwo, int stack, HashMap<Integer, Double> costsBefore) {
-        // both items compatible
-        if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-            && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore, this.instance);
-
-        // item one compatible
-        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, this.instance.getStacks());
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-        // item two compatible
-        } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, this.instance.getStacks());
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
-        }
-    }
-
-    /**
      * Updates the stack assignments based on the matching that results in the maximum savings.
      *
      * @param maxSavingsMatching - matching that results in the maximum savings
@@ -571,7 +545,7 @@ public class ThreeCapHeuristic {
                 int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
                 int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
                 int stack = GraphUtil.parseStackForPair(edge);
-                this.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, originalCosts);
+                HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, originalCosts, this.instance);
             }
         }
     }
