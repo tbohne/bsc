@@ -22,7 +22,7 @@ public class TestDataGenerator {
     /******************************* CONFIGURATION *************************************/
     public static final int NUMBER_OF_INSTANCES = 1;
     public static final int NUMBER_OF_ITEMS = 50;
-    public static final int STACK_CAPACITY = 3;
+    public static final int STACK_CAPACITY = 2;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.

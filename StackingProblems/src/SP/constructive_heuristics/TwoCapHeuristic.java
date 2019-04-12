@@ -291,19 +291,7 @@ public class TwoCapHeuristic {
             int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
             int stack = GraphUtil.parseStackForPair(edge);
 
-            // both items compatible
-            if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-                && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                    this.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore);
-            // item one compatible
-            } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                this.removeItemFromOutdatedPosition(itemOne);
-                this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-            // item two compatible
-            } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                this.removeItemFromOutdatedPosition(itemTwo);
-                this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
-            }
+           HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, costsBefore, this.instance);
         }
     }
 
@@ -332,10 +320,10 @@ public class TwoCapHeuristic {
 
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
-        ArrayList<String> emptyStacks = this.findEmptyStacks(minCostPerfectMatching);
-        HashMap<Integer, Double> costsBefore = this.getCostsBefore(minCostPerfectMatching);
+        ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
+        HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
-                itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
+            itemPairs, emptyStacks, this.instance.getCosts(), this.instance.getItems(), costsBefore
         );
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
