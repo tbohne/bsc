@@ -142,8 +142,8 @@ public class TwoCapHeuristic {
         HashMap<Integer, Double> costsBefore
     ) {
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
-            int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
+            int itemOne = GraphUtil.parseItemOneOfPair(edge);
+            int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
             int stack = GraphUtil.parseStackForPair(edge);
             HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, costsBefore, this.instance);
         }

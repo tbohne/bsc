@@ -496,8 +496,8 @@ public class ThreeCapHeuristic {
                 this.updateStackAssignmentsForTriples(itemOne, itemTwo, itemThree, stack, originalCosts);
             // pair edge
             } else {
-                int itemOne = GraphUtil.parseItemOneOfPairOther(edge);
-                int itemTwo = GraphUtil.parseItemTwoOfPairOther(edge);
+                int itemOne = GraphUtil.parseItemOneOfPair(edge);
+                int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
                 int stack = GraphUtil.parseStackForPair(edge);
                 HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, originalCosts, this.instance);
             }
