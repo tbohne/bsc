@@ -264,11 +264,11 @@ public class Solution {
      */
     public boolean isFeasible() {
         if (!this.empty) {
-            System.out.println("all items assigned: " + this.allItemsAssigned());
-            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
-            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
-            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
-            System.out.println("contains duplicates: " + this.containsDuplicates());
+//            System.out.println("all items assigned: " + this.allItemsAssigned());
+//            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
+//            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
+//            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
+//            System.out.println("contains duplicates: " + this.containsDuplicates());
         }
         return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
             && this.placementConstraintsRespected() && !this.containsDuplicates();
