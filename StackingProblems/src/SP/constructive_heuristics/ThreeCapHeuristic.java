@@ -301,24 +301,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Returns the costs for each item's assignment in the original solution.
-     *
-     * @param sol - the original solution
-     * @return hashmap containing the original costs for each item assignment
-     */
-    public HashMap<Integer, Double> getOriginalCosts(Solution sol) {
-        HashMap<Integer, Double> originalCosts = new HashMap<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            for (int entry : sol.getFilledStorageArea()[stack]) {
-                if (entry != -1) {
-                    originalCosts.put(entry, this.instance.getCosts()[entry][stack]);
-                }
-            }
-        }
-        return originalCosts;
-    }
-
-    /**
      * Adds the edges for item pairs in the post-processing graph.
      * The costs for each edge correspond to the maximum savings for
      * moving an item of the pair to an empty stack.
@@ -658,7 +640,7 @@ public class ThreeCapHeuristic {
         this.restoreStorageAreaForBestOriginalSolution(sol);
 
         ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
-        HashMap<Integer, Double> originalCosts = this.getOriginalCosts(sol);
+        HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
         ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
         ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
 

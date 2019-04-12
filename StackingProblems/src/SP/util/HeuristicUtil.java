@@ -342,6 +342,24 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns the costs for each item's assignment in the original solution.
+     *
+     * @param sol - the original solution
+     * @return hashmap containing the original costs for each item assignment
+     */
+    public static HashMap<Integer, Double> getOriginalCosts(Solution sol, double[][] costMatrix) {
+        HashMap<Integer, Double> originalCosts = new HashMap<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            for (int entry : sol.getFilledStorageArea()[stack]) {
+                if (entry != -1) {
+                    originalCosts.put(entry, costMatrix[entry][stack]);
+                }
+            }
+        }
+        return originalCosts;
+    }
+
+    /**
      * Returns the percentage deviation between the expected and the actual value.
      *
      * @param expected - the expected value
