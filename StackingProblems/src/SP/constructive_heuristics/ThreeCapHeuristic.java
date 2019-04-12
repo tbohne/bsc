@@ -451,59 +451,32 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Retrieves all the pairs of items from the storage area of the original solution.
+     * Retrieves all the tuples of items from the storage area of the original solution.
      *
      * @param sol - the original solution
+     * @param tupleSize - the size of the tuples to be retrieved
      * @return the list of item pairs
      */
-    public ArrayList<ArrayList<Integer>> retrieveItemPairs(Solution sol) {
-        ArrayList<ArrayList<Integer>> itemPairs = new ArrayList<>();
+    public ArrayList<ArrayList<Integer>> retrieveItemTuples(Solution sol, int tupleSize) {
+        ArrayList<ArrayList<Integer>> itemTuples = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
             ArrayList<Integer> stackEntries = new ArrayList<>();
             for (int entry : sol.getFilledStorageArea()[stack]) {
                 stackEntries.add(entry);
             }
-            ArrayList<Integer> itemPair = new ArrayList<>();
-            if (Collections.frequency(stackEntries, -1) == 1) {
+            ArrayList<Integer> itemTuple = new ArrayList<>();
+            if (Collections.frequency(stackEntries, -1) == this.instance.getStackCapacity() - tupleSize) {
                 for (int entry : stackEntries) {
                     if (entry != -1) {
-                        itemPair.add(entry);
+                        itemTuple.add(entry);
                     }
                 }
             }
-            if (itemPair.size() == 2) {
-                itemPairs.add(itemPair);
+            if (itemTuple.size() == tupleSize) {
+                itemTuples.add(itemTuple);
             }
         }
-        return itemPairs;
-    }
-
-    /**
-     * Retrieves all the triples of items from the storage area of the original solution.
-     *
-     * @param sol - the original solution
-     * @return the list of item triples
-     */
-    public ArrayList<ArrayList<Integer>> retrieveItemTriples(Solution sol) {
-        ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            ArrayList<Integer> stackEntries = new ArrayList<>();
-            for (int entry : sol.getFilledStorageArea()[stack]) {
-                stackEntries.add(entry);
-            }
-            ArrayList<Integer> itemTriple = new ArrayList<>();
-            if (Collections.frequency(stackEntries, -1) == 0) {
-                for (int entry : stackEntries) {
-                    if (entry != -1) {
-                        itemTriple.add(entry);
-                    }
-                }
-            }
-            if (itemTriple.size() == 3) {
-                itemTriples.add(itemTriple);
-            }
-        }
-        return itemTriples;
+        return itemTuples;
     }
 
     /**
@@ -641,8 +614,8 @@ public class ThreeCapHeuristic {
 
         ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
         HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-        ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemPairs(sol);
-        ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTriples(sol);
+        ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemTuples(sol, 2);
+        ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTuples(sol, 3);
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
             emptyStacks, itemTriples, itemPairs, originalCosts
