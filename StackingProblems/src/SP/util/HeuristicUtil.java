@@ -3,6 +3,8 @@ package SP.util;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
+import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.io.File;
 import java.util.*;
@@ -385,6 +387,53 @@ public class HeuristicUtil {
         } else if (instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / instance.getItems().length) {
             HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
             instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+        }
+    }
+
+    /**
+     * Adds the edges for item pairs in the post-processing graph.
+     * The costs for each edge correspond to the maximum savings for
+     * moving an item of the pair to an empty stack.
+     *
+     * @param postProcessingGraph - the graph to add the edges to
+     * @param itemPairs - the item pairs to be connected to compatible empty stacks
+     * @param emptyStacks - the the empty stacks to be connected to compatible item pairs
+     * @param originalCosts - the costs for the original item assignments
+     */
+    public static void addEdgesForItemPairs(
+            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+            ArrayList<ArrayList<Integer>> itemPairs,
+            ArrayList<String> emptyStacks,
+            HashMap<Integer, Double> originalCosts,
+            Instance instance
+    ) {
+
+        for (int pair = 0; pair < itemPairs.size(); pair++) {
+            for (String emptyStack : emptyStacks) {
+
+                DefaultWeightedEdge edge = postProcessingGraph.addEdge("pair" + itemPairs.get(pair), emptyStack);
+                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
+                double savings = 0.0;
+
+                // both items compatible
+                if (instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length
+                        && instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
+
+                    savings = HeuristicUtil.getSavingsForPair(
+                            itemPairs.get(pair).get(0), itemPairs.get(pair).get(1), stackIdx, originalCosts, instance.getCosts()
+                    );
+
+                    // item one compatible
+                } else if (instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
+                    int itemOne = itemPairs.get(pair).get(0);
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemOne, instance.getCosts());
+                    // item two compatible
+                } else if (instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
+                    int itemTwo = itemPairs.get(pair).get(1);
+                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTwo, instance.getCosts());
+                }
+                postProcessingGraph.setEdgeWeight(edge, savings);
+            }
         }
     }
 

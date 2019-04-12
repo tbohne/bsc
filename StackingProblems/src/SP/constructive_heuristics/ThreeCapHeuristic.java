@@ -301,52 +301,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Adds the edges for item pairs in the post-processing graph.
-     * The costs for each edge correspond to the maximum savings for
-     * moving an item of the pair to an empty stack.
-     *
-     * @param postProcessingGraph - the graph to add the edges to
-     * @param itemPairs - the item pairs to be connected to compatible empty stacks
-     * @param emptyStacks - the the empty stacks to be connected to compatible item pairs
-     * @param originalCosts - the costs for the original item assignments
-     */
-    public void addEdgesForItemPairs(
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
-        ArrayList<ArrayList<Integer>> itemPairs,
-        ArrayList<String> emptyStacks,
-        HashMap<Integer, Double> originalCosts
-    ) {
-
-        for (int pair = 0; pair < itemPairs.size(); pair++) {
-            for (String emptyStack : emptyStacks) {
-
-                DefaultWeightedEdge edge = postProcessingGraph.addEdge("pair" + itemPairs.get(pair), emptyStack);
-                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
-                double savings = 0.0;
-
-                // both items compatible
-                if (this.instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length
-                    && this.instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                        savings = HeuristicUtil.getSavingsForPair(
-                            itemPairs.get(pair).get(0), itemPairs.get(pair).get(1), stackIdx, originalCosts, this.instance.getCosts()
-                        );
-
-                // item one compatible
-                } else if (this.instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                    int itemOne = itemPairs.get(pair).get(0);
-                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemOne, this.instance.getCosts());
-                // item two compatible
-                } else if (this.instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                    int itemTwo = itemPairs.get(pair).get(1);
-                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTwo, this.instance.getCosts());
-                }
-                postProcessingGraph.setEdgeWeight(edge, savings);
-            }
-        }
-    }
-
-    /**
      * Adds the edges for item triples in the post-processing graph.
      * The costs for each edge correspond to the maximum savings for
      * moving an item of the triple to an empty stack.
@@ -444,7 +398,7 @@ public class ThreeCapHeuristic {
         GraphUtil.addVerticesForListOfItemPairs(itemPairs, graph, partitionOne);
         GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
 
-        this.addEdgesForItemPairs(graph, itemPairs, emptyStacks, originalCosts);
+        HeuristicUtil.addEdgesForItemPairs(graph, itemPairs, emptyStacks, originalCosts, this.instance);
         this.addEdgesForItemTriples(graph, itemTriples, emptyStacks, originalCosts);
 
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
