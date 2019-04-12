@@ -183,6 +183,32 @@ public class HeuristicUtil {
         }
     }
 
+    public static void updateAssignmentsForCompatibleTriple(
+        int itemOne, int itemTwo, int itemThree, int stack, HashMap<Integer, Double> costsBefore, Instance instance
+    ) {
+        double costsItemOne = instance.getCosts()[itemOne][stack];
+        double costsItemTwo = instance.getCosts()[itemTwo][stack];
+        double costsItemThree = instance.getCosts()[itemThree][stack];
+
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
+
+        ArrayList<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
+        double maxSavings = Collections.max(savings);
+
+        if (maxSavings == savingsItemOne) {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
+        } else if (maxSavings == savingsItemTwo) {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+        } else {
+            HeuristicUtil.removeItemFromOutdatedPosition(itemThree, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemThree;
+        }
+    }
+
     public static void updateAssignmentsForCompatiblePair(
         int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore, Instance instance
     ) {
