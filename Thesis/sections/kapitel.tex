@@ -831,22 +831,21 @@ und lediglich die entstehenden Transportkosten von Relevanz sind.
 
 \textbf{Postprocessing-Schritt}
 
-Zunächst wird ein weiterer bipartiter Graph generiert, welcher die Paare, welche gemeinsam in einem Stack
-platziert wurden in der einen Partition und die verbleibenden leeren Stacks in der anderen Partition enthält.
-Es existiert eine Kante von einem solchen Paar zu einem leeren Stack, wenn mindestens eines der beiden Items
-zu diesem Stack kompatibel ist. Die Kosten dieser Kanten entsprechen der Kostenersparnis der Zuweisung des
-kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items.
-Sind beide Items eines Paares kompatibel, so entsprechen die Kosten der größeren Ersparnis, da jeweils das Item mit
-der größten Ersparnis verschoben wird.
+Zunächst wird ein bipartiter Postprocessing-Graph $G_p$ generiert, welcher die Paare, welche gemeinsam in einem Stack platziert wurden, in der einen Partition und die verbleibenden leeren Stacks in der anderen Partition enthält.
+Es existiert eine Kante $\{(i, j), q\}$ von einem Paar von Items $i, j \in I$ zu einem leeren Stack
+$q \in Q$, wenn mindestens eines der beiden Items zu diesem Stack kompatibel ist, also $t_{iq} = 1$ oder
+$t_{jq} = 1$ gilt. Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des
+kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung
+dieses Items. Die Kostenersparnis $r_i$, die sich bei der Zuweisung des Items $i$, welches sich gegenwärtig im Stack
+$q_1 \in Q$ befindet, zum Stack $q$ ergibt, ist durch $r_i = c_{iq_1} - c_{iq}$ definiert. Eine Erhöhung der Kosten entspricht demnach einer negativen Ersparnis. Sind beide Items eines Paares kompatibel zum Stack, so entsprechen die Kosten der größeren Ersparnis, da für jedes Paar das Item mit der größten Ersparnis verschoben wird.
 
-Auf diesem Graphen wird ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Paare von Items
-mit leeren Stacks verbinden, welche mit diesen Stacks kompatibel sind und die größte Kostenersparnis mit sich bringen.
-Insgesamt handelt es sich dabei also um eine maximale Kostenreduktion.
-Anschließend wird jeweils das kompatible Item des Paares bzw. jenes, welches zur größeren Ersparnis führt auf
-den Ground-Level des leeren Stacks verschoben.
+Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Paare von
+Items mit leeren Stacks verbinden, welche zur größten Kostenreduktion führen.
+Anschließend wird jeweils das kompatible Item eines Paares bzw. jenes, welches zur größeren Ersparnis
+führt, auf den Ground-Level des leeren Stacks verschoben.
 Wird das Item eines Paars, welches sich auf dem Ground-Level eines Stacks befindet in einen
 leeren Stack verschoben, so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
-um anschließend erneut eine zulässige Stacking-Lösung zu erhalten.
+um anschließend erneut zu einer zulässigen Stacking-Lösung zu gelangen.
 
 \vfill
 
