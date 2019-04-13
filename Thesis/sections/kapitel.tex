@@ -1675,28 +1675,27 @@ Stack verschoben, sofern ein solcher vorliegt und sich dadurch eine Kostenerspar
 
 \textbf{Postprocessing-Schritt}
 
-Zunächst wird ein bipartiter Postprocessing-Graph $G_p$ generiert, welcher die Tripel und Paare von Items,
-welche gemeinsam in einem Stack platziert wurden, in der einen Partition und die verbleibenden leeren
-Stacks in der anderen Partition enthält.
+Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die Tripel
+und Paare von Items, welche gemeinsam in einem Stack platziert wurden, in der Partition $V_{p1}$ und
+die verbleibenden leeren Stacks in der Partition $V_{p2}$ enthält.
 
-Es existiert eine Kante $\{(i, j, k), q\}$ von einem Tripel von Items $i, j, k \in I$ oder
-eine Kante $\{(i, j), q\}$ von einem Paar $i, j \in I$ von Items zu einem leeren Stack $q \in Q$,
-wenn mindestens eines der im Tupel enthaltenen Items basierend auf den Placement-Constraints zu
+Es existiert eine Kante $\{(i, j, k), q\} \in E_p$ zwischen einem Tripel von Items $(i, j, k) \in V_{p1}$ oder
+eine Kante $\{(i, j), q\} \in E_p$ zwischen einem Paar $(i, j) \in V_{p1}$ von Items und einem leeren Stack
+$q \in V_{p2}$, wenn mindestens eines der im Tupel enthaltenen Items basierend auf den Placement-Constraints zu
 diesem Stack kompatibel ist. Dementsprechend muss für das Paar $(i, j)$ $t_{iq} = 1$ oder $t_{jq} = 1$
 gelten. Für das Tripel $(i, j, k)$ muss analog $t_{iq} = 1$, $t_{jq} = 1$ oder $t_{kq} = 1$ gelten.
-
 Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items.
 Die Kostenersparnis $r_i$ für ein Item $i \in I$ entspricht erneut der Definition aus Abschnitt \ref{sec:two_cap_heuristic}.
 Sind mehrere Items eines Tupels kompatibel, so entsprechen die Kosten der größten Ersparnis, da jeweils
 jenes Item eines Tupels verschoben wird, dessen Verschiebung die größte Kostenersparnis nach sich zieht.
 
 Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Tupel von
-Items mit leeren Stacks verbinden, welche zur größten Kostenreduktion führen.
-Anschließend wird jeweils das kompatible Item eines Tupels bzw. jenes, welches zur größeren Ersparnis
-führt, auf den Ground-Level des leeren Stacks verschoben.
-Wird das Item eines Tupels, welches sich auf dem Ground-Level eines Stacks befindet in einen
-leeren Stack verschoben, so werden die darüber platzierten Items auf den Ground-Level heruntergezogen,
-um anschließend erneut zu einer zulässigen Stacking-Lösung zu gelangen.
+Items mit leeren Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
+Anschließend wird jeweils das kompatible Item eines Tupels bzw. im Falle mehrerer kompatibler Items jenes,
+welches zur größeren Ersparnis führt, auf den Ground-Level des leeren Stacks verschoben.
+Handelt es sich dabei um ein Item, welches zuvor auf dem Ground-Level eines Stacks platziert war,
+so werden die darüber platzierten Items heruntergezogen, sodass sich anschließend erneut eine zulässige
+Stacking-Lösung ergibt.
 
 \pagebreak
 
