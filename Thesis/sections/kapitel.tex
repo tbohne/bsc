@@ -831,21 +831,21 @@ und lediglich die entstehenden Transportkosten von Relevanz sind.
 
 \textbf{Postprocessing-Schritt}
 
-Zunächst wird ein bipartiter Postprocessing-Graph $G_p$ generiert, welcher die Paare, welche gemeinsam in einem Stack platziert wurden, in der einen Partition und die verbleibenden leeren Stacks in der anderen Partition enthält.
-Es existiert eine Kante $\{(i, j), q\}$ von einem Paar von Items $i, j \in I$ zu einem leeren Stack
-$q \in Q$, wenn mindestens eines der beiden Items zu diesem Stack kompatibel ist, also $t_{iq} = 1$ oder
-$t_{jq} = 1$ gilt. Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des
-kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung
-dieses Items. Die Kostenersparnis $r_i$, die sich bei der Zuweisung des Items $i$, welches sich gegenwärtig im Stack
-$q_1 \in Q$ befindet, zum Stack $q$ ergibt, ist durch $r_i = c_{iq_1} - c_{iq}$ definiert. Eine Erhöhung der Kosten entspricht demnach einer negativen Ersparnis. Sind beide Items eines Paares kompatibel zum Stack, so entsprechen die Kosten der größeren Ersparnis, da für jedes Paar das Item mit der größten Ersparnis verschoben wird.
+Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die Paare
+von Items, welche gemeinsam in einem Stack platziert wurden, in der Partition $V_{p1}$ und die verbleibenden leeren Stacks in der Partition $V_{p2}$ enthält.
+
+Es existiert eine Kante $\{(i, j), q\} \in E_p$ zwischen einem Paar von Items $(i, j) \in V_{p1}$ und einem leeren Stack
+$q \in V_{p2}$, wenn mindestens eines der beiden Items basierend auf den Placement-Constraints zu diesem Stack kompatibel
+ist, also wenn $t_{iq} = 1$ oder $t_{jq} = 1$ gilt. Die Kosten einer solchen Kante entsprechen der
+Kostenersparnis der Zuweisung des kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$, welche sich bei der Zuweisung des Items $i \in I$, welches sich gegenwärtig im Stack $q_1 \in Q$ befindet, zum Stack $q$ ergibt, ist durch $r_i = c_{iq_1} - c_{iq}$ definiert. Eine Erhöhung der Kosten entspricht demnach einer negativen Ersparnis. Sind beide Items eines Paares kompatibel zum Stack, so entsprechen die Kosten der größeren Ersparnis, da für jedes Paar jenes Item verschoben wird, dessen Verschiebung die größte Kostenersparnis nach sich zieht.
 
 Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Paare von
-Items mit leeren Stacks verbinden, welche zur größten Kostenreduktion führen.
+Items mit leeren Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
 Anschließend wird jeweils das kompatible Item eines Paares bzw. jenes, welches zur größeren Ersparnis
 führt, auf den Ground-Level des leeren Stacks verschoben.
-Wird das Item eines Paars, welches sich auf dem Ground-Level eines Stacks befindet in einen
-leeren Stack verschoben, so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
-um anschließend erneut zu einer zulässigen Stacking-Lösung zu gelangen.
+Handelt es sich dabei um ein Item, welches zuvor auf dem Ground-Level eines Stacks platziert war,
+so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
+sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
 
 \vfill
 
