@@ -200,8 +200,10 @@ werden in einer Binärmatrix $S = (s_{ij})_{n \times n}$ kodiert, wobei:
     0, & \text{sonst}
 \end{cases}
 \]
-Diese Matrix lässt sich, wie in Abb. \ref{fig:matrix_to_graph} beispielhaft dargestellt,
-als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarrow j$ für alle $s_{ij} = 1$ repräsentieren.
+
+Diese Matrix lässt sich, wie in Abb. \ref{fig:matrix_to_graph} beispielhaft dargestellt, auch durch einen
+gerichteten \textquote{Stacking-Graphen} $G^S = (I, A^S)$ repräsentieren, welcher eine Kante $(i, j) \in A^S$ enthält,
+wenn $s_{ij} = 1$ gilt.
 \begin{figure}[H]
   \begin{subfigure}[b]{0.5\textwidth}
   \centering
@@ -213,17 +215,17 @@ als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarr
     1 & 0 & 0 & 0 \\
     1 & 1 & 1 & 0 \\
     \end{array} \right) $
-    \caption{\textsc{Constraint Matrix}}
+    \caption{\textsc{Stacking-Matrix}}
     \label{fig:constraint_matrix}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.5\textwidth}
   \centering
-    \begin{tikzpicture}[->, scale=0.50, transform shape, node distance=2.5cm]
-    \node[state] (A) {1};
-    \node[state] (B) [right of=A] {2};
-    \node[state] (C) [below of=A] {3};
-    \node[state] (D) [right of=C] {4};
+    \begin{tikzpicture}[->, scale=0.65, transform shape, node distance=2.5cm]
+    \node[state] (A) {0};
+    \node[state] (B) [right of=A] {1};
+    \node[state] (C) [below of=A] {2};
+    \node[state] (D) [right of=C] {3};
 
     \path (A) edge node {} (B)
           (A) edge node {} (C)
@@ -237,10 +239,10 @@ als gerichteter Graph mit $n$ Knoten für alle $i \in I$ und Kanten $i \rightarr
           (D) edge node {} (B)
           (D) edge node {} (C);
   \end{tikzpicture}
-    \caption{\textsc{Resultierender Graph}}
+    \caption{\textsc{Stacking-Graph}}
     \label{fig:resulting_graph}
   \end{subfigure}
-  \caption{\textsc{Repräsentation der Stacking Constraints.}}
+  \caption{\textsc{Repräsentation der Stacking-Constraints.}}
   \label{fig:matrix_to_graph}
 \end{figure}
 In dieser Arbeit werden ausschließlich transitive Stacking-Constraints betrachtet, d.h.
