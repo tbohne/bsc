@@ -246,19 +246,18 @@ wenn $s_{ij} = 1$ gilt.
   \label{fig:matrix_to_graph}
 \end{figure}
 In dieser Arbeit werden ausschließlich transitive Stacking-Constraints betrachtet, d.h.
-wenn Item $i$ auf Item $j$ und Item $j$ auf Item $h$ gestapelt werden darf,
-so darf auch Item $i$ auf Item $h$ gestapelt werden.
-Diese Einschränkung ist auch in der Praxis zumeist gegeben, da die Stacking-Constraints häufig auf dem Gewicht
-oder der Länge der Items basieren. Restriktionen dieser Art haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j  \quad \text{gilt} \quad s_{ij} = 1 \quad \text{oder} \quad s_{ji} = 1$, was zur Folge hat,
+wenn $(i, j), (j, h) \in A^S$, dann gilt ebenfalls $(i, h) \in A^S$.
+Diese Einschränkung ist auch in der Praxis zumeist gegeben, da die Stacking-Constraints häufig auf Eigenschaften wie dem Gewicht oder der Länge der Items basieren. Restriktionen dieser Art haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j$ gilt $s_{ij} = 1$ oder $s_{ji} = 1$, was zur Folge hat,
 dass eine totale Ordnung auf allen Items definiert wird (vgl. \citet{Bruns2015}).
 
 \pagebreak
 
 Die Stacking-Constraints, welche in dieser Arbeit primär betrachtet werden, definieren jeweils partielle
-Ordnungen auf der Menge der Items, weil die Relation zweier Items auf zwei Werten, z.B. dem Gewicht und der Länge
-der Items basiert und somit die totale Vergleichbarkeit, also $\forall i, j \in I : i \leq j \lor j \leq i$
-nicht gilt. In Kapitel \ref{sec:test_data} wird das Verfahren, mit welchem diese Stacking-Constraints generiert werden
-und welches ebenfalls praktisch motiviert ist, genau beschrieben.
+Ordnungen auf der Menge der Items, weil die Relation zweier Items statt auf nur einer Eigenschaft,
+z.B. auf dem Gewicht und der Länge der Items basiert und somit die totale Vergleichbarkeit,
+also $\forall i, j \in I : i \leq j \lor j \leq i$, welche Voraussetzung einer totalen Ordnung ist, nicht gilt.
+In Kapitel \ref{sec:test_data} wird das ebenfalls praktisch motivierte Verfahren, mit welchem die
+Stacking-Constraints generiert werden, genau beschrieben.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
