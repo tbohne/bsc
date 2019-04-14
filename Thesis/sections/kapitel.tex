@@ -269,6 +269,13 @@ Stacking-Constraints generiert werden, genau beschrieben.
 Die unter der Bezeichnung Placement-Constraints zusammengefassten Einschränkungen bezüglich der Positionierung eines
 Items resultieren z.B. aus der Länge oder dem Gewicht der Items und den entsprechenden Eigenschaften der Stacks. Es gibt allerdings auch Items mit speziellen Anforderungen, beispielsweise Kühlcontainer\footnote{Container, welche über eine elektrisch betriebene Kühleinheit verfügen.}, welche eine Energiequelle benötigen. Solche Items können nur Stacks mit entsprechender Konfiguration zugewiesen werden.
 
+% Die Placement-Constraints sind durch Mengen $Q^i$ für die Items $i \in I$ gegeben, wobei $Q^i$
+% der Menge der Stacks entspricht, denen Item $i$ zugewiesen werden kann, zu denen Item $i$ also kompatibel ist.
+% Dieser Sachverhalt kann durch einen bipartiten Graph $G^P = (I \cup Q, E^P)$ modelliert werden, wobei
+% eine Kante $\{i, q\} \in E^P$ angibt, dass Item $i \in I$ Stack $q \in Q$ zugewiesen werden kann.
+% Diese Kanten können zusätzlich ein Gewicht erhalten, welches den Transportkosten $c_{iq}$ entspricht.
+% Kanten, welche nicht existieren erhalten das Gewicht $\infty$.
+
 Die Placement-Constraints werden indirekt über hohe Kostenwerte implementiert. Die Zuweisung eines Items zu einem
 Stack, mit welchem es nicht kompatibel ist, verursacht folglich höhere Kosten als sämtliche zulässigen Zuweisungen.
 Dies hat den Vorteil, dass es sich dabei initial nur um weiche Nebenbedingungen handelt,
@@ -278,9 +285,7 @@ in denen keine Lösung existiert, welche sämtliche Placement-Constraints respek
 Schließlich kann entschieden werden, ob solche Lösungen als zulässig gelten,
 oder, ob die Placement-Constraints dessen ungeachtet als harte Nebenbedingungen und solche
 Lösungen dementsprechend als unzulässig betrachtet werden.
-Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Bei diesem Graphen handelt es sich um einen Kompatibilitätsgraphen, welcher Items durch Kanten mit kompatiblen Stacks verbindet. Insofern muss jedes Item zunächst mit jedem Stack kompatibel sein muss. Da die
-Placement-Constraints genau dies jedoch verhindern, können diese nicht direkt durch ein Fehlen der entsprechenden
-Kanten umgesetzt werden.
+Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Bei diesem Graphen handelt es sich um einen Kompatibilitätsgraphen, welcher Item-Tupel durch Kanten mit kompatiblen Stacks verbindet. Insofern muss jedes Item zunächst mit jedem Stack kompatibel sein muss. Da die Placement-Constraints genau dies jedoch verhindern, können diese nicht direkt durch ein Fehlen der entsprechenden Kanten umgesetzt werden.
 
 Zunächst werden die Placement-Constraints in einer Binärmatrix $T = (t_{iq})_{n \times m}$ kodiert, wobei:
 \[
