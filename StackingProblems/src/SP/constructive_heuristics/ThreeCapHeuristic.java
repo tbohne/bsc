@@ -62,6 +62,30 @@ public class ThreeCapHeuristic {
     }
 
     /**
+     * Parses the given minimum weight perfect matching and assigns it to the given stacks.
+     *
+     * @param mwpm   - the minimum weight perfect matching to be parsed
+     * @param stacks - the stacks the parsed items are going to be assigned to
+     */
+    public void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks) {
+        for (Object edge : mwpm.getMatching().getEdges()) {
+            if (edge.toString().contains("triple")) {
+                int stack = GraphUtil.parseStackForTriple((DefaultWeightedEdge) edge);
+                stacks[stack][2] = GraphUtil.parseItemOneOfTriple((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemTwoOfTriple((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItemThreeOfTriple((DefaultWeightedEdge) edge);
+            } else if (edge.toString().contains("pair")) {
+                int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+            } else if (edge.toString().contains("item")) {
+                int stack = GraphUtil.parseStack((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItem((DefaultWeightedEdge) edge);
+            }
+        }
+    }
+
+    /**
      * Generates the complete bipartite graph consisting of the item partition and the stack partition.
      * Since the two partitions aren't necessarily equally sized and the used algorithm to compute the
      * MinCostPerfectMatching expects a complete bipartite graph, there are dummy items that are used to make
@@ -274,7 +298,7 @@ public class ThreeCapHeuristic {
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
                 )
             ;
-            GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
+            this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
             Solution sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
 //            System.out.println(cnt++ + ": " + sol.computeCosts());
