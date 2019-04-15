@@ -497,32 +497,6 @@ public class GraphUtil {
         return itemTriples;
     }
 
-    /**
-     * Parses the given minimum weight perfect matching and assigns it to the given stacks.
-     *
-     * @param mwpm   - the minimum weight perfect matching to be parsed
-     * @param stacks - the stacks the parsed items are going to be assigned to
-     */
-    public static void parseAndAssignMinCostPerfectMatching(
-        KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks
-    ) {
-        for (Object edge : mwpm.getMatching().getEdges()) {
-            if (edge.toString().contains("triple")) {
-                int stack = GraphUtil.parseStackForTriple((DefaultWeightedEdge) edge);
-                stacks[stack][0] = GraphUtil.parseItemOneOfTriple((DefaultWeightedEdge) edge);
-                stacks[stack][1] = GraphUtil.parseItemTwoOfTriple((DefaultWeightedEdge) edge);
-                stacks[stack][2] = GraphUtil.parseItemThreeOfTriple((DefaultWeightedEdge) edge);
-            } else if (edge.toString().contains("pair")) {
-                int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
-                stacks[stack][0] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
-                stacks[stack][1] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
-            } else if (edge.toString().contains("item")) {
-                int stack = GraphUtil.parseStack((DefaultWeightedEdge) edge);
-                stacks[stack][0] = GraphUtil.parseItem((DefaultWeightedEdge) edge);
-            }
-        }
-    }
-
     public static int parseStack(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
     }
