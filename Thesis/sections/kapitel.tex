@@ -952,8 +952,9 @@ Item $4$ wird im Folgenden dem Ground-Level eines eigenen Stacks zugewiesen.
 Nun geht es darum, eine möglichst günstige Zuweisung der Item-Paare und Unmatched-Items zu Stacks zu finden,
 welche die Placement-Constraints respektiert. Dazu wird zunächst der vollständig bipartite Graph, welcher in
 Abb. \ref{fig:bipartite_graph} dargestellt ist, generiert. Dieser enthält die Items bestehend aus Item-Paaren
-und Unmatched-Items in der einen Partition und die Stacks in der anderen. Da bereits beide Partitionen
-dieselbe Größe besitzen, müssen in diesem Fall keine Dummy-Items eingeführt werden.
+und Unmatched-Items in der einen Partition und die Stacks in der anderen.
+Da es nur $4$ Item-Tupel, aber $5$ zur Verfügung stehende Stacks gibt und damit die Partitionen nicht
+dieselbe Größe besitzen, wird ein Dummy-Item $D_0$ eingeführt.
 
 Anschließend wird im bipartiten Graphen aus Abb. \ref{fig:bipartite_graph} das \textsc{MWPM} berechnet,
 welches in Abb. \ref{fig:mwpm_b=2} dargestellt ist. Jede Kante entspricht dabei der Zuweisung eines Item-Paars bzw. Unmatched-Items
@@ -963,40 +964,53 @@ zu einem Stack.
 \begin{subfigure}[b]{0.5\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=1.5cm]
-        \node[state] (A) [thick] {$\boldsymbol{1, 6}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 3}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{4, 5}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{0}$};
+        \node[state] (A) [thick] {$\boldsymbol{0, 1}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 5}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 6}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{4}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{D_0}$};
 
-        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (G) [thick, right = 4cm of B] {$\boldsymbol{S_2}$};
-        \node[state] (H) [thick, right = 4cm of C] {$\boldsymbol{S_3}$};
-        \node[state] (I) [thick, right = 4cm of D] {$\boldsymbol{S_4}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_0}$};
+        \node[state] (G) [thick, right = 4cm of B] {$\boldsymbol{S_1}$};
+        \node[state] (H) [thick, right = 4cm of C] {$\boldsymbol{S_2}$};
+        \node[state] (I) [thick, right = 4cm of D] {$\boldsymbol{S_3}$};
+        \node[state] (J) [thick, right = 4cm of E] {$\boldsymbol{S_4}$};
 
         \path
-          % from (1,6) to all stacks
+          % from (0,1) to all stacks
           (A) edge [thick] node {} (F)
           (A) edge [thick] node {} (G)
           (A) edge [thick] node {} (H)
           (A) edge [thick] node {} (I)
+          (A) edge [thick] node {} (J)
 
-          % from (2,3) to all stacks
+          % from (2,5) to all stacks
           (B) edge [thick] node {} (F)
           (B) edge [thick] node {} (G)
           (B) edge [thick] node {} (H)
           (B) edge [thick] node {} (I)
+          (B) edge [thick] node {} (J)
 
-          % from (4,5) to all stacks
+          % from (3,6) to all stacks
           (C) edge [thick] node {} (F)
           (C) edge [thick] node {} (G)
           (C) edge [thick] node {} (H)
           (C) edge [thick] node {} (I)
+          (C) edge [thick] node {} (J)
 
-          % from 0 to all stacks
+          % from 4 to all stacks
           (D) edge [thick] node {} (F)
           (D) edge [thick] node {} (G)
           (D) edge [thick] node {} (H)
-          (D) edge [thick] node {} (I);
+          (D) edge [thick] node {} (I)
+          (D) edge [thick] node {} (J)
+
+          % from dummy to all stacks
+          (E) edge [thick] node {} (F)
+          (E) edge [thick] node {} (G)
+          (E) edge [thick] node {} (H)
+          (E) edge [thick] node {} (I)
+          (E) edge [thick] node {} (J);
   \end{tikzpicture}
   \caption{\textsc{Vollständig bipartiter Graph}.}
   \label{fig:bipartite_graph}
@@ -1005,21 +1019,24 @@ zu einem Stack.
 \begin{subfigure}[b]{0.5\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=1.5cm]
-        \node[state] (A) [thick] {$\boldsymbol{1, 6}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 3}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{4, 5}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{0}$};
+        \node[state] (A) [thick] {$\boldsymbol{0, 1}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 5}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 6}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{4}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{D_0}$};
 
-        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (G) [thick, right = 4cm of B] {$\boldsymbol{S_2}$};
-        \node[state] (H) [thick, right = 4cm of C] {$\boldsymbol{S_3}$};
-        \node[state] (I) [thick, right = 4cm of D] {$\boldsymbol{S_4}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_0}$};
+        \node[state] (G) [thick, right = 4cm of B] {$\boldsymbol{S_1}$};
+        \node[state] (H) [thick, right = 4cm of C] {$\boldsymbol{S_2}$};
+        \node[state] (I) [thick, right = 4cm of D] {$\boldsymbol{S_3}$};
+        \node[state] (J) [thick, right = 4cm of E] {$\boldsymbol{S_4}$};
 
         \path
-          (A) edge [thick] node {} (I)
-          (B) edge [thick] node {} (H)
-          (C) edge [thick] node {} (G)
-          (D) edge [thick] node {} (F);
+          (A) edge [thick, near start, above right] node {$35.34$} (G)
+          (B) edge [thick, near start, above right] node {$47.46$} (I)
+          (C) edge [thick, near end, below left] node {$47.46$} (J)
+          (D) edge [thick, below right] node {$26.76$} (H)
+          (E) edge [thick, near end, below right] node {$0.0$} (F);
   \end{tikzpicture}
   \caption{\textsc{MWPM}}
   \label{fig:mwpm_b=2}
