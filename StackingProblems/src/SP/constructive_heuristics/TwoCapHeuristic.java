@@ -150,6 +150,25 @@ public class TwoCapHeuristic {
     }
 
     /**
+     * Parses the given minimum weight perfect matching and assigns it to the given stacks.
+     *
+     * @param mwpm   - the minimum weight perfect matching to be parsed
+     * @param stacks - the stacks the parsed items are going to be assigned to
+     */
+    public void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks) {
+        for (Object edge : mwpm.getMatching().getEdges()) {
+            if (edge.toString().contains("pair")) {
+                int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+            } else if (edge.toString().contains("item")) {
+                int stack = GraphUtil.parseStack((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItem((DefaultWeightedEdge) edge);
+            }
+        }
+    }
+
+    /**
      * Returns the list of item pairs based on the list of MCM edges.
      *
      * @param edges - the list of edges
@@ -225,22 +244,24 @@ public class TwoCapHeuristic {
 
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
 
-            System.out.println(stackingConstraintGraph);
-
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
+
             ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
+
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
                 itemPairs, this.instance.getItems()
             );
+
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
+
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
                 )
             ;
-            GraphUtil.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
+            this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
             if (postProcessing) {
