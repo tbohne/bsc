@@ -76,11 +76,11 @@ public class ThreeCapHeuristic {
                 stacks[stack][0] = GraphUtil.parseItemThreeOfTriple((DefaultWeightedEdge) edge);
             } else if (edge.toString().contains("pair")) {
                 int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
-                stacks[stack][1] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
-                stacks[stack][0] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+                stacks[stack][2] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
             } else if (edge.toString().contains("item")) {
                 int stack = GraphUtil.parseStack((DefaultWeightedEdge) edge);
-                stacks[stack][0] = GraphUtil.parseItem((DefaultWeightedEdge) edge);
+                stacks[stack][2] = GraphUtil.parseItem((DefaultWeightedEdge) edge);
             }
         }
     }
