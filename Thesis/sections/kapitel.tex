@@ -963,7 +963,7 @@ sondern stattdessen der Tabelle in Abb. \ref{fig:item_tuple_costs} zu entnehmen.
 \begin{figure}[H]
 \centering
 \resizebox{0.5\textwidth}{!}{
-\begin{tabular}{| l | l | l | l | l | l |}
+\begin{tabular}{| c | c | c | c | c | c |}
     \hline
      & $\boldsymbol{S_0}$ & $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\boldsymbol{S_4}$ \\ \hline
     $\boldsymbol{(0, 1)}$ & $\infty$ & $35.34$ & $47.46$ & $\infty$ & $71.7$ \\ \hline
@@ -1067,19 +1067,19 @@ oder Dummy-Items zu einem Stack.
 Sofern das in Abb. \ref{fig:mwpm_b=2} dargestellte \textsc{MWPM} keine Kante der Kosten $\infty$
 enthält, handelt es sich um eine günstigste, zulässige Zuweisung sämtlicher Items und Item-Paare
 zu Stacks. Andernfalls existiert keine solche Zuweisung für die gegebenen Paare und Unmatched-Items.
-In diesem Fall wurde demnach eine zulässige Lösung der Kosten $157.02$ gefunden.
+Im betrachteten Beispiel wurde demnach eine zulässige Lösung der Kosten $157.02$ gefunden.
 Die entsprechende Interpretation des \textsc{MWPM} als zulässige Stack-Zuweisungen ist in Abb.
 \ref{fig:stacking_solution} visualisiert.
 
 \begin{figure}[H]
   \centering
   \resizebox{0.35\textwidth}{!}{
-    \begin{tabular}{c|c|c|c|c|}
-    \cline{2-5}
-    $\boldsymbol{L_2}$ & $$ & $5$ & $3$ & $6$ \\ \cline{2-5}
-    $\boldsymbol{L_1}$ & $0$ & $4$ & $2$ & $1$ \\ \cline{2-5}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} \\
+    \begin{tabular}{c|c|c|c|c|c|}
+    \cline{2-6}
+    $\boldsymbol{L_1}$ & $$ & $1$ & $$ & $5$ & $6$ \\ \cline{2-6}
+    $\boldsymbol{L_0}$ & $$ & $0$ & $4$ & $2$ & $3$ \\ \cline{2-6}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} \\
     \end{tabular}}
     \caption{\textsc{Zulässige Stack-Zuweisungen.}}
     \label{fig:stacking_solution}
