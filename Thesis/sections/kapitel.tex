@@ -935,14 +935,14 @@ für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref
 \end{figure}
 Die Kanten des in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellten \textsc{MCM} werden nun,
 wie in Abb. \ref{fig:item_pairs_b=2} dargestellt, als kompatible Item-Paare interpretiert. Das als unmatched verbleibende
-Item $0$ wird im Folgenden dem Ground-Level eines eigenen Stacks zugewiesen.
+Item $4$ wird im Folgenden dem Ground-Level eines eigenen Stacks zugewiesen.
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
-        \node[state] (A) [thick] {\textcolor{mygreen}{$\boldsymbol{1, 6}$}};
-        \node[state] (B) [thick, right of=A] {\textcolor{mygreen}{$\boldsymbol{2, 3}$}};
-        \node[state] (C) [thick, right of=B] {\textcolor{mygreen}{$\boldsymbol{4, 5}$}};
-        \node[state] (D) [thick, right of=C] {\textcolor{red}{$\boldsymbol{0}$}};
+        \node[state] (A) [thick] {\textcolor{mygreen}{$\boldsymbol{0, 1}$}};
+        \node[state] (B) [thick, right of=A] {\textcolor{mygreen}{$\boldsymbol{2, 5}$}};
+        \node[state] (C) [thick, right of=B] {\textcolor{mygreen}{$\boldsymbol{3, 6}$}};
+        \node[state] (D) [thick, right of=C] {\textcolor{red}{$\boldsymbol{4}$}};
         \path ;
   \end{tikzpicture}
   \caption{\textsc{Resultierende Item-Paare.}}
