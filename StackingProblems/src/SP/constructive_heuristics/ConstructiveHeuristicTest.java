@@ -17,7 +17,7 @@ public class ConstructiveHeuristicTest {
 
     public static void main (String[] args) {
 
-        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_500_200_3_00.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_7_5_2_00.txt");
         System.out.println("working on: " + instance.getName());
 
         ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT);

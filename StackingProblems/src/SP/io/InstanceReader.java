@@ -5,6 +5,7 @@ import SP.representations.Item;
 import SP.representations.Position;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,6 +70,29 @@ public class InstanceReader {
     }
 
     /**
+     * Reads dimensions (item length / item width) from an instance file using the specified reader.
+     *
+     * @param listOfDimensions - the list of dimensions to be filled
+     * @param reader           - the reader pointing to the part of the file containing the dimensions
+     */
+    private static void readDimensions(ArrayList<ArrayList<Float>> listOfDimensions, BufferedReader reader) {
+        try {
+            String line = reader.readLine().trim();
+            String[] stringOfDimensions = line.split(" ");
+            for (String dim : stringOfDimensions) {
+                float length = Float.parseFloat(dim.split(",")[0].replace("(", "").trim());
+                float width = Float.parseFloat(dim.split(",")[1].replace(")", "").trim());
+                ArrayList<Float> dimensions = new ArrayList<>();
+                dimensions.add(length);
+                dimensions.add(width);
+                listOfDimensions.add(dimensions);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Returns the corresponding integer matrix for the given double matrix.
      *
      * @param matrix - the matrix whose entries are going to be casted
@@ -96,6 +120,7 @@ public class InstanceReader {
         int stackCapacity = 0;
         ArrayList<Position> itemPositions = new ArrayList<>();
         ArrayList<Position> stackPositions = new ArrayList<>();
+        ArrayList<ArrayList<Float>> itemDimensions = new ArrayList<>();
         int[][] stackingConstraints = new int[numberOfItems][];
         double[][] costs = new double[numberOfItems][];
 
@@ -110,13 +135,14 @@ public class InstanceReader {
             costs = readMatrix(reader, numberOfItems);
             readPositions(itemPositions, reader);
             readPositions(stackPositions, reader);
+            readDimensions(itemDimensions, reader);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         Item[] items = new Item[numberOfItems];
         for (int i = 0; i < numberOfItems; i++) {
-            items[i] = new Item(i, 0, 0, itemPositions.get(i));
+            items[i] = new Item(i, itemDimensions.get(i).get(0), itemDimensions.get(i).get(1), itemPositions.get(i));
         }
 
         String instanceName = filename.replace("res/", "").replace(".txt", "");

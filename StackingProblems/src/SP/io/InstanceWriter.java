@@ -76,7 +76,10 @@ public class InstanceWriter {
     }
 
     private static void writeItemDimensions(Instance instance, BufferedWriter bw) throws IOException {
-
+        for (Item item : instance.getItemObjects()) {
+            bw.write("(" + item.getLength() + "," + item.getWidth() + ")" + " ");
+        }
+        bw.newLine();
     }
 
     /**
