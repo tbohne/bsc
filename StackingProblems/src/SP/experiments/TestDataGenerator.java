@@ -47,12 +47,11 @@ public class TestDataGenerator {
      *
      * @param item           - the item used in the dist computation
      * @param stack          - the stack used in the dist computation
-     * @param itemPositions  - list of item positions
      * @param stackPositions - list of stack positions
      * @return manhattan distance between original item position and stack
      */
-    public static double computeManhattanDist(int item, int stack, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
-        Position itemPosition = itemPositions.get(item);
+    public static double computeManhattanDist(int item, int stack, Item[] items, ArrayList<Position> stackPositions) {
+        Position itemPosition = items[item].getPosition();
         Position stackPosition = stackPositions.get(stack);
         return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
     }
@@ -109,13 +108,13 @@ public class TestDataGenerator {
      *
      * @return the generated items
      */
-    public static ArrayList<Item> generateItems() {
-        ArrayList<Item> items = new ArrayList<>();
+    public static Item[] generateItems() {
+        ArrayList<Position> itemPositions = generateItemPositions();
+        Item[] items = new Item[NUMBER_OF_ITEMS];
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             float length = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
             float width = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_WIDTH_LB, ITEM_WIDTH_UB);
-            Item item = new Item(i, length, width);
-            items.add(item);
+            items[i] = new Item(i, length, width, itemPositions.get(i));
         }
         return items;
     }
@@ -130,15 +129,14 @@ public class TestDataGenerator {
      * @param dimTwo - the second dimension of the matrix
      * @return the generated stacking constraint matrix
      */
-    public static int[][] generateStackingConstraintMatrixApproachTwo(int dimOne, int dimTwo) {
-        ArrayList<Item> items = TestDataGenerator.generateItems();
+    public static int[][] generateStackingConstraintMatrixApproachTwo(int dimOne, int dimTwo, Item[] items) {
         int[][] stackingConstraintMatrix = new int[dimOne][dimTwo];
 
         for (int i = 0; i < dimOne; i++) {
 
             System.out.println("###########################");
-            System.out.println(items.get(i).getLength());
-            System.out.println(items.get(i).getWidth());
+            System.out.println(items[i].getLength());
+            System.out.println(items[i].getWidth());
             System.out.println("###########################");
 
             for (int j = 0; j < dimTwo; j++) {
@@ -146,12 +144,12 @@ public class TestDataGenerator {
                 if (i == j) { stackingConstraintMatrix[i][j] = 1; }
 
                 // If the items have the same length and width, they're stackable in both directions.
-                if (items.get(i).getLength() == items.get(j).getLength()
-                    && items.get(i).getWidth() == items.get(j).getWidth()) {
+                if (items[i].getLength() == items[j].getLength()
+                    && items[i].getWidth() == items[j].getWidth()) {
                         stackingConstraintMatrix[i][j] = 1;
                         stackingConstraintMatrix[j][i] = 1;
-                } else if (items.get(i).getLength() <= items.get(j).getLength()
-                    && items.get(i).getWidth() <= items.get(j).getWidth()) {
+                } else if (items[i].getLength() <= items[j].getLength()
+                    && items[i].getWidth() <= items[j].getWidth()) {
                         stackingConstraintMatrix[i][j] = 1;
                 } else {
                     stackingConstraintMatrix[i][j] = 0;
@@ -241,13 +239,12 @@ public class TestDataGenerator {
      *
      * @param costs          - the matrix of costs to be filled
      * @param numOfStacks    - the number of available stacks
-     * @param itemPositions  - the positions of the items on the trucks they're arriving with
      * @param stackPositions - the positions of the stacks in the storage area
      */
-    public static void generateCosts(double[][] costs, int numOfStacks, ArrayList<Position> itemPositions, ArrayList<Position> stackPositions) {
+    public static void generateCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<Position> stackPositions) {
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             for (int j = 0; j < numOfStacks; j++) {
-                costs[i][j] = computeManhattanDist(i, j, itemPositions, stackPositions);
+                costs[i][j] = computeManhattanDist(i, j, items, stackPositions);
             }
         }
         // Implements the placement constraints via high cost entries.
@@ -265,23 +262,25 @@ public class TestDataGenerator {
         float avgPercentage = 0;
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
+
+            Item[] items = generateItems();
+
             int[][] stackingConstraintMatrix;
             if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
                 stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
             } else {
-                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS);
+                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, items);
             }
             avgPercentage += getPercentageOfOneEntries(stackingConstraintMatrix);
 
-            ArrayList<Position> itemPositions = generateItemPositions();
             ArrayList<Position> stackPositions = generateStackPositions(numOfStacks);
             double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
-            TestDataGenerator.generateCosts(costs, numOfStacks, itemPositions, stackPositions);
+            TestDataGenerator.generateCosts(costs, numOfStacks, items, stackPositions);
 
             String idxString = idx < 10 ? "0" + idx : String.valueOf(idx);
             String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idxString;
             Instance instance = new Instance(
-                NUMBER_OF_ITEMS, numOfStacks, itemPositions, stackPositions,
+                items, numOfStacks, stackPositions,
                 STACK_CAPACITY, stackingConstraintMatrix, costs, instanceName
             );
             InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);

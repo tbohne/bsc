@@ -1,6 +1,7 @@
 package SP.io;
 
 import SP.representations.Instance;
+import SP.representations.Item;
 import SP.representations.Position;
 
 import java.io.*;
@@ -54,8 +55,8 @@ public class InstanceWriter {
      * @throws IOException
      */
     private static void writeItemPositions(Instance instance, BufferedWriter bw) throws IOException {
-        for (Position itemPos : instance.getItemPositions()) {
-            bw.write(itemPos + " ");
+        for (Item item : instance.getItemObjects()) {
+            bw.write(item.getPosition() + " ");
         }
         bw.newLine();
     }

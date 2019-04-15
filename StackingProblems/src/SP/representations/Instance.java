@@ -11,10 +11,9 @@ public class Instance {
 
     private String name;
 
-    private int[] items;
+    private Item[] items;
     private int[][] stacks;
     private int stackCapacity;
-    private ArrayList<Position> itemPositions;
     private ArrayList<Position> stackPositions;
     private int[][] stackingConstraints;
     private double[][] costs;
@@ -22,21 +21,18 @@ public class Instance {
     /**
      * Constructor
      *
-     * @param numberOfItems       - the number of items to be stored in the storage area
      * @param numberOfStacks      - the number of available stacks
-     * @param itemPositions       - the list of item positions
      * @param stackPositions      - the list of stack positions
      * @param stackCapacity       - the maximum number of items per stack
      * @param stackingConstraints - the stacking constraints to be respected
      * @param costs               - the matrix containing the costs of item-stack-assignments
      * @param name                - the name of the instance
      */
-    public Instance(int numberOfItems, int numberOfStacks, ArrayList<Position> itemPositions,
+    public Instance(Item[] items, int numberOfStacks,
         ArrayList<Position> stackPositions, int stackCapacity, int[][] stackingConstraints, double[][] costs, String name) {
 
-            this.initItems(numberOfItems);
+            this.items = items;
             this.initStacks(numberOfStacks, stackCapacity);
-            this.initItemPositions(itemPositions);
             this.initStackPositions(stackPositions);
             this.stackCapacity = stackCapacity;
             this.stackingConstraints = stackingConstraints;
@@ -51,25 +47,12 @@ public class Instance {
      */
     public Instance(Instance instance) {
         this.copyStacks(instance);
-        this.items = instance.getItems().clone();
+        this.copyItems(instance);
         this.stackCapacity = instance.getStackCapacity();
-        this.copyItemPositions(instance);
         this.copyStackPositions(instance);
         this.copyStackingConstraints(instance);
         this.copyCosts(instance);
         this.name = instance.getName();
-    }
-
-    /**
-     * Initializes the array of items.
-     *
-     * @param numberOfItems - specifies the instance's number of items
-     */
-    public void initItems(int numberOfItems) {
-        this.items = new int[numberOfItems];
-        for (int i = 0; i < numberOfItems; i++) {
-            this.items[i] = i;
-        }
     }
 
     /**
@@ -85,18 +68,6 @@ public class Instance {
             for (int j = 0; j < stackCapacity; j++) {
                 this.stacks[i][j] = -1;
             }
-        }
-    }
-
-    /**
-     * Initializes the original item positions.
-     *
-     * @param itemPositions - the list of item positions
-     */
-    public void initItemPositions(ArrayList<Position> itemPositions) {
-        this.itemPositions = new ArrayList<>();
-        for (Position pos : itemPositions) {
-            this.itemPositions.add(new Position(pos));
         }
     }
 
@@ -131,10 +102,10 @@ public class Instance {
      *
      * @param instance - the instance the item positions get copied from
      */
-    public void copyItemPositions(Instance instance) {
-        this.itemPositions = new ArrayList<>();
-        for (Position pos : instance.getItemPositions()) {
-            itemPositions.add(new Position(pos));
+    public void copyItems(Instance instance) {
+        this.items = new Item[instance.getItems().length];
+        for (int i = 0; i < instance.getItems().length; i++) {
+            this.items[i] = new Item(instance.getItemObjects()[i]);
         }
     }
 
@@ -231,6 +202,14 @@ public class Instance {
      * @return the items
      */
     public int[] getItems() {
+        int[] itemIndices = new int[this.items.length];
+        for (int i = 0; i < itemIndices.length; i++) {
+            itemIndices[i] = i;
+        }
+        return itemIndices;
+    }
+
+    public Item[] getItemObjects() {
         return this.items;
     }
 
@@ -241,15 +220,6 @@ public class Instance {
      */
     public int[][] getStacks() {
         return this.stacks;
-    }
-
-    /**
-     * Returns the instance's list of item positions.
-     *
-     * @return the item positions
-     */
-    public ArrayList<Position> getItemPositions() {
-        return this.itemPositions;
     }
 
     /**
@@ -306,16 +276,19 @@ public class Instance {
         str += "instance: " + this.getName() + "\n";
         str += "items: ";
 
-        for (int item : this.getItems()) {
-            str += item + " ";
+        for (Item item : this.getItemObjects()) {
+            str += item.getIdx() + " ";
         }
 
         str += "\nnumber of stacks: " + this.getStacks().length + "\n";
         str += "stack capacity: " + this.getStackCapacity() + "\n\n";
 
         str += "item positions:\n";
-        str += this.getItemPositions() + "\n";
-        str += "stack position:\n";
+
+        for (Item item : this.getItemObjects()) {
+            str += item.getPosition() + " ";
+        }
+        str += "\nstack position:\n";
         str += this.getStackPositions() + "\n\n";
 
         str += "stacking constraints:" + "\n";

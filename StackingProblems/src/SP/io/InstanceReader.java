@@ -1,6 +1,7 @@
 package SP.io;
 
 import SP.representations.Instance;
+import SP.representations.Item;
 import SP.representations.Position;
 
 import java.io.BufferedReader;
@@ -112,9 +113,15 @@ public class InstanceReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Item[] items = new Item[numberOfItems];
+        for (int i = 0; i < numberOfItems; i++) {
+            items[i] = new Item(i, 0, 0, itemPositions.get(i));
+        }
+
         String instanceName = filename.replace("res/", "").replace(".txt", "");
         return new Instance(
-            numberOfItems, numberOfStacks, itemPositions, stackPositions,
+            items, numberOfStacks, stackPositions,
             stackCapacity, stackingConstraints, costs, instanceName
         );
     }
