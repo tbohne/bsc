@@ -953,12 +953,32 @@ Nun geht es darum, eine möglichst günstige Zuweisung der Item-Paare und Unmatc
 welche die Placement-Constraints respektiert. Dazu wird zunächst der vollständig bipartite Graph, welcher in
 Abb. \ref{fig:bipartite_graph} dargestellt ist, generiert. Dieser enthält die Items bestehend aus Item-Paaren
 und Unmatched-Items in der einen Partition und die Stacks in der anderen.
-Da es nur $4$ Item-Tupel, aber $5$ zur Verfügung stehende Stacks gibt und damit die Partitionen nicht
+Da es lediglich $4$ Item-Tupel bei $5$ zur Verfügung stehenden Stacks gibt und damit die Partitionen nicht
 dieselbe Größe besitzen, wird ein Dummy-Item $D_0$ eingeführt.
+Die Kantengewichte sind der Übersichtlichkeit halber nicht in der Darstellung aufgetragen,
+sondern stattdessen der Tabelle in Abb. \ref{fig:item_tuple_costs} zu entnehmen.
+
+\pagebreak
+
+\begin{figure}[H]
+\centering
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l |}
+    \hline
+     & $\boldsymbol{S_0}$ & $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\boldsymbol{S_4}$ \\ \hline
+    $\boldsymbol{(0, 1)}$ & $\infty$ & $35.34$ & $47.46$ & $\infty$ & $71.7$ \\ \hline
+    $\boldsymbol{(2, 5)}$ & $71.7$ & $59.58$ & $47.46$ & $47.46$ & $\infty$ \\ \hline
+    $\boldsymbol{(3, 6)}$ & $\infty$ & $71.7$ & $59.58$ & $\infty$ & $47.46$ \\ \hline
+    $\boldsymbol{4}$ & $38.88$ & $32.82$ & $26.76$ & $\infty$ & $\infty$ \\ \hline
+    $\boldsymbol{D_0}$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Kosten der Stack-Zuweisungen}.}
+\label{fig:item_tuple_costs}
+\end{figure}
 
 Anschließend wird im bipartiten Graphen aus Abb. \ref{fig:bipartite_graph} das \textsc{MWPM} berechnet,
-welches in Abb. \ref{fig:mwpm_b=2} dargestellt ist. Jede Kante entspricht dabei der Zuweisung eines Item-Paars bzw. Unmatched-Items
-zu einem Stack.
+welches in Abb. \ref{fig:mwpm_b=2} dargestellt ist. Jede Kante entspricht dabei der Zuweisung eines Item-Paars, Unmatched-Items
+oder Dummy-Items zu einem Stack.
 
 \begin{figure}[H]
 \begin{subfigure}[b]{0.5\textwidth}
@@ -1012,7 +1032,7 @@ zu einem Stack.
           (E) edge [thick] node {} (I)
           (E) edge [thick] node {} (J);
   \end{tikzpicture}
-  \caption{\textsc{Vollständig bipartiter Graph}.}
+  \caption{\textsc{Vollständig bipartiter Graph}}
   \label{fig:bipartite_graph}
 \end{subfigure}
 \hfill
@@ -1041,12 +1061,13 @@ zu einem Stack.
   \caption{\textsc{MWPM}}
   \label{fig:mwpm_b=2}
 \end{subfigure}
-\caption{\textsc{Generierung der Stack-Zuweisungen}.}
+\caption{\textsc{Ermittlung der Stack-Zuweisungen minimaler Kosten}.}
 \end{figure}
 
 Sofern das in Abb. \ref{fig:mwpm_b=2} dargestellte \textsc{MWPM} keine Kante der Kosten $\infty$
 enthält, handelt es sich um eine günstigste, zulässige Zuweisung sämtlicher Items und Item-Paare
 zu Stacks. Andernfalls existiert keine solche Zuweisung für die gegebenen Paare und Unmatched-Items.
+In diesem Fall wurde demnach eine zulässige Lösung der Kosten $157.02$ gefunden.
 Die entsprechende Interpretation des \textsc{MWPM} als zulässige Stack-Zuweisungen ist in Abb.
 \ref{fig:stacking_solution} visualisiert.
 
