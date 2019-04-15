@@ -74,6 +74,10 @@ public class InstanceWriter {
         bw.newLine();
     }
 
+    private static void writeItemDimensions(Instance instance, BufferedWriter bw) throws IOException {
+
+    }
+
     /**
      * Writes the specified instance to the file with the specified name.
      *
@@ -97,6 +101,7 @@ public class InstanceWriter {
             writeCosts(instance, bw);
             writeItemPositions(instance, bw);
             writeStackPositions(instance, bw);
+            writeItemDimensions(instance, bw);
 
             bw.close();
             fos.close();

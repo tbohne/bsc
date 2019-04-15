@@ -224,6 +224,9 @@ public class TwoCapHeuristic {
             this.startTime = System.currentTimeMillis();
 
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
+
+            System.out.println(stackingConstraintGraph);
+
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
