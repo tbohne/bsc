@@ -1,6 +1,7 @@
 package SP.util;
 
 import SP.representations.MCMEdge;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultEdge;
@@ -507,28 +508,27 @@ public class GraphUtil {
     ) {
         for (Object edge : mwpm.getMatching().getEdges()) {
             if (edge.toString().contains("triple")) {
-                int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[0].replace("[", "".trim()));
-                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[1].trim());
-                int itemThree = Integer.parseInt(edge.toString().split(":")[0].replace("(triple", "").split(",")[2].replace("]", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-
-                stacks[stack][0] = itemOne;
-                stacks[stack][1] = itemTwo;
-                stacks[stack][2] = itemThree;
+                int stack = GraphUtil.parseStackForTriple((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItemOneOfTriple((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemTwoOfTriple((DefaultWeightedEdge) edge);
+                stacks[stack][2] = GraphUtil.parseItemThreeOfTriple((DefaultWeightedEdge) edge);
             } else if (edge.toString().contains("pair")) {
-                int itemOne = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
-                int itemTwo = Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-
-                stacks[stack][0] = itemOne;
-                stacks[stack][1] = itemTwo;
+                int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
             } else if (edge.toString().contains("item")) {
-                int item = Integer.parseInt(edge.toString().split(":")[0].replace("(item", "").trim());
-                int stack = Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-
-                stacks[stack][0] = item;
+                int stack = GraphUtil.parseStack((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItem((DefaultWeightedEdge) edge);
             }
         }
+    }
+
+    public static int parseStack(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+    }
+
+    public static int parseItem(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(item", "").trim());
     }
 
     public static int parseItemOneOfTriple(DefaultWeightedEdge edge) {
@@ -557,6 +557,14 @@ public class GraphUtil {
 
     public static int parseItemTwoOfPair(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].split(",")[1].replace("]", "").trim());
+    }
+
+    public static int parseItemOneOfPairBasedOnMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
+    }
+
+    public static int parseItemTwoOfPairBasedOnMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
     }
 
     /**
