@@ -73,22 +73,17 @@ public class InstanceReader {
      * Reads dimensions (item length / item width) from an instance file using the specified reader.
      *
      * @param listOfDimensions - the list of dimensions to be filled
-     * @param reader           - the reader pointing to the part of the file containing the dimensions
+     * @param line             - the line of the file containing the dimensions
      */
-    private static void readDimensions(ArrayList<ArrayList<Float>> listOfDimensions, BufferedReader reader) {
-        try {
-            String line = reader.readLine().trim();
-            String[] stringOfDimensions = line.split(" ");
-            for (String dim : stringOfDimensions) {
-                float length = Float.parseFloat(dim.split(",")[0].replace("(", "").trim());
-                float width = Float.parseFloat(dim.split(",")[1].replace(")", "").trim());
-                ArrayList<Float> dimensions = new ArrayList<>();
-                dimensions.add(length);
-                dimensions.add(width);
-                listOfDimensions.add(dimensions);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    private static void readDimensions(ArrayList<ArrayList<Float>> listOfDimensions, String line) {
+        String[] stringOfDimensions = line.split(" ");
+        for (String dim : stringOfDimensions) {
+            float length = Float.parseFloat(dim.split(",")[0].replace("(", "").trim());
+            float width = Float.parseFloat(dim.split(",")[1].replace(")", "").trim());
+            ArrayList<Float> dimensions = new ArrayList<>();
+            dimensions.add(length);
+            dimensions.add(width);
+            listOfDimensions.add(dimensions);
         }
     }
 
@@ -135,20 +130,25 @@ public class InstanceReader {
             costs = readMatrix(reader, numberOfItems);
             readPositions(itemPositions, reader);
             readPositions(stackPositions, reader);
-            readDimensions(itemDimensions, reader);
+            String line = reader.readLine();
+            if (line != null) {
+                readDimensions(itemDimensions, line.trim());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         Item[] items = new Item[numberOfItems];
         for (int i = 0; i < numberOfItems; i++) {
-            items[i] = new Item(i, itemDimensions.get(i).get(0), itemDimensions.get(i).get(1), itemPositions.get(i));
+            if (itemDimensions.size() > 0) {
+                items[i] = new Item(i, itemDimensions.get(i).get(0), itemDimensions.get(i).get(1), itemPositions.get(i));
+            } else {
+                // no dimensions given (used to handle outdated instances)
+                items[i] = new Item(i, 0, 0, itemPositions.get(i));
+            }
         }
 
         String instanceName = filename.replace("res/", "").replace(".txt", "");
-        return new Instance(
-            items, numberOfStacks, stackPositions,
-            stackCapacity, stackingConstraints, costs, instanceName
-        );
+        return new Instance(items, numberOfStacks, stackPositions, stackCapacity, stackingConstraints, costs, instanceName);
     }
 }
