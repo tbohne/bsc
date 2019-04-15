@@ -873,58 +873,61 @@ durch $m = \ceil{\ceil{\frac{n}{b}} + 0.2 \cdot \ceil{\frac{n}{b}}}$ berechnet u
 $m = \ceil{\ceil{\frac{7}{2}} + 0.2 \cdot \ceil{\frac{7}{2}}} = 5$.
 Die Stacking-Constraint-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
 Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph
-für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $0$ verbleibt dabei als einziges Unmatched-Item.
+für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $4$ verbleibt dabei als einziges Unmatched-Item.
 \begin{figure}[H]
   \centering
     \begin{subfigure}[b]{0.4\textwidth}
     \centering
-    \begin{tikzpicture}[scale=0.75, transform shape, node distance=3cm]
-        \node[state] (G) [thick] {$\boldsymbol{6}$};
-        \node[state] (B) [thick, above left of=G] {$\boldsymbol{1}$};
-        \node[state] (C) [thick, above right of=G] {$\boldsymbol{2}$};
-        \node[state] (E) [thick, below right of=G] {$\boldsymbol{4}$};
-        \node[state] (F) [thick, below left of=G] {$\boldsymbol{5}$};
-        \node[state] (A) [thick, below left of=B] {$\boldsymbol{0}$};
-        \node[state] (D) [thick, below right of=C] {$\boldsymbol{3}$};
+    \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
+        \node[state] (A) [thick] {$\boldsymbol{0}$};
+        \node[state] (D) [thick, right of=A] {$\boldsymbol{3}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{4}$};
+        \node[state] (B) [thick, above of=D] {$\boldsymbol{1}$};
+        \node[state] (C) [thick, below left = 1cm of E] {$\boldsymbol{2}$};
+        \node[state] (F) [thick, below right = 1cm of E] {$\boldsymbol{5}$};
+        \node[state] (G) [thick, right of=D] {$\boldsymbol{6}$};
 
-        \path (B) edge [thick] node {} (C)
-              (B) edge [thick] node {} (F)
-              (B) edge [thick] node {} (G)
-              (C) edge [thick, bend right = 75, distance=5cm] node {} (F)
-              (C) edge [thick] node {} (E)
-              (C) edge [thick] node {} (D)
-              (C) edge [thick] node {} (G)
-              (F) edge [thick] node {} (G)
-              (F) edge [thick] node {} (E)
-              (E) edge [thick] node {} (G);
+        \path
+            (A) edge [thick] node {} (B)
+            (A) edge [thick] node {} (D)
+            (A) edge [thick, bend right = 35] node {} (G)
+            (A) edge [thick] node {} (E)
+            (B) edge [thick, bend right = 75, distance=5.5cm] node {} (E)
+            (B) edge [thick] node {} (D)
+            (B) edge [thick] node {} (G)
+            (C) edge [thick] node {} (F)
+            (D) edge [thick] node {} (G)
+            (E) edge [thick] node {} (G);
     \end{tikzpicture}
     \caption{\textsc{Stacking-Constraint-Graph}}
     \label{fig:stacking_const_graph_example_b=2_a}
     \end{subfigure}
+    % \hspace{0.075\textwidth}
     \hfill
     \begin{subfigure}[b]{0.4\textwidth}
     \centering
-    \begin{tikzpicture}[scale=0.75, transform shape, node distance=3cm]
-        \node[state] (G) [thick] {$\boldsymbol{\textcolor{mygreen}{6}}$};
-        \node[state] (B) [thick, above left of=G] {$\boldsymbol{\textcolor{mygreen}{1}}$};
-        \node[state] (C) [thick, above right of=G] {$\boldsymbol{\textcolor{mygreen}{2}}$};
-        \node[state] (E) [thick, below right of=G] {$\boldsymbol{\textcolor{mygreen}{4}}$};
-        \node[state] (F) [thick, below left of=G] {$\boldsymbol{\textcolor{mygreen}{5}}$};
-        \node[state] (A) [thick, below left of=B] {$\boldsymbol{\textcolor{red}{0}}$};
-        \node[state] (D) [thick, below right of=C] {$\boldsymbol{\textcolor{mygreen}{3}}$};
+    \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
+        \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0}}$};
+        \node[state] (D) [thick, right of=A] {$\boldsymbol{\textcolor{mygreen}{3}}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{\textcolor{red}{4}}$};
+        \node[state] (B) [thick, above of=D] {$\boldsymbol{\textcolor{mygreen}{1}}$};
+        \node[state] (C) [thick, below left = 1cm of E] {$\boldsymbol{\textcolor{mygreen}{2}}$};
+        \node[state] (F) [thick, below right = 1cm of E] {$\boldsymbol{\textcolor{mygreen}{5}}$};
+        \node[state] (G) [thick, right of=D] {$\boldsymbol{\textcolor{mygreen}{6}}$};
 
-        \path (B) edge [thick] node {} (C)
-              (B) edge [thick] node {} (F)
-              (B) edge [thick, mygreen] node {} (G)
-              (C) edge [thick, bend right = 75, distance=5cm] node {} (F)
-              (C) edge [thick] node {} (E)
-              (C) edge [thick, mygreen] node {} (D)
-              (C) edge [thick] node {} (G)
-              (F) edge [thick] node {} (G)
-              (F) edge [thick, mygreen] node {} (E)
-              (E) edge [thick] node {} (G);
+        \path
+            (A) edge [thick, mygreen] node {} (B)
+            (A) edge [thick] node {} (D)
+            (A) edge [thick, bend right = 35] node {} (G)
+            (A) edge [thick] node {} (E)
+            (B) edge [thick, bend right = 75, distance=5.5cm] node {} (E)
+            (B) edge [thick] node {} (D)
+            (B) edge [thick] node {} (G)
+            (C) edge [thick, mygreen] node {} (F)
+            (D) edge [thick, mygreen] node {} (G)
+            (E) edge [thick] node {} (G);
     \end{tikzpicture}
-    \caption{\textsc{MCM (Item $0$ unmatched)}}
+    \caption{\textsc{MCM (Item $4$ unmatched)}}
     \label{fig:stacking_const_graph_example_b=2_b}
     \end{subfigure}
 \caption{\textsc{Generierung der Item-Paare}.}
