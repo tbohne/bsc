@@ -12,17 +12,18 @@ public class TabuSearchTest {
     public static void main(String[] args) {
 
 
-        Instance instance = InstanceReader.readInstance("res/instances/b=2_l/slp_instance_500_300_2_00.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_100_60_2_00.txt");
 
-        ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir("res/solutions/b=2_l/900s", "res/instances/b=2_l/");
+        ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir("res/solutions/", "res/instances/");
+        Solution sol = solutions.get(0);
 
         System.out.println("expected instance name: " + instance.getName());
-        System.out.println("actual instance name  : " + solutions.get(0).getNameOfSolvedInstance());
+        System.out.println("actual instance name  : " + sol.getNameOfSolvedInstance());
 
-        TabuSearch ts = new TabuSearch(instance, solutions.get(0));
-        Solution sol = ts.solve(instance);
-        System.out.println("FINAL RES: " + sol.getObjectiveValue());
+        TabuSearch ts = new TabuSearch(instance, sol);
 
+        System.out.println("COSTS BEFORE: " + sol.computeCosts());
+        sol = ts.solve(instance);
+        System.out.println("FINAL COSTS: " + sol.computeCosts());
     }
-
 }

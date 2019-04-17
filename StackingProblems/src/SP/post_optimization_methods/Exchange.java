@@ -19,7 +19,7 @@ public class Exchange {
     public StorageAreaPosition getPosTwo() {
         return this.posTwo;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         if (object != null && object instanceof Exchange) {
