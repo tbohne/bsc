@@ -1937,6 +1937,23 @@ besitzen, müssen in diesem Fall keine Dummy-Items eingeführt werden. Anschlie�
 in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvor generierten Item-Tupel zu den Stacks entspricht.
 
 \begin{figure}[H]
+\centering
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{| c | c | c | c | c | c | c |}
+    \hline
+     & $\boldsymbol{S_0}$ & $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\boldsymbol{S_4}$ & $\boldsymbol{S_5}$ \\ \hline
+    $\boldsymbol{(0, 11, 3)}$ & $128.76$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ \\ \hline
+    $\boldsymbol{(6, 7, 2)}$ & $134.82$ & $\infty$ & $98.46$ & $\infty$ & $\infty$ & $80.28$ \\ \hline
+    $\boldsymbol{(8, 13, 1)}$ & $\infty$ & $159.06$ & $\infty$ & $146.94$ & $\infty$ & $134.82$ \\ \hline
+    $\boldsymbol{(9, 10, 12)}$ & $231.78$ & $\infty$ & $195.42$ & $\infty$ & $159.06$ & $140.88$ \\ \hline
+    $\boldsymbol{(4, 5)}$ & $83.82$ & $71.7$ & $59.58$ & $\infty$ & $35.34$ & $\infty$ \\ \hline
+    $\boldsymbol{D_0}$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Kosten der Stack-Zuweisungen}.}
+\label{fig:item_tuple_costs_three_cap}
+\end{figure}
+
+\begin{figure}[H]
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
@@ -2020,17 +2037,12 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
         \node[state] (L) [thick, below of=K] {$\boldsymbol{S_5}$};
 
         \path
-          (A) edge [thick] node {} (G)
-
-          (B) edge [thick] node {} (I)
-
-          (C) edge [thick] node {} (J)
-
-          (D) edge [thick] node {} (L)
-
-          (E) edge [thick] node {} (K)
-
-          (F) edge [thick] node {} (H);
+          (A) edge [thick, above] node {$128.76$} (G)
+          (B) edge [thick, above right, near start] node {$98.46$} (I)
+          (C) edge [thick, near start, above right] node {$146.94$} (J)
+          (D) edge [thick, below left, near end] node {$140.88$} (L)
+          (E) edge [thick, near end, above] node {$35.34$} (K)
+          (F) edge [thick, below right] node {$0.0$} (H);
 \end{tikzpicture}
 \caption{\textsc{MWPM}.}
 \label{fig:mwpm}
