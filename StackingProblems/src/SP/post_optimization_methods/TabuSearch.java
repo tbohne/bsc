@@ -33,14 +33,17 @@ public class TabuSearch {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
-        while (nbrs.size() <= this.instance.getItems().length) {
+        int cnt = 0;
+
+        while (nbrs.size() <= /*this.instance.getItems().length*/ 20) {
 
             Solution neighbor = new Solution(this.currSol);
 
-            int stackIdxItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length);
-            int stackIdxItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length);
-            int levelItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemOne].length);
-            int levelItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemTwo].length);
+            // determine two random positions to be exchanged
+            int stackIdxItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length - 1);
+            int stackIdxItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length - 1);
+            int levelItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemOne].length - 1);
+            int levelItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemTwo].length - 1);
 
             StorageAreaPosition posOne = new StorageAreaPosition(stackIdxItemOne, levelItemOne);
             StorageAreaPosition posTwo = new StorageAreaPosition(stackIdxItemTwo, levelItemTwo);
@@ -53,16 +56,25 @@ public class TabuSearch {
 
             Exchange exchange = new Exchange(posOne, posTwo);
 
+//            System.out.println(exchange);
+
             // Only feasible solutions are considered for now.
-            if (/*neighbor.isFeasible() &&*/ !this.tabuListContainsExchange(exchange)) {
+            if (neighbor.isFeasible() && !this.tabuList.contains(exchange)) {
                 nbrs.add(neighbor);
                 this.tabuList.add(exchange);
+
+            } else {
+                if (cnt == 5) {
+                    this.clearTabuList();
+                }
+                cnt++;
+                System.out.println(this.tabuList.contains(exchange));
+//                System.out.println(this.tabuList.size());
+//                System.out.println(this.tabuList.contains(exchange));
             }
         }
 
-        System.out.println("size: " + nbrs.size());
-
-        return nbrs.get(0);
+        return HeuristicUtil.getBestSolution(nbrs);
     }
 
     public boolean tabuListContainsExchange(Exchange exchange) {
@@ -86,9 +98,10 @@ public class TabuSearch {
     }
 
     public Solution solveIterations(Instance instance, boolean firstFit, boolean onlyValid) {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
+            System.out.println(i);
             this.currSol = getNeighbor(firstFit, onlyValid);
-            if (this.currSol.getObjectiveValueAsDouble() < this.bestSol.getObjectiveValueAsDouble()) {
+            if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
         }
