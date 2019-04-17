@@ -153,7 +153,6 @@ public class ThreeCapHeuristic {
                 assignPairs.add(itemPairs.get(i));
             }
         }
-
         ArrayList<Integer> splittedItems = new ArrayList<>();
         for (MCMEdge splitPair : splitPairs) {
             splittedItems.add(splitPair.getVertexOne());
@@ -309,22 +308,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Returns the best solution from the list of generated solutions.
-     *
-     * @param solutions - the list of generated solutions
-     * @return the best solution based on the costs
-     */
-    public Solution getBestSolution(ArrayList<Solution> solutions) {
-        Solution bestSol = new Solution();
-        for (Solution sol : solutions) {
-            if (sol.computeCosts() < bestSol.computeCosts()) {
-                bestSol = sol;
-            }
-        }
-        return bestSol;
-    }
-
-    /**
      * Adds the edges for item triples in the post-processing graph.
      * The costs for each edge correspond to the maximum savings for
      * moving an item of the triple to an empty stack.
@@ -389,7 +372,6 @@ public class ThreeCapHeuristic {
                 } else if (this.instance.getCosts()[itemTriples.get(triple).get(2)][stackIdx] < Integer.MAX_VALUE / this.instance.getItems().length) {
                     savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTriples.get(triple).get(2), this.instance.getCosts());
                 }
-
                 postProcessingGraph.setEdgeWeight(edge, savings);
             }
         }
@@ -629,7 +611,8 @@ public class ThreeCapHeuristic {
 
             ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = this.mergePairsToTriples(itemPairs, prioritizeRuntime);
             ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
-            bestSol = this.getBestSolution(solutions);
+            bestSol = HeuristicUtil.getBestSolution(solutions);
+
             bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
 

@@ -362,6 +362,22 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns the best solution from the list of generated solutions.
+     *
+     * @param solutions - the list of generated solutions
+     * @return the best solution based on the costs
+     */
+    public static Solution getBestSolution(ArrayList<Solution> solutions) {
+        Solution bestSol = new Solution();
+        for (Solution sol : solutions) {
+            if (sol.computeCosts() < bestSol.computeCosts()) {
+                bestSol = sol;
+            }
+        }
+        return bestSol;
+    }
+
+    /**
      * Updates the stack assignments for the specified pair.
      *
      * @param itemOne - the first item of the pair
@@ -536,7 +552,7 @@ public class HeuristicUtil {
      *
      * @param min - the lower bound of the value
      * @param max - the upper bound of the value
-     * @return the random value in between the specified limits
+     * @return the random value in between the specified limits (inclusive limits)
      */
     public static int getRandomIntegerInBetween(int min, int max) {
         Random r = new Random();
