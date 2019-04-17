@@ -29,6 +29,19 @@ public class TabuSearch {
         this.tabuListCleared++;
     }
 
+    public StorageAreaPosition getRandomPositionInStorageArea(Solution neighbor) {
+        int stackIdx = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length - 1);
+        int level = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdx].length - 1);
+        return new StorageAreaPosition(stackIdx, level);
+    }
+
+    public void exchangeItems(Solution neighbor, StorageAreaPosition posOne, StorageAreaPosition posTwo) {
+        int itemOne = neighbor.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
+        int itemTwo = neighbor.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+        neighbor.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
+        neighbor.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
+    }
+
     public Solution getNeighbor(boolean firstFit, boolean onlyValid) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
@@ -38,39 +51,22 @@ public class TabuSearch {
         while (nbrs.size() <= /*this.instance.getItems().length*/ 20) {
 
             Solution neighbor = new Solution(this.currSol);
+            StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
+            StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
 
-            // determine two random positions to be exchanged
-            int stackIdxItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length - 1);
-            int stackIdxItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea().length - 1);
-            int levelItemOne = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemOne].length - 1);
-            int levelItemTwo = HeuristicUtil.getRandomIntegerInBetween(0, neighbor.getFilledStorageArea()[stackIdxItemTwo].length - 1);
-
-            StorageAreaPosition posOne = new StorageAreaPosition(stackIdxItemOne, levelItemOne);
-            StorageAreaPosition posTwo = new StorageAreaPosition(stackIdxItemTwo, levelItemTwo);
-
-            // Exchanges the positions of two items from the storage area.
-            int itemOne = neighbor.getFilledStorageArea()[stackIdxItemOne][levelItemOne];
-            int itemTwo = neighbor.getFilledStorageArea()[stackIdxItemTwo][levelItemTwo];
-            neighbor.getFilledStorageArea()[stackIdxItemOne][levelItemOne] = itemTwo;
-            neighbor.getFilledStorageArea()[stackIdxItemTwo][levelItemTwo] = itemOne;
-
+            this.exchangeItems(neighbor, posOne, posTwo);
             Exchange exchange = new Exchange(posOne, posTwo);
-
-//            System.out.println(exchange);
 
             // Only feasible solutions are considered for now.
             if (neighbor.isFeasible() && !this.tabuList.contains(exchange)) {
                 nbrs.add(neighbor);
                 this.tabuList.add(exchange);
-
             } else {
                 if (cnt == 5) {
                     this.clearTabuList();
                 }
                 cnt++;
                 System.out.println(this.tabuList.contains(exchange));
-//                System.out.println(this.tabuList.size());
-//                System.out.println(this.tabuList.contains(exchange));
             }
         }
 
