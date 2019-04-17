@@ -19,4 +19,18 @@ public class Exchange {
     public StorageAreaPosition getPosTwo() {
         return this.posTwo;
     }
+    
+    @Override
+    public boolean equals(Object object) {
+        if (object != null && object instanceof Exchange) {
+            return (this.posOne.equals(((Exchange)object).getPosOne()) && this.posTwo.equals(((Exchange)object).getPosTwo()))
+                ||(this.posOne.equals(((Exchange)object).getPosTwo()) && this.posTwo.equals(((Exchange)object).getPosOne()));
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.posOne.toString() + " --- " + this.posTwo.toString();
+    }
 }
