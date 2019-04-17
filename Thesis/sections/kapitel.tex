@@ -1848,7 +1848,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{0, 11}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{4, 5}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{6, 7}$};
@@ -1879,7 +1879,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 \hspace{10pt}
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0, 11}}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{\textcolor{red}{4, 5}}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{\textcolor{mygreen}{6, 7}}$};
@@ -1930,12 +1930,13 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
 
 Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel, sowie das Item-Paar, werden im Folgenden
 möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
-Dafür wird zunächst der vollständig bipartite Graph in Abb. \ref{fig:complete_bipartite} eingeführt.
-Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
-und die Stacks in der anderen Partition. Da bereits beide Partitionen dieselbe Größe
-besitzen, müssen in diesem Fall keine Dummy-Items eingeführt werden. Anschließend wird ein \textsc{MWPM} in diesem Graphen berechnet, welches
-in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvor generierten Item-Tupel zu den Stacks entspricht.
-
+Dazu wird zunächst der vollständig bipartite Graph, welcher in Abb. \ref{fig:complete_bipartite} dargestellt ist,
+generiert. Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
+und die Stacks in der anderen Partition.
+Da es lediglich $5$ Item-Tupel bei $6$ zur Verfügung stehenden Stacks gibt und somit die Partitionen nicht dieselbe
+Größe besitzen, wird ein Dummy-Item $D_0$ eingeführt.
+Die Kantengewichte sind der Übersichtlichkeit halber nicht in der Darstellung aufgetragen, sondern stattdessen
+der Tabelle in Abb. \ref{fig:item_tuple_costs_three_cap} zu entnehmen.
 \begin{figure}[H]
 \centering
 \resizebox{0.5\textwidth}{!}{
@@ -1952,6 +1953,9 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \caption{\textsc{Kosten der Stack-Zuweisungen}.}
 \label{fig:item_tuple_costs_three_cap}
 \end{figure}
+
+Anschließend wird im bipartiten Graphen aus Abb. \ref{fig:complete_bipartite} das \textsc{MWPM} berechnet, welches
+in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvor generierten Item-Tupel zu den Stacks entspricht.
 
 \begin{figure}[H]
 % \begin{figure}[H]
@@ -2051,14 +2055,12 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \label{}
 \end{figure}
 
-Die Kanten des \textsc{MWPM} in Abb. \ref{fig:mwpm} werden als Stack-Zuweisungen interpretiert.
-Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet. Wobei die Reihenfolge
+\pagebreak
+
+Da keine Kante im \textsc{MWPM} das Gewicht $\infty$ besitzt, handelt es sich um eine günstigste, zulässige Zuweisung
+sämtlicher Item-Tupel zu Stacks, welche insgesamt die Kosten $550.38$ verursacht.
+Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet, wobei die Reihenfolge
 innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
-
-Diese Lösung basiert auf der ersten der drei unterschiedlichen Sortierungen der Item-Paare aus Abb. \ref{fig:lists_of_pairs}.
-Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die beiden übrigen Sortierungen
-ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
-
 \begin{figure}[H]
   \centering
   \resizebox{0.3\textwidth}{!}{
@@ -2073,6 +2075,10 @@ ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kost
     \caption{\textsc{Zulässige Zuweisungen.}}
     \label{fig:valid_solution}
 \end{figure}
+
+Diese Lösung basiert auf der ersten der drei unterschiedlichen Sortierungen der Item-Paare aus Abb. \ref{fig:lists_of_pairs}.
+Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die beiden übrigen Sortierungen
+ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
 
 \subsection{Vergleich der $b = 3$ Solver}
 \label{sec:solver_comp_b=3}
