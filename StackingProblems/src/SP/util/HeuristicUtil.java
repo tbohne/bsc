@@ -540,7 +540,7 @@ public class HeuristicUtil {
      */
     public static int getRandomIntegerInBetween(int min, int max) {
         Random r = new Random();
-        return min + r.nextInt() * (max - min);
+        return r.nextInt((max - min) + 1) + min;
     }
 
     /**
