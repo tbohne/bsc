@@ -785,6 +785,15 @@ Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$. Wobei $n$ der Anzahl der Knoten
 und $m$ der Anzahl der Kanten im Graphen entspricht. Im \textquote{Average-Case}, also im Regelfall, ist der Algorithmus jedoch effizienter.
 
+\subsubsection{Maximum-Weight-Bipartite-Matching (MWBM)}
+\label{sec:digression_mwbm}
+
+Bei einem Maximum-Weight-Bipartite-Matching handelt es sich um ein Matching in einem bipartiten Graphen,
+in welchem die Summe der Kantengewichte maximal ist. Auch diesen Algorithmus stellt \textit{JGraphT} \cite{JGraphT}
+unter dem Namen \textit{MaximumWeightBipartiteMatching} bereit.
+Die Implementation besitzt eine Laufzeitkomplexität von $O(n (m + n \thinspace log \thinspace n))$, wobei $n$ der Knotenanzahl
+und $m$ der Anzahl der Kanten im Graphen entspricht.
+
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
 
