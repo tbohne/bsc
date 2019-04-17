@@ -1941,48 +1941,62 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{8, 9, 12}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 10}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 4, 13}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{0, 1, 11}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{2, 5}$};
+        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{8, 13, 1}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{9, 10, 12}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{D_0}$};
 
-        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_2}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_3}$};
-        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_4}$};
-        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_5}$};
+        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_0}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_1}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_2}$};
+        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_3}$};
+        \node[state] (K) [thick, below of=J] {$\boldsymbol{S_4}$};
+        \node[state] (L) [thick, below of=K] {$\boldsymbol{S_5}$};
 
         \path
-          (A) edge [thick] node {} (F)
           (A) edge [thick] node {} (G)
           (A) edge [thick] node {} (H)
           (A) edge [thick] node {} (I)
           (A) edge [thick] node {} (J)
+          (A) edge [thick] node {} (K)
+          (A) edge [thick] node {} (L)
 
-          (B) edge [thick] node {} (F)
           (B) edge [thick] node {} (G)
           (B) edge [thick] node {} (H)
           (B) edge [thick] node {} (I)
           (B) edge [thick] node {} (J)
+          (B) edge [thick] node {} (K)
+          (B) edge [thick] node {} (L)
 
-          (C) edge [thick] node {} (F)
           (C) edge [thick] node {} (G)
           (C) edge [thick] node {} (H)
           (C) edge [thick] node {} (I)
           (C) edge [thick] node {} (J)
+          (C) edge [thick] node {} (K)
+          (C) edge [thick] node {} (L)
 
-          (D) edge [thick] node {} (F)
           (D) edge [thick] node {} (G)
           (D) edge [thick] node {} (H)
           (D) edge [thick] node {} (I)
           (D) edge [thick] node {} (J)
+          (D) edge [thick] node {} (K)
+          (D) edge [thick] node {} (L)
 
-          (E) edge [thick] node {} (F)
           (E) edge [thick] node {} (G)
           (E) edge [thick] node {} (H)
           (E) edge [thick] node {} (I)
-          (E) edge [thick] node {} (J);
+          (E) edge [thick] node {} (J)
+          (E) edge [thick] node {} (K)
+          (E) edge [thick] node {} (L)
+
+          (F) edge [thick] node {} (G)
+          (F) edge [thick] node {} (H)
+          (F) edge [thick] node {} (I)
+          (F) edge [thick] node {} (J)
+          (F) edge [thick] node {} (K)
+          (F) edge [thick] node {} (L);
 \end{tikzpicture}
 \caption{\textsc{Vollständig Bipartit}.}
 \label{fig:complete_bipartite}
@@ -1991,24 +2005,32 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm]
-        \node[state] (A) [thick] {$\boldsymbol{8, 9, 12}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 10}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 4, 13}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{0, 1, 11}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{2, 5}$};
+        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{8, 13, 1}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{9, 10, 12}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{D_0}$};
 
-        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
-        \node[state] (G) [thick, below of=F] {$\boldsymbol{S_2}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_3}$};
-        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_4}$};
-        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_5}$};
+        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_0}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_1}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_2}$};
+        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_3}$};
+        \node[state] (K) [thick, below of=J] {$\boldsymbol{S_4}$};
+        \node[state] (L) [thick, below of=K] {$\boldsymbol{S_5}$};
 
         \path
-          (A) edge [thick] node {} (I)
-          (B) edge [thick] node {} (F)
+          (A) edge [thick] node {} (G)
+
+          (B) edge [thick] node {} (I)
+
           (C) edge [thick] node {} (J)
-          (D) edge [thick] node {} (H)
-          (E) edge [thick] node {} (G);
+
+          (D) edge [thick] node {} (L)
+
+          (E) edge [thick] node {} (K)
+
+          (F) edge [thick] node {} (H);
 \end{tikzpicture}
 \caption{\textsc{MWPM}.}
 \label{fig:mwpm}
