@@ -38,4 +38,17 @@ public class StorageAreaPosition {
     public int getLevel() {
         return this.level;
     }
+
+    @Override
+    public String toString() {
+        return "stack: " + this.stackIdx + ", level: " + this.level;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object != null && object instanceof StorageAreaPosition) {
+            return this.level == ((StorageAreaPosition)object).level && this.stackIdx == ((StorageAreaPosition)object).stackIdx;
+        }
+        return false;
+    }
 }
