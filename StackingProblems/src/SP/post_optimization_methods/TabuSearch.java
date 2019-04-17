@@ -77,26 +77,6 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
-    public boolean tabuListContainsExchange(Exchange exchange) {
-
-        for (Exchange e : this.tabuList) {
-            if (e.getPosOne().getStackIdx() == exchange.getPosOne().getStackIdx()
-                && e.getPosOne().getLevel() == exchange.getPosOne().getLevel()
-                && e.getPosTwo().getStackIdx() == exchange.getPosTwo().getStackIdx()
-                && exchange.getPosTwo().getLevel() == exchange.getPosTwo().getLevel()) {
-
-                    return true;
-            } else if (e.getPosOne().getStackIdx() == exchange.getPosTwo().getStackIdx()
-                    && e.getPosOne().getLevel() == exchange.getPosTwo().getLevel()
-                    && e.getPosTwo().getStackIdx() == exchange.getPosOne().getStackIdx()
-                    && e.getPosTwo().getLevel() == exchange.getPosOne().getLevel()) {
-                        return true;
-            }
-        }
-
-        return false;
-    }
-
     public Solution solveIterations(Instance instance, boolean firstFit, boolean onlyValid) {
         for (int i = 0; i < 1000; i++) {
             System.out.println(i);
