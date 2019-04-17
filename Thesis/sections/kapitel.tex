@@ -1099,6 +1099,37 @@ nicht aber um eine zulässige Ordnung der Items innerhalb der Stacks handelt.
 Da jedoch sichergestellt ist, dass die Item-Paare kompatibel, d.h. in mindestens einer Richtung stackbar sind,
 ist dies trivial in der in Abschnitt \ref{sec:two_cap_heuristic} beschriebenen Weise möglich.
 
+\pagebreak
+
+Ist der Postprocessing-Schritt aktiviert, so werden zuletzt ausgewählte Items in leere Stacks verschoben, sofern
+sich dadurch eine Kostenersparnis ergibt. Dazu wird der bipartite Postprocessing-Graph generiert, welcher in
+Abb. \ref{fig:post_processing_graph_two_cap} dargestellt ist. Dieser enthält die Paare von Items in der einen Partition
+und die verbleibenden leeren Stacks in der anderen Partition. In diesem Beispiel gibt es mit $S_0$ lediglich einen verbleibenden
+leeren Stack. Da sämtliche Kantengewichte im Postprocessing-Graphen negativ sind, kommt durch eine Item-Verschiebung keine Kostenersparnis
+zustande und es ist nicht möglich, die zuvor generierte Lösung im Postprocessing-Schritt zu verbessern, weshalb
+die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverändert bestehen bleiben.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm]
+        \node[state] (A) [thick] {$\boldsymbol{0, 1}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 5}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 6}$};
+        \node[state] (D) [thick, right = 3cm of B] {$\boldsymbol{S_0}$};
+
+        \path
+          (A) edge [thick, near start, above right] node {$-6.06$} (D)
+          (B) edge [thick, near start, above right] node {$-6.06$} (D)
+          (C) edge [thick, near start, below right] node {$-12.12$} (D);
+\end{tikzpicture}
+
+\caption{\textsc{Postprocessing-Graph}.}
+\label{fig:post_processing_graph_two_cap}
+\end{figure}
+
+
+
+
 \subsection{Vergleich der $b = 2$ Solver}
 \label{sec:solver_comp_b=2}
 
