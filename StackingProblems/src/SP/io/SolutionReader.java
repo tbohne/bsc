@@ -66,7 +66,10 @@ public class SolutionReader {
         File dir = new File(solutionDirName);
         ArrayList<Solution> solutions = new ArrayList<>();
 
-        for (File file : dir.listFiles()) {
+        File[] directoryListing = dir.listFiles();
+        Arrays.sort(directoryListing);
+
+        for (File file : directoryListing) {
             if (!file.isDirectory() && file.getName().contains("slp_")) {
                 try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                     for (String line; (line = br.readLine()) != null; ) {
