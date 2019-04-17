@@ -2081,7 +2081,82 @@ Diese Lösung basiert auf der ersten der drei unterschiedlichen Sortierungen der
 Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die beiden übrigen Sortierungen
 ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
 
+Ist der Postprocessing-Schritt aktiviert, so wird zuletzt die beste generierte Lösung erneut betrachtet
+und es werden ausgewählte Items in leere Stacks verschoben, sofern sich dadurch eine Kostenersparnis ergibt.
+Dazu wird der bipartiter Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph} dargestellt ist.
+Dieser enthält die Paare und Tripel von Items in der einen Partition und die leeren Stacks in der anderen Partition.
+In diesem Beispiel gibt es lediglich einen verbleibenden leeren Stack, d.h. es wird jenes Item-Tupel mit der größten Ersparnis
+mit diesem Stack gematcht. Dies wird durch das \textsc{MaximumWeightBipartiteMatching} erreicht, welches in Abb.
+\ref{fig:mwbm} zu sehen ist.
 
+\begin{figure}[H]
+% \begin{figure}[H]
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm]
+        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{12, 10, 9}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{13, 8, 1}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
+        \node[state] (F) [thick, right = 4cm of C] {$\boldsymbol{S_1}$};
+
+        \path
+          (A) edge [thick, near start, above right] node {$6.06$} (F)
+          (B) edge [thick, near start, above right] node {$-6.06$} (F)
+          (C) edge [thick, above] node {$-24.24$} (F)
+          (D) edge [thick, near start, below right] node {$12.12$} (F)
+          (E) edge [thick, near start, below right] node {$-18.18$} (F);
+\end{tikzpicture}
+\caption{\textsc{Postprocessing-Graph}.}
+\label{fig:post_processing_graph}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm]
+        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{12, 10, 9}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{\textcolor{mygreen}{13, 8, 1}}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
+        \node[state] (F) [thick, right = 4cm of C] {$\boldsymbol{\textcolor{mygreen}{S_1}}$};
+
+        \path
+          (A) edge [thick, near start, above right] node {$6.06$} (F)
+          (B) edge [thick, near start, above right] node {$-6.06$} (F)
+          (C) edge [thick, above] node {$-24.24$} (F)
+          (D) edge [thick, near start, below right, mygreen] node {$12.12$} (F)
+          (E) edge [thick, near start, below right] node {$-18.18$} (F);
+\end{tikzpicture}
+\caption{\textsc{MWBM}.}
+\label{fig:mwbm}
+\end{subfigure}
+\caption{\textsc{Postprocessing}.}
+\label{}
+\end{figure}
+
+Die Kante des Matchings aus Abb. \ref{fig:mwbm} entspricht einer Ersparnis von $12.12$, wenn das kompatible
+Item bzw. jenes, welches bei einer Verschiebung zur größten Ersparnis führt, aus dem Stack $S_3$,
+in welchem sich das Tripel $(13, 8, 1)$ befindet, in den Stack $S_1$ verschoben wird.
+In Abb. \ref{fig:valid_solution_post_processing} ist das finale Ergebnis abgebildet, in welchem
+das verschobene Item in grün dargestellt ist.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.4\textwidth}{!}{
+    \begin{tabular}{c|c|c|c|c|c|c|}
+    \cline{2-7}
+    $\boldsymbol{L_2}$ & $3$ & $$ & $2$ & $$ & $$ & $12$ \\ \cline{2-7}
+    $\boldsymbol{L_1}$ & $11$ & $$ & $7$ & $13$ & $5$ & $10$\\ \cline{2-7}
+    $\boldsymbol{L_0}$ & $0$ & $\textcolor{mygreen}{1}$ & $6$ & $8$ & $4$ & $9$ \\ \cline{2-7}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_5}$} \\
+    \end{tabular}}
+    \caption{\textsc{Postprocessing-Ergebnis.}}
+    \label{fig:valid_solution_post_processing}
+\end{figure}
 
 \subsection{Vergleich der $b = 3$ Solver}
 \label{sec:solver_comp_b=3}
