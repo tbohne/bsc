@@ -2063,14 +2063,15 @@ Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} a
 innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
 \begin{figure}[H]
   \centering
-  \resizebox{0.3\textwidth}{!}{
-    \begin{tabular}{c|c|c|c|c|c|}
-    \cline{2-6}
-    $\boldsymbol{L_3}$ & $6$ & $$ & $0$ & $8$ & $3$ \\ \cline{2-6}
-    $\boldsymbol{L_2}$ & $7$ & $2$ & $1$ & $9$ & $4$ \\ \cline{2-6}
-    $\boldsymbol{L_1}$ & $10$ & $5$ & $11$ & $12$ & $13$ \\ \cline{2-6}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} & \multicolumn{1}{c}{$\boldsymbol{S_5}$} \\
+  \resizebox{0.4\textwidth}{!}{
+    \begin{tabular}{c|c|c|c|c|c|c|}
+    \cline{2-7}
+    $\boldsymbol{L_2}$ & $3$ & $$ & $2$ & $1$ & $$ & $12$ \\ \cline{2-7}
+    $\boldsymbol{L_1}$ & $11$ & $$ & $7$ & $13$ & $5$ & $10$\\ \cline{2-7}
+    $\boldsymbol{L_0}$ & $0$ & $$ & $6$ & $8$ & $4$ & $9$ \\ \cline{2-7}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_5}$} \\
     \end{tabular}}
     \caption{\textsc{Zulässige Zuweisungen.}}
     \label{fig:valid_solution}
@@ -2079,6 +2080,8 @@ innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
 Diese Lösung basiert auf der ersten der drei unterschiedlichen Sortierungen der Item-Paare aus Abb. \ref{fig:lists_of_pairs}.
 Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die beiden übrigen Sortierungen
 ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
+
+
 
 \subsection{Vergleich der $b = 3$ Solver}
 \label{sec:solver_comp_b=3}
