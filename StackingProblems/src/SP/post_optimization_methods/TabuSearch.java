@@ -23,7 +23,8 @@ public class TabuSearch {
     private Solution currSol;
     private Solution bestSol;
 
-    private ArrayList<Exchange> tabuList;
+    private ArrayList<Exchange> swapTabuList;
+    private ArrayList<Integer> shiftTabuList;
     private int tabuListClears;
 
     /**
@@ -34,7 +35,8 @@ public class TabuSearch {
     public TabuSearch(Solution initialSolution) {
         this.currSol = new Solution(initialSolution);
         this.bestSol = new Solution(initialSolution);
-        this.tabuList = new ArrayList<>();
+        this.swapTabuList = new ArrayList<>();
+        this.shiftTabuList = new ArrayList<>();
         this.tabuListClears = 0;
     }
 
@@ -43,7 +45,7 @@ public class TabuSearch {
      */
     public void clearTabuList() {
         System.out.println("clearing tabu list...");
-        this.tabuList = new ArrayList<>();
+        this.swapTabuList = new ArrayList<>();
         this.tabuListClears++;
     }
 
@@ -57,6 +59,24 @@ public class TabuSearch {
         int stackIdx = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStorageArea().length - 1);
         int level = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStorageArea()[stackIdx].length - 1);
         return new StorageAreaPosition(stackIdx, level);
+    }
+
+    /**
+     * Retrieves the free slots in the storage area.
+     *
+     * @param sol - the solution retrieve the free slots for
+     * @return list of free slots in the storage area
+     */
+    public ArrayList<StorageAreaPosition> getFreeSlots(Solution sol) {
+        ArrayList<StorageAreaPosition> freeSlots = new ArrayList<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
+                if (sol.getFilledStorageArea()[stack][level] != -1) {
+                    freeSlots.add(new StorageAreaPosition(stack, level));
+                }
+            }
+        }
+        return freeSlots;
     }
 
     /**
@@ -81,7 +101,7 @@ public class TabuSearch {
      * @param onlyFeasible - determines whether only feasible neighbors are considered
      * @return a neighboring solution
      */
-    public Solution getNeighbor(boolean firstFit, boolean onlyFeasible) {
+    public Solution getNeighborSwap(boolean firstFit, boolean onlyFeasible) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
@@ -99,14 +119,14 @@ public class TabuSearch {
                 if (!neighbor.isFeasible()) { continue; }
 
                 // FIRST-FIT
-                if (firstFit && !this.tabuList.contains(exchange) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                    this.tabuList.add(exchange);
+                if (firstFit && !this.swapTabuList.contains(exchange) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                    this.swapTabuList.add(exchange);
                     return neighbor;
 
                 // BEST-FIT
-                } else if (!this.tabuList.contains(exchange)) {
+                } else if (!this.swapTabuList.contains(exchange)) {
                     nbrs.add(neighbor);
-                    this.tabuList.add(exchange);
+                    this.swapTabuList.add(exchange);
 
                 } else {
                     failCnt++;
@@ -142,7 +162,7 @@ public class TabuSearch {
      */
     public void solveIterations(boolean firstFit, boolean onlyFeasible) {
         for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
-            this.currSol = getNeighbor(firstFit, onlyFeasible);
+            this.currSol = getNeighborSwap(firstFit, onlyFeasible);
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
@@ -157,7 +177,7 @@ public class TabuSearch {
      */
     public void solveTabuListClears(boolean firstFit, boolean onlyFeasible) {
         while (this.tabuListClears < this.NUMBER_OF_TABU_LIST_CLEARS) {
-            this.currSol = getNeighbor(firstFit, onlyFeasible);
+            this.currSol = getNeighborSwap(firstFit, onlyFeasible);
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
