@@ -104,7 +104,73 @@ public class TabuSearch {
     }
 
     /**
-     * Generates a neighbor for the current solution.
+     * Generates a neighbor for the current solution using the "shift-neighborhood".
+     *
+     * @param firstFit     - determines whether the first improving neighbor gets returned (best-fit otherwise)
+     * @param onlyFeasible - determines whether only feasible neighbors are considered
+     * @return a neighboring solution
+     */
+    public Solution getNeighborShift(boolean firstFit, boolean onlyFeasible) {
+        ArrayList<Solution> nbrs = new ArrayList<>();
+
+        int failCnt = 0;
+
+        while (nbrs.size() <= this.NUMBER_OF_GENERATED_NEIGHBORS) {
+
+            Solution neighbor = new Solution(this.currSol);
+            StorageAreaPosition pos = this.getRandomPositionInStorageArea(neighbor);
+            if (neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] == -1) { continue; }
+
+            int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
+            ArrayList<StorageAreaPosition> freeSlots = this.getFreeSlots(neighbor);
+            int freeSlotIdx = HeuristicUtil.getRandomIntegerInBetween(0, freeSlots.size() - 1);
+            StorageAreaPosition shiftTarget = freeSlots.get(freeSlotIdx);
+
+            neighbor.getFilledStorageArea()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
+                neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
+            neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] = -1;
+
+            if (onlyFeasible) {
+
+                if (!neighbor.isFeasible()) { continue; }
+
+                // FIRST-FIT
+                if (firstFit && !this.shiftTabuList.contains(item) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                    this.shiftTabuList.add(item);
+                    return neighbor;
+
+                    // BEST-FIT
+                } else if (!this.shiftTabuList.contains(item)) {
+                    nbrs.add(neighbor);
+                    this.shiftTabuList.add(item);
+
+                } else {
+                    failCnt++;
+                    if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR) {
+                        this.clearShiftTabuList();
+                        failCnt = 0;
+                    }
+                }
+
+                // ASPIRATION CRITERION
+                if (neighbor.computeCosts() > this.bestSol.computeCosts()) {
+                    if (firstFit) {
+                        return neighbor;
+                    } else {
+                        nbrs.add(neighbor);
+                    }
+                }
+
+            } else {
+
+                // TODO: implement infeasible part
+            }
+        }
+        return HeuristicUtil.getBestSolution(nbrs);
+    }
+
+    /**
+     * Generates a neighbor for the current solution using the "swap-neighborhood".
      *
      * @param firstFit     - determines whether the first improving neighbor gets returned (best-fit otherwise)
      * @param onlyFeasible - determines whether only feasible neighbors are considered
