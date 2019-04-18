@@ -1,6 +1,5 @@
 package SP.post_optimization_methods;
 
-import SP.representations.Instance;
 import SP.representations.Solution;
 import SP.representations.StorageAreaPosition;
 import SP.util.HeuristicUtil;
@@ -8,6 +7,9 @@ import SP.util.HeuristicUtil;
 import java.util.ArrayList;
 
 public class TabuSearch {
+
+    private final int NUMBER_OF_ITERATIONS = 1000;
+    private final int NUMBER_OF_CLEARED_TL = 100;
 
     private Solution currSol;
     private Solution bestSol;
@@ -40,7 +42,7 @@ public class TabuSearch {
         neighbor.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
     }
 
-    public Solution getNeighbor(boolean firstFit, boolean onlyValid) {
+    public Solution getNeighbor(boolean firstFit, boolean onlyFeasible) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
@@ -74,26 +76,22 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
-    public Solution solveIterations(boolean firstFit, boolean onlyValid) {
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(i);
-            this.currSol = getNeighbor(firstFit, onlyValid);
+    public void solveIterations(boolean firstFit, boolean onlyFeasible) {
+        for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
+            this.currSol = getNeighbor(firstFit, onlyFeasible);
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
         }
-        return this.bestSol;
     }
 
-    public Solution solve() {
+    public Solution solve(boolean iterationsCrit, boolean firstFit, boolean onlyFeasible) {
 
-        boolean firstFit = false;
-        boolean onlyValid = true;
+        if (iterationsCrit) {
+            this.solveIterations(firstFit, onlyFeasible);
+        }
 
-        Solution res = this.solveIterations(firstFit, onlyValid);
-        System.out.println("val: " + res.getObjectiveValue());
-
-        return res;
+        return this.bestSol;
     }
 }
 

@@ -1,7 +1,5 @@
 package SP.post_optimization_methods;
 
-import SP.representations.Instance;
-import SP.io.InstanceReader;
 import SP.representations.Solution;
 import SP.io.SolutionReader;
 
@@ -9,13 +7,16 @@ import java.util.ArrayList;
 
 public class TabuSearchTest {
 
-    public final boolean ITERATIONS_CRITERION = true;
-    public final int NUMBER_OF_ITERATIONS = 1000;
-
+    /******** CONFIGURABLE TS OPTIONS ************************/
+    // TL clears otherwise
+    public static final boolean ITERATIONS_CRITERION = true;
+    // best fit otherwise
+    public static final boolean FIRST_FIT = true;
+    public static final boolean ONLY_FEASIBLE = true;
+    /*********************************************************/
     public static final String SOLVER = "TwoCapHeuristic";
 
     public static void main(String[] args) {
-
         ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir(
             "res/solutions/", "res/instances/", SOLVER
         );
@@ -24,7 +25,7 @@ public class TabuSearchTest {
 
         TabuSearch ts = new TabuSearch(sol);
         System.out.println("COSTS BEFORE: " + sol.computeCosts());
-        sol = ts.solve();
+        sol = ts.solve(ITERATIONS_CRITERION, FIRST_FIT, ONLY_FEASIBLE);
         System.out.println("FINAL COSTS: " + sol.computeCosts());
     }
 }
