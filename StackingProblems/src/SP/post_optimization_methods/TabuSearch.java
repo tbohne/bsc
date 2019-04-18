@@ -16,6 +16,8 @@ public class TabuSearch {
 
     private final int NUMBER_OF_ITERATIONS = 1000;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 100;
+    private final int FAIL_COUNT_BEFORE_CLEAR = 20;
+    private final int NUMBER_OF_GENERATED_NEIGHBORS = 100;
 
     private Solution currSol;
     private Solution bestSol;
@@ -39,6 +41,7 @@ public class TabuSearch {
      * Clears the entries in the tabu list and increments the clear counter.
      */
     public void clearTabuList() {
+        System.out.println("clearing tabu list...");
         this.tabuList = new ArrayList<>();
         this.tabuListClears++;
     }
@@ -81,30 +84,49 @@ public class TabuSearch {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
-        int cnt = 0;
+        int failCnt = 0;
 
-        while (nbrs.size() <= /*this.instance.getItems().length*/ 20) {
+        while (nbrs.size() <= this.NUMBER_OF_GENERATED_NEIGHBORS) {
 
             Solution neighbor = new Solution(this.currSol);
             StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
             StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
-
             this.exchangeItems(neighbor, posOne, posTwo);
             Exchange exchange = new Exchange(posOne, posTwo);
 
-            // Only feasible solutions are considered for now.
-            if (neighbor.isFeasible() && !this.tabuList.contains(exchange)) {
-                nbrs.add(neighbor);
-                this.tabuList.add(exchange);
+            if (onlyFeasible) {
+                if (!neighbor.isFeasible()) { continue; }
+
+                // FIRST-FIT
+                if (firstFit && !this.tabuList.contains(exchange) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                    this.tabuList.add(exchange);
+                    return neighbor;
+
+                // BEST-FIT
+                } else if (!this.tabuList.contains(exchange)) {
+                    nbrs.add(neighbor);
+                    this.tabuList.add(exchange);
+
+                } else {
+                    failCnt++;
+                    if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR) {
+                        this.clearTabuList();
+                        failCnt = 0;
+                    }
+                }
+
+                // ASPIRATION CRITERION
+                if (neighbor.computeCosts() > this.bestSol.computeCosts()) {
+                    if (firstFit) {
+                        return neighbor;
+                    } else {
+                        nbrs.add(neighbor);
+                    }
+                }
+
             } else {
-                if (this.tabuList.contains(exchange)) {
-                    cnt++;
-                }
-                if (cnt == 5) {
-                    System.out.println("CLEAR TABULIST");
-                    this.clearTabuList();
-                    cnt = 0;
-                }
+
+                // TODO: implement infeasible part
             }
         }
 
