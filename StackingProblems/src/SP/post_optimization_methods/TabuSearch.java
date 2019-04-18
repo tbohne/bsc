@@ -5,7 +5,6 @@ import SP.representations.StorageAreaPosition;
 import SP.util.HeuristicUtil;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Improvement heuristic that starts with an initial solution of a stacking-problem
@@ -16,10 +15,11 @@ import java.util.Random;
 public class TabuSearch {
 
     // CONFIG
-    private final int NUMBER_OF_ITERATIONS = 1000;
+    private final int NUMBER_OF_ITERATIONS = 500;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
-    private final int FAIL_COUNT_BEFORE_CLEAR = 20;
-    private final int NUMBER_OF_GENERATED_NEIGHBORS = 100;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 20;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 150;
+    private final int NUMBER_OF_GENERATED_NEIGHBORS = 250;
 
     private Solution currSol;
     private Solution bestSol;
@@ -164,14 +164,14 @@ public class TabuSearch {
 
                 } else {
                     failCnt++;
-                    if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR) {
+                    if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR_SHIFT) {
                         this.clearShiftTabuList();
                         failCnt = 0;
                     }
                 }
 
                 // ASPIRATION CRITERION
-                if (neighbor.computeCosts() > this.bestSol.computeCosts()) {
+                if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
                     if (firstFit) {
                         return neighbor;
                     } else {
@@ -222,14 +222,14 @@ public class TabuSearch {
 
                 } else {
                     failCnt++;
-                    if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR) {
+                    if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR_SWAP) {
                         this.clearSwapTabuList();
                         failCnt = 0;
                     }
                 }
 
                 // ASPIRATION CRITERION
-                if (neighbor.computeCosts() > this.bestSol.computeCosts()) {
+                if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
                     if (firstFit) {
                         return neighbor;
                     } else {
@@ -255,12 +255,11 @@ public class TabuSearch {
     public void solveIterations(boolean firstFit, boolean onlyFeasible) {
         for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
             System.out.println(i);
-            Random r = new Random();
-            if (r.nextBoolean()) {
-                this.currSol = getNeighborShift(firstFit, onlyFeasible);
-            } else {
-                this.currSol = getNeighborSwap(firstFit, onlyFeasible);
-            }
+
+            Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible);
+            Solution swapNeghbor = getNeighborSwap(firstFit, onlyFeasible);
+            this.currSol = shiftNeighbor.computeCosts() < swapNeghbor.computeCosts() ? shiftNeighbor : swapNeghbor;
+
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
