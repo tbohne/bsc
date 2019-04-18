@@ -41,11 +41,20 @@ public class TabuSearch {
     }
 
     /**
-     * Clears the entries in the tabu list and increments the clear counter.
+     * Clears the entries in the swap tabu list and increments the clear counter.
      */
-    public void clearTabuList() {
-        System.out.println("clearing tabu list...");
+    public void clearSwapTabuList() {
+        System.out.println("clearing swap tabu list...");
         this.swapTabuList = new ArrayList<>();
+        this.tabuListClears++;
+    }
+
+    /**
+     * Clears the entries in the shift tabu list and increments the clear counter.
+     */
+    public void clearShiftTabuList() {
+        System.out.println("clearing shift tabu list...");
+        this.shiftTabuList = new ArrayList<>();
         this.tabuListClears++;
     }
 
@@ -71,7 +80,7 @@ public class TabuSearch {
         ArrayList<StorageAreaPosition> freeSlots = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
             for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
-                if (sol.getFilledStorageArea()[stack][level] != -1) {
+                if (sol.getFilledStorageArea()[stack][level] == -1) {
                     freeSlots.add(new StorageAreaPosition(stack, level));
                 }
             }
@@ -131,7 +140,7 @@ public class TabuSearch {
                 } else {
                     failCnt++;
                     if (failCnt == this.FAIL_COUNT_BEFORE_CLEAR) {
-                        this.clearTabuList();
+                        this.clearSwapTabuList();
                         failCnt = 0;
                     }
                 }
@@ -162,7 +171,8 @@ public class TabuSearch {
      */
     public void solveIterations(boolean firstFit, boolean onlyFeasible) {
         for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
-            this.currSol = getNeighborSwap(firstFit, onlyFeasible);
+            System.out.println(i);
+            this.currSol = getNeighborShift(firstFit, onlyFeasible);
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
