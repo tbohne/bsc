@@ -5,6 +5,7 @@ import SP.representations.StorageAreaPosition;
 import SP.util.HeuristicUtil;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Improvement heuristic that starts with an initial solution of a stacking-problem
@@ -141,18 +142,14 @@ public class TabuSearch {
         int failCnt = 0;
 
         while (nbrs.size() <= this.NUMBER_OF_GENERATED_NEIGHBORS) {
-
             Solution neighbor = new Solution(this.currSol);
-
             StorageAreaPosition pos = this.getRandomPositionInStorageArea(neighbor);
             int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
             if (item == -1) { continue; }
             StorageAreaPosition shiftTarget = this.getRandomFreeSlot(neighbor);
-
             this.shiftItem(neighbor, pos, shiftTarget);
 
             if (onlyFeasible) {
-
                 if (!neighbor.isFeasible()) { continue; }
 
                 // FIRST-FIT
@@ -258,7 +255,12 @@ public class TabuSearch {
     public void solveIterations(boolean firstFit, boolean onlyFeasible) {
         for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
             System.out.println(i);
-            this.currSol = getNeighborShift(firstFit, onlyFeasible);
+            Random r = new Random();
+            if (r.nextBoolean()) {
+                this.currSol = getNeighborShift(firstFit, onlyFeasible);
+            } else {
+                this.currSol = getNeighborSwap(firstFit, onlyFeasible);
+            }
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
