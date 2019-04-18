@@ -89,6 +89,18 @@ public class TabuSearch {
     }
 
     /**
+     * Returns a random free slot in the storage area of the specified solution.
+     *
+     * @param sol - the specified solution to return a free slot for
+     * @return a random free slot in the storage area
+     */
+    public StorageAreaPosition getRandomFreeSlot(Solution sol) {
+        ArrayList<StorageAreaPosition> freeSlots = this.getFreeSlots(sol);
+        int freeSlotIdx = HeuristicUtil.getRandomIntegerInBetween(0, freeSlots.size() - 1);
+        return freeSlots.get(freeSlotIdx);
+    }
+
+    /**
      * Exchanges the items in the specified positions in the storage area of the given solution.
      * If only one position is occupied with an item, the item simply gets moved to the other position.
      *
@@ -101,6 +113,19 @@ public class TabuSearch {
         int itemTwo = sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
         sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
         sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
+    }
+
+    /**
+     * Shifts the item stored in pos to the shift target.
+     *
+     * @param sol         - the solution to be updated
+     * @param shiftTarget - the position the item is shifted to
+     * @param pos         - the item's original position
+     */
+    public void shiftItem(Solution sol, StorageAreaPosition pos, StorageAreaPosition shiftTarget) {
+        sol.getFilledStorageArea()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
+            sol.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
+        sol.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] = -1;
     }
 
     /**
@@ -118,17 +143,13 @@ public class TabuSearch {
         while (nbrs.size() <= this.NUMBER_OF_GENERATED_NEIGHBORS) {
 
             Solution neighbor = new Solution(this.currSol);
+
             StorageAreaPosition pos = this.getRandomPositionInStorageArea(neighbor);
-            if (neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] == -1) { continue; }
-
             int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
-            ArrayList<StorageAreaPosition> freeSlots = this.getFreeSlots(neighbor);
-            int freeSlotIdx = HeuristicUtil.getRandomIntegerInBetween(0, freeSlots.size() - 1);
-            StorageAreaPosition shiftTarget = freeSlots.get(freeSlotIdx);
+            if (item == -1) { continue; }
+            StorageAreaPosition shiftTarget = this.getRandomFreeSlot(neighbor);
 
-            neighbor.getFilledStorageArea()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
-                neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
-            neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] = -1;
+            this.shiftItem(neighbor, pos, shiftTarget);
 
             if (onlyFeasible) {
 
@@ -160,7 +181,6 @@ public class TabuSearch {
                         nbrs.add(neighbor);
                     }
                 }
-
             } else {
 
                 // TODO: implement infeasible part
