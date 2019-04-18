@@ -14,8 +14,9 @@ import java.util.ArrayList;
  */
 public class TabuSearch {
 
+    // CONFIG
     private final int NUMBER_OF_ITERATIONS = 1000;
-    private final int NUMBER_OF_TABU_LIST_CLEARS = 100;
+    private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
     private final int FAIL_COUNT_BEFORE_CLEAR = 20;
     private final int NUMBER_OF_GENERATED_NEIGHBORS = 100;
 
@@ -149,6 +150,21 @@ public class TabuSearch {
     }
 
     /**
+     * Performs the tabu search with a number of tabu list clears as stop criterion.
+     *
+     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
+     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     */
+    public void solveTabuListClears(boolean firstFit, boolean onlyFeasible) {
+        while (this.tabuListClears < this.NUMBER_OF_TABU_LIST_CLEARS) {
+            this.currSol = getNeighbor(firstFit, onlyFeasible);
+            if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
+                this.bestSol = this.currSol;
+            }
+        }
+    }
+
+    /**
      * Performs the tabu search.
      *
      * @param iterationsCrit - determines the stop criterion (true --> iterations, false --> number of TL clears)
@@ -159,6 +175,8 @@ public class TabuSearch {
     public Solution solve(boolean iterationsCrit, boolean firstFit, boolean onlyFeasible) {
         if (iterationsCrit) {
             this.solveIterations(firstFit, onlyFeasible);
+        } else {
+            this.solveTabuListClears(firstFit, onlyFeasible);
         }
         return this.bestSol;
     }
