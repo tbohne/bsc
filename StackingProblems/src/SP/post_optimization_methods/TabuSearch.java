@@ -9,15 +9,13 @@ import java.util.ArrayList;
 
 public class TabuSearch {
 
-    private Instance instance;
     private Solution currSol;
     private Solution bestSol;
 
     private ArrayList<Exchange> tabuList;
     private int tabuListCleared;
 
-    public TabuSearch(Instance instance, Solution initialSolution) {
-        this.instance = instance;
+    public TabuSearch(Solution initialSolution) {
         this.currSol = new Solution(initialSolution);
         this.bestSol = new Solution(initialSolution);
         this.tabuList = new ArrayList<>();
@@ -62,18 +60,21 @@ public class TabuSearch {
                 nbrs.add(neighbor);
                 this.tabuList.add(exchange);
             } else {
-                if (cnt == 5) {
-                    this.clearTabuList();
+                if (this.tabuList.contains(exchange)) {
+                    cnt++;
                 }
-                cnt++;
-                System.out.println(this.tabuList.contains(exchange));
+                if (cnt == 5) {
+                    System.out.println("CLEAR TABULIST");
+                    this.clearTabuList();
+                    cnt = 0;
+                }
             }
         }
 
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
-    public Solution solveIterations(Instance instance, boolean firstFit, boolean onlyValid) {
+    public Solution solveIterations(boolean firstFit, boolean onlyValid) {
         for (int i = 0; i < 1000; i++) {
             System.out.println(i);
             this.currSol = getNeighbor(firstFit, onlyValid);
@@ -84,12 +85,12 @@ public class TabuSearch {
         return this.bestSol;
     }
 
-    public Solution solve(Instance instance) {
+    public Solution solve() {
 
         boolean firstFit = false;
         boolean onlyValid = true;
 
-        Solution res = this.solveIterations(instance, firstFit, onlyValid);
+        Solution res = this.solveIterations(firstFit, onlyValid);
         System.out.println("val: " + res.getObjectiveValue());
 
         return res;

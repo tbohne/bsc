@@ -9,21 +9,22 @@ import java.util.ArrayList;
 
 public class TabuSearchTest {
 
+    public final boolean ITERATIONS_CRITERION = true;
+    public final int NUMBER_OF_ITERATIONS = 1000;
+
+    public static final String SOLVER = "TwoCapHeuristic";
+
     public static void main(String[] args) {
 
-
-        Instance instance = InstanceReader.readInstance("res/instances/slp_instance_100_60_2_00.txt");
-
-        ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir("res/solutions/", "res/instances/");
+        ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir(
+            "res/solutions/", "res/instances/", SOLVER
+        );
         Solution sol = solutions.get(0);
+        System.out.println("solved instance: " + sol.getNameOfSolvedInstance());
 
-        System.out.println("expected instance name: " + instance.getName());
-        System.out.println("actual instance name  : " + sol.getNameOfSolvedInstance());
-
-        TabuSearch ts = new TabuSearch(instance, sol);
-
+        TabuSearch ts = new TabuSearch(sol);
         System.out.println("COSTS BEFORE: " + sol.computeCosts());
-        sol = ts.solve(instance);
+        sol = ts.solve();
         System.out.println("FINAL COSTS: " + sol.computeCosts());
     }
 }
