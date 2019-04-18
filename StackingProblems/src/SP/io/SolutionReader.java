@@ -60,6 +60,21 @@ public class SolutionReader {
     }
 
     /**
+     * Skips the section of the file containing solutions from other solvers.
+     *
+     * @param br     - the buffered reader used to read the file
+     * @param solver - the solver to search for
+     * @throws IOException
+     */
+    public static void skipOtherSolutions(BufferedReader br, String solver) throws IOException {
+        for (String line; (line = br.readLine()) != null; ) {
+            if (line.contains("solved with: SP.constructive_heuristics." + solver)) {
+                break;
+            }
+        }
+    }
+
+    /**
      * Reads the solution of a stacking-problem from the specified file.
      *
      * @param file            - the file to read from
@@ -68,17 +83,10 @@ public class SolutionReader {
      * @return the read solution
      */
     public static Solution readSolution(File file, String instanceDirName, String solver) {
-
         Solution sol = new Solution();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            for (String line; (line = br.readLine()) != null; ) {
-                // then the next lines should be used to read the solution
-                if (line.contains("solved with: SP.constructive_heuristics." + solver)) {
-                    break;
-                }
-            }
-
+            skipOtherSolutions(br, solver);
             String line = br.readLine();
             int timeLimit = Integer.parseInt(line.split(":")[1].replace("s", "").trim());
             line = br.readLine();
@@ -87,7 +95,6 @@ public class SolutionReader {
             double objectiveValue = Double.parseDouble(line.split(":")[1].trim());
             br.readLine();
             br.readLine();
-
             ArrayList<ArrayList<Integer>> storageArea = new ArrayList<>();
             readStorageArea(br, storageArea);
             String instanceName = file.getName().replace("sol", "instance");
@@ -113,17 +120,13 @@ public class SolutionReader {
      * @return a list of the read solutions
      */
     public static ArrayList<Solution> readSolutionsFromDir(String solutionDirName, String instanceDirName, String solver) {
-
         File dir = new File(solutionDirName);
         ArrayList<Solution> solutions = new ArrayList<>();
-
         File[] directoryListing = dir.listFiles();
         Arrays.sort(directoryListing);
-
         for (File file : directoryListing) {
             if (!file.isDirectory() && file.getName().contains("slp_")) {
                 solutions.add(readSolution(file, instanceDirName, solver));
-                break;
             }
         }
         return solutions;
