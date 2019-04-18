@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Provides functionalities to read instances of stacking problems from the file system.
+ * Provides functionalities to read solutions for stacking problems from the file system.
  *
  * @author Tim Bohne
  */
@@ -28,14 +28,19 @@ public class SolutionReader {
     public static void readStorageArea(BufferedReader br, ArrayList<ArrayList<Integer>> storageArea) throws IOException {
         for (String line; (line = br.readLine()) != null; ) {
             ArrayList<Integer> stack = new ArrayList<>();
-            String first = line.split(":")[1].trim();
-            if (first.length() > 0) {
-                int[] array = Arrays.stream(first.split("\\s")).mapToInt(Integer::parseInt).toArray();
-                for (int item : array) {
-                    stack.add(item);
+            String[] splitArr = line.split(":");
+            if (splitArr.length > 1) {
+                String first = splitArr[1].trim();
+                if (first.length() > 0) {
+                    int[] array = Arrays.stream(first.split("\\s")).mapToInt(Integer::parseInt).toArray();
+                    for (int item : array) {
+                        stack.add(item);
+                    }
                 }
+                storageArea.add(new ArrayList<>(stack));
+            } else {
+                storageArea.add(new ArrayList<>());
             }
-            storageArea.add(new ArrayList<>(stack));
         }
     }
 
@@ -55,13 +60,59 @@ public class SolutionReader {
     }
 
     /**
+     * Reads the solution of a stacking-problem from the specified file.
+     *
+     * @param file            - the file to read from
+     * @param instanceDirName - the name of the instance directory
+     * @param solver          - specifies the solver for which the solution is to be read
+     * @return the read solution
+     */
+    public static Solution readSolution(File file, String instanceDirName, String solver) {
+
+        Solution sol = new Solution();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (String line; (line = br.readLine()) != null; ) {
+                // then the next lines should be used to read the solution
+                if (line.contains("solved with: SP.constructive_heuristics." + solver)) {
+                    break;
+                }
+            }
+
+            String line = br.readLine();
+            int timeLimit = Integer.parseInt(line.split(":")[1].replace("s", "").trim());
+            line = br.readLine();
+            double timeToSolveInSeconds = Double.parseDouble(line.split(":")[1].replace(",", ".").replace("s", "").trim());
+            line = br.readLine();
+            double objectiveValue = Double.parseDouble(line.split(":")[1].trim());
+            br.readLine();
+            br.readLine();
+
+            ArrayList<ArrayList<Integer>> storageArea = new ArrayList<>();
+            readStorageArea(br, storageArea);
+            String instanceName = file.getName().replace("sol", "instance");
+            Instance instance = InstanceReader.readInstance(instanceDirName + instanceName);
+            sol = new Solution(timeToSolveInSeconds, objectiveValue, timeLimit, instance);
+            fillStorageArea(storageArea, sol);
+
+            br.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sol.lowerItemsThatAreStackedInTheAir();
+        return sol;
+    }
+
+    /**
      * Reads the solutions from the files contained in the specified directory.
      *
      * @param solutionDirName - name of the directory containing the solutions
      * @param instanceDirName - name of the directory containing the solved instances
+     * @param solver          - specifies the solver for which the solution is to be read
      * @return a list of the read solutions
      */
-    public static ArrayList<Solution> readSolutionsFromDir(String solutionDirName, String instanceDirName) {
+    public static ArrayList<Solution> readSolutionsFromDir(String solutionDirName, String instanceDirName, String solver) {
 
         File dir = new File(solutionDirName);
         ArrayList<Solution> solutions = new ArrayList<>();
@@ -71,36 +122,8 @@ public class SolutionReader {
 
         for (File file : directoryListing) {
             if (!file.isDirectory() && file.getName().contains("slp_")) {
-                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                    for (String line; (line = br.readLine()) != null; ) {
-                        // then the next lines should be used to read the solution
-                        if (line.contains("solved with: SP.constructive_heuristics.TwoCapHeuristic")) {
-                            break;
-                        }
-                    }
-                    String line = br.readLine();
-                    int timeLimit = Integer.parseInt(line.split(":")[1].replace("s", "").trim());
-                    line = br.readLine();
-                    double timeToSolveInSeconds = Double.parseDouble(line.split(":")[1].replace(",", ".").replace("s", "").trim());
-                    line = br.readLine();
-                    double objectiveValue = Double.parseDouble(line.split(":")[1].trim());
-                    br.readLine();
-                    br.readLine();
-
-                    ArrayList<ArrayList<Integer>> storageArea = new ArrayList<>();
-                    readStorageArea(br, storageArea);
-
-                    String instanceName = file.getName().replace("sol", "instance");
-                    Instance instance = InstanceReader.readInstance(instanceDirName + instanceName);
-                    Solution sol = new Solution(timeToSolveInSeconds, objectiveValue, timeLimit, instance);
-                    fillStorageArea(storageArea, sol);
-
-                    solutions.add(sol);
-                    br.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                solutions.add(readSolution(file, instanceDirName, solver));
+                break;
             }
         }
         return solutions;
