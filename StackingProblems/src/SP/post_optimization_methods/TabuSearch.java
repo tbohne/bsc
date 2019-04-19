@@ -18,14 +18,14 @@ public class TabuSearch {
     private final int NUMBER_OF_ITERATIONS = 500;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
     private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 20;
-    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 150;
-    private final int NUMBER_OF_GENERATED_NEIGHBORS = 250;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 20;
+    private final int NUMBER_OF_GENERATED_NEIGHBORS = 50;
 
     private Solution currSol;
     private Solution bestSol;
 
     private ArrayList<Swap> swapTabuList;
-    private ArrayList<Integer> shiftTabuList;
+    private ArrayList<Shift> shiftTabuList;
     private int tabuListClears;
 
     /**
@@ -109,7 +109,7 @@ public class TabuSearch {
      * @param posOne - the first position of the exchange
      * @param posTwo - the second position of the exchange
      */
-    public void exchangeItems(Solution sol, StorageAreaPosition posOne, StorageAreaPosition posTwo) {
+    public void swapItems(Solution sol, StorageAreaPosition posOne, StorageAreaPosition posTwo) {
         int itemOne = sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
         int itemTwo = sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
         sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
@@ -154,13 +154,13 @@ public class TabuSearch {
 
                 // FIRST-FIT
                 if (firstFit && !this.shiftTabuList.contains(item) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                    this.shiftTabuList.add(item);
+                    this.shiftTabuList.add(new Shift(item, shiftTarget));
                     return neighbor;
 
                     // BEST-FIT
                 } else if (!this.shiftTabuList.contains(item)) {
                     nbrs.add(neighbor);
-                    this.shiftTabuList.add(item);
+                    this.shiftTabuList.add(new Shift(item, shiftTarget));
 
                 } else {
                     failCnt++;
@@ -204,7 +204,7 @@ public class TabuSearch {
             Solution neighbor = new Solution(this.currSol);
             StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
             StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
-            this.exchangeItems(neighbor, posOne, posTwo);
+            this.swapItems(neighbor, posOne, posTwo);
             Swap swap = new Swap(posOne, posTwo);
 
             if (onlyFeasible) {
