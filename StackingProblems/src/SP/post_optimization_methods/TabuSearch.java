@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class TabuSearch {
 
     // CONFIG
-    private final int NUMBER_OF_ITERATIONS = 800;
+    private final int NUMBER_OF_ITERATIONS = 500;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
     private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 20;
     private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 20;
@@ -109,11 +109,12 @@ public class TabuSearch {
      * @param posOne - the first position of the exchange
      * @param posTwo - the second position of the exchange
      */
-    public void swapItems(Solution sol, StorageAreaPosition posOne, StorageAreaPosition posTwo) {
+    public Swap swapItems(Solution sol, StorageAreaPosition posOne, StorageAreaPosition posTwo) {
         int itemOne = sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
         int itemTwo = sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
         sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
         sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
+        return new Swap(posOne, posTwo, itemOne, itemTwo);
     }
 
     /**
@@ -205,8 +206,7 @@ public class TabuSearch {
             Solution neighbor = new Solution(this.currSol);
             StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
             StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
-            this.swapItems(neighbor, posOne, posTwo);
-            Swap swap = new Swap(posOne, posTwo);
+            Swap swap = this.swapItems(neighbor, posOne, posTwo);
 
             if (onlyFeasible) {
                 if (!neighbor.isFeasible()) { continue; }
