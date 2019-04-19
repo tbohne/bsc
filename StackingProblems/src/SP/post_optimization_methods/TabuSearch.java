@@ -15,11 +15,11 @@ import java.util.ArrayList;
 public class TabuSearch {
 
     // CONFIG
-    private final int NUMBER_OF_ITERATIONS = 500;
+    private final int NUMBER_OF_ITERATIONS = 800;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
     private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 20;
     private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 20;
-    private final int NUMBER_OF_GENERATED_NEIGHBORS = 50;
+    private final int NUMBER_OF_GENERATED_NEIGHBORS = 100;
 
     private Solution currSol;
     private Solution bestSol;
@@ -148,19 +148,20 @@ public class TabuSearch {
             if (item == -1) { continue; }
             StorageAreaPosition shiftTarget = this.getRandomFreeSlot(neighbor);
             this.shiftItem(neighbor, pos, shiftTarget);
+            Shift shift = new Shift(item, shiftTarget);
 
             if (onlyFeasible) {
                 if (!neighbor.isFeasible()) { continue; }
 
                 // FIRST-FIT
-                if (firstFit && !this.shiftTabuList.contains(item) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                    this.shiftTabuList.add(new Shift(item, shiftTarget));
+                if (firstFit && !this.shiftTabuList.contains(shift) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                    this.shiftTabuList.add(shift);
                     return neighbor;
 
-                    // BEST-FIT
-                } else if (!this.shiftTabuList.contains(item)) {
+                // BEST-FIT
+                } else if (!this.shiftTabuList.contains(shift)) {
                     nbrs.add(neighbor);
-                    this.shiftTabuList.add(new Shift(item, shiftTarget));
+                    this.shiftTabuList.add(shift);
 
                 } else {
                     failCnt++;
