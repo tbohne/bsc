@@ -257,6 +257,74 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
+    public Solution getNeighborDoubleSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
+
+        ArrayList<Solution> nbrs = new ArrayList<>();
+        int failCnt = 0;
+
+        while (nbrs.size() <= TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
+            Solution neighbor = new Solution(this.currSol);
+            StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
+            StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
+            Swap swapOne = this.swapItems(neighbor, posOne, posTwo);
+            StorageAreaPosition posOneS = new StorageAreaPosition(
+                posOne.getStackIdx(),
+                HeuristicUtil.getRandomIntegerInBetweenWithException(0, neighbor.getFilledStorageArea()[0].length - 1, posOne.getLevel())
+            );
+            StorageAreaPosition posTwoS = new StorageAreaPosition(
+                posTwo.getStackIdx(),
+                HeuristicUtil.getRandomIntegerInBetweenWithException(0, neighbor.getFilledStorageArea()[0].length - 1, posTwo.getLevel())
+            );
+            Swap swapTwo = this.swapItems(neighbor, posOneS, posTwoS);
+
+            if (onlyFeasible) {
+                if (!neighbor.isFeasible()) { continue; }
+
+                // FIRST-FIT
+                if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT
+                    && !this.swapTabuList.contains(swapOne)
+                    && !this.swapTabuList.contains(swapTwo)
+                    && neighbor.computeCosts() < this.currSol.computeCosts()) {
+
+                    this.swapTabuList.add(swapOne);
+                    this.swapTabuList.add(swapTwo);
+                    this.swapIterations.put(swapOne, iteration);
+                    this.swapIterations.put(swapTwo, iteration);
+                    return neighbor;
+
+                // BEST-FIT
+                } else if (!this.swapTabuList.contains(swapOne) && !this.swapTabuList.contains(swapTwo)) {
+                    nbrs.add(neighbor);
+                    this.swapTabuList.add(swapOne);
+                    this.swapTabuList.add(swapTwo);
+                    this.swapIterations.put(swapOne, iteration);
+                    this.swapIterations.put(swapTwo, iteration);
+
+                } else {
+                    failCnt++;
+                    if (failCnt == TabuSearchConfig.UNSUCCESSFUL_SWAP_ATTEMPTS) {
+                        this.clearSwapTabuList();
+                        failCnt = 0;
+                    }
+                }
+
+                // ASPIRATION CRITERION
+                if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
+                    if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT) {
+                        return neighbor;
+                    } else {
+                        nbrs.add(neighbor);
+                    }
+                }
+
+            } else {
+
+                // TODO: implement infeasible part
+            }
+        }
+        return HeuristicUtil.getBestSolution(nbrs);
+    }
+
     /**
      * Applies the combined shift- and swap-neighborhood to retrieve the best neighbor.
      *
@@ -266,8 +334,17 @@ public class TabuSearch {
      * @return best generated neighbor
      */
     public Solution getNeighbor(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
-        Solution shiftNeighbor = getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
-        Solution swapNeighbor = getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
+        Solution shiftNeighbor = this.getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
+        Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
+
+        // if b=3 --> perform double-swap additionally
+        if (swapNeighbor.getFilledStorageArea()[0].length == 3) {
+            Solution doubleSwapNeighbor = this.getNeighborDoubleSwap(shortTermStrategy, onlyFeasible, iteration);
+            if (doubleSwapNeighbor.computeCosts() < swapNeighbor.computeCosts() && doubleSwapNeighbor.computeCosts() < shiftNeighbor.computeCosts()) {
+                return doubleSwapNeighbor;
+            }
+        }
+
         return shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
     }
 
@@ -358,6 +435,8 @@ public class TabuSearch {
     public void solveIterationsSinceLastImprovement() {
         int iteration = 0;
         while (Math.abs(this.iterationOfLastImprovement - iteration) < TabuSearchConfig.NUMBER_OF_NON_IMPROVING_ITERATIONS) {
+            System.out.println(this.bestSol.computeCosts());
+            System.out.println("diff: " + Math.abs(this.iterationOfLastImprovement - iteration));
             this.updateCurrentSolution(TabuSearchConfig.SHORT_TERM_STRATEGY, TabuSearchConfig.FEASIBLE_ONLY, iteration++);
         }
     }
