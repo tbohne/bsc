@@ -19,6 +19,8 @@ public class TabuSearch {
     // CONFIG
     private final int NUMBER_OF_ITERATIONS = 1000;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
+    private final int NUMBER_OF_ITERATIONS_SINCE_LAST_IMPROVEMENT = 50;
+
     private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 25;
     private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 25;
     private final int NUMBER_OF_NEIGHBORS_TO_BE_GENERATED = 100;
@@ -33,6 +35,8 @@ public class TabuSearch {
     private Map<Swap, Integer> swapIterations;
     private Map<Shift, Integer> shiftIterations;
 
+    private int iterationOfLastImprovement;
+
     /**
      * Constructor
      *
@@ -46,6 +50,7 @@ public class TabuSearch {
         this.tabuListClears = 0;
         this.swapIterations = new HashMap<>();
         this.shiftIterations = new HashMap<>();
+        this.iterationOfLastImprovement = 0;
     }
 
     /**
@@ -333,6 +338,7 @@ public class TabuSearch {
         this.currSol = this.getNeighbor(firstFit, onlyFeasible, iteration);
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
+            this.iterationOfLastImprovement = iteration;
         }
     }
 
@@ -357,8 +363,20 @@ public class TabuSearch {
     public void solveTabuListClears(boolean firstFit, boolean onlyFeasible) {
         int iteration = 0;
         while (this.tabuListClears < this.NUMBER_OF_TABU_LIST_CLEARS) {
-            this.updateCurrentSolution(firstFit, onlyFeasible, iteration);
-            iteration++;
+            this.updateCurrentSolution(firstFit, onlyFeasible, iteration++);
+        }
+    }
+
+    /**
+     * Performs the tabu search with a number of non-improving iterations as stop criterion.
+     *
+     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
+     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     */
+    public void solveIterationsSinceLastImprovement(boolean firstFit, boolean onlyFeasible) {
+        int iteration = 0;
+        while (Math.abs(this.iterationOfLastImprovement - iteration) < this.NUMBER_OF_ITERATIONS_SINCE_LAST_IMPROVEMENT) {
+            this.updateCurrentSolution(firstFit, onlyFeasible, iteration++);
         }
     }
 
@@ -371,11 +389,14 @@ public class TabuSearch {
      * @return the best solution generated in the tabu search procedure
      */
     public Solution solve(boolean iterationsCrit, boolean firstFit, boolean onlyFeasible) {
-        if (iterationsCrit) {
-            this.solveIterations(firstFit, onlyFeasible);
-        } else {
-            this.solveTabuListClears(firstFit, onlyFeasible);
-        }
+//        if (iterationsCrit) {
+//            this.solveIterations(firstFit, onlyFeasible);
+//        } else {
+//            this.solveTabuListClears(firstFit, onlyFeasible);
+//        }
+
+        this.solveIterationsSinceLastImprovement(firstFit, onlyFeasible);
+
         return this.bestSol;
     }
 }
