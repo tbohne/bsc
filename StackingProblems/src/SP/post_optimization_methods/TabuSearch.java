@@ -24,7 +24,7 @@ public class TabuSearch {
     private Solution currSol;
     private Solution bestSol;
 
-    private ArrayList<Exchange> swapTabuList;
+    private ArrayList<Swap> swapTabuList;
     private ArrayList<Integer> shiftTabuList;
     private int tabuListClears;
 
@@ -205,20 +205,20 @@ public class TabuSearch {
             StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
             StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
             this.exchangeItems(neighbor, posOne, posTwo);
-            Exchange exchange = new Exchange(posOne, posTwo);
+            Swap swap = new Swap(posOne, posTwo);
 
             if (onlyFeasible) {
                 if (!neighbor.isFeasible()) { continue; }
 
                 // FIRST-FIT
-                if (firstFit && !this.swapTabuList.contains(exchange) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                    this.swapTabuList.add(exchange);
+                if (firstFit && !this.swapTabuList.contains(swap) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                    this.swapTabuList.add(swap);
                     return neighbor;
 
                 // BEST-FIT
-                } else if (!this.swapTabuList.contains(exchange)) {
+                } else if (!this.swapTabuList.contains(swap)) {
                     nbrs.add(neighbor);
-                    this.swapTabuList.add(exchange);
+                    this.swapTabuList.add(swap);
 
                 } else {
                     failCnt++;
@@ -242,7 +242,6 @@ public class TabuSearch {
                 // TODO: implement infeasible part
             }
         }
-
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
@@ -257,8 +256,8 @@ public class TabuSearch {
             System.out.println(i);
 
             Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible);
-            Solution swapNeghbor = getNeighborSwap(firstFit, onlyFeasible);
-            this.currSol = shiftNeighbor.computeCosts() < swapNeghbor.computeCosts() ? shiftNeighbor : swapNeghbor;
+            Solution swapNeighbor = getNeighborSwap(firstFit, onlyFeasible);
+            this.currSol = shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
 
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
