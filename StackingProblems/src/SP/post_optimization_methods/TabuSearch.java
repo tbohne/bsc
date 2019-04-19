@@ -138,12 +138,12 @@ public class TabuSearch {
     /**
      * Generates a neighbor for the current solution using the "shift-neighborhood".
      *
-     * @param firstFit     - determines whether the first improving neighbor gets returned (best-fit otherwise)
-     * @param onlyFeasible - determines whether only feasible neighbors are considered
-     * @param iteration    - the current iteration in the tabu search
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighbors are considered
+     * @param iteration         - the current iteration in the tabu search
      * @return a neighboring solution
      */
-    public Solution getNeighborShift(boolean firstFit, boolean onlyFeasible, int iteration) {
+    public Solution getNeighborShift(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
         ArrayList<Solution> nbrs = new ArrayList<>();
 
         int failCnt = 0;
@@ -161,7 +161,7 @@ public class TabuSearch {
                 if (!neighbor.isFeasible()) { continue; }
 
                 // FIRST-FIT
-                if (firstFit && !this.shiftTabuList.contains(shift) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.shiftTabuList.contains(shift) && neighbor.computeCosts() < this.currSol.computeCosts()) {
                     this.shiftTabuList.add(shift);
                     this.shiftIterations.put(shift, iteration);
                     return neighbor;
@@ -182,7 +182,7 @@ public class TabuSearch {
 
                 // ASPIRATION CRITERION
                 if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
-                    if (firstFit) {
+                    if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT) {
                         return neighbor;
                     } else {
                         nbrs.add(neighbor);
@@ -199,12 +199,12 @@ public class TabuSearch {
     /**
      * Generates a neighbor for the current solution using the "swap-neighborhood".
      *
-     * @param firstFit     - determines whether the first improving neighbor gets returned (best-fit otherwise)
-     * @param onlyFeasible - determines whether only feasible neighbors are considered
-     * @param iteration    - the current iteration in the tabu search
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighbors are considered
+     * @param iteration         - the current iteration in the tabu search
      * @return a neighboring solution
      */
-    public Solution getNeighborSwap(boolean firstFit, boolean onlyFeasible, int iteration) {
+    public Solution getNeighborSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
@@ -221,7 +221,7 @@ public class TabuSearch {
                 if (!neighbor.isFeasible()) { continue; }
 
                 // FIRST-FIT
-                if (firstFit && !this.swapTabuList.contains(swap) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.swapTabuList.contains(swap) && neighbor.computeCosts() < this.currSol.computeCosts()) {
                     this.swapTabuList.add(swap);
                     this.swapIterations.put(swap, iteration);
                     return neighbor;
@@ -242,7 +242,7 @@ public class TabuSearch {
 
                 // ASPIRATION CRITERION
                 if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
-                    if (firstFit) {
+                    if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT) {
                         return neighbor;
                     } else {
                         nbrs.add(neighbor);
@@ -260,14 +260,14 @@ public class TabuSearch {
     /**
      * Applies the combined shift- and swap-neighborhood to retrieve the best neighbor.
      *
-     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
-     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
-     * @param iteration    - the current iteration
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
+     * @param iteration         - the current iteration
      * @return best generated neighbor
      */
-    public Solution getNeighbor(boolean firstFit, boolean onlyFeasible, int iteration) {
-        Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible, iteration);
-        Solution swapNeighbor = getNeighborSwap(firstFit, onlyFeasible, iteration);
+    public Solution getNeighbor(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
+        Solution shiftNeighbor = getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
+        Solution swapNeighbor = getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
         return shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
     }
 
@@ -320,13 +320,13 @@ public class TabuSearch {
      * Updates the current solution with the best neighbor.
      * Additionally, the best solution gets updated if a new best solution is found.
      *
-     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
-     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
-     * @param iteration    - the current iteration
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
+     * @param iteration         - the current iteration
      */
-    public void updateCurrentSolution(boolean firstFit, boolean onlyFeasible, int iteration) {
+    public void updateCurrentSolution(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
         this.freeingStrategy(iteration);
-        this.currSol = this.getNeighbor(firstFit, onlyFeasible, iteration);
+        this.currSol = this.getNeighbor(shortTermStrategy, onlyFeasible, iteration);
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
             this.iterationOfLastImprovement = iteration;
@@ -336,62 +336,66 @@ public class TabuSearch {
     /**
      * Performs the tabu search with a number of iterations as stop criterion.
      *
-     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
-     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
      */
-    public void solveIterations(boolean firstFit, boolean onlyFeasible) {
+    public void solveIterations(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible) {
         for (int i = 0; i < TabuSearchConfig.NUMBER_OF_ITERATIONS; i++) {
-            this.updateCurrentSolution(firstFit, onlyFeasible, i);
+            this.updateCurrentSolution(shortTermStrategy, onlyFeasible, i);
         }
     }
 
     /**
      * Performs the tabu search with a number of tabu list clears as stop criterion.
      *
-     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
-     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
      */
-    public void solveTabuListClears(boolean firstFit, boolean onlyFeasible) {
+    public void solveTabuListClears(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible) {
         int iteration = 0;
         while (this.tabuListClears < TabuSearchConfig.NUMBER_OF_TABU_LIST_CLEARS) {
-            this.updateCurrentSolution(firstFit, onlyFeasible, iteration++);
+            this.updateCurrentSolution(shortTermStrategy, onlyFeasible, iteration++);
         }
     }
 
     /**
      * Performs the tabu search with a number of non-improving iterations as stop criterion.
      *
-     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
-     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
      */
-    public void solveIterationsSinceLastImprovement(boolean firstFit, boolean onlyFeasible) {
+    public void solveIterationsSinceLastImprovement(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible) {
         int iteration = 0;
         while (Math.abs(this.iterationOfLastImprovement - iteration) < TabuSearchConfig.NUMBER_OF_NON_IMPROVING_ITERATIONS) {
-            this.updateCurrentSolution(firstFit, onlyFeasible, iteration++);
+            this.updateCurrentSolution(shortTermStrategy, onlyFeasible, iteration++);
         }
     }
 
     /**
      * Performs the tabu search.
      *
-     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
-     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
      * @return the best solution generated in the tabu search procedure
      */
-    public Solution solve(TabuSearchConfig.stoppingCriterion stoppingCriterion, boolean firstFit, boolean onlyFeasible) {
+    public Solution solve(
+        TabuSearchConfig.StoppingCriteria stoppingCriterion,
+        TabuSearchConfig.ShortTermStrategies shortTermStrategy,
+        boolean onlyFeasible
+    ) {
 
         switch (stoppingCriterion) {
             case ITERATIONS:
-                this.solveIterations(firstFit, onlyFeasible);
+                this.solveIterations(shortTermStrategy, onlyFeasible);
                 break;
             case TABU_LIST_CLEARS:
-                this.solveTabuListClears(firstFit, onlyFeasible);
+                this.solveTabuListClears(shortTermStrategy, onlyFeasible);
                 break;
             case NON_IMPROVING_ITERATIONS:
-                this.solveIterationsSinceLastImprovement(firstFit, onlyFeasible);
+                this.solveIterationsSinceLastImprovement(shortTermStrategy, onlyFeasible);
                 break;
             default:
-                this.solveIterationsSinceLastImprovement(firstFit, onlyFeasible);
+                this.solveIterationsSinceLastImprovement(shortTermStrategy, onlyFeasible);
         }
         return this.bestSol;
     }
