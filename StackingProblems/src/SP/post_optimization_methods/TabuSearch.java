@@ -5,6 +5,8 @@ import SP.representations.StorageAreaPosition;
 import SP.util.HeuristicUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Improvement heuristic that starts with an initial solution of a stacking-problem
@@ -15,10 +17,10 @@ import java.util.ArrayList;
 public class TabuSearch {
 
     // CONFIG
-    private final int NUMBER_OF_ITERATIONS = 500;
+    private final int NUMBER_OF_ITERATIONS = 1000;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
-    private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 20;
-    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 20;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 50;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 50;
     private final int NUMBER_OF_GENERATED_NEIGHBORS = 100;
 
     private Solution currSol;
@@ -27,6 +29,9 @@ public class TabuSearch {
     private ArrayList<Swap> swapTabuList;
     private ArrayList<Shift> shiftTabuList;
     private int tabuListClears;
+
+    private Map<Swap, Integer> swapIterations;
+    private Map<Shift, Integer> shiftIterations;
 
     /**
      * Constructor
@@ -39,6 +44,8 @@ public class TabuSearch {
         this.swapTabuList = new ArrayList<>();
         this.shiftTabuList = new ArrayList<>();
         this.tabuListClears = 0;
+        this.swapIterations = new HashMap<>();
+        this.shiftIterations = new HashMap<>();
     }
 
     /**
@@ -47,6 +54,7 @@ public class TabuSearch {
     public void clearSwapTabuList() {
         System.out.println("clearing swap tabu list...");
         this.swapTabuList = new ArrayList<>();
+        this.swapIterations = new HashMap<>();
         this.tabuListClears++;
     }
 
@@ -56,6 +64,7 @@ public class TabuSearch {
     public void clearShiftTabuList() {
         System.out.println("clearing shift tabu list...");
         this.shiftTabuList = new ArrayList<>();
+        this.shiftIterations = new HashMap<>();
         this.tabuListClears++;
     }
 
@@ -135,9 +144,10 @@ public class TabuSearch {
      *
      * @param firstFit     - determines whether the first improving neighbor gets returned (best-fit otherwise)
      * @param onlyFeasible - determines whether only feasible neighbors are considered
+     * @param iteration    - the current iteration in the tabu search
      * @return a neighboring solution
      */
-    public Solution getNeighborShift(boolean firstFit, boolean onlyFeasible) {
+    public Solution getNeighborShift(boolean firstFit, boolean onlyFeasible, int iteration) {
         ArrayList<Solution> nbrs = new ArrayList<>();
 
         int failCnt = 0;
@@ -157,12 +167,14 @@ public class TabuSearch {
                 // FIRST-FIT
                 if (firstFit && !this.shiftTabuList.contains(shift) && neighbor.computeCosts() < this.currSol.computeCosts()) {
                     this.shiftTabuList.add(shift);
+                    this.shiftIterations.put(shift, iteration);
                     return neighbor;
 
                 // BEST-FIT
                 } else if (!this.shiftTabuList.contains(shift)) {
                     nbrs.add(neighbor);
                     this.shiftTabuList.add(shift);
+                    this.shiftIterations.put(shift, iteration);
 
                 } else {
                     failCnt++;
@@ -193,9 +205,10 @@ public class TabuSearch {
      *
      * @param firstFit     - determines whether the first improving neighbor gets returned (best-fit otherwise)
      * @param onlyFeasible - determines whether only feasible neighbors are considered
+     * @param iteration    - the current iteration in the tabu search
      * @return a neighboring solution
      */
-    public Solution getNeighborSwap(boolean firstFit, boolean onlyFeasible) {
+    public Solution getNeighborSwap(boolean firstFit, boolean onlyFeasible, int iteration) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
@@ -214,12 +227,14 @@ public class TabuSearch {
                 // FIRST-FIT
                 if (firstFit && !this.swapTabuList.contains(swap) && neighbor.computeCosts() < this.currSol.computeCosts()) {
                     this.swapTabuList.add(swap);
+                    this.swapIterations.put(swap, iteration);
                     return neighbor;
 
                 // BEST-FIT
                 } else if (!this.swapTabuList.contains(swap)) {
                     nbrs.add(neighbor);
                     this.swapTabuList.add(swap);
+                    this.swapIterations.put(swap, iteration);
 
                 } else {
                     failCnt++;
@@ -247,6 +262,51 @@ public class TabuSearch {
     }
 
     /**
+     * Freeing strategy for shifts.
+     *
+     * @param iteration - the current iteration
+     */
+    public void removeShifts(int iteration) {
+        ArrayList<Shift> shiftsToBeRemoved = new ArrayList<>();
+        for (Shift shift : this.shiftTabuList) {
+            if (Math.abs(this.shiftIterations.get(shift) - iteration) > this.NUMBER_OF_ITERATIONS / 10) {
+                shiftsToBeRemoved.add(shift);
+            }
+        }
+        for (Shift shift : shiftsToBeRemoved) {
+            this.shiftTabuList.remove(shift);
+        }
+    }
+
+    /**
+     * Freeing strategy for swaps.
+     *
+     * @param iteration - the current iteration
+     */
+    public void removeSwaps(int iteration) {
+        ArrayList<Swap> swapsToBeRemoved = new ArrayList<>();
+        for (Swap swap : this.swapTabuList) {
+            if (Math.abs(this.swapIterations.get(swap) - iteration) > this.NUMBER_OF_ITERATIONS / 10) {
+                swapsToBeRemoved.add(swap);
+            }
+        }
+        for (Swap swap : swapsToBeRemoved) {
+            this.swapTabuList.remove(swap);
+        }
+    }
+
+    /**
+     * Implementation of the freeing strategy.
+     * Shifts and swaps are removed from the tabu lists after a certain number of iterations.
+     *
+     * @param iteration - the current iteration
+     */
+    public void freeingStrategy(int iteration) {
+        this.removeShifts(iteration);
+        this.removeSwaps(iteration);
+    }
+
+    /**
      * Performs the tabu search with a number of iterations as stop criterion.
      *
      * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
@@ -254,12 +314,10 @@ public class TabuSearch {
      */
     public void solveIterations(boolean firstFit, boolean onlyFeasible) {
         for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
-            System.out.println(i);
-
-            Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible);
-            Solution swapNeighbor = getNeighborSwap(firstFit, onlyFeasible);
+            this.freeingStrategy(i);
+            Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible, i);
+            Solution swapNeighbor = getNeighborSwap(firstFit, onlyFeasible, i);
             this.currSol = shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
-
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
@@ -273,11 +331,13 @@ public class TabuSearch {
      * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
      */
     public void solveTabuListClears(boolean firstFit, boolean onlyFeasible) {
+        int iteration = 0;
         while (this.tabuListClears < this.NUMBER_OF_TABU_LIST_CLEARS) {
-            this.currSol = getNeighborSwap(firstFit, onlyFeasible);
+            this.currSol = getNeighborSwap(firstFit, onlyFeasible, iteration);
             if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
                 this.bestSol = this.currSol;
             }
+            iteration++;
         }
     }
 
