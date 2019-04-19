@@ -19,9 +19,9 @@ public class TabuSearch {
     // CONFIG
     private final int NUMBER_OF_ITERATIONS = 1000;
     private final int NUMBER_OF_TABU_LIST_CLEARS = 10;
-    private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 50;
-    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 50;
-    private final int NUMBER_OF_GENERATED_NEIGHBORS = 100;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SWAP = 25;
+    private final int FAIL_COUNT_BEFORE_CLEAR_SHIFT = 25;
+    private final int NUMBER_OF_NEIGHBORS_TO_BE_GENERATED = 100;
 
     private Solution currSol;
     private Solution bestSol;
@@ -152,7 +152,7 @@ public class TabuSearch {
 
         int failCnt = 0;
 
-        while (nbrs.size() <= this.NUMBER_OF_GENERATED_NEIGHBORS) {
+        while (nbrs.size() <= this.NUMBER_OF_NEIGHBORS_TO_BE_GENERATED) {
             Solution neighbor = new Solution(this.currSol);
             StorageAreaPosition pos = this.getRandomPositionInStorageArea(neighbor);
             int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
@@ -214,7 +214,7 @@ public class TabuSearch {
 
         int failCnt = 0;
 
-        while (nbrs.size() <= this.NUMBER_OF_GENERATED_NEIGHBORS) {
+        while (nbrs.size() <= this.NUMBER_OF_NEIGHBORS_TO_BE_GENERATED) {
 
             Solution neighbor = new Solution(this.currSol);
             StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
@@ -259,6 +259,20 @@ public class TabuSearch {
             }
         }
         return HeuristicUtil.getBestSolution(nbrs);
+    }
+
+    /**
+     * Applies the combined shift- and swap-neighborhood to retrieve the best neighbor.
+     *
+     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
+     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     * @param iteration    - the current iteration
+     * @return best generated neighbor
+     */
+    public Solution getNeighbor(boolean firstFit, boolean onlyFeasible, int iteration) {
+        Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible, iteration);
+        Solution swapNeighbor = getNeighborSwap(firstFit, onlyFeasible, iteration);
+        return shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
     }
 
     /**
@@ -307,6 +321,22 @@ public class TabuSearch {
     }
 
     /**
+     * Updates the current solution with the best neighbor.
+     * Additionally, the best solution gets updated if a new best solution is found.
+     *
+     * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
+     * @param onlyFeasible - determines whether only feasible neighboring solutions are considered during the search
+     * @param iteration    - the current iteration
+     */
+    public void updateCurrentSolution(boolean firstFit, boolean onlyFeasible, int iteration) {
+        this.freeingStrategy(iteration);
+        this.currSol = this.getNeighbor(firstFit, onlyFeasible, iteration);
+        if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
+            this.bestSol = this.currSol;
+        }
+    }
+
+    /**
      * Performs the tabu search with a number of iterations as stop criterion.
      *
      * @param firstFit     - determines the strategy of the neighbor retrieval (true --> first-fit, false --> best-fit)
@@ -314,13 +344,7 @@ public class TabuSearch {
      */
     public void solveIterations(boolean firstFit, boolean onlyFeasible) {
         for (int i = 0; i < this.NUMBER_OF_ITERATIONS; i++) {
-            this.freeingStrategy(i);
-            Solution shiftNeighbor = getNeighborShift(firstFit, onlyFeasible, i);
-            Solution swapNeighbor = getNeighborSwap(firstFit, onlyFeasible, i);
-            this.currSol = shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
-            if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
-                this.bestSol = this.currSol;
-            }
+            this.updateCurrentSolution(firstFit, onlyFeasible, i);
         }
     }
 
@@ -333,10 +357,7 @@ public class TabuSearch {
     public void solveTabuListClears(boolean firstFit, boolean onlyFeasible) {
         int iteration = 0;
         while (this.tabuListClears < this.NUMBER_OF_TABU_LIST_CLEARS) {
-            this.currSol = getNeighborSwap(firstFit, onlyFeasible, iteration);
-            if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
-                this.bestSol = this.currSol;
-            }
+            this.updateCurrentSolution(firstFit, onlyFeasible, iteration);
             iteration++;
         }
     }
