@@ -2,12 +2,12 @@ package SP.post_optimization_methods;
 
 import SP.representations.StorageAreaPosition;
 
-public class Exchange {
+public class Swap {
 
     private StorageAreaPosition posOne;
     private StorageAreaPosition posTwo;
 
-    public Exchange(StorageAreaPosition posOne, StorageAreaPosition posTwo) {
+    public Swap(StorageAreaPosition posOne, StorageAreaPosition posTwo) {
         this.posOne = posOne;
         this.posTwo = posTwo;
     }
@@ -22,9 +22,9 @@ public class Exchange {
 
     @Override
     public boolean equals(Object object) {
-        if (object != null && object instanceof Exchange) {
-            return (this.posOne.equals(((Exchange)object).getPosOne()) && this.posTwo.equals(((Exchange)object).getPosTwo()))
-                ||(this.posOne.equals(((Exchange)object).getPosTwo()) && this.posTwo.equals(((Exchange)object).getPosOne()));
+        if (object != null && object instanceof Swap) {
+            return (this.posOne.equals(((Swap)object).getPosOne()) && this.posTwo.equals(((Swap)object).getPosTwo()))
+                ||(this.posOne.equals(((Swap)object).getPosTwo()) && this.posTwo.equals(((Swap)object).getPosOne()));
         }
         return false;
     }
