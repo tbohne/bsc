@@ -559,6 +559,15 @@ public class HeuristicUtil {
         return r.nextInt((max - min) + 1) + min;
     }
 
+    public static int getRandomIntegerInBetweenWithException(int min, int max, int exception) {
+        Random r = new Random();
+        int val = r.nextInt((max - min) + 1) + min;
+        while (val == exception) {
+            val = r.nextInt((max - min) + 1) + min;
+        }
+        return val;
+    }
+
     /**
      * Returns the number of items that are assigned to a stack in the storage area.
      *
