@@ -2676,6 +2676,8 @@ Dabei wird zwischen deterministischen Verfahren, die bei gleichen Startlösungen
 Ergebnis kommen und stochastischen Verfahren, bei denen durch den Einsatz einer Zufallskomponente unterschiedliche Lösungen
 generiert werden, unterschieden. \cite{Knust2017}
 
+Zunächst werden die Grundlagen zu ... und ... vorgestellt, woraufhin die TS, die in dieser Arbeit entw. wurde, präsentiert...
+
 \subsection{Lokale Suchverfahren}
 \label{sec:local_search}
 
@@ -2746,26 +2748,56 @@ V(x) =
 \label{sec:tabu_seach}
 
 Das größte Problem des in Kapitel \ref{sec:local_search} vorgestellten allgemeinen lokalen Suchverfahrens
-ist, dass die Lösung nur einem lokalen Minimum entspricht und daher möglicherweise stark vom globalen
-Minimum abweicht. Eine gute Qualität der Lösung ist somit nicht garantiert.
-
+ist, dass die generierte Lösung nur einem lokalen Optimum entspricht und daher möglicherweise stark vom globalen
+Optimum abweicht. Eine gute Qualität der Lösung ist somit nicht garantiert.
 Eine Strategie um diesem Problem entgegenzutreten wäre beispielsweise, das Verfahren mehrfach mit unterschiedlichen
-Initiallösungen zu starten und anschließend das beste generierte lokale Minimum zu wählen.
+Initiallösungen zu starten und anschließend das beste generierte lokale Optimum zu wählen.
 Ein weiterer Ansatz ist, Verschlechterungen des Zielfunktionswerts während des Suchprozesses zu erlauben.
-Das führt allerdings dazu, dass Lösungen mehrfach besucht werden können und somit Zyklen entstehen können.
-Somit müssen in solchen Ansätzen zusätzliche Strategien umgesetzt werden, die Zyklen vermeiden. \cite{Brucker2006}
-
-Genau dort setzt das Verfahren der sogenannten Tabu-Suche an. Eine Tabu-Suche besitzt eine Tabu-Liste,
-in der sämtliche Lösungen, die besucht werden, als zukünftig \textquote{tabu} gespeichert werden.
+Dies führt allerdings dazu, dass Lösungen mehrfach besucht werden können und somit Zyklen entstehen.
+Daher müssen in solchen Ansätzen zusätzliche Strategien umgesetzt werden, die Zyklen vermeiden. \cite{Brucker2006}
+Genau dort setzt das Verfahren der sogenannten Tabu-Suche an, welche zum Ziel hat, Situationen, wie jene aus
+Abb. \ref{fig:local_search_weakness}, zu vermeiden. Eine Tabu-Suche verwendet eine Tabu-Liste,
+in welcher sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden.
 Eine zur gegenwärtigen Lösung benachbarte Lösung wird nur dann akzeptiert, wenn diese nicht Teil der Tabu-Liste ist.
-In jeder Iteration wird die gegenwärtige Lösung demnach durch eine benachbarte Lösung ersetzt, die nicht \textquote{tabu} ist.
-
+In jeder Iteration wird die gegenwärtige Lösung demnach durch eine benachbarte Lösung ersetzt, welche nicht \textquote{tabu} ist.
+Der allgemeine Ablauf einer Tabu-Suche ist in Abb. \ref{fig:tabu_search_algo} dargestellt.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{img/tabu_search_algo_placeholder.png}
 \caption{\textsc{Tabu-Suche. \cite{Knust2017}}}
-\label{fig:}
+\label{fig:tabu_search_algo}
 \end{figure}
+
+Die Strategie, mit welcher lokale Optima verlassen werden können, ist die folgende.
+Selbst wenn in der Nachbarschaft $V(x_n)$ keine bessere Lösung als die gegenwärtige Lösung $x_n$ existiert,
+wird zur besten Lösung $x \in V(x_n)$ vorangeschritten.
+Da die gesamte Nachbarschaft zu groß sein kann, um diese effizient zu durchsuchen,
+wird dabei häufig nur ein Teil der Nachbarschaft $V'(X_n) \subseteq V(x_n)$ betrachtet \cite{Pirlot1996}.
+
+\pagebreak
+
+Dieses Vorgehen führt dazu, dass es zu Zyklen kommen kann. Entspricht die gegenwärtige Lösung $x$,
+so wird anschließend die beste Lösung $x_n \in V(x)$ gewählt. Daraufhin besteht die Chance,
+dass die beste Lösung in $V(x_n)$ erneut $x$ ist. D.h. es entsteht ein Zyklus, in welchem immer
+wieder zwischen den Lösungen $x$ und $x_n$ gewechselt wird.
+Unter anderem zur Vermeidung solcher Situationen, wird die namensgebende Tabu-Liste verwendet,
+welche bereits besuchte Lösungen speichert. Ist eine Lösung $x$ Teil der Tabu-Liste,
+so ist der Übergang von $x_n$ zu $x$ verboten bzw. \textquote{tabu}.
+In der Regel werden in der Tabu-Liste aus Effizienzgründen jedoch nicht vollständige Lösungen gespeichert, sondern
+bestimmte Attribute der Lösungen oder auch die Operation, welche durchgeführt wurde, um zur jeweiligen Lösung zu gelangen. Im Fall des Bitvektor-Beispiels wäre es z.B. die Information, dass Bit $i$ von $0$ auf $1$ gesetzt wurde.
+Die primäre Funktion der Tabu-Liste besteht allerdings darin, die Suche zu diversifizieren,
+indem in zuvor undurchsuchten Regionen des \textquote{Search Space}\footnote{Die Menge, die nach den zu findenden Objekten durchsucht werden soll.} gesucht wird und lokale Optima verlassen werden \cite{Pirlot1996}.
+
+Die Qualität der von einer Tabu-Suche generierten Lösungen hängt stark von den vielen
+Konfigurations- und Spezifikationsmöglichkeiten ab, welche bei der Entwicklung einer Tabu-Suche gegeben sind.
+Die wohl wichtigste Spezifikation ist jene der Nachbarschaftsstruktur. Da in der Regel nicht die vollständige Nachbarschaft einer Lösung besucht wird, wird häufig eine feste Anzahl zufälliger Nachbarn innerhalb der Nachbarschaft besucht. Wie bereits erwähnt, werden zumeist nicht vollständige Lösungen in der Tabu-Liste
+gespeichert, weshalb auch die Entscheidung darüber, welche Informationen dort gespeichert werden,
+von Relevanz ist. Außerdem wird über ein Aspirationskriterium die Möglichkeit gegeben, dass in bestimmten Fällen
+der Tabu-Status einer Lösung bzw. eines Übergangs zu einer anderen Lösung ignoriert wird,
+z.B. wenn dieser zu einer bisher besten Lösung führt. Schließlich muss ein sinnvolles
+Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird die in dieser Arbeit entwickelte Tabu-Suche vorgestellt.
+
+\vfill
 
 \pagebreak
 
