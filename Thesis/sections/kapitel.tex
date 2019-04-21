@@ -2800,16 +2800,32 @@ Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird 
 \subsection{Tabu-Suche zur Lösung von Stacking-Problemen}
 \label{sec:tabu_seach_for_sp}
 
-Bevor die Nachbarschaftsstruktur etc. definiert werden kann, muss zunächst die Lösungsrepräsentation festgelegt werden,
-die genau den Zuweisungen von Item-Tupeln zu Stacks, welche von den konstruktiven Heuristiken aus Abschnitt \ref{sec:two_cap_heuristic}
-und Abschnitt \ref{sec:three_cap_heuristic} generiert werden, entspricht. Es handelt sich daher um eine Matrix, die sämtliche Zellen
-der Storage-Area repräsentiert.
+Bevor die Nachbarschaftsstruktur etc. definiert werden kann, muss zunächst die Lösungsrepräsentation festgelegt werden, die genau den Zuweisungen von Item-Tupeln zu Stacks, welche von den konstruktiven Heuristiken aus Abschnitt \ref{sec:two_cap_heuristic} und Abschnitt \ref{sec:three_cap_heuristic} generiert werden, entspricht. Es handelt sich daher um eine Matrix, die sämtliche Zellen der Storage-Area repräsentiert.
 
 Eine allgemeine Tabu-Suche besteht aus drei Hauptstrategien, welche von \citet{Glover90} als Forbidding-Strategy,
-Freeing-Strategy und Short-Term-Strategy bezeichnet werden. Diese werden im Folgenden anhand der in dieser Arbeit entwickelten
-Tabu-Suche erläutert.
+Freeing-Strategy und Short-Term-Strategy bezeichnet werden. Diese werden im Folgenden anhand der in dieser Arbeit entwickelten Tabu-Suche erläutert.
+
+\pagebreak
+
+Zunächst zur betrachteten Nachbarschaftsstruktur. Um Nachbarn einer gegebenen Lösung zu generieren,
+wird eine kombinierte \textquote{Shift}- und \textquote{Swap}-Nachbarschaft verwendet.
+Jedes Item $i \in I$ einer gegebenen Lösung befindet sich in einem Stack $q \in Q$.
+Ein \textquote{Shift} bedeutet, dass Item $i$ in einen Stack $r \in Q$ mit $r \neq q$ verschoben wird.
+Das Item-Tupel $(i_k, ..., i_1)$, welches sich in Stack $r$ befindet, muss nach der Zuweisung des Items $i$
+weiterhin zulässig sein. Dementsprechend muss die Stack-Kapazität durch $k \leq b$ eingehalten werden.
+Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lambda} = 1 \thinspace \forall \thinspace
+\lambda = 1, ..., k - 1$, als auch die Placement-Constraints mit $t_{i_\lambda q} = 1 \thinspace \forall
+\thinspace i_\lambda$ respektiert werden.
+Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
+welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, also $q \neq j$ und $i \in q$ und $j \in r$.
+Sind beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack,
+so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
 
 \textbf{Forbidding-Strategy}\newline
+
+Die Forbidding-Strategy spezifiziert die Art der Einträge, also die Art der gespeicherten Information in der
+Tabu-Liste. Die entwickelte Tabu-Suche verwaltet aufgrund der verwendeten Nachbarschaftsstruktur, welche im Folgenden
+beschrieben wird, zwei unterschiedliche Tabu-Listen.
 
 
 
