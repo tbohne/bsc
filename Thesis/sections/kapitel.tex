@@ -2827,13 +2827,8 @@ Die Forbidding-Strategy spezifiziert die Art der Einträge, also die Art der ges
 Tabu-Liste. Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten \textquote{Shift}- und \textquote{Swap}-Nachbarschaft zwei unterschiedliche Tabu-Listen.
 Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
 zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
-In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area, deren Inhalt vertauscht wird.
-D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt. Dabei spielt die Reihenfolge keine Rolle,
-wenn ein Eintrag ($P_1, P_2$) Teil der Tabu-Liste ist, so ist auch die Swap-Operation ($P_2, P_1$) verboten.
-
-
-
-
+In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, die sie beinhalten.
+D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.
 
 \vfill
 
