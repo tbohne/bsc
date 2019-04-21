@@ -2819,13 +2819,17 @@ Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lamb
 Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
 welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, also $q \neq j$ und $i \in q$ und $j \in r$.
 Sind beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack,
-so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
+so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.\newline
 
 \textbf{Forbidding-Strategy}\newline
 
 Die Forbidding-Strategy spezifiziert die Art der Einträge, also die Art der gespeicherten Information in der
-Tabu-Liste. Die entwickelte Tabu-Suche verwaltet aufgrund der verwendeten Nachbarschaftsstruktur, welche im Folgenden
-beschrieben wird, zwei unterschiedliche Tabu-Listen.
+Tabu-Liste. Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten \textquote{Shift}- und \textquote{Swap}-Nachbarschaft zwei unterschiedliche Tabu-Listen.
+Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
+zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
+In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area, deren Inhalt vertauscht wird.
+D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt. Dabei spielt die Reihenfolge keine Rolle,
+wenn ein Eintrag ($P_1, P_2$) Teil der Tabu-Liste ist, so ist auch die Swap-Operation ($P_2, P_1$) verboten.
 
 
 
