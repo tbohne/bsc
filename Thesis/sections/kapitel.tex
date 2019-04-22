@@ -2670,24 +2670,22 @@ stets zum selben Ergebnis kommt.
 \label{sec:post_optimization}
 
 Bei Verbesserungsverfahren handelt es sich um lokale Suchverfahren, welche bereits mit einer Lösung des Problems starten,
-die z.B. durch ein konstruktives Eröffnungsverfahren, wie die Heuristiken aus den Kapiteln \ref{sec:two_cap_heuristic} und \ref{sec:three_cap_heuristic} bestimmt wurde und versuchen diese im Laufe des Verfahrens zu verbessern.
+die z.B. durch ein konstruktives Eröffnungsverfahren, wie die Heuristiken aus den Kapiteln \ref{sec:two_cap_heuristic}
+und \ref{sec:three_cap_heuristic}, bestimmt wurde und versuchen diese im Laufe des Verfahrens zu verbessern.
+Dabei wird zwischen deterministischen Verfahren, die bei gleichen Startlösungen und gleichen Rahmenbedingungen stets zum gleichen Ergebnis kommen und stochastischen Verfahren, bei denen durch den Einsatz einer Zufallskomponente unterschiedliche Lösungen generiert werden, unterschieden \cite{Knust2017}.
 
-Dabei wird zwischen deterministischen Verfahren, die bei gleichen Startlösungen und gleichen Rahmenbedingungen stets zum gleichen
-Ergebnis kommen und stochastischen Verfahren, bei denen durch den Einsatz einer Zufallskomponente unterschiedliche Lösungen
-generiert werden, unterschieden. \cite{Knust2017}
-
-Zunächst werden die Grundlagen zu ... und ... vorgestellt, woraufhin die TS, die in dieser Arbeit entw. wurde, präsentiert...
+Zunächst werden in Abschnitt \ref{sec:local_search} die Grundlagen zu lokalen Suchverfahren eingeführt.
+Anschließend geht es in Abschnitt \ref{sec:tabu_search} um das allgemeine Verfahren einer Tabu-Suche,
+bevor in Abschnitt \ref{sec:tabu_search_for_sp} konkret die entwickelte Tabu-Suche zur Lösung von Stacking-Problemen
+präsentiert wird.
 
 \subsection{Lokale Suchverfahren}
 \label{sec:local_search}
 
-Bei den in dieser Arbeit betrachteten lokalen Suchverfahren handelt es sich um sogenannte Metaheuristiken,
-weil sie nicht auf ein spezielles Problem abzielen, sondern auf grundsätzlichen Suchprinzipien beruhen,
-die auf eine Vielzahl von Optimierungsproblemen anwendbar sind.
-Aus diesem Grund erfreuen sich diese Heuristiken einer sehr großen Beliebtheit,
-sie sind allgemein anwendbar und sehr flexibel an konkrete Problemstellungen anpassbar.
-Eine lokale Suche ist ein iterativer Prozess, bei welchem von einer Lösung zur nächsten, verbessernden Lösung vorangeschritten wird,
-bis ein bestimmtes Abbruchkriterium erfüllt ist. Um den Lösungsraum systematisch zu durchsuchen, wird die
+Beim in dieser Arbeit betrachteten lokalen Suchverfahren handelt es sich um eine sogenannte Metaheuristik,
+weil dieses nicht auf ein spezielles Problem abzielt, sondern auf grundsätzlichen Suchprinzipien beruht,
+die auf eine Vielzahl von Optimierungsproblemen anwendbar sind. Aus diesem Grund erfreuen sich diese Heuristiken einer sehr großen Beliebtheit, sie sind allgemein anwendbar und sehr flexibel an konkrete Problemstellungen anpassbar.
+Eine lokale Suche ist ein iterativer Prozess, bei welchem von einer Lösung zur nächsten, verbessernden Lösung vorangeschritten wird, bis ein bestimmtes Abbruchkriterium erfüllt ist. Um den Lösungsraum systematisch zu durchsuchen, wird die
 sogenannte Nachbarschaft einer Lösung definiert, die der Menge der Lösungen entspricht, die im nächsten Schritt
 von der gegenwärtigen Lösung erreichbar sind. \cite{Brucker2006}
 Die Idee eines lokalen Suchverfahrens ist es also, ausgehend von einer Initiallösung, durch wohldefinierte Regeln zu anderen,
@@ -2745,7 +2743,7 @@ V(x) =
 \pagebreak
 
 \subsection{Tabu-Suche}
-\label{sec:tabu_seach}
+\label{sec:tabu_search}
 
 Das größte Problem des in Kapitel \ref{sec:local_search} vorgestellten allgemeinen lokalen Suchverfahrens
 ist, dass die generierte Lösung nur einem lokalen Optimum entspricht und daher möglicherweise stark vom globalen
@@ -2798,7 +2796,7 @@ z.B. wenn dieser zu einer bisher besten Lösung führt. Schließlich muss ein si
 Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird die in dieser Arbeit entwickelte Tabu-Suche vorgestellt.
 
 \subsection{Tabu-Suche zur Lösung von Stacking-Problemen}
-\label{sec:tabu_seach_for_sp}
+\label{sec:tabu_search_for_sp}
 
 Bevor die Nachbarschaftsstruktur etc. definiert werden kann, muss zunächst die Lösungsrepräsentation festgelegt werden, die genau den Zuweisungen von Item-Tupeln zu Stacks, welche von den konstruktiven Heuristiken aus Abschnitt \ref{sec:two_cap_heuristic} und Abschnitt \ref{sec:three_cap_heuristic} generiert werden, entspricht. Es handelt sich daher um eine Matrix, die sämtliche Zellen der Storage-Area repräsentiert.
 
