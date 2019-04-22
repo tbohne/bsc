@@ -2870,10 +2870,83 @@ entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche 
 Eine wichtige Eigenschaft einer Nachbarschaft ist der sogenannte Zusammenhang. Eine Nachbarschaft wird als zusammenhängend bezeichnet, wenn von einer Lösung $s$ durch Anwendung einer endlichen Folge von Operatoren jede andere Lösung $s'$ erreicht
 werden kann \cite{Brucker2006}. Bei einer zusammenhängenden Nachbarschaft existieren Konvergenzaussagen für Tabu-Suchen.
 Auch praktische Experimente haben gezeigt, dass lokale Suchverfahren im Allgemeinen bessere Ergebnisse
-liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängendend\footnote{Analog zum Zusammenhang, allerdings müssen nur sämtliche optimalen Lösungen erreichbar sein.}
- sind \cite{Knust2017}.
+liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängendend\footnote{Analog zum Zusammenhang, allerdings müssen nur sämtliche optimalen Lösungen erreichbar sein.} sind \cite{Knust2017}.
+
+Dementsprechend ist ein solcher Zusammenhang bei der Nachbarschaftsstruktur erstrebenswert.
+Die zuvor beschriebene Nachbarschaft ist allerdings noch nicht zusammenhängend, was an folgendem Gegenbeispiel
+nachvollzogen werden kann.
+
+\pagebreak
+
+Es sei der Stacking-Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
+dessen transitiver Abschluss den Stacking-Constraints entspricht. Außerdem seien sämtliche Items mit den Stacks
+$S_0$ und $S_1$ kompatibel.
+\begin{figure}[H]
+  \centering
+    \begin{tikzpicture}[->, scale=0.65, transform shape, node distance=2.5cm]
+    \node[state] (A) {1};
+    \node[state] (B) [below of=A] {2};
+    \node[state] (C) [below of=B] {3};
+    \node[state] (D) [right of=A] {4};
+    \node[state] (E) [right of=B] {5};
+    \node[state] (F) [right of=C] {6};
+
+    \path (A) edge node {} (B)
+          (B) edge node {} (C)
+
+          (D) edge node {} (E)
+          (E) edge node {} (F)
+
+          (B) edge node {} (F)
+          (E) edge node {} (C);
+  \end{tikzpicture}
+  \caption{\textsc{Stacking-Graph}}
+  \label{fig:counter_example_stacking_graph}
+\end{figure}
+
+Die in Abb. \ref{fig:counter_example_stacks} dargestellten Lösungen sind beide zulässig. Dementsprechend muss
+sich die Lösung $s$ aus Abb. \ref{fig:counter_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus
+Abb. \ref{fig:counter_b} transformieren lassen, wenn die Nachbarschaft zusammenhängend ist.
+
+Da lediglich zulässige Nachbarlösungen betrachtet werden und beide Stacks vollständig gefüllt sind,
+sind Shift-Operationen nicht gestattet, weil sonst die Stack-Kapazität verletzt würde.
+Die Transformation muss daher durch Anwendung einer endliche Anzahl von Swap-Operationen auf $s$ gelingen.
+Dabei können zwei Items innerhalb eines Stacks basierend auf dem Graphen aus Abb. \ref{fig:counter_example_stacking_graph}  nicht vertauscht werden ohne die Stacking-Constraints zu verletzen.
+
+\begin{figure}[H]
+  \begin{subfigure}[b]{0.5\textwidth}
+  \centering
+  \resizebox{0.4\textwidth}{!}{
+    \begin{tabular}{c|c|c|}
+    \cline{2-3}
+    $\boldsymbol{L_2}$ & $1$ & $4$ \\ \cline{2-3}
+    $\boldsymbol{L_1}$ & $2$ & $5$ \\ \cline{2-3}
+    $\boldsymbol{L_0}$ & $3$ & $6$ \\ \cline{2-3}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} \\
+    \end{tabular}}
+    \caption{\textsc{Lösung $s$}}
+    \label{fig:counter_a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.5\textwidth}
+  \centering
+  \resizebox{0.4\textwidth}{!}{
+    \begin{tabular}{c|c|c|}
+    \cline{2-3}
+    $\boldsymbol{L_2}$ & $4$ & $1$ \\ \cline{2-3}
+    $\boldsymbol{L_1}$ & $5$ & $2$ \\ \cline{2-3}
+    $\boldsymbol{L_0}$ & $3$ & $6$ \\ \cline{2-3}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} \\
+    \end{tabular}}
+    \caption{\textsc{Lösung $s'$}}
+    \label{fig:counter_b}
+  \end{subfigure}
+  \caption{\textsc{Gegenbeispiel - Nachbarschaft nicht zusammenhängend.}}
+  \label{fig:counter_example_stacks}
+\end{figure}
 
 \vfill
+
 
 \pagebreak
 
