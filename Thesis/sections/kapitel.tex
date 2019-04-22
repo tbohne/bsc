@@ -2867,6 +2867,12 @@ Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurück
 der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander allesamt tabu sind, so wird die
 entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Bei der letzten Variante handelt es sich um ein durchaus gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
 
+Eine wichtige Eigenschaft einer Nachbarschaft ist der sogenannte Zusammenhang. Eine Nachbarschaft wird als zusammenhängend bezeichnet, wenn von einer Lösung $s$ durch Anwendung einer endlichen Folge von Operatoren jede andere Lösung $s'$ erreicht
+werden kann \cite{Brucker2006}. Bei einer zusammenhängenden Nachbarschaft existieren Konvergenzaussagen für Tabu-Suchen.
+Auch praktische Experimente haben gezeigt, dass lokale Suchverfahren im Allgemeinen bessere Ergebnisse
+liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängendend\footnote{Analog zum Zusammenhang, allerdings müssen nur sämtliche optimalen Lösungen erreichbar sein.}
+ sind \cite{Knust2017}.
+
 \vfill
 
 \pagebreak
