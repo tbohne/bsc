@@ -2686,17 +2686,17 @@ Beim in dieser Arbeit betrachteten lokalen Suchverfahren handelt es sich um eine
 weil dieses nicht auf ein spezielles Problem abzielt, sondern auf grundsätzlichen Suchprinzipien beruht,
 die auf eine Vielzahl von Optimierungsproblemen anwendbar sind. Aus diesem Grund erfreuen sich diese Heuristiken einer sehr großen Beliebtheit, sie sind allgemein anwendbar und sehr flexibel an konkrete Problemstellungen anpassbar.
 Eine lokale Suche ist ein iterativer Prozess, bei welchem von einer Lösung zur nächsten, verbessernden Lösung vorangeschritten wird, bis ein bestimmtes Abbruchkriterium erfüllt ist. Um den Lösungsraum systematisch zu durchsuchen, wird die
-sogenannte Nachbarschaft einer Lösung definiert, die der Menge der Lösungen entspricht, die im nächsten Schritt
-von der gegenwärtigen Lösung erreichbar sind. \cite{Brucker2006}
-Die Idee eines lokalen Suchverfahrens ist es also, ausgehend von einer Initiallösung, durch wohldefinierte Regeln zu anderen,
-verbessernden Lösungen innerhalb der Nachbarschaft zu gelangen.
-Dabei wird häufig solange fortgeschritten, bis keine verbessernde Lösung in der Nachbarschaft gefunden wird,
-also bis ein lokales Minimum erreicht ist.
-Der Erfolg dieses Ansatzes und somit die Lösungsqualität hängt primär von der definierten Struktur der Nachbarschaft ab. \cite{Pirlot1996}
+sogenannte Nachbarschaft einer Lösung definiert, die der Menge der Lösungen entspricht, welche im nächsten Schritt
+von der gegenwärtigen Lösung erreichbar sind \cite{Brucker2006}.
+Die Idee eines lokalen Suchverfahrens ist es also, ausgehend von einer Initiallösung durch wohldefinierte Regeln zu anderen,
+verbessernden Lösungen innerhalb der Nachbarschaft zu gelangen. Dabei wird häufig solange fortgeschritten, bis keine verbessernde Lösung in der Nachbarschaft gefunden wird, also bis ein lokales Minimum erreicht ist.
+Der Erfolg dieses Ansatzes und somit die Lösungsqualität hängt primär von der definierten Struktur
+der Nachbarschaft ab \cite{Pirlot1996}.
 Die größte Schwäche dieses Ansatzes ist die Unfähigkeit, lokale Minima zu verlassen. Dieses Problem ist sehr
-anschaulich in Abb. \ref{fig:local_search_weakness} visualisiert. Darin sind sämtliche Lösungen in der Nachbarschaft $V(x_n)$ schlechter
-als die gegenwärtige Lösung $x_n$, obwohl weiter entfernt ein globales Minimum existiert, welches
-aufgrund der Tatsache, dass ausschließlich verbessernde Lösungen gewählt werden, nicht erreicht werden kann.
+anschaulich in Abb. \ref{fig:local_search_weakness} visualisiert. Darin sind sämtliche Lösungen in der
+Nachbarschaft $V(x_n)$ schlechter als die gegenwärtige Lösung $x_n$, obwohl weiter entfernt ein globales Minimum
+existiert, welches aufgrund der Tatsache, dass ausschließlich verbessernde Lösungen gewählt werden,
+nicht erreicht werden kann.
 
 \begin{figure}[H]
 \centering
@@ -2712,7 +2712,8 @@ wird eine neue Lösung $x_{n+1}$ aus der Nachbarschaft $V(x_n)$ der gegenwärtig
 Für jedes $x \in X$ existiert eine solche Nachbarschaft $V(x) \subseteq X$.
 Typischerweise entspricht das Kriterium, anhand welchem die nächste Lösung $x_{n+1}$ gewählt wird,
 die beste Lösung in der Nachbarschaft von $x_n$ zu wählen, also eine Lösung $x_{n+1} \in V(x_n)$
-mit $F(x_{n+1}) \leq F(x) \thinspace \forall \thinspace x \in V(x_n)$ bei Betrachtung eines Minimierungsproblems. \cite{Pirlot1996}
+mit $F(x_{n+1}) \leq F(x) \thinspace \forall \thinspace x \in V(x_n)$ bei Betrachtung eines
+Minimierungsproblems \cite{Pirlot1996}.
 
 Sollte keine verbessernde Lösung in der Nachbarschaft gefunden werden, so terminiert die Suche.
 Diese Strategie wird \textquote{Steepest Descent} genannt, also Strategie des steilsten Abstiegs.
@@ -2724,7 +2725,7 @@ was zum bereits erwähnten Problem aus Abb. \ref{fig:local_search_weakness} füh
 
 Ein simples Beispiel für eine solche Nachbarschaft lässt sich anhand eines Bitvektors demonstrieren.
 Wenn $X$ eine Menge von Bitvektoren ist und $x \in X$, dann kann eine Nachbarschaft $V(x)$ als die Menge
-sämtlicher Lösungen $x \in X$ definiert werden, bei denen in $x$ ein einzelnes Bit invertiert wird. \cite{Pirlot1996}
+sämtlicher Lösungen $x \in X$ definiert werden, bei denen in $x$ ein einzelnes Bit invertiert wird \cite{Pirlot1996}.
 
 Sei $x = (1, 0, 1, 0, 1, 0)$ eine als Bitvektor kodierte Lösung.
 Die Nachbarschaft dieser Lösung ergibt sich gemäß der beschriebenen Struktur wie folgt:
