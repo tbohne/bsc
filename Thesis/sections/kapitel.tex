@@ -2956,6 +2956,29 @@ von Lösung $s$ erreichbar, was bedeutet, dass die Nachbarschaft nicht zusammenh
   \label{fig:counter_example_stacks}
 \end{figure}
 
+Da sämtliche Lösungen, welche basierend auf der definierten Nachbarschaftsstruktur nicht ineinander überführbar sind,
+analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige
+Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, muss die Nachbarschaft dahingehend erweitert werden,
+dass solche Situationen aufgelöst werden können.
+
+Dazu wird die Liste der Operatoren um einen $n$-Swap erweitert, welcher mehrere simultane Swap-Operationen
+erlaubt. Es können maximal $b - 1$ Swaps durchgeführt werden, denn sonst würde der gesamte Stack-Inhalt
+vertauscht. Dies ist nicht sinnvoll, denn wenn sich auf diese Weise eine günstigere Zuweisung erzielen ließe,
+wäre diese bereits Teil des Matchings in der konstruktiven Heuristik gewesen. Da in dieser Arbeit lediglich
+Stacking-Probleme mit Stacks der Kapazitäten $b = 2$ und $b = 3$ betrachtet werden, wird höchstens ein $2$-Swap
+benötigt. Im $b = 2$ Fall ist bereits die einfache Swap-Operation ausreichend.
+
+Mithilfe des $2$-Swaps lässt sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
+indem auf Lösung $s$ gleichzeitig die Swap-Operationen $(1, 4)$ und $(2, 5)$ durchgeführt werden.
+Anschließend ergibt sich die zulässige Lösung $s'$.
+
+Letztendlich ist die Nachbarschaft einer Lösung also durch die drei Operatoren Shift, Swap und $2$-Swap
+definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt. Bei dieser Nachbarschaft handelt es sich
+um eine zusammenhängende Nachbarschaft, weil jede zulässige Lösung von jeder anderen zulässigen Lösung
+durch Anwendung dieser Operatoren erreicht werden kann.
+
+
+
 \vfill
 
 
