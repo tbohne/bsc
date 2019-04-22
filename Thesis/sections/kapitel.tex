@@ -2859,7 +2859,13 @@ so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.\newline
 \textbf{Best-Fit}\newline
 
 Bei dieser Strategie wird die gesamte Teilmenge fester Kardinalität generiert und es wird die beste Nachbarlösung
-daraus ausgewählt.
+daraus ausgewählt.\newline
+
+Als Abbruchkriterien stehen drei verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können.
+Die simpelste Variante besteht darin, eine feste Anzahl an Iterationen zu definieren, nach welcher die Tabu-Suche terminiert.
+Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurücksetzungen der Tabu-Listen. Wenn innerhalb
+der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander allesamt tabu sind, so wird die
+entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Bei der letzten Variante handelt es sich um ein durchaus gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
 
 \vfill
 
