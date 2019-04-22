@@ -2828,7 +2828,38 @@ Tabu-Liste. Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten \text
 Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
 zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
 In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, die sie beinhalten.
-D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.
+D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.\newline
+
+\textbf{Freeing-Strategy}\newline
+
+Die Freeing-Strategy entspricht jener Strategie, welche spezifiziert, zu welchem Zeitpunkt Einträge aus den
+Tabu-Listen wieder entfernt werden. Dies geschieht nach einer gewissen Anzahl an Iterationen.\newline
+
+\textbf{Short-Term-Strategy}\newline
+
+Die Short-Term-Strategy gibt im Wesentlichen an, wie zulässige Nachbarlösungen ausgewählt werden.
+Eine Operation, die eine Nachbarlösung generiert ist dann zulässig, wenn diese nicht tabu ist,
+oder, wenn sie das Aspirationskriterium erfüllt. Das Aspirationskriterium hat die Funktion bestimmte
+Operationen zu akzetieren, obwohl diese tabu sind, sofern das Kriterium erfüllt wird. Häufig besteht
+dieses Kriterium in der Generierung einer bisher besten Lösung. Es wäre nicht sinnvoll eine solche Lösung
+zu verbieten, auch wenn diese tabu ist.
+
+In der Regel wird nicht nur eine Nachbarlösung generiert, sondern entweder sämtliche Nachbarlösungen,
+sofern dies effizient möglich ist, oder eine Teilmenge der Nachbarlösungen, welche eine feste Kardinalität besitzt.
+Es muss also jeweils eine Nachbarlösung aus dieser Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
+Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert.\newline
+
+\textbf{First-Fit}\newline
+
+Bei dieser Strategie wird die Nachbarschaft lediglich solange durchsucht, bis eine bessere Lösung gefunden wird,
+also eine Lösung, welche einen besseren Zielfunktionswert besitzt, als die gegenwärtige Lösung.
+Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden,
+so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.\newline
+
+\textbf{Best-Fit}\newline
+
+Bei dieser Strategie wird die gesamte Teilmenge fester Kardinalität generiert und es wird die beste Nachbarlösung
+daraus ausgewählt.
 
 \vfill
 
