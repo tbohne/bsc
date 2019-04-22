@@ -2913,6 +2913,17 @@ sind Shift-Operationen nicht gestattet, weil sonst die Stack-Kapazität verletzt
 Die Transformation muss daher durch Anwendung einer endliche Anzahl von Swap-Operationen auf $s$ gelingen.
 Dabei können zwei Items innerhalb eines Stacks basierend auf dem Graphen aus Abb. \ref{fig:counter_example_stacking_graph}  nicht vertauscht werden ohne die Stacking-Constraints zu verletzen.
 
+Demzufolge können nur Items zwischen den beiden Stacks vertauscht werden. Es gibt also initial drei mögliche
+Swap-Operationen $(1, 4), (2, 5)$ und $(3, 6)$. Werden die Items $1$ und $4$ vertauscht, so befindet sich z.B.
+Item $4$ auf Item $2$, was gegen die Stacking-Constraints vertößt. Somit ist die erste Swap-Operation nicht zielführend.
+Die zweite Swap-Operation $(2, 5)$ sorgt erneut dafür, dass sich Item $4$ auf Item $2$ befindet und ist somit ebenfalls
+unzulässig. Die letzte Swap-Operation $(3, 6)$ führt zunächst zur zulässigen Zwischenlösung $S_0 = (1, 2, 6), S_1 = (4, 5, 3)$.
+Diese entspricht allerdings noch nicht der Ziellösung $s'$, weshalb anschließend die Swap-Operationen $(1, 4)$ oder $(2, 5)$
+durchgeführt werden müssen, welche beide zu unzulässigen Lösungen führen. In beiden Fällen befindet sich erneut Item
+$4$ oberhalb von Item $2$, was gegen die Stacking-Constraints verstößt.
+Demnach ist Lösung $s'$ nicht durch Anwendung einer endlichen Folge von Operationen innerhalb der definierten Nachbarschaft
+von Lösung $s$ erreichbar, was bedeutet, dass die Nachbarschaft nicht zusammenhängend ist.
+
 \begin{figure}[H]
   \begin{subfigure}[b]{0.5\textwidth}
   \centering
