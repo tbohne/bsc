@@ -2975,12 +2975,20 @@ Anschließend ergibt sich die zulässige Lösung $s'$.
 Letztendlich ist die Nachbarschaft einer Lösung also durch die drei Operatoren Shift, Swap und $2$-Swap
 definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt. Bei dieser Nachbarschaft handelt es sich
 um eine zusammenhängende Nachbarschaft, weil jede zulässige Lösung von jeder anderen zulässigen Lösung
-durch Anwendung dieser Operatoren erreicht werden kann.
+durch Anwendung dieser Operatoren erreicht werden kann.\newline
 
+\textbf{Konfiguration der Tabu-Suche}\newline
 
+% TODO: Complete Section
+
+Die Tabu-Suche bietet viele Konfigurationsmöglichkeiten, welche zu qualitativ unterschiedlichen
+Ergebnissen führen und zumeist experimentell bestimmt wurden.
+Zunächst muss zwischen First-Fit und Best-Fit gewählt werden. First-Fit sollte in Betracht gezogen werden,
+wenn möglichst geringe Laufzeiten angestrebt werden. Ist dagegen die Qualität der Lösung wichtiger,
+so sollte Best-Fit bevorzugt werden. Als Abbruchkriterium wird in den Experimenten die Anzahl nichtverbessernder
+Iterationen betrachtet.
 
 \vfill
-
 
 \pagebreak
 
