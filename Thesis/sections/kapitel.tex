@@ -2846,6 +2846,7 @@ D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich die
 
 \textbf{Freeing-Strategy}\newline
 
+% TODO: elaborate
 Die Freeing-Strategy entspricht jener Strategie, welche spezifiziert, zu welchem Zeitpunkt Einträge aus den
 Tabu-Listen wieder entfernt werden. Dies geschieht nach einer gewissen Anzahl an Iterationen,
 denn in der Regel werden Einträge der Tabu-Liste nur für eine gewisse Zeit verboten.
@@ -2856,14 +2857,15 @@ Dies hat auch den Vorteil, dass die Tabu-Listen effizient durchsuchbar und speic
 Die Short-Term-Strategy gibt im Wesentlichen an, wie zulässige Nachbarlösungen ausgewählt werden.
 Eine Operation, die eine Nachbarlösung generiert ist dann zulässig, wenn diese nicht tabu ist,
 oder, wenn sie das Aspirationskriterium erfüllt. Das Aspirationskriterium hat die Funktion bestimmte
-Operationen zu akzetieren, obwohl diese tabu sind, sofern das Kriterium erfüllt wird. Häufig besteht
-dieses Kriterium in der Generierung einer bisher besten Lösung. Es wäre nicht sinnvoll eine solche Lösung
-zu verbieten, auch wenn diese tabu ist.
-
+Operationen zu akzeptieren, obwohl diese tabu sind, sofern das Kriterium erfüllt wird.
+In der entwickelten Tabu-Suche enspricht dieses Kriterium der Generierung einer bisher besten Lösung.
+Es wäre nicht sinnvoll, eine solche Lösung zu verbieten.\newline
 In der Regel wird nicht nur eine Nachbarlösung generiert, sondern entweder sämtliche Nachbarlösungen,
-sofern dies effizient möglich ist, oder eine Teilmenge der Nachbarlösungen, welche eine feste Kardinalität besitzt.
-Es muss also jeweils eine Nachbarlösung aus dieser Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
-Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert.\newline
+sofern dies effizient möglich ist, oder, wie in diesem Fall, eine Teilmenge der Nachbarlösungen,
+welche eine definierte, feste Kardinalität besitzt. Es muss also jeweils eine Nachbarlösung aus dieser
+Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
+Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt
+werden.\newline
 
 \textbf{First-Fit}\newline
 
