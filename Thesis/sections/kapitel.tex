@@ -2774,16 +2774,17 @@ bestimmte Attribute der Lösungen oder auch die Operation, welche durchgeführt 
 Die primäre Funktion der Tabu-Liste besteht allerdings darin, die Suche zu diversifizieren,
 indem in zuvor undurchsuchten Regionen des \textquote{Search Space}\footnote{Die Menge, die nach den zu findenden Objekten durchsucht werden soll.} gesucht wird und lokale Optima verlassen werden \cite{Pirlot1996}.
 
-Im Wesentlichen handelt es sich bei einer Tabu-Suche also um ein Verfahren, welches die Nachbarschaft einer Lösung durchsucht
-und eine Tabu-Liste verwendet, in welcher sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu}
-gespeichert werden.
-Eine zur gegenwärtigen Lösung benachbarte Lösung wird nur dann akzeptiert, wenn diese nicht Teil der Tabu-Liste ist.
-In jeder Iteration wird die gegenwärtige Lösung entsprechend durch eine benachbarte Lösung ersetzt,
-welche nicht \textquote{tabu} ist. Der allgemeine Ablauf einer Tabu-Suche ist in Abb. \ref{fig:tabu_search_algo}
-dargestellt.
-
-\vfill
-\pagebreak
+Der allgemeine Ablauf einer Tabu-Suche ist in Abb. \ref{fig:tabu_search_algo}
+dargestellt. Zunächst wird eine initiale Lösung $s$ aus der Menge der zulässigen Lösungen $S$ generiert.
+Anschließend wird die beste Lösung $s^*$ mit der Lösung $s$ initialisiert, ebenso wie der beste Zielfunktionswert
+$c^*$, welcher mit dem Zielfunktionswert von $s$ initialisiert wird. Außerdem wird eine leere Tabu-Liste $TL$
+angelegt. Daraufhin wird in einer Schleife jeweils die Nachbarschaft der gegenwärtigen Lösung $s$ durchsucht. Dazu wird eine
+Kandidatenmenge $Cand(s)$ der Lösung $s$ generiert, bei welcher es sich um eine Teilmenge der Nachbarschaft von $s$
+handelt, wobei eine zu $s$ benachbarte Lösung nur dann akzeptiert wird, wenn diese nicht Teil der Tabu-Liste ist,
+oder ein Aspirationskriterium erfüllt. Aus dieser wird anhand einer Selektionsstrategie eine Nachbarlösung $s'$ gewählt und die Tabu-Liste wird aktualisiert, sodass sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden. In jeder Iteration wird die gegenwärtige Lösung $s$ entsprechend durch eine benachbarte Lösung $s'$ aktualisiert.
+Sollte $s'$ einen besseren Zielfunktionswert besitzen als $s^*$, so wird die beste $s^*$ Lösung
+sowie der beste Zielfunktionswert $c^*$ aktualisiert. Dieser Prozess terminiert, sobald ein definiertes
+Abbruckriterium erfüllt ist.
 
 \begin{figure}[H]
 \centering
@@ -2801,15 +2802,21 @@ der Tabu-Status einer Lösung bzw. eines Übergangs zu einer anderen Lösung ign
 z.B. wenn dieser zu einer bisher besten Lösung führt. Schließlich muss ein sinnvolles
 Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird die in dieser Arbeit entwickelte Tabu-Suche vorgestellt.
 
+\vfill
+\pagebreak
+
 \subsection{Tabu-Suche zur Lösung von Stacking-Problemen}
 \label{sec:tabu_search_for_sp}
+
+Im Ablauf einer allgemeinen Tabu-Suche aus Abb. \ref{fig:tabu_search_algo} wird eine initiale Lösung generiert.
+Die für diese Arbeit entwickelte Tabu-Suche generiert die initiale Lösung nicht selbst, sondern bekommt eine
+Initiallösung als Eingabe, welche von den konstruktiven Heuristiken aus den Abschnitten \ref{sec:two_cap_heuristic}
+und \ref{sec:three_cap_heuristic} generiert wurde.
 
 Bevor die Nachbarschaftsstruktur etc. definiert werden kann, muss zunächst die Lösungsrepräsentation festgelegt werden, die genau den Zuweisungen von Item-Tupeln zu Stacks, welche von den konstruktiven Heuristiken aus Abschnitt \ref{sec:two_cap_heuristic} und Abschnitt \ref{sec:three_cap_heuristic} generiert werden, entspricht. Es handelt sich daher um eine Matrix, die sämtliche Zellen der Storage-Area repräsentiert.
 
 Eine allgemeine Tabu-Suche besteht aus drei Hauptstrategien, welche von \citet{Glover90} als Forbidding-Strategy,
 Freeing-Strategy und Short-Term-Strategy bezeichnet werden. Diese werden im Folgenden anhand der in dieser Arbeit entwickelten Tabu-Suche erläutert.
-
-\pagebreak
 
 Zunächst zur betrachteten Nachbarschaftsstruktur. Um Nachbarn einer gegebenen Lösung zu generieren,
 wird eine kombinierte \textquote{Shift}- und \textquote{Swap}-Nachbarschaft verwendet.
@@ -2879,8 +2886,6 @@ liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängenden
 Dementsprechend ist ein solcher Zusammenhang bei der Nachbarschaftsstruktur erstrebenswert.
 Die zuvor beschriebene Nachbarschaft ist allerdings noch nicht zusammenhängend, was an folgendem Gegenbeispiel
 nachvollzogen werden kann.
-
-\pagebreak
 
 Es sei der Stacking-Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
 dessen transitiver Abschluss den Stacking-Constraints entspricht. Außerdem seien sämtliche Items mit den Stacks
