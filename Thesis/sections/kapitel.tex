@@ -2758,7 +2758,7 @@ Genau dort setzt das Verfahren der sogenannten Tabu-Suche an, welches zum Ziel h
 Abb. \ref{fig:local_search_weakness}, zu vermeiden.
 
 Die Strategie, mit welcher lokale Optima verlassen werden können, ist die folgende.
-Selbst wenn in der Nachbarschaft $V(x_n)$ keine bessere Lösung als die gegenwärtige Lösung $x_n$ existiert,
+Sogar wenn in der Nachbarschaft $V(x_n)$ keine bessere Lösung als die gegenwärtige Lösung $x_n$ existiert,
 wird zur besten Lösung $x \in V(x_n)$ vorangeschritten.
 Da die gesamte Nachbarschaft zu groß sein kann, um diese effizient zu durchsuchen,
 wird dabei häufig nur ein Teil der Nachbarschaft $V'(X_n) \subseteq V(x_n)$ betrachtet \cite{Pirlot1996}.
@@ -2808,12 +2808,11 @@ Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird 
 \subsection{Tabu-Suche zur Lösung von Stacking-Problemen}
 \label{sec:tabu_search_for_sp}
 
-Im Ablauf einer allgemeinen Tabu-Suche aus Abb. \ref{fig:tabu_search_algo} wird eine initiale Lösung generiert.
-Die für diese Arbeit entwickelte Tabu-Suche generiert die initiale Lösung nicht selbst, sondern bekommt eine
-Initiallösung als Eingabe, welche von den konstruktiven Heuristiken aus den Abschnitten \ref{sec:two_cap_heuristic}
-und \ref{sec:three_cap_heuristic} generiert wurde.
-
-Bevor die Nachbarschaftsstruktur etc. definiert werden kann, muss zunächst die Lösungsrepräsentation festgelegt werden, die genau den Zuweisungen von Item-Tupeln zu Stacks, welche von den konstruktiven Heuristiken aus Abschnitt \ref{sec:two_cap_heuristic} und Abschnitt \ref{sec:three_cap_heuristic} generiert werden, entspricht. Es handelt sich daher um eine Matrix, die sämtliche Zellen der Storage-Area repräsentiert.
+Im allgemeinen Tabu-Suche Algorithmus aus Abb. \ref{fig:tabu_search_algo} wird eine initiale Lösung generiert.
+Die in dieser Arbeit entwickelte Tabu-Suche generiert die Initiallösung dagegen nicht, sondern bekommt eine
+von den konstruktiven Heuristiken aus den Abschnitten \ref{sec:two_cap_heuristic}
+und \ref{sec:three_cap_heuristic} generierte Lösung als Eingabe. Bevor die Nachbarschaftsstruktur etc. definiert werden kann, muss zunächst die Repräsentation einer solchen Lösung festgelegt werden, welche genau den Zuweisungen von Item-Tupeln zu Stacks, die von den konstruktiven Heuristiken generiert werden, entspricht. Es handelt sich daher um eine Matrix,
+welche sämtliche Zellen der Storage-Area repräsentiert.
 
 Eine allgemeine Tabu-Suche besteht aus drei Hauptstrategien, welche von \citet{Glover90} als Forbidding-Strategy,
 Freeing-Strategy und Short-Term-Strategy bezeichnet werden. Diese werden im Folgenden anhand der in dieser Arbeit entwickelten Tabu-Suche erläutert.
@@ -2849,7 +2848,9 @@ D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich die
 \textbf{Freeing-Strategy}\newline
 
 Die Freeing-Strategy entspricht jener Strategie, welche spezifiziert, zu welchem Zeitpunkt Einträge aus den
-Tabu-Listen wieder entfernt werden. Dies geschieht nach einer gewissen Anzahl an Iterationen.\newline
+Tabu-Listen wieder entfernt werden. Dies geschieht nach einer gewissen Anzahl an Iterationen,
+denn in der Regel werden Einträge der Tabu-Liste nur für eine gewisse Zeit verboten.
+Dies hat auch den Vorteil, dass die Tabu-Listen effizient durchsuchbar und speicherbar bleiben.\newline
 
 \textbf{Short-Term-Strategy}\newline
 
