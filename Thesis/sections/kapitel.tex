@@ -2835,13 +2835,13 @@ so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt
 Die Forbidding-Strategy spezifiziert die Art der Einträge, also die Art der gespeicherten Information in der
 Tabu-Liste. Wie bereits erwähnt, werden aus Effizienzgründen typischerweise nicht die Lösungen selbst gespeichert,
 sondern bestimmte Attribute der Lösungen oder Operatoren, welche zur Generierung der Lösung geführt haben.
-Dabei ist es wichtig, geeignete Attribute bzw. Informationen zu speichern, die eine Lösung möglichst genau identifizieren,
-damit nicht zu viele Lösungen ausgeschlossen werden.
+Dabei ist es wichtig, Attribute bzw. Informationen zu speichern, welche eine Lösung möglichst genau identifizieren,
+um zu verhindern, dass weitere Lösungen mit ähnlichen Eigenschaften ausgeschlossen werden.
 
-Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten \textquote{Shift}- und \textquote{Swap}-Nachbarschaft zwei unterschiedliche Tabu-Listen.
-Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
-zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
-In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, die sie beinhalten.
+Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten Shift- und Swap-Nachbarschaft zwei unterschiedliche
+Tabu-Listen. Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
+zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position innerhalb eines Stacks verschoben werden, sehr wohl jedoch an eine andere.
+In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, welche sie beinhalten.
 D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.\newline
 
 \textbf{Freeing-Strategy}\newline
