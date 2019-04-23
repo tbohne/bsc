@@ -2761,18 +2761,18 @@ Die Strategie, mit welcher lokale Optima verlassen werden können, ist die folge
 Sogar wenn in der Nachbarschaft $V(x_n)$ keine bessere Lösung als die gegenwärtige Lösung $x_n$ existiert,
 wird zur besten Lösung $x \in V(x_n)$ vorangeschritten.
 Da die gesamte Nachbarschaft zu groß sein kann, um diese effizient zu durchsuchen,
-wird dabei häufig nur ein Teil der Nachbarschaft $V'(X_n) \subseteq V(x_n)$ betrachtet \cite{Pirlot1996}.
+wird dabei häufig nur ein Teil der Nachbarschaft $V'(x_n) \subseteq V(x_n)$ betrachtet \cite{Pirlot1996}.
 Dieses Vorgehen führt dazu, dass es zu Zyklen kommen kann. Entspricht die gegenwärtige Lösung $x$,
 so wird anschließend die beste Lösung $x_n \in V(x)$ gewählt. Daraufhin besteht die Chance,
-dass die beste Lösung in $V(x_n)$ erneut $x$ ist. D.h. es entsteht ein Zyklus, in welchem immer
-wieder zwischen den Lösungen $x$ und $x_n$ gewechselt wird.
+dass die beste Lösung in $V(x_n)$ erneut $x$ ist. D.h. es entsteht ein Zyklus, in welchem wiederkehrend
+zwischen den Lösungen $x$ und $x_n$ gewechselt wird.
 Unter anderem zur Vermeidung solcher Situationen, wird eine der Tabu-Suche ihren Namen gebende Tabu-Liste verwendet,
 welche bereits besuchte Lösungen speichert. Ist eine Lösung $x$ Teil der Tabu-Liste, so ist der Übergang
 von $x_n$ zu $x$ verboten bzw. \textquote{tabu}.
 In der Regel werden in der Tabu-Liste aus Effizienzgründen jedoch nicht vollständige Lösungen gespeichert, sondern
 bestimmte Attribute der Lösungen oder auch die Operation, welche durchgeführt wurde, um zur jeweiligen Lösung zu gelangen. Im Fall des Bitvektor-Beispiels wäre es z.B. die Information, dass Bit $i$ von $0$ auf $1$ gesetzt wurde.
 Die primäre Funktion der Tabu-Liste besteht allerdings darin, die Suche zu diversifizieren,
-indem in zuvor undurchsuchten Regionen des \textquote{Search Space}\footnote{Die Menge, die nach den zu findenden Objekten durchsucht werden soll.} gesucht wird und lokale Optima verlassen werden \cite{Pirlot1996}.
+indem in zuvor undurchsuchten Regionen des \textquote{Search Space}\footnote{Menge, welche nach den zu findenden Objekten durchsucht werden soll.} gesucht wird und lokale Optima verlassen werden \cite{Pirlot1996}.
 
 Der allgemeine Ablauf einer Tabu-Suche ist in Abb. \ref{fig:tabu_search_algo}
 dargestellt. Zunächst wird eine initiale Lösung $s$ aus der Menge der zulässigen Lösungen $S$ generiert.
@@ -2781,8 +2781,8 @@ $c^*$, welcher mit dem Zielfunktionswert von $s$ initialisiert wird. Außerdem w
 angelegt. Daraufhin wird in einer Schleife jeweils die Nachbarschaft der gegenwärtigen Lösung $s$ durchsucht. Dazu wird eine
 Kandidatenmenge $Cand(s)$ der Lösung $s$ generiert, bei welcher es sich um eine Teilmenge der Nachbarschaft von $s$
 handelt, wobei eine zu $s$ benachbarte Lösung nur dann akzeptiert wird, wenn diese nicht Teil der Tabu-Liste ist,
-oder ein Aspirationskriterium\footnote{Kriterium, welches bei Erfüllung zur Missachtung des Tabu-Status führt.} erfüllt. Aus dieser wird anhand einer Selektionsstrategie eine Nachbarlösung $s'$ gewählt und die Tabu-Liste wird aktualisiert, sodass sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden. In jeder Iteration wird die gegenwärtige Lösung $s$ entsprechend durch eine benachbarte Lösung $s'$ aktualisiert.
-Sollte $s'$ einen besseren Zielfunktionswert besitzen als $s^*$, so wird die beste $s^*$ Lösung
+oder diese ein Aspirationskriterium\footnote{Kriterium, welches bei Erfüllung zur Missachtung des Tabu-Status führt.} erfüllt. Aus dieser wird anhand einer Selektionsstrategie eine Nachbarlösung $s'$ gewählt und die Tabu-Liste wird aktualisiert, sodass sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden. In jeder Iteration wird die gegenwärtige Lösung $s$ entsprechend durch eine benachbarte Lösung $s'$ aktualisiert.
+Sollte $s'$ einen besseren Zielfunktionswert besitzen als $s^*$, so wird die beste Lösung $s^*$
 sowie der beste Zielfunktionswert $c^*$ aktualisiert. Dieser Prozess terminiert, sobald ein definiertes
 Abbruckriterium erfüllt ist.
 
@@ -2800,7 +2800,8 @@ gespeichert, weshalb auch die Entscheidung darüber, welche Informationen dort g
 von Relevanz ist. Außerdem wird über ein Aspirationskriterium die Möglichkeit gegeben, dass in bestimmten Fällen
 der Tabu-Status einer Lösung bzw. eines Übergangs zu einer anderen Lösung ignoriert wird,
 z.B. wenn dieser zu einer bisher besten Lösung führt. Schließlich muss ein sinnvolles
-Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird die in dieser Arbeit entwickelte Tabu-Suche vorgestellt.
+Abbruchkriterium definiert werden, welches die Suche beendet. Im Folgenden wird die in dieser Arbeit entwickelte
+Tabu-Suche zur Lösung von Stacking-Problemen vorgestellt.
 
 \vfill
 \pagebreak
