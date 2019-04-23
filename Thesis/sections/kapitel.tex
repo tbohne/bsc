@@ -2781,7 +2781,7 @@ $c^*$, welcher mit dem Zielfunktionswert von $s$ initialisiert wird. Außerdem w
 angelegt. Daraufhin wird in einer Schleife jeweils die Nachbarschaft der gegenwärtigen Lösung $s$ durchsucht. Dazu wird eine
 Kandidatenmenge $Cand(s)$ der Lösung $s$ generiert, bei welcher es sich um eine Teilmenge der Nachbarschaft von $s$
 handelt, wobei eine zu $s$ benachbarte Lösung nur dann akzeptiert wird, wenn diese nicht Teil der Tabu-Liste ist,
-oder ein Aspirationskriterium erfüllt. Aus dieser wird anhand einer Selektionsstrategie eine Nachbarlösung $s'$ gewählt und die Tabu-Liste wird aktualisiert, sodass sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden. In jeder Iteration wird die gegenwärtige Lösung $s$ entsprechend durch eine benachbarte Lösung $s'$ aktualisiert.
+oder ein Aspirationskriterium\footnote{Kriterium, welches bei Erfüllung zur Missachtung des Tabu-Status führt.} erfüllt. Aus dieser wird anhand einer Selektionsstrategie eine Nachbarlösung $s'$ gewählt und die Tabu-Liste wird aktualisiert, sodass sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden. In jeder Iteration wird die gegenwärtige Lösung $s$ entsprechend durch eine benachbarte Lösung $s'$ aktualisiert.
 Sollte $s'$ einen besseren Zielfunktionswert besitzen als $s^*$, so wird die beste $s^*$ Lösung
 sowie der beste Zielfunktionswert $c^*$ aktualisiert. Dieser Prozess terminiert, sobald ein definiertes
 Abbruckriterium erfüllt ist.
@@ -2835,7 +2835,12 @@ so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt
 \textbf{Forbidding-Strategy}\newline
 
 Die Forbidding-Strategy spezifiziert die Art der Einträge, also die Art der gespeicherten Information in der
-Tabu-Liste. Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten \textquote{Shift}- und \textquote{Swap}-Nachbarschaft zwei unterschiedliche Tabu-Listen.
+Tabu-Liste. Wie bereits erwähnt, werden aus Effizienzgründen typischerweise nicht die Lösungen selbst gespeichert,
+sondern bestimmte Attribute der Lösungen oder Operatoren, welche zur Generierung der Lösung geführt haben.
+Dabei ist es wichtig, geeignete Attribute bzw. Informationen zu speichern, die eine Lösung möglichst genau identifizieren,
+damit nicht zu viele Lösungen ausgeschlossen werden.
+
+Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten \textquote{Shift}- und \textquote{Swap}-Nachbarschaft zwei unterschiedliche Tabu-Listen.
 Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
 zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
 In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, die sie beinhalten.
