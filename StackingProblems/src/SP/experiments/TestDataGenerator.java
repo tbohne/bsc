@@ -21,7 +21,7 @@ public class TestDataGenerator {
 
     /******************************* CONFIGURATION *************************************/
     public static final int NUMBER_OF_INSTANCES = 1;
-    public static final int NUMBER_OF_ITEMS = 25;
+    public static final int NUMBER_OF_ITEMS = 100;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -39,18 +39,12 @@ public class TestDataGenerator {
     public static final float ITEM_WIDTH_LB = 1.0F;
     public static final float ITEM_WIDTH_UB = 2.4F;
 
-
     public static final float STORAGE_AREA_SLOT_LENGTH = 2.0F;
     public static final float STORAGE_AREA_SLOT_WIDTH = 1.0F;
 
 //    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
 //    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
     public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
-
-
-
-
-
 
     /***********************************************************************************/
 
@@ -78,8 +72,8 @@ public class TestDataGenerator {
 
         ArrayList<Position> stackPositions = new ArrayList<>();
         int stacksPerRow = (int)Math.ceil(Math.sqrt(numOfStacks));
-        int xCoord = 0;
-        int yCoord = 0;
+        float xCoord = 0;
+        float yCoord = 0;
 
         for (int i = 0; i < numOfStacks; i++) {
             if (i != 0 && i % stacksPerRow == 0) {
@@ -97,13 +91,20 @@ public class TestDataGenerator {
      *
      * @return list of item positions
      */
-    public static ArrayList<Position> generateItemPositions() {
+    public static ArrayList<Position> generateItemPositions(ArrayList<Position> stackPositions) {
         ArrayList<Position> itemPositions = new ArrayList<>();
+
+        float xCoord = 0;
+        float yCoord = (float)stackPositions.get(stackPositions.size() - 1).getYCoord()
+            + STORAGE_AREA_SLOT_WIDTH + STORAGE_AREA_TRUCK_DISTANCE_FACTOR * STORAGE_AREA_SLOT_WIDTH;
+
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            itemPositions.add(new Position(
-                i * STORAGE_AREA_SLOT_LENGTH,
-                STORAGE_AREA_SLOT_WIDTH + STORAGE_AREA_TRUCK_DISTANCE_FACTOR * STORAGE_AREA_SLOT_WIDTH
-            ));
+            if (i == NUMBER_OF_ITEMS / 2) {
+                xCoord = 0;
+                yCoord += STORAGE_AREA_SLOT_WIDTH;
+            }
+            itemPositions.add(new Position(xCoord, yCoord));
+            xCoord += STORAGE_AREA_SLOT_LENGTH;
         }
         return itemPositions;
     }
@@ -130,8 +131,8 @@ public class TestDataGenerator {
      *
      * @return the generated items
      */
-    public static Item[] generateItems() {
-        ArrayList<Position> itemPositions = generateItemPositions();
+    public static Item[] generateItems(ArrayList<Position> stackPositions) {
+        ArrayList<Position> itemPositions = generateItemPositions(stackPositions);
         Item[] items = new Item[NUMBER_OF_ITEMS];
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             float length = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
@@ -285,7 +286,8 @@ public class TestDataGenerator {
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
 
-            Item[] items = generateItems();
+            ArrayList<Position> stackPositions = generateStackPositions(numOfStacks);
+            Item[] items = generateItems(stackPositions);
 
             int[][] stackingConstraintMatrix;
             if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
@@ -295,7 +297,6 @@ public class TestDataGenerator {
             }
             avgPercentage += getPercentageOfOneEntries(stackingConstraintMatrix);
 
-            ArrayList<Position> stackPositions = generateStackPositions(numOfStacks);
             double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
             TestDataGenerator.generateCosts(costs, numOfStacks, items, stackPositions);
 
