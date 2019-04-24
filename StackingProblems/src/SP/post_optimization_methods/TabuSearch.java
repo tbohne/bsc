@@ -22,9 +22,6 @@ public class TabuSearch {
     private int tabuListClears;
     private int maxTabuLength;
 
-    private Map<Swap, Integer> swapIterations;
-    private Map<Shift, Integer> shiftIterations;
-
     private int iterationOfLastImprovement;
 
     /**
@@ -38,8 +35,6 @@ public class TabuSearch {
         this.swapTabuList = new LinkedList<>();
         this.shiftTabuList = new LinkedList<>();
         this.tabuListClears = 0;
-        this.swapIterations = new HashMap<>();
-        this.shiftIterations = new HashMap<>();
         this.iterationOfLastImprovement = 0;
         this.maxTabuLength = TabuSearchConfig.NUMBER_OF_ITERATIONS;
     }
@@ -50,7 +45,6 @@ public class TabuSearch {
     public void clearSwapTabuList() {
         System.out.println("clearing swap tabu list...");
         this.swapTabuList = new LinkedList<>();
-        this.swapIterations = new HashMap<>();
         this.tabuListClears++;
     }
 
@@ -60,7 +54,6 @@ public class TabuSearch {
     public void clearShiftTabuList() {
         System.out.println("clearing shift tabu list...");
         this.shiftTabuList = new LinkedList<>();
-        this.shiftIterations = new HashMap<>();
         this.tabuListClears++;
     }
 
@@ -188,18 +181,14 @@ public class TabuSearch {
 
                 // FIRST-FIT
                 if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.shiftTabuList.contains(shift) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-//                    this.shiftTabuList.add(shift);
                     this.forbidShift(shift);
 
-                    this.shiftIterations.put(shift, iteration);
                     return neighbor;
 
                 // BEST-FIT
                 } else if (!this.shiftTabuList.contains(shift)) {
                     nbrs.add(neighbor);
-//                    this.shiftTabuList.add(shift);
                     this.forbidShift(shift);
-                    this.shiftIterations.put(shift, iteration);
 
                 } else {
                     failCnt++;
@@ -252,14 +241,12 @@ public class TabuSearch {
                 // FIRST-FIT
                 if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.swapTabuList.contains(swap) && neighbor.computeCosts() < this.currSol.computeCosts()) {
                     this.forbidSwap(swap);
-                    this.swapIterations.put(swap, iteration);
                     return neighbor;
 
                 // BEST-FIT
                 } else if (!this.swapTabuList.contains(swap)) {
                     nbrs.add(neighbor);
                     this.forbidSwap(swap);
-                    this.swapIterations.put(swap, iteration);
 
                 } else {
                     failCnt++;
@@ -318,8 +305,6 @@ public class TabuSearch {
                     this.forbidSwap(swapOne);
                     this.forbidSwap(swapTwo);
 
-                    this.swapIterations.put(swapOne, iteration);
-                    this.swapIterations.put(swapTwo, iteration);
                     return neighbor;
 
                 // BEST-FIT
@@ -327,9 +312,6 @@ public class TabuSearch {
                     nbrs.add(neighbor);
                     this.forbidSwap(swapOne);
                     this.forbidSwap(swapTwo);
-
-                    this.swapIterations.put(swapOne, iteration);
-                    this.swapIterations.put(swapTwo, iteration);
 
                 } else {
                     failCnt++;
@@ -383,51 +365,6 @@ public class TabuSearch {
     }
 
     /**
-     * Freeing strategy for shifts.
-     *
-     * @param iteration - the current iteration
-     */
-    public void removeShifts(int iteration) {
-        ArrayList<Shift> shiftsToBeRemoved = new ArrayList<>();
-        for (Shift shift : this.shiftTabuList) {
-            if (Math.abs(this.shiftIterations.get(shift) - iteration) > TabuSearchConfig.NUMBER_OF_ITERATIONS / 10) {
-                shiftsToBeRemoved.add(shift);
-            }
-        }
-        for (Shift shift : shiftsToBeRemoved) {
-            this.shiftTabuList.remove(shift);
-        }
-    }
-
-    /**
-     * Freeing strategy for swaps.
-     *
-     * @param iteration - the current iteration
-     */
-    public void removeSwaps(int iteration) {
-        ArrayList<Swap> swapsToBeRemoved = new ArrayList<>();
-        for (Swap swap : this.swapTabuList) {
-            if (Math.abs(this.swapIterations.get(swap) - iteration) > TabuSearchConfig.NUMBER_OF_ITERATIONS / 10) {
-                swapsToBeRemoved.add(swap);
-            }
-        }
-        for (Swap swap : swapsToBeRemoved) {
-            this.swapTabuList.remove(swap);
-        }
-    }
-
-    /**
-     * Implementation of the freeing strategy.
-     * Shifts and swaps are removed from the tabu lists after a certain number of iterations.
-     *
-     * @param iteration - the current iteration
-     */
-    public void freeingStrategy(int iteration) {
-        this.removeShifts(iteration);
-        this.removeSwaps(iteration);
-    }
-
-    /**
      * Updates the current solution with the best neighbor.
      * Additionally, the best solution gets updated if a new best solution is found.
      *
@@ -436,7 +373,6 @@ public class TabuSearch {
      * @param iteration         - the current iteration
      */
     public void updateCurrentSolution(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
-//        this.freeingStrategy(iteration);
         this.currSol = this.getNeighbor(shortTermStrategy, onlyFeasible, iteration);
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
