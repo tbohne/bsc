@@ -2985,33 +2985,36 @@ Da sämtliche Lösungen, welche basierend auf der definierten Nachbarschaftsstru
 analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige
 Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, muss die Nachbarschaft dahingehend erweitert werden,
 dass solche Situationen aufgelöst werden können.
-
-Dazu wird die Liste der Operatoren um einen $n$-Swap erweitert, welcher mehrere simultane Swap-Operationen
-erlaubt. Es können maximal $b - 1$ Swaps durchgeführt werden, denn sonst würde der gesamte Stack-Inhalt
+Dazu wird die Liste der Operatoren um einen Mehrfach-Swap erweitert, welcher mehrere simultane Swap-Operationen
+ermöglicht. Es können maximal $b - 1$ Swaps durchgeführt werden, denn sonst würde der gesamte Stack-Inhalt
 vertauscht. Dies ist nicht sinnvoll, denn wenn sich auf diese Weise eine günstigere Zuweisung erzielen ließe,
 wäre diese bereits Teil des Matchings in der konstruktiven Heuristik gewesen. Da in dieser Arbeit lediglich
 Stacking-Probleme mit Stacks der Kapazitäten $b = 2$ und $b = 3$ betrachtet werden, wird höchstens ein $2$-Swap
-benötigt. Im $b = 2$ Fall ist bereits die einfache Swap-Operation ausreichend.
+benötigt. Bei $b = 2$ ist sogar bereits die einfache Swap-Operation ausreichend.
 
 Mithilfe des $2$-Swaps lässt sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
-indem auf Lösung $s$ gleichzeitig die Swap-Operationen $(1, 4)$ und $(2, 5)$ durchgeführt werden.
+indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt werden.
 Anschließend ergibt sich die zulässige Lösung $s'$.
 
-Letztendlich ist die Nachbarschaft einer Lösung also durch die drei Operatoren Shift, Swap und $2$-Swap
-definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt. Bei dieser Nachbarschaft handelt es sich
-um eine zusammenhängende Nachbarschaft, weil jede zulässige Lösung von jeder anderen zulässigen Lösung
-durch Anwendung dieser Operatoren erreicht werden kann.\newline
+Letztlich ist die Nachbarschaft einer Lösung in der entwickelten Tabu-Suche also durch die drei Operatoren
+Shift, Swap und $2$-Swap definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt.
+Bei dieser Nachbarschaft handelt es sich um eine zusammenhängende Nachbarschaft,
+weil jede zulässige Lösung von jeder anderen zulässigen Lösung durch eine endliche Folge von Anwendungen
+dieser Operatoren erreicht werden kann.\newline
 
 \textbf{Konfiguration der Tabu-Suche}\newline
 
 % TODO: Complete Section
 
 Die Tabu-Suche bietet viele Konfigurationsmöglichkeiten, welche zu qualitativ unterschiedlichen
-Ergebnissen führen und zumeist experimentell bestimmt wurden.
-Zunächst muss zwischen First-Fit und Best-Fit gewählt werden. First-Fit sollte in Betracht gezogen werden,
-wenn möglichst geringe Laufzeiten angestrebt werden. Ist dagegen die Qualität der Lösung wichtiger,
-so sollte Best-Fit bevorzugt werden. Als Abbruchkriterium wird in den Experimenten die Anzahl nichtverbessernder
-Iterationen betrachtet.
+Ergebnissen führen. In diesem Abschnitt wird die Konfiguration der Tabu-Suche vorgestellt,
+mit welcher die im Folgenden vorgestellten Experimente durchgeführt wurden.
+
+%  und zumeist experimentell bestimmt wurden.
+% Zunächst muss zwischen First-Fit und Best-Fit gewählt werden. First-Fit sollte in Betracht gezogen werden,
+% wenn möglichst geringe Laufzeiten angestrebt werden. Ist dagegen die Qualität der Lösung wichtiger,
+% so sollte Best-Fit bevorzugt werden. Als Abbruchkriterium wird in den Experimenten die Anzahl nichtverbessernder
+% Iterationen betrachtet.
 
 \vfill
 
@@ -3019,9 +3022,3 @@ Iterationen betrachtet.
 
 \section{Fazit}
 \label{sec:conclusion}
-
-% TODO: to be elaborated
-Die MIP-Formulierungen könnten auch deshalb noch etwas bessere Zielfunktionswerte liefern, weil
-diese ausschließlich die Kosten minimieren.
-Die Heuristiken betrachten, wie in Kapitel \ref{sec:stacking_problems} erläutert, eine Kombination zweier Zielfunktionen
-und gehen dementsprechend über einen reinen Fokus auf Kostenminimierung hinaus.
