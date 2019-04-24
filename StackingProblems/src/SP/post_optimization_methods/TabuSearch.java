@@ -4,13 +4,11 @@ import SP.representations.Solution;
 import SP.representations.StorageAreaPosition;
 import SP.util.HeuristicUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Improvement heuristic that starts with an initial solution of a stacking-problem
- * and tries to improve its quality in terms of cost minimization.
+ * and tries to improve its quality in terms of cost minimization by performing a tabu-search.
  *
  * @author Tim Bohne
  */
@@ -19,9 +17,10 @@ public class TabuSearch {
     private Solution currSol;
     private Solution bestSol;
 
-    private ArrayList<Swap> swapTabuList;
-    private ArrayList<Shift> shiftTabuList;
+    private Queue<Swap> swapTabuList;
+    private Queue<Shift> shiftTabuList;
     private int tabuListClears;
+    private int maxTabuLength;
 
     private Map<Swap, Integer> swapIterations;
     private Map<Shift, Integer> shiftIterations;
@@ -36,12 +35,13 @@ public class TabuSearch {
     public TabuSearch(Solution initialSolution) {
         this.currSol = new Solution(initialSolution);
         this.bestSol = new Solution(initialSolution);
-        this.swapTabuList = new ArrayList<>();
-        this.shiftTabuList = new ArrayList<>();
+        this.swapTabuList = new LinkedList<>();
+        this.shiftTabuList = new LinkedList<>();
         this.tabuListClears = 0;
         this.swapIterations = new HashMap<>();
         this.shiftIterations = new HashMap<>();
         this.iterationOfLastImprovement = 0;
+        this.maxTabuLength = TabuSearchConfig.NUMBER_OF_ITERATIONS;
     }
 
     /**
@@ -49,7 +49,7 @@ public class TabuSearch {
      */
     public void clearSwapTabuList() {
         System.out.println("clearing swap tabu list...");
-        this.swapTabuList = new ArrayList<>();
+        this.swapTabuList = new LinkedList<>();
         this.swapIterations = new HashMap<>();
         this.tabuListClears++;
     }
@@ -59,7 +59,7 @@ public class TabuSearch {
      */
     public void clearShiftTabuList() {
         System.out.println("clearing shift tabu list...");
-        this.shiftTabuList = new ArrayList<>();
+        this.shiftTabuList = new LinkedList<>();
         this.shiftIterations = new HashMap<>();
         this.tabuListClears++;
     }
@@ -136,6 +136,32 @@ public class TabuSearch {
     }
 
     /**
+     * Adds the specified swap operation to the swap tabu list.
+     * Replaces the oldest entry if the maximum length of the tabu list is reached.
+     *
+     * @param swap - the swap operation to be added to the tabu list
+     */
+    public void forbidSwap(Swap swap) {
+        if (this.swapTabuList.size() >= this.maxTabuLength) {
+            this.swapTabuList.poll();
+        }
+        this.swapTabuList.add(swap);
+    }
+
+    /**
+     * Adds the specified shift operation to the shift tabu list.
+     * Replaces the oldest entry if the maximum length of the tabu list is reached.
+     *
+     * @param shift - the shift operation to be added to the tabu list
+     */
+    public void forbidShift(Shift shift) {
+        if (this.shiftTabuList.size() >= this.maxTabuLength) {
+            this.shiftTabuList.poll();
+        }
+        this.shiftTabuList.add(shift);
+    }
+
+    /**
      * Generates a neighbor for the current solution using the "shift-neighborhood".
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
@@ -162,14 +188,17 @@ public class TabuSearch {
 
                 // FIRST-FIT
                 if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.shiftTabuList.contains(shift) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                    this.shiftTabuList.add(shift);
+//                    this.shiftTabuList.add(shift);
+                    this.forbidShift(shift);
+
                     this.shiftIterations.put(shift, iteration);
                     return neighbor;
 
                 // BEST-FIT
                 } else if (!this.shiftTabuList.contains(shift)) {
                     nbrs.add(neighbor);
-                    this.shiftTabuList.add(shift);
+//                    this.shiftTabuList.add(shift);
+                    this.forbidShift(shift);
                     this.shiftIterations.put(shift, iteration);
 
                 } else {
@@ -222,14 +251,14 @@ public class TabuSearch {
 
                 // FIRST-FIT
                 if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.swapTabuList.contains(swap) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                    this.swapTabuList.add(swap);
+                    this.forbidSwap(swap);
                     this.swapIterations.put(swap, iteration);
                     return neighbor;
 
                 // BEST-FIT
                 } else if (!this.swapTabuList.contains(swap)) {
                     nbrs.add(neighbor);
-                    this.swapTabuList.add(swap);
+                    this.forbidSwap(swap);
                     this.swapIterations.put(swap, iteration);
 
                 } else {
@@ -286,8 +315,9 @@ public class TabuSearch {
                     && !this.swapTabuList.contains(swapTwo)
                     && neighbor.computeCosts() < this.currSol.computeCosts()) {
 
-                    this.swapTabuList.add(swapOne);
-                    this.swapTabuList.add(swapTwo);
+                    this.forbidSwap(swapOne);
+                    this.forbidSwap(swapTwo);
+
                     this.swapIterations.put(swapOne, iteration);
                     this.swapIterations.put(swapTwo, iteration);
                     return neighbor;
@@ -295,8 +325,9 @@ public class TabuSearch {
                 // BEST-FIT
                 } else if (!this.swapTabuList.contains(swapOne) && !this.swapTabuList.contains(swapTwo)) {
                     nbrs.add(neighbor);
-                    this.swapTabuList.add(swapOne);
-                    this.swapTabuList.add(swapTwo);
+                    this.forbidSwap(swapOne);
+                    this.forbidSwap(swapTwo);
+
                     this.swapIterations.put(swapOne, iteration);
                     this.swapIterations.put(swapTwo, iteration);
 
@@ -334,6 +365,9 @@ public class TabuSearch {
      * @return best generated neighbor
      */
     public Solution getNeighbor(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
+
+        // TODO: find reasonable chances for operator applications
+
         Solution shiftNeighbor = this.getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
         Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
 
@@ -402,7 +436,7 @@ public class TabuSearch {
      * @param iteration         - the current iteration
      */
     public void updateCurrentSolution(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
-        this.freeingStrategy(iteration);
+//        this.freeingStrategy(iteration);
         this.currSol = this.getNeighbor(shortTermStrategy, onlyFeasible, iteration);
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
@@ -442,7 +476,7 @@ public class TabuSearch {
     }
 
     /**
-     * Performs the tabu search.
+     * Improves a given solution to a stacking problem using a tabu search.
      *
      * @return the best solution generated in the tabu search procedure
      */
