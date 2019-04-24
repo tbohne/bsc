@@ -2828,9 +2828,9 @@ Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lamb
 Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
 welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, d.h. $q \neq r$, $i \in q$ und $j \in r$.
 Sind beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack,
-so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.\newline
+so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
 
-\textbf{Forbidding-Strategy}\newline
+\textbf{Forbidding-Strategy}
 
 Die Forbidding-Strategy spezifiziert die Art der Einträge, also die Art der gespeicherten Information in der
 Tabu-Liste. Wie bereits erwähnt, werden aus Effizienzgründen typischerweise nicht die Lösungen selbst gespeichert,
@@ -2856,15 +2856,17 @@ Stack-Index und einem Level innerhalb dieses Stacks aus.
  pos = (stackIdx, level)
 \end{gather*}
 
-\textbf{Freeing-Strategy}\newline
+\textbf{Freeing-Strategy}
 
-% TODO: elaborate
 Die Freeing-Strategy entspricht jener Strategie, welche spezifiziert, zu welchem Zeitpunkt Einträge aus den
-Tabu-Listen wieder entfernt werden. Dies geschieht nach einer gewissen Anzahl an Iterationen,
-denn in der Regel werden Einträge der Tabu-Liste nur für eine gewisse Zeit verboten.
-Dies hat auch den Vorteil, dass die Tabu-Listen effizient durchsuchbar und speicherbar bleiben.\newline
+Tabu-Listen wieder entfernt werden. Typischerweise wird eine Maximallänge der Tabu-Liste definiert,
+welche dafür sorgt, dass diese nicht beliebig lang wird und effizient durchsuchbar und speicherbar bleibt.
+Somit werden die Einträge der Tabu-Liste nur für eine gewisse Zeit verboten, denn bei Erreichen der Maximallänge
+wird der jeweils älteste Eintrag gelöscht, um den aktuellen Eintrag aufzunehmen.
+Daher sind lediglich Zyklen, welche kleiner oder gleich der Maximallänge der Tabu-Liste sind,
+ausgeschlossen, was bei der Definition dieser Länge berücksichtigt werden sollte.
 
-\textbf{Short-Term-Strategy}\newline
+\textbf{Short-Term-Strategy}
 
 Die Short-Term-Strategy gibt im Wesentlichen an, wie zulässige Nachbarlösungen ausgewählt werden.
 Eine Operation, welche eine Nachbarlösung generiert, ist dann zulässig, wenn diese nicht tabu ist,
@@ -2877,16 +2879,16 @@ sofern dies effizient möglich ist, oder, wie in diesem Fall, eine Teilmenge der
 welche eine definierte, feste Kardinalität besitzt. Es muss also jeweils eine Nachbarlösung aus dieser
 Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
 Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt
-werden.\newline
+werden.
 
-\textbf{First-Fit}\newline
+\textbf{First-Fit}
 
 Bei der First-Fit-Strategie wird die Nachbarschaft einer Lösung lediglich solange durchsucht, bis eine bessere
 Lösung gefunden wird, also eine Lösung, welche einen besseren Zielfunktionswert besitzt, als die gegenwärtige Lösung.
 Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden,
-so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.\newline
+so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.
 
-\textbf{Best-Fit}\newline
+\textbf{Best-Fit}
 
 Die Best-Fit-Strategie generiert die gesamte Teilmenge fester Kardinalität und liefert schließlich die
 beste Nachbarlösung aus dieser Teilmenge.\newline
@@ -2908,6 +2910,7 @@ was an folgendem Gegenbeispiel nachvollzogen werden kann.
 Es sei der Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
 dessen transitiver Abschluss dem Stacking-Graphen der Item-Menge $I$ entspricht. Außerdem seien sämtliche
 Items mit den Stacks $S_0$ und $S_1$ kompatibel.
+
 \begin{figure}[H]
   \centering
     \begin{tikzpicture}[->, scale=0.7, transform shape, node distance=2cm]
