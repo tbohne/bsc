@@ -21,7 +21,7 @@ public class TestDataGenerator {
 
     /******************************* CONFIGURATION *************************************/
     public static final int NUMBER_OF_INSTANCES = 1;
-    public static final int NUMBER_OF_ITEMS = 14;
+    public static final int NUMBER_OF_ITEMS = 25;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -33,13 +33,25 @@ public class TestDataGenerator {
 
     // Configuration of 2nd approach to stacking constraint generation:
     public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
+
     public static final float ITEM_LENGTH_LB = 1.0F;
     public static final float ITEM_LENGTH_UB = 6.0F;
     public static final float ITEM_WIDTH_LB = 1.0F;
     public static final float ITEM_WIDTH_UB = 2.4F;
-    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
-    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
+
+
+    public static final float STORAGE_AREA_SLOT_LENGTH = 2.0F;
+    public static final float STORAGE_AREA_SLOT_WIDTH = 1.0F;
+
+//    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
+//    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
     public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
+
+
+
+
+
+
     /***********************************************************************************/
 
     /**
@@ -63,9 +75,19 @@ public class TestDataGenerator {
      * @return list of stack positions
      */
     public static ArrayList<Position> generateStackPositions(int numOfStacks) {
+
         ArrayList<Position> stackPositions = new ArrayList<>();
+        int stacksPerRow = (int)Math.ceil(Math.sqrt(numOfStacks));
+        int xCoord = 0;
+        int yCoord = 0;
+
         for (int i = 0; i < numOfStacks; i++) {
-            stackPositions.add(new Position(i * STORAGE_AREA_SLOT_LENGTH, 0));
+            if (i != 0 && i % stacksPerRow == 0) {
+                yCoord += STORAGE_AREA_SLOT_WIDTH;
+                xCoord = 0;
+            }
+            stackPositions.add(new Position(xCoord, yCoord));
+            xCoord += STORAGE_AREA_SLOT_LENGTH;
         }
         return stackPositions;
     }
