@@ -2839,10 +2839,22 @@ Dabei ist es wichtig, Attribute bzw. Informationen zu speichern, welche eine Lö
 um zu verhindern, dass weitere Lösungen mit ähnlichen Eigenschaften ausgeschlossen werden.
 
 Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten Shift- und Swap-Nachbarschaft zwei unterschiedliche
-Tabu-Listen. Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine solche Position
-zeichnet sich durch einen Stack-Index und einen Level innerhalb dieses Stacks aus. Anschließend kann ein Item nicht erneut an dieselbe Position innerhalb eines Stacks verschoben werden, sehr wohl jedoch an eine andere.
+Tabu-Listen. Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine Shift-Operation entspricht daher dem folgenden $2$-Tupel.
+\begin{gather*}
+shift := (item, shiftPos)
+\end{gather*}
+Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
 In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, welche sie beinhalten.
-D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.\newline
+D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.
+Swap-Operationen sind durch das folgende $4$-Tupel definiert.
+\begin{gather*}
+swap := (pos_1, pos_2, item_1, item_2)
+\end{gather*}
+Eine Position zeichnet sich sowohl im Shift- als auch im Swap-Operator durch ein $2$-Tupel bestehend aus einem
+Stack-Index und einem Level innerhalb dieses Stacks aus.
+\begin{gather*}
+ pos = (stackIdx, level)
+\end{gather*}
 
 \textbf{Freeing-Strategy}\newline
 
@@ -2855,7 +2867,7 @@ Dies hat auch den Vorteil, dass die Tabu-Listen effizient durchsuchbar und speic
 \textbf{Short-Term-Strategy}\newline
 
 Die Short-Term-Strategy gibt im Wesentlichen an, wie zulässige Nachbarlösungen ausgewählt werden.
-Eine Operation, die eine Nachbarlösung generiert ist dann zulässig, wenn diese nicht tabu ist,
+Eine Operation, welche eine Nachbarlösung generiert, ist dann zulässig, wenn diese nicht tabu ist,
 oder, wenn sie das Aspirationskriterium erfüllt. Das Aspirationskriterium hat die Funktion bestimmte
 Operationen zu akzeptieren, obwohl diese tabu sind, sofern das Kriterium erfüllt wird.
 In der entwickelten Tabu-Suche enspricht dieses Kriterium der Generierung einer bisher besten Lösung.
@@ -2869,37 +2881,36 @@ werden.\newline
 
 \textbf{First-Fit}\newline
 
-Bei dieser Strategie wird die Nachbarschaft lediglich solange durchsucht, bis eine bessere Lösung gefunden wird,
-also eine Lösung, welche einen besseren Zielfunktionswert besitzt, als die gegenwärtige Lösung.
+Bei der First-Fit-Strategie wird die Nachbarschaft einer Lösung lediglich solange durchsucht, bis eine bessere
+Lösung gefunden wird, also eine Lösung, welche einen besseren Zielfunktionswert besitzt, als die gegenwärtige Lösung.
 Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden,
 so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.\newline
 
 \textbf{Best-Fit}\newline
 
-Bei dieser Strategie wird die gesamte Teilmenge fester Kardinalität generiert und es wird die beste Nachbarlösung
-daraus ausgewählt.\newline
+Die Best-Fit-Strategie generiert die gesamte Teilmenge fester Kardinalität und liefert schließlich die
+beste Nachbarlösung aus dieser Teilmenge.\newline
 
 Als Abbruchkriterien stehen drei verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können.
 Die simpelste Variante besteht darin, eine feste Anzahl an Iterationen zu definieren, nach welcher die Tabu-Suche terminiert.
 Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurücksetzungen der Tabu-Listen. Wenn innerhalb
 der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander allesamt tabu sind, so wird die
-entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Bei der letzten Variante handelt es sich um ein durchaus gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
+entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Bei der letzten Variante handelt es sich um ein gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
 
 Eine wichtige Eigenschaft einer Nachbarschaft ist der sogenannte Zusammenhang. Eine Nachbarschaft wird als zusammenhängend bezeichnet, wenn von einer Lösung $s$ durch Anwendung einer endlichen Folge von Operatoren jede andere Lösung $s'$ erreicht
 werden kann \cite{Brucker2006}. Bei einer zusammenhängenden Nachbarschaft existieren Konvergenzaussagen für Tabu-Suchen.
 Auch praktische Experimente haben gezeigt, dass lokale Suchverfahren im Allgemeinen bessere Ergebnisse
-liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängendend\footnote{Analog zum Zusammenhang, allerdings müssen nur sämtliche optimalen Lösungen erreichbar sein.} sind \cite{Knust2017}.
-
+liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängend\footnote{Analog zum Zusammenhang, allerdings müssen nur sämtliche optimalen Lösungen erreichbar sein.} sind \cite{Knust2017}.
 Dementsprechend ist ein solcher Zusammenhang bei der Nachbarschaftsstruktur erstrebenswert.
-Die zuvor beschriebene Nachbarschaft ist allerdings noch nicht zusammenhängend, was an folgendem Gegenbeispiel
-nachvollzogen werden kann.
+Die zuvor beschriebene kombinierte Shift- und Swap-Nachbarschaft ist allerdings noch nicht zusammenhängend,
+was an folgendem Gegenbeispiel nachvollzogen werden kann.
 
-Es sei der Stacking-Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
-dessen transitiver Abschluss den Stacking-Constraints entspricht. Außerdem seien sämtliche Items mit den Stacks
-$S_0$ und $S_1$ kompatibel.
+Es sei der Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
+dessen transitiver Abschluss dem Stacking-Graphen der Item-Menge $I$ entspricht. Außerdem seien sämtliche
+Items mit den Stacks $S_0$ und $S_1$ kompatibel.
 \begin{figure}[H]
   \centering
-    \begin{tikzpicture}[->, scale=0.65, transform shape, node distance=2.5cm]
+    \begin{tikzpicture}[->, scale=0.7, transform shape, node distance=2cm]
     \node[state] (A) {1};
     \node[state] (B) [below of=A] {2};
     \node[state] (C) [below of=B] {3};
@@ -2916,11 +2927,11 @@ $S_0$ und $S_1$ kompatibel.
           (B) edge node {} (F)
           (E) edge node {} (C);
   \end{tikzpicture}
-  \caption{\textsc{Stacking-Graph}}
+  \caption{\textsc{Stacking-Graph}.}
   \label{fig:counter_example_stacking_graph}
 \end{figure}
 
-Die in Abb. \ref{fig:counter_example_stacks} dargestellten Lösungen sind beide zulässig. Dementsprechend muss
+In Abb. \ref{fig:counter_example_stacks} sind zwei zulässige Lösungen dargestellt. Dementsprechend muss
 sich die Lösung $s$ aus Abb. \ref{fig:counter_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus
 Abb. \ref{fig:counter_b} transformieren lassen, wenn die Nachbarschaft zusammenhängend ist.
 
