@@ -26,6 +26,10 @@ public class TabuSearchConfig {
 
     public static final int NUMBER_OF_ITERATIONS = 1000;
     public static final int NUMBER_OF_TABU_LIST_CLEARS = 10;
+    // TODO: should probably depend on number of items
+    public static final int MAX_TABU_LIST_LENGTH = 1000;
+
+    // TODO: could be a factor x * number of items
     public static final int NUMBER_OF_NON_IMPROVING_ITERATIONS = 50;
 
     public static final int UNSUCCESSFUL_SWAP_ATTEMPTS = 25;

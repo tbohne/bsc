@@ -20,7 +20,7 @@ public class TabuSearch {
     private Queue<Swap> swapTabuList;
     private Queue<Shift> shiftTabuList;
     private int tabuListClears;
-    private int maxTabuLength;
+    private int maxTabuListLength;
 
     private int iterationOfLastImprovement;
 
@@ -36,7 +36,7 @@ public class TabuSearch {
         this.shiftTabuList = new LinkedList<>();
         this.tabuListClears = 0;
         this.iterationOfLastImprovement = 0;
-        this.maxTabuLength = TabuSearchConfig.NUMBER_OF_ITERATIONS;
+        this.maxTabuListLength = TabuSearchConfig.MAX_TABU_LIST_LENGTH;
     }
 
     /**
@@ -135,7 +135,7 @@ public class TabuSearch {
      * @param swap - the swap operation to be added to the tabu list
      */
     public void forbidSwap(Swap swap) {
-        if (this.swapTabuList.size() >= this.maxTabuLength) {
+        if (this.swapTabuList.size() >= this.maxTabuListLength) {
             this.swapTabuList.poll();
         }
         this.swapTabuList.add(swap);
@@ -148,7 +148,7 @@ public class TabuSearch {
      * @param shift - the shift operation to be added to the tabu list
      */
     public void forbidShift(Shift shift) {
-        if (this.shiftTabuList.size() >= this.maxTabuLength) {
+        if (this.shiftTabuList.size() >= this.maxTabuListLength) {
             this.shiftTabuList.poll();
         }
         this.shiftTabuList.add(shift);
