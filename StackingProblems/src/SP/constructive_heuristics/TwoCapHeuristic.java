@@ -156,8 +156,8 @@ public class TwoCapHeuristic {
 
             if (blockedStacks.contains(stack)) { continue; }
 
-            HeuristicUtil.removeItemFromOutdatedPosition(item, instance.getStacks());
-            instance.getStacks()[stack][level] = item;
+            HeuristicUtil.removeItemFromOutdatedPosition(item, this.instance.getStacks());
+            this.instance.getStacks()[stack][level] = item;
             blockedStacks.add(stack);
         }
     }
@@ -226,7 +226,6 @@ public class TwoCapHeuristic {
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-        System.out.println(maxSavingsMatching.getMatching().getEdges().size());
         this.updateStackAssignments(maxSavingsMatching, costsBefore);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
@@ -247,12 +246,11 @@ public class TwoCapHeuristic {
         return emptyPositions;
     }
 
-    public static void addEdgesForCompatibleItems(
+    public void addEdgesForCompatibleItems(
             DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
             ArrayList<Integer> items,
             ArrayList<StorageAreaPosition> emptyPositions,
             HashMap<Integer, Double> originalCosts,
-            Instance instance,
             Solution sol
     ) {
 
@@ -260,7 +258,7 @@ public class TwoCapHeuristic {
             for (StorageAreaPosition emptyPos : emptyPositions) {
 
                 // item compatible with stack
-                if (instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / instance.getItems().length) {
+                if (this.instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
                     int levelOfOtherSlot = emptyPos.getLevel() == 0 ? 1 : 0;
                     if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
@@ -269,15 +267,15 @@ public class TwoCapHeuristic {
                         // item compatible with other item
                         if (levelOfOtherSlot == 0) {
                             // 0 --> top?
-                            if (instance.getStackingConstraints()[otherItem][item] == 1) {
+                            if (this.instance.getStackingConstraints()[otherItem][item] == 1) {
                                 DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-                                double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
+                                double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
                                 postProcessingGraph.setEdgeWeight(edge, savings);
                             }
                         } else {
-                            if (instance.getStackingConstraints()[item][otherItem] == 1) {
+                            if (this.instance.getStackingConstraints()[item][otherItem] == 1) {
                                 DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-                                double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
+                                double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
                                 postProcessingGraph.setEdgeWeight(edge, savings);
                             }
                         }
@@ -285,7 +283,7 @@ public class TwoCapHeuristic {
                     // no other item in stack
                     } else {
                         DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-                        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
+                        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
                         postProcessingGraph.setEdgeWeight(edge, savings);
                     }
                 }
@@ -309,7 +307,7 @@ public class TwoCapHeuristic {
         GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
 
-        this.addEdgesForCompatibleItems(postProcessingGraph, items, emptyPositions, costsBefore, this.instance, sol);
+        this.addEdgesForCompatibleItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
 
         return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
@@ -319,6 +317,7 @@ public class TwoCapHeuristic {
 
         ArrayList<StorageAreaPosition> emptyPositions = this.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
+
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(items, emptyPositions, costsBefore, sol);
@@ -329,6 +328,9 @@ public class TwoCapHeuristic {
 
         this.updateStackAssignmentsNewWay(maxSavingsMatching);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
+
+        System.out.println(sol.getNumberOfAssignedItems());
+
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
 
         return sol;
@@ -381,10 +383,18 @@ public class TwoCapHeuristic {
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+
             if (postProcessing) {
-//                sol = this.postProcessing(sol, itemPairs);
+
+                double bestSolutionCost = sol.computeCosts();
                 sol = this.postProcessingNewWay(sol);
+
+                while (sol.computeCosts() < bestSolutionCost) {
+                    bestSolutionCost = sol.computeCosts();
+                    sol = this.postProcessingNewWay(sol);
+                }
             }
+            sol.lowerItemsThatAreStackedInTheAir();
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
         }
