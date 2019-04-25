@@ -1,6 +1,7 @@
 package SP.util;
 
 import SP.representations.MCMEdge;
+import SP.representations.StorageAreaPosition;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
@@ -305,8 +306,8 @@ public class GraphUtil {
      * @param bipartiteGraph - the bipartite graph to be extended
      * @param partitionTwo   - the partition the vertices are added to
      */
-    public static void addVerticesForStacks(int[][] stacks,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionTwo) {
+    public static void addVerticesForStacks(
+        int[][] stacks, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionTwo) {
 
             for (int stack = 0; stack < stacks.length; stack++) {
                 bipartiteGraph.addVertex("stack" + stack);
@@ -314,12 +315,35 @@ public class GraphUtil {
             }
     }
 
+    /**
+     * Adds the empty stacks as vertices to the given bipartite graph.
+     *
+     * @param emptyStacks  - the empty stacks to be added as vertices
+     * @param graph        - the graph the vertices are added to
+     * @param partitionTwo - the partition of the bipartite graph the vertices are added to
+     */
     public static void addVerticesForEmptyStacks(
         ArrayList<String> emptyStacks, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
     ) {
         for (String emptyStack : emptyStacks) {
             graph.addVertex(emptyStack);
             partitionTwo.add(emptyStack);
+        }
+    }
+
+    /**
+     * Adds the empty positions as vertices to the given bipartite graph.
+     *
+     * @param emptyPositions - the empty positions to be added as vertices
+     * @param graph          - the graph the vertices are added to
+     * @param partitionTwo   - the partition of the bipartite graph the vertices are added to
+     */
+    public static void addVerticesForEmptyPositions(
+        ArrayList<StorageAreaPosition> emptyPositions, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
+    ) {
+        for (StorageAreaPosition pos : emptyPositions) {
+            graph.addVertex("pos" + pos);
+            partitionTwo.add("pos" + pos);
         }
     }
 
