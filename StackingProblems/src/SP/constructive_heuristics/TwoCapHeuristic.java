@@ -101,24 +101,14 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Updates the stack assignments based on the matching that results in the maximum savings.
+     * Updates the stack assignments with the specified matching.
+     * Only one item can be assigned to each stack, because otherwise incompatibilities in terms
+     * of the stacking constraints could arise. Therefore each stack is blocked for additional assignments
+     * after an item has been assigned to it.
      *
-     * @param maxSavingsMatching - the matching that results in the maximum savings
-     * @param costsBefore - the hashmap containing the original costs for each item assignment
+     * @param maxSavingsMatching - matching the stack assignments are updated with
      */
-    public void updateStackAssignments(
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
-        HashMap<Integer, Double> costsBefore
-    ) {
-        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int itemOne = GraphUtil.parseItemOneOfPair(edge);
-            int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
-            int stack = GraphUtil.parseStackForPair(edge);
-            HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, costsBefore, this.instance);
-        }
-    }
-
-    public void updateStackAssignmentsNewWay(MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching) {
+    public void updateStackAssignments(MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching) {
 
         ArrayList<Integer> blockedStacks = new ArrayList<>();
 
@@ -155,26 +145,14 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Returns the list of item pairs based on the list of MCM edges.
+     * Retrieves the empty positions from the storage area.
      *
-     * @param edges - the list of edges
-     * @return the list of item pairs
+     * @param sol - solution to retrieve the empty positions for
+     * @return list of empty positions in the storage area
      */
-    public ArrayList<ArrayList<Integer>> getListOfPairsFromEdges(ArrayList<MCMEdge> edges) {
-        ArrayList<ArrayList<Integer>> itemPairs = new ArrayList<>();
-        for (MCMEdge e : edges) {
-            ArrayList<Integer> itemPair = new ArrayList<>();
-            itemPair.add(e.getVertexOne());
-            itemPair.add(e.getVertexTwo());
-            itemPairs.add(itemPair);
-        }
-        return itemPairs;
-    }
-
     public ArrayList<StorageAreaPosition> retrieveEmptyPositions(Solution sol) {
         ArrayList<StorageAreaPosition> emptyPositions = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            // top to bottom
             for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
                 if (sol.getFilledStorageArea()[stack][level] == -1) {
                     emptyPositions.add(new StorageAreaPosition(stack, level));
@@ -302,7 +280,7 @@ public class TwoCapHeuristic {
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-        this.updateStackAssignmentsNewWay(maxSavingsMatching);
+        this.updateStackAssignments(maxSavingsMatching);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
