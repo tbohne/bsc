@@ -146,6 +146,34 @@ public class TwoCapHeuristic {
     }
 
     /**
+     * Prepares the update of the stack assignments by creating lists of items that
+     * are assigned to the same stack and storing the savings for each item.
+     *
+     * @param maxSavingsMatching  - matching to be processed
+     * @param itemSavings         - map to be filled with each item's saving
+     * @param postProcessingGraph - post-processing graph containing the items and empty positions
+     * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
+     */
+    public void prepareUpdateOfStackAssignments(
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
+        HashMap<Integer, Double> itemSavings,
+        BipartiteGraph postProcessingGraph,
+        HashMap<Integer, ArrayList<Integer>> stackAssignments
+    ) {
+
+        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
+            int item = this.parseItemFromPostProcessingMatching(edge);
+            int stack = this.parseStackFromPostProcessingMatching(edge);
+            itemSavings.put(item, postProcessingGraph.getGraph().getEdgeWeight(edge));
+            if (stackAssignments.containsKey(stack)) {
+                stackAssignments.get(stack).add(item);
+            } else {
+                stackAssignments.put(stack, new ArrayList<>());
+            }
+        }
+    }
+
+    /**
      * Updates the stack assignments with the specified matching.
      * Only one item can be assigned to each stack, because otherwise incompatibilities in terms
      * of the stacking constraints could arise. Therefore each stack is blocked for additional assignments
@@ -161,17 +189,7 @@ public class TwoCapHeuristic {
         HashMap<Integer, ArrayList<Integer>> stackAssignments = new HashMap<>();
         HashMap<Integer, Double> itemSavings = new HashMap<>();
 
-        // construct lists of items assigned to the same stack and store savings for each item
-        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int item = this.parseItemFromPostProcessingMatching(edge);
-            int stack = this.parseStackFromPostProcessingMatching(edge);
-            itemSavings.put(item, postProcessingGraph.getGraph().getEdgeWeight(edge));
-            if (stackAssignments.containsKey(stack)) {
-                stackAssignments.get(stack).add(item);
-            } else {
-                stackAssignments.put(stack, new ArrayList<>());
-            }
-        }
+        this.prepareUpdateOfStackAssignments(maxSavingsMatching, itemSavings, postProcessingGraph, stackAssignments);
 
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
             int item = this.parseItemFromPostProcessingMatching(edge);
