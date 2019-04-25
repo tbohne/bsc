@@ -131,6 +131,21 @@ public class TwoCapHeuristic {
     }
 
     /**
+     * Updates the item position in the storage area and adds
+     * the used stack to the list of blocked stacks.
+     *
+     * @param item          - item to be assigned to new position
+     * @param stack         - stack the item gets assigned to
+     * @param level         - level the item gets assigned to
+     * @param blockedStacks - list of blocked stacks (only one item per stack in post-processing)
+     */
+    public void updateItemPosition(int item, int stack, int level, ArrayList<Integer> blockedStacks) {
+        HeuristicUtil.removeItemFromOutdatedPosition(item, this.instance.getStacks());
+        this.instance.getStacks()[stack][level] = item;
+        blockedStacks.add(stack);
+    }
+
+    /**
      * Updates the stack assignments with the specified matching.
      * Only one item can be assigned to each stack, because otherwise incompatibilities in terms
      * of the stacking constraints could arise. Therefore each stack is blocked for additional assignments
@@ -172,15 +187,9 @@ public class TwoCapHeuristic {
                         bestItem = i;
                     }
                 }
-
-                HeuristicUtil.removeItemFromOutdatedPosition(bestItem, this.instance.getStacks());
-                this.instance.getStacks()[stack][level] = bestItem;
-                blockedStacks.add(stack);
-
+                this.updateItemPosition(bestItem, stack, level, blockedStacks);
             } else {
-                HeuristicUtil.removeItemFromOutdatedPosition(item, this.instance.getStacks());
-                this.instance.getStacks()[stack][level] = item;
-                blockedStacks.add(stack);
+                this.updateItemPosition(item, stack, level, blockedStacks);
             }
         }
     }
