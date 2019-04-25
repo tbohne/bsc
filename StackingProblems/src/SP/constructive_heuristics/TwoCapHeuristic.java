@@ -198,41 +198,6 @@ public class TwoCapHeuristic {
         return itemPairs;
     }
 
-    /**
-     * This approach should be used in situations where the number of used stacks is irrelevant
-     * and only the minimization of transport costs matters.
-     *
-     * Takes the generated solution and moves items from completely filled stacks to empty
-     * stacks if it's possible to reduce the total costs by doing so.
-     * Initially, a bipartite graph between item pairs in a completely filled stack and empty stacks is generated.
-     * An edge between the two partitions indicates that at least one of the two items is assignable to the empty stack.
-     * The costs of the edge correspond to the resulting savings if the item that induces higher savings is assigned to
-     * the empty stack. A maximum weight matching is computed on that graph to retrieve an assignment that leads
-     * to a maximum cost reduction.
-     *
-     * @param sol - the generated solution to be processed
-     * @param itemPairs - the generated pairs of items
-     * @return the result of the post-processing procedure
-     */
-    public Solution postProcessing(Solution sol, ArrayList<MCMEdge> itemPairs) {
-        System.out.println("costs before post processing: " + sol.getObjectiveValue());
-
-        ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
-        HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-        ArrayList<ArrayList<Integer>> itemPairsList = this.getListOfPairsFromEdges(itemPairs);
-
-
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(itemPairsList, emptyStacks, costsBefore);
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
-            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
-        );
-        this.updateStackAssignments(maxSavingsMatching, costsBefore);
-        sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
-
-        return sol;
-    }
-
     public ArrayList<StorageAreaPosition> retrieveEmptyPositions(Solution sol) {
         ArrayList<StorageAreaPosition> emptyPositions = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
@@ -312,29 +277,34 @@ public class TwoCapHeuristic {
         return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
 
-    public Solution postProcessingNewWay(Solution sol) {
+    /**
+     * This approach should be used in situations where the number of used stacks is irrelevant
+     * and only the minimization of transport costs matters.
+     *
+     * Takes the generated solution and moves items to empty positions if it's possible to
+     * reduce the total costs by doing so.
+     * Initially, a bipartite graph between items and empty positions is generated.
+     * An edge between the two partitions indicates that an item is assignable to the empty position.
+     * The costs of the edge correspond to the resulting savings if the item is assigned to the empty position.
+     * A maximum weight matching is computed on that graph to retrieve an assignment that leads
+     * to a maximum cost reduction.
+     *
+     * @param sol - the generated solution to be processed
+     * @return the result of the post-processing procedure
+     */
+    public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
-
         ArrayList<StorageAreaPosition> emptyPositions = this.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
-
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(items, emptyPositions, costsBefore, sol);
-
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-
         this.updateStackAssignmentsNewWay(maxSavingsMatching);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-
-        System.out.println(sol.getNumberOfAssignedItems());
-
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
-
         return sol;
-
     }
 
     /**
@@ -358,23 +328,16 @@ public class TwoCapHeuristic {
         Solution sol = new Solution();
 
         if (this.instance.getStackCapacity() == 2) {
-
             this.startTime = System.currentTimeMillis();
-
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
-
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
-
             ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
-
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
                 itemPairs, this.instance.getItems()
             );
-
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
-
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
@@ -385,13 +348,11 @@ public class TwoCapHeuristic {
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
 
             if (postProcessing) {
-
                 double bestSolutionCost = sol.computeCosts();
-                sol = this.postProcessingNewWay(sol);
-
+                sol = this.postProcessing(sol);
                 while (sol.computeCosts() < bestSolutionCost) {
                     bestSolutionCost = sol.computeCosts();
-                    sol = this.postProcessingNewWay(sol);
+                    sol = this.postProcessing(sol);
                 }
             }
             sol.lowerItemsThatAreStackedInTheAir();
