@@ -1,9 +1,6 @@
 package SP.constructive_heuristics;
 
-import SP.representations.BipartiteGraph;
-import SP.representations.Instance;
-import SP.representations.MCMEdge;
-import SP.representations.Solution;
+import SP.representations.*;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
@@ -203,7 +200,9 @@ public class TwoCapHeuristic {
      */
     public Solution postProcessing(Solution sol, ArrayList<MCMEdge> itemPairs) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
         ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
+
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
         ArrayList<ArrayList<Integer>> itemPairsList = this.getListOfPairsFromEdges(itemPairs);
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(itemPairsList, emptyStacks, costsBefore);
@@ -216,6 +215,32 @@ public class TwoCapHeuristic {
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
 
         return sol;
+    }
+
+    public ArrayList<StorageAreaPosition> retrieveEmptyPositions(Solution sol) {
+
+        ArrayList<StorageAreaPosition> emptyPositions = new ArrayList<>();
+
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+
+            // top to bottom
+            for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
+                if (sol.getFilledStorageArea()[stack][level] == -1) {
+                    emptyPositions.add(new StorageAreaPosition(stack, level));
+                }
+            }
+        }
+
+        return emptyPositions;
+    }
+
+    public Solution postProcessingNewWay(Solution sol, ArrayList<MCMEdge> itemPairs) {
+        System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
+        ArrayList<StorageAreaPosition> emptyPositions = this.retrieveEmptyPositions(sol);
+
+        return sol;
+
     }
 
     /**
@@ -265,7 +290,8 @@ public class TwoCapHeuristic {
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
             if (postProcessing) {
-                sol = this.postProcessing(sol, itemPairs);
+//                sol = this.postProcessing(sol, itemPairs);
+                sol = this.postProcessingNewWay(sol, itemPairs);
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");
