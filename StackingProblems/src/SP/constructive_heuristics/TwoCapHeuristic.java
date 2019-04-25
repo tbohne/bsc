@@ -101,6 +101,36 @@ public class TwoCapHeuristic {
     }
 
     /**
+     * Parses the item from the edge of the post-processing graph.
+     *
+     * @param edge - edge to be parsed
+     * @return parsed item
+     */
+    public int parseItemFromPostProcessingMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(", "").replace("item", "").trim());
+    }
+
+    /**
+     * Parses the stack from the edge of the post-processing graph.
+     *
+     * @param edge - edge to be parsed
+     * @return parsed stack
+     */
+    public int parseStackFromPostProcessingMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[2].split(",")[0].trim());
+    }
+
+    /**
+     * Parses the level from the edge of the post-processing graph.
+     *
+     * @param edge - edge to be parsed
+     * @return parsed level
+     */
+    public int parseLevelFromPostProcessingMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[3].replace(")", "").trim());
+    }
+
+    /**
      * Updates the stack assignments with the specified matching.
      * Only one item can be assigned to each stack, because otherwise incompatibilities in terms
      * of the stacking constraints could arise. Therefore each stack is blocked for additional assignments
@@ -108,20 +138,50 @@ public class TwoCapHeuristic {
      *
      * @param maxSavingsMatching - matching the stack assignments are updated with
      */
-    public void updateStackAssignments(MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching) {
+    public void updateStackAssignments(
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, BipartiteGraph postProcessingGraph
+    ) {
 
         ArrayList<Integer> blockedStacks = new ArrayList<>();
+        HashMap<Integer, ArrayList<Integer>> stackAssignments = new HashMap<>();
+        HashMap<Integer, Double> itemSavings = new HashMap<>();
+
+        // construct lists of items assigned to the same stack and store savings for each item
+        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
+            int item = this.parseItemFromPostProcessingMatching(edge);
+            int stack = this.parseStackFromPostProcessingMatching(edge);
+            itemSavings.put(item, postProcessingGraph.getGraph().getEdgeWeight(edge));
+            if (stackAssignments.containsKey(stack)) {
+                stackAssignments.get(stack).add(item);
+            } else {
+                stackAssignments.put(stack, new ArrayList<>());
+            }
+        }
 
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int item = Integer.parseInt(edge.toString().split(":")[0].replace("(", "").replace("item", "").trim());
-            int stack = Integer.parseInt(edge.toString().split(":")[2].split(",")[0].trim());
-            int level = Integer.parseInt(edge.toString().split(":")[3].replace(")", "").trim());
+            int item = this.parseItemFromPostProcessingMatching(edge);
+            int stack = this.parseStackFromPostProcessingMatching(edge);
+            int level = this.parseLevelFromPostProcessingMatching(edge);
 
             if (blockedStacks.contains(stack)) { continue; }
 
-            HeuristicUtil.removeItemFromOutdatedPosition(item, this.instance.getStacks());
-            this.instance.getStacks()[stack][level] = item;
-            blockedStacks.add(stack);
+            if (stackAssignments.get(stack).size() > 1) {
+                int bestItem = stackAssignments.get(stack).get(0);
+                for (int i : stackAssignments.get(stack)) {
+                    if (itemSavings.get(i) > itemSavings.get(bestItem)) {
+                        bestItem = i;
+                    }
+                }
+
+                HeuristicUtil.removeItemFromOutdatedPosition(bestItem, this.instance.getStacks());
+                this.instance.getStacks()[stack][level] = bestItem;
+                blockedStacks.add(stack);
+
+            } else {
+                HeuristicUtil.removeItemFromOutdatedPosition(item, this.instance.getStacks());
+                this.instance.getStacks()[stack][level] = item;
+                blockedStacks.add(stack);
+            }
         }
     }
 
@@ -262,7 +322,7 @@ public class TwoCapHeuristic {
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-        this.updateStackAssignments(maxSavingsMatching);
+        this.updateStackAssignments(maxSavingsMatching, postProcessingGraph);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
