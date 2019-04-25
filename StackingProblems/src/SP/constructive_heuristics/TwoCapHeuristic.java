@@ -200,9 +200,9 @@ public class TwoCapHeuristic {
 
             if (stackAssignments.get(stack).size() > 1) {
                 int bestItem = stackAssignments.get(stack).get(0);
-                for (int i : stackAssignments.get(stack)) {
-                    if (itemSavings.get(i) > itemSavings.get(bestItem)) {
-                        bestItem = i;
+                for (int i = 1; i < stackAssignments.get(stack).size(); i++) {
+                    if (itemSavings.get(stackAssignments.get(stack).get(i)) > itemSavings.get(bestItem)) {
+                        bestItem = stackAssignments.get(stack).get(i);
                     }
                 }
                 this.updateItemPosition(bestItem, stack, level, blockedStacks);
