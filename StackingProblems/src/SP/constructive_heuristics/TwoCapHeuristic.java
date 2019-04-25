@@ -84,33 +84,6 @@ public class TwoCapHeuristic {
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
-    /**
-     * Generates the bipartite graph for the post-processing step.
-     * The graph's first partition consists of item-pairs and the second one consists of empty stacks.
-     * An edge between the partitions means that at least one item of the pair is compatible to the empty stack.
-     * The costs of the edges correspond to the maximum savings that are generated if an item of the pair is
-     * assigned to the empty stack.
-     *
-     * @param itemPairs - the list of item pairs
-     * @param emptyStacks - the list of remaining empty stacks
-     * @param costsBefore - the original costs for each item assignment
-     * @return the generated bipartite graph
-     */
-    public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<ArrayList<Integer>> itemPairs,
-        ArrayList<String> emptyStacks,
-        HashMap<Integer, Double> costsBefore
-    ) {
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(
-            DefaultWeightedEdge.class
-        );
-        Set<String> partitionOne = new HashSet<>();
-        Set<String> partitionTwo = new HashSet<>();
-        GraphUtil.addVerticesForListOfItemPairs(itemPairs, postProcessingGraph, partitionOne);
-        GraphUtil.addVerticesForEmptyStacks(emptyStacks, postProcessingGraph, partitionTwo);
-        HeuristicUtil.addEdgesForItemPairs(postProcessingGraph, itemPairs, emptyStacks, costsBefore, this.instance);
-        return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
-    }
 
     /**
      * Encapsulates the stacking constraint graph generation.
@@ -256,24 +229,31 @@ public class TwoCapHeuristic {
         }
     }
 
-    public BipartiteGraph generatePostProcessingGraphNewWay(
+    /**
+     * Generates the bipartite graph for the post-processing step.
+     * The graph's first partition consists of items and the second one consists of empty positions in stacks.
+     * An edge between the partitions means that an item is compatible to the empty position.
+     * The costs of the edges correspond to the savings that are generated if the item is assigned to the empty position.
+     *
+     * @param items          - list of items in the storage area
+     * @param emptyPositions - list of empty positions in the storage area
+     * @param costsBefore    - original costs for each item assignment
+     * @param sol            - solution to be processed
+     * @return the generated bipartite graph
+     */
+    public BipartiteGraph generatePostProcessingGraph(
         ArrayList<Integer> items,
         ArrayList<StorageAreaPosition> emptyPositions,
         HashMap<Integer, Double> costsBefore,
         Solution sol
     ) {
-
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(
-                DefaultWeightedEdge.class
-        );
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph =
+            new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
-
         GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
-
         this.addEdgesForCompatibleItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
-
         return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
 
@@ -297,7 +277,7 @@ public class TwoCapHeuristic {
         ArrayList<StorageAreaPosition> emptyPositions = this.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(items, emptyPositions, costsBefore, sol);
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
