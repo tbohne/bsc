@@ -184,45 +184,66 @@ public class TwoCapHeuristic {
         return emptyPositions;
     }
 
+    /**
+     * Adds the edges that indicate an item's compatibility to an empty position to the post-processing graph.
+     *
+     * @param postProcessingGraph - graph the edges are added to
+     * @param item                - item to be connected to an empty position
+     * @param emptyPos            - empty position the item gets connected to
+     * @param originalCosts       - the current costs for each item assignment
+     */
     public void addEdgesForCompatibleItems(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
-            ArrayList<Integer> items,
-            ArrayList<StorageAreaPosition> emptyPositions,
-            HashMap<Integer, Double> originalCosts,
-            Solution sol
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        int item,
+        StorageAreaPosition emptyPos,
+        HashMap<Integer, Double> originalCosts
     ) {
+        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
+        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
+        postProcessingGraph.setEdgeWeight(edge, savings);
+    }
 
-        for (int item = 0; item < items.size(); item++) {
+    /**
+     * Finds compatible empty positions for the items in the storage area and
+     * initiates the edge addition for these pairs of items and empty positions
+     * to the post-processing graph.
+     *
+     * @param postProcessingGraph - graph the edges are added to
+     * @param items               - items to be connected to compatible empty positions
+     * @param emptyPositions      - empty positions the compatible items get connected with
+     * @param originalCosts       - the current costs for each item assignment
+     * @param sol                 - the solution to be processed
+     */
+    public void findCompatibleEmptyPositionsForItems(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        ArrayList<Integer> items,
+        ArrayList<StorageAreaPosition> emptyPositions,
+        HashMap<Integer, Double> originalCosts,
+        Solution sol
+    ) {
+        for (int item : items) {
             for (StorageAreaPosition emptyPos : emptyPositions) {
 
                 // item compatible with stack
                 if (this.instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / this.instance.getItems().length) {
 
                     int levelOfOtherSlot = emptyPos.getLevel() == 0 ? 1 : 0;
+
                     if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
                         int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
-
                         // item compatible with other item
                         if (levelOfOtherSlot == 0) {
-                            // 0 --> top?
                             if (this.instance.getStackingConstraints()[otherItem][item] == 1) {
-                                DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-                                double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
-                                postProcessingGraph.setEdgeWeight(edge, savings);
+                                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
                             }
                         } else {
                             if (this.instance.getStackingConstraints()[item][otherItem] == 1) {
-                                DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-                                double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
-                                postProcessingGraph.setEdgeWeight(edge, savings);
+                                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
                             }
                         }
-
                     // no other item in stack
                     } else {
-                        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-                        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
-                        postProcessingGraph.setEdgeWeight(edge, savings);
+                        this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
                     }
                 }
             }
@@ -253,7 +274,7 @@ public class TwoCapHeuristic {
         Set<String> partitionTwo = new HashSet<>();
         GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
-        this.addEdgesForCompatibleItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
+        this.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
         return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
 
