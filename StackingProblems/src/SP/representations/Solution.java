@@ -292,18 +292,27 @@ public class Solution {
      * @return the solution's number of assigned items
      */
     public int getNumberOfAssignedItems() {
+        return this.getAssignedItems().size();
+    }
+
+    /**
+     * Returns the solution's list of assigned items.
+     *
+     * @return the solution's list of assigned items
+     */
+    public ArrayList<Integer> getAssignedItems() {
         if (this.empty) {
-            return 0;
+            return new ArrayList<>();
         }
-        int numberOfAssignedItems = 0;
+        ArrayList<Integer> assignedItems = new ArrayList<>();
         for (int i = 0; i < this.filledStorageArea.length; i++) {
             for (int j = 0; j < this.filledStorageArea[i].length; j++) {
                 if (this.filledStorageArea[i][j] != -1) {
-                    numberOfAssignedItems++;
+                    assignedItems.add(this.filledStorageArea[i][j]);
                 }
             }
         }
-        return numberOfAssignedItems;
+        return assignedItems;
     }
 
     /**
