@@ -145,24 +145,6 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Retrieves the empty positions from the storage area.
-     *
-     * @param sol - solution to retrieve the empty positions for
-     * @return list of empty positions in the storage area
-     */
-    public ArrayList<StorageAreaPosition> retrieveEmptyPositions(Solution sol) {
-        ArrayList<StorageAreaPosition> emptyPositions = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
-                if (sol.getFilledStorageArea()[stack][level] == -1) {
-                    emptyPositions.add(new StorageAreaPosition(stack, level));
-                }
-            }
-        }
-        return emptyPositions;
-    }
-
-    /**
      * Adds the edges that indicate an item's compatibility to an empty position to the post-processing graph.
      *
      * @param postProcessingGraph - graph the edges are added to
@@ -273,7 +255,7 @@ public class TwoCapHeuristic {
      */
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
-        ArrayList<StorageAreaPosition> emptyPositions = this.retrieveEmptyPositions(sol);
+        ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol);

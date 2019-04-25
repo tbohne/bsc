@@ -3,6 +3,7 @@ package SP.util;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.Solution;
+import SP.representations.StorageAreaPosition;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -341,6 +342,24 @@ public class HeuristicUtil {
             }
         }
         return emptyStacks;
+    }
+
+    /**
+     * Retrieves the empty positions from the storage area.
+     *
+     * @param sol - solution to retrieve the empty positions for
+     * @return list of empty positions in the storage area
+     */
+    public static ArrayList<StorageAreaPosition> retrieveEmptyPositions(Solution sol) {
+        ArrayList<StorageAreaPosition> emptyPositions = new ArrayList<>();
+        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+            for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
+                if (sol.getFilledStorageArea()[stack][level] == -1) {
+                    emptyPositions.add(new StorageAreaPosition(stack, level));
+                }
+            }
+        }
+        return emptyPositions;
     }
 
     /**
