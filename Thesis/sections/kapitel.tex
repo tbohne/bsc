@@ -836,11 +836,7 @@ echte Items bei der Zuweisung gewissermaßen bevorzugt während Dummy-Items schl
 Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als
 Stackzuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items und Item-Paare zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung der generierten Item-Paare und Unmatched Items zu den Stacks, welche die Placement-Constraints respektiert.
 
-Abschließend muss ggf. die Reihenfolge der Items innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist,
-dass sie kompatibel und somit in mindestens einer Richtung stackbar sind. Die Richtung, in welcher sie stackbar sind, wurde bei der Zuweisung
-jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene Stacks, welche ein Item-Paar beinhalten,
-überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht.
-Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
+Abschließend muss ggf. die Reihenfolge der Items innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist, dass sie kompatibel und somit in mindestens einer Richtung stackbar sind. Die Richtung, in welcher sie stackbar sind, wurde bei der Zuweisung jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene Stacks, welche ein Item-Paar beinhalten, überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht. Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
 
 Wie bereits in Abschnitt \ref{sec:objective} erwähnt, bietet die Heuristik über den Parameter
 \textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
@@ -852,21 +848,22 @@ von Relevanz sind.
 
 \textbf{Postprocessing-Schritt}
 
-Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die Paare
-von Items, welche gemeinsam in einem Stack platziert wurden, in der Partition $V_{p1}$ und die verbleibenden leeren Stacks in der Partition $V_{p2}$ enthält.
+Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die zuvor bereits platzierten Items $i \in I$ in der Partition $V_{p1}$ und die verbleibenden freien Positionen in den Stacks innerhalb der Storage-Area in der Partition $V_{p2}$ enthält. Eine solche Position entspricht einem Level $l \in \{1, ..., b\}$ innerhalb eines Stacks $q \in Q$. Es existiert eine Kante $\{i, l\} \in E_p$ zwischen einem Item $i \in V_{p1}$ und einer freien Position $l \in V_{p2}$ innerhalb eines Stacks $q \in Q$, wenn das Item $i$ basierend auf den Placement-Constraints zu diesem Stack kompatibel ist, also wenn $t_{iq} = 1$ gilt. Außerdem muss das Item $i$ für den Fall, dass sich bereits ein Item $j \in I$ im Stack $q$ befindet, basierend auf den Stacking-Constraints mit diesem Item kompatibel sein, d.h. $s_{ij} = 1$ oder $s_{ji} = 1$.
+Auf diese Weise kann nach der Zuweisung eines Items stets erneut eine den Stacking-Constraints entsprechende Anordnung innerhalb der Stacks erreicht werden. Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des Items zum neuen Stack verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$, welche sich bei der Zuweisung des Items $i \in I$, welches sich gegenwärtig im Stack $q_1 \in Q$ befindet, zum Stack $q$ ergibt, ist durch $r_i = c_{iq_1} - c_{iq}$ definiert. Eine Erhöhung der Kosten entspricht demnach einer negativen Ersparnis.
 
-Es existiert eine Kante $\{(i, j), q\} \in E_p$ zwischen einem Paar von Items $(i, j) \in V_{p1}$ und einem leeren Stack
-$q \in V_{p2}$, wenn mindestens eines der beiden Items basierend auf den Placement-Constraints zu diesem Stack kompatibel
-ist, also wenn $t_{iq} = 1$ oder $t_{jq} = 1$ gilt. Die Kosten einer solchen Kante entsprechen der
-Kostenersparnis der Zuweisung des kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$, welche sich bei der Zuweisung des Items $i \in I$, welches sich gegenwärtig im Stack $q_1 \in Q$ befindet, zum Stack $q$ ergibt, ist durch $r_i = c_{iq_1} - c_{iq}$ definiert. Eine Erhöhung der Kosten entspricht demnach einer negativen Ersparnis. Sind beide Items eines Paares kompatibel zum Stack, so entsprechen die Kosten der größeren Ersparnis, da für jedes Paar jenes Item verschoben wird, dessen Verschiebung die größte Kostenersparnis nach sich zieht.
-
-Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Paare von
-Items mit leeren Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
-Anschließend wird jeweils das kompatible Item eines Paares bzw. jenes, welches zur größeren Ersparnis
-führt, auf den Ground-Level des leeren Stacks verschoben.
-Handelt es sich dabei um ein Item, welches zuvor auf dem Ground-Level eines Stacks platziert war,
+Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Items mit freien
+Positionen in den Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
+Dabei kann es vorkommen, dass einem zuvor leeren Stack zwei Items zugewiesen werden. Da jedoch nicht gewährleistet ist,
+dass diese Items bezüglich der Stacking-Constraints miteinander kompatibel sind, darf jedem Stack nur ein neues
+Item zugewiesen werden. Es wird in solchen Fällen jenes Item mit der größeren Kostenersparnis verschoben.
+Nachdem die Items an die ihnen zugewiesenen Positionen verschoben wurden,
+wird die Reihenfolge der Items innerhalb der Stacks, welchen ein zusätzliches Item zugewiesen
+wurde ggf. basierend auf den Stacking-Constraints angepasst.
+Befand sich ein verschobenes Item zuvor auf dem Ground-Level eines Stacks,
 so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
 sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
+
+Dieser Postprocessing-Prozess wird iterativ durchgeführt, bis keine Verbesserung mehr erzielt wird.
 
 \vfill
 
