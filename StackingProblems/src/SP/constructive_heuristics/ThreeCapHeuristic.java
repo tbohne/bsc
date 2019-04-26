@@ -376,38 +376,11 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Generates the bipartite post-processing graph consisting of the item
-     * tuples in one partition and the remaining empty stacks in another.
+     * Returns a list of the remaining levels in a stack based on the specified level.
      *
-     * @param emptyStacks - the remaining empty stacks in the storage area
-     * @param itemTriples - the list of item triples in the storage area
-     * @param itemPairs - the list of item pairs in the storage area
-     * @param originalCosts - the costs for the original item assignments
-     * @return the generated bipartite graph
+     * @param level - level used to determine the remaining levels
+     * @return list of remaining levels in the stack
      */
-    public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<String> emptyStacks,
-        ArrayList<ArrayList<Integer>> itemTriples,
-        ArrayList<ArrayList<Integer>> itemPairs,
-        HashMap<Integer, Double> originalCosts
-    ) {
-
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
-            DefaultWeightedEdge.class
-        );
-        Set<String> partitionOne = new HashSet<>();
-        Set<String> partitionTwo = new HashSet<>();
-
-        GraphUtil.addVerticesForItemTriples(itemTriples, graph, partitionOne);
-        GraphUtil.addVerticesForListOfItemPairs(itemPairs, graph, partitionOne);
-        GraphUtil.addVerticesForEmptyStacks(emptyStacks, graph, partitionTwo);
-
-        HeuristicUtil.addEdgesForItemPairs(graph, itemPairs, emptyStacks, originalCosts, this.instance);
-        this.addEdgesForItemTriples(graph, itemTriples, emptyStacks, originalCosts);
-
-        return new BipartiteGraph(partitionOne, partitionTwo, graph);
-    }
-
     public ArrayList<Integer> getLevelsOfOtherSlots(int level) {
         ArrayList<Integer> levelsOfOtherSlots = new ArrayList<>();
         for (int i = 0; i < this.instance.getStackCapacity(); i++) {
@@ -561,7 +534,7 @@ public class ThreeCapHeuristic {
      * @param sol            - solution to be processed
      * @return the generated bipartite graph
      */
-    public BipartiteGraph generatePostProcessingGraphNewWay(
+    public BipartiteGraph generatePostProcessingGraph(
         ArrayList<Integer> items,
         ArrayList<StorageAreaPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
@@ -644,7 +617,7 @@ public class ThreeCapHeuristic {
         ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(items, emptyPositions, originalCosts, sol);
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, originalCosts, sol);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
