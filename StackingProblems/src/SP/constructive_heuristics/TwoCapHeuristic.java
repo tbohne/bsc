@@ -101,118 +101,6 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Parses the item from the edge of the post-processing graph.
-     *
-     * @param edge - edge to be parsed
-     * @return parsed item
-     */
-    public int parseItemFromPostProcessingMatching(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[0].replace("(", "").replace("item", "").trim());
-    }
-
-    /**
-     * Parses the stack from the edge of the post-processing graph.
-     *
-     * @param edge - edge to be parsed
-     * @return parsed stack
-     */
-    public int parseStackFromPostProcessingMatching(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[2].split(",")[0].trim());
-    }
-
-    /**
-     * Parses the level from the edge of the post-processing graph.
-     *
-     * @param edge - edge to be parsed
-     * @return parsed level
-     */
-    public int parseLevelFromPostProcessingMatching(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[3].replace(")", "").trim());
-    }
-
-    /**
-     * Updates the item position in the storage area and adds
-     * the used stack to the list of blocked stacks.
-     *
-     * @param item          - item to be assigned to new position
-     * @param stack         - stack the item gets assigned to
-     * @param level         - level the item gets assigned to
-     * @param blockedStacks - list of blocked stacks (only one item per stack in post-processing)
-     */
-    public void updateItemPosition(int item, int stack, int level, ArrayList<Integer> blockedStacks) {
-        HeuristicUtil.removeItemFromOutdatedPosition(item, this.instance.getStacks());
-        this.instance.getStacks()[stack][level] = item;
-        blockedStacks.add(stack);
-    }
-
-    /**
-     * Prepares the update of the stack assignments by creating lists of items that
-     * are assigned to the same stack and storing the savings for each item.
-     *
-     * @param maxSavingsMatching  - matching to be processed
-     * @param itemSavings         - map to be filled with each item's saving
-     * @param postProcessingGraph - post-processing graph containing the items and empty positions
-     * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
-     */
-    public void prepareUpdateOfStackAssignments(
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
-        HashMap<Integer, Double> itemSavings,
-        BipartiteGraph postProcessingGraph,
-        HashMap<Integer, ArrayList<Integer>> stackAssignments
-    ) {
-
-        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int item = this.parseItemFromPostProcessingMatching(edge);
-            int stack = this.parseStackFromPostProcessingMatching(edge);
-            itemSavings.put(item, postProcessingGraph.getGraph().getEdgeWeight(edge));
-            if (stackAssignments.containsKey(stack)) {
-                stackAssignments.get(stack).add(item);
-            } else {
-                stackAssignments.put(stack, new ArrayList<>());
-            }
-        }
-    }
-
-    /**
-     * Updates the stack assignments with the specified matching.
-     * Only one item can be assigned to each stack, because otherwise incompatibilities in terms
-     * of the stacking constraints could arise. Therefore each stack is blocked for additional assignments
-     * after an item has been assigned to it.
-     *
-     * @param maxSavingsMatching - matching the stack assignments are updated with
-     */
-    public void updateStackAssignments(
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, BipartiteGraph postProcessingGraph
-    ) {
-
-        ArrayList<Integer> blockedStacks = new ArrayList<>();
-        HashMap<Integer, ArrayList<Integer>> stackAssignments = new HashMap<>();
-        HashMap<Integer, Double> itemSavings = new HashMap<>();
-
-        this.prepareUpdateOfStackAssignments(maxSavingsMatching, itemSavings, postProcessingGraph, stackAssignments);
-
-        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int item = this.parseItemFromPostProcessingMatching(edge);
-            int stack = this.parseStackFromPostProcessingMatching(edge);
-            int level = this.parseLevelFromPostProcessingMatching(edge);
-
-            if (blockedStacks.contains(stack)) { continue; }
-
-            if (stackAssignments.get(stack).size() > 1) {
-                int bestItem = stackAssignments.get(stack).get(0);
-                for (int i = 1; i < stackAssignments.get(stack).size(); i++) {
-                    if (itemSavings.get(stackAssignments.get(stack).get(i)) > itemSavings.get(bestItem)) {
-                        bestItem = stackAssignments.get(stack).get(i);
-                    }
-                }
-                this.updateItemPosition(bestItem, stack, level, blockedStacks);
-            } else {
-                this.updateItemPosition(item, stack, level, blockedStacks);
-            }
-        }
-    }
-
-    /**
      * Parses the given minimum weight perfect matching and assigns it to the given stacks.
      *
      * @param mwpm   - the minimum weight perfect matching to be parsed
@@ -279,14 +167,10 @@ public class TwoCapHeuristic {
                     if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
                         int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
                         // item compatible with other item
-                        if (levelOfOtherSlot == 0) {
-                            if (this.instance.getStackingConstraints()[otherItem][item] == 1) {
-                                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
-                            }
-                        } else {
-                            if (this.instance.getStackingConstraints()[item][otherItem] == 1) {
-                                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
-                            }
+                        if (this.instance.getStackingConstraints()[item][otherItem] == 1
+                            || this.instance.getStackingConstraints()[otherItem][item] == 1) {
+
+                            this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
                         }
                     // no other item in stack
                     } else {
@@ -321,6 +205,7 @@ public class TwoCapHeuristic {
         Set<String> partitionTwo = new HashSet<>();
         GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
+
         this.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
         return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
@@ -349,8 +234,9 @@ public class TwoCapHeuristic {
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-        this.updateStackAssignments(maxSavingsMatching, postProcessingGraph);
+        HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
+        sol.transformStackAssignmentsIntoValidSolutionIfPossible();
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
     }
