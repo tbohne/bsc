@@ -103,10 +103,10 @@ public class HeuristicUtil {
      * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
      */
     public static void prepareUpdateOfStackAssignments(
-            MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
-            HashMap<Integer, Double> itemSavings,
-            BipartiteGraph postProcessingGraph,
-            HashMap<Integer, ArrayList<Integer>> stackAssignments
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
+        HashMap<Integer, Double> itemSavings,
+        BipartiteGraph postProcessingGraph,
+        HashMap<Integer, ArrayList<Integer>> stackAssignments
     ) {
 
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
@@ -145,8 +145,9 @@ public class HeuristicUtil {
      * @param maxSavingsMatching - matching the stack assignments are updated with
      */
     public static void updateStackAssignments(
-            MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, BipartiteGraph postProcessingGraph,
-            Instance instance
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
+        BipartiteGraph postProcessingGraph,
+        Instance instance
     ) {
 
         ArrayList<Integer> blockedStacks = new ArrayList<>();
