@@ -660,28 +660,17 @@ public class ThreeCapHeuristic {
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
-        // Since the last generated solution is not necessarily the best one,
-        // the stack assignments for the best solution have to be restored before post-processing.
-        this.instance.resetStacks();
-        this.restoreStorageAreaForBestOriginalSolution(sol);
-
         ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(
-            items, emptyPositions, originalCosts, sol
-        );
-
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(items, emptyPositions, originalCosts, sol);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
-
         System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
-
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
-
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
+        sol.transformStackAssignmentsIntoValidSolutionIfPossible();
         sol.lowerItemsThatAreStackedInTheAir();
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
@@ -737,9 +726,12 @@ public class ThreeCapHeuristic {
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
 
             if (postProcessing) {
+                // Since the last generated solution is not necessarily the best one,
+                // the stack assignments for the best solution have to be restored before post-processing.
+                this.instance.resetStacks();
+                this.restoreStorageAreaForBestOriginalSolution(bestSol);
+                
                 bestSol = this.postProcessing(bestSol);
-                bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
-                bestSol.lowerItemsThatAreStackedInTheAir();
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
