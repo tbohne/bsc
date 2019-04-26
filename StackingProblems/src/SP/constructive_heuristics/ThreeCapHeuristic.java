@@ -4,6 +4,7 @@ import SP.representations.*;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
@@ -417,18 +418,6 @@ public class ThreeCapHeuristic {
         return levelsOfOtherSlots;
     }
 
-    // TODO: move to util and apply to 2Cap
-    public void addEdgesForCompatibleItems(
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
-        int item,
-        StorageAreaPosition emptyPos,
-        HashMap<Integer, Double> originalCosts
-    ) {
-        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
-        postProcessingGraph.setEdgeWeight(edge, savings);
-    }
-
     /**
      * Adds edges to the post-processing graph for stacks containing a single item.
      *
@@ -459,7 +448,7 @@ public class ThreeCapHeuristic {
         // check pair for compatibility
         if (this.instance.getStackingConstraints()[item][otherItem] == 1
             || this.instance.getStackingConstraints()[otherItem][item] == 1) {
-                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                GraphUtil.addEdgesToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
         }
     }
 
@@ -499,14 +488,14 @@ public class ThreeCapHeuristic {
             if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
                 this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
-                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                GraphUtil.addEdgesToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
             }
         // pair stackable in one direction
         } else {
             if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
                 this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
-                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                GraphUtil.addEdgesToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
             }
         }
     }
@@ -553,7 +542,7 @@ public class ThreeCapHeuristic {
                             );
                     // no other item in stack
                     } else {
-                        this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                        GraphUtil.addEdgesToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
                     }
                 }
             }
