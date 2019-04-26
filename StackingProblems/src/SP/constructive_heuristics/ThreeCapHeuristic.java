@@ -429,7 +429,82 @@ public class ThreeCapHeuristic {
         postProcessingGraph.setEdgeWeight(edge, savings);
     }
 
-    public void findCompatibleEmptyPositionsForItems(
+    public void addEdgesForStacksWithSingleItem(
+        Solution sol,
+        StorageAreaPosition emptyPos,
+        ArrayList<Integer> levelsOfOtherSlots,
+        int item,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        HashMap<Integer, Double> originalCosts
+    ) {
+
+        int levelOfOtherSlot;
+        if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1) {
+            levelOfOtherSlot = levelsOfOtherSlots.get(0);
+        } else {
+            levelOfOtherSlot = levelsOfOtherSlots.get(1);
+        }
+
+        int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
+
+        // check pair for compatibility
+        if (this.instance.getStackingConstraints()[item][otherItem] == 1
+            || this.instance.getStackingConstraints()[otherItem][item] == 1) {
+
+                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+        }
+    }
+
+    public void addEdgesForStacksFilledWithPairs(
+        ArrayList<Integer> levelsOfOtherSlots,
+        Solution sol,
+        StorageAreaPosition emptyPos,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        int item,
+        HashMap<Integer, Double> originalCosts
+    ) {
+
+        int lowerItemOfPair;
+        int upperItemOfPair;
+        if (levelsOfOtherSlots.get(0) < levelsOfOtherSlots.get(1)) {
+            upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
+            lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
+        } else {
+            upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
+            lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
+        }
+
+        // pair stackable in both directions
+        if (this.instance.getStackingConstraints()[lowerItemOfPair][upperItemOfPair] == 1
+                && this.instance.getStackingConstraints()[upperItemOfPair][lowerItemOfPair] == 1) {
+            if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
+                    this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
+            )) {
+                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+            }
+        // pair stackable in one direction
+        } else {
+
+            if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
+                    this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
+            )) {
+                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+            }
+        }
+    }
+
+    /**
+     * Finds compatible empty positions for the items in the storage area and
+     * initiates the edge addition for these items and empty positions
+     * to the post-processing graph.
+     *
+     * @param postProcessingGraph - graph the edges are added to
+     * @param items               - items to be connected to compatible empty positions
+     * @param emptyPositions      - empty positions the compatible items get connected with
+     * @param originalCosts       - the current costs for each item assignment
+     * @param sol                 - the solution to be processed
+     */
+    public void findCompatibleEmptyPositionsForItemsAndAddEdges(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
         ArrayList<Integer> items,
         ArrayList<StorageAreaPosition> emptyPositions,
@@ -446,59 +521,18 @@ public class ThreeCapHeuristic {
                     // has always two entries
                     ArrayList<Integer> levelsOfOtherSlots = this.getLevelsOfOtherSlots(emptyPos.getLevel());
 
-                    // 0 --> top level
-
                     // two other items in stack
                     if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
                         && sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
-
-                            int lowerItemOfPair;
-                            int upperItemOfPair;
-                            if (levelsOfOtherSlots.get(0) < levelsOfOtherSlots.get(1)) {
-                                upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
-                                lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
-                            } else {
-                                upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
-                                lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
-                            }
-
-                            // pair stackable in both directions
-                            if (this.instance.getStackingConstraints()[lowerItemOfPair][upperItemOfPair] == 1
-                                && this.instance.getStackingConstraints()[upperItemOfPair][lowerItemOfPair] == 1) {
-                                    if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
-                                        this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
-                                    )) {
-                                        this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
-                                    }
-                            // pair stackable in one direction
-                            } else {
-
-                                if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
-                                    this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
-                                )) {
-                                    this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
-                                }
-                            }
+                            this.addEdgesForStacksFilledWithPairs(
+                                levelsOfOtherSlots, sol, emptyPos, postProcessingGraph, item, originalCosts
+                            );
                     // one other item in stack
                     } else if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
                         || sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
-
-                        int levelOfOtherSlot;
-                        if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1) {
-                            levelOfOtherSlot = levelsOfOtherSlots.get(0);
-                        } else {
-                            levelOfOtherSlot = levelsOfOtherSlots.get(1);
-                        }
-
-                        int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
-
-                        // check pair for compatibility
-                        if (this.instance.getStackingConstraints()[item][otherItem] == 1
-                            || this.instance.getStackingConstraints()[otherItem][item] == 1) {
-
-                                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
-                        }
-
+                            this.addEdgesForStacksWithSingleItem(
+                                sol, emptyPos, levelsOfOtherSlots, item, postProcessingGraph, originalCosts
+                            );
                     // no other item in stack
                     } else {
                         this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
@@ -508,6 +542,18 @@ public class ThreeCapHeuristic {
         }
     }
 
+    /**
+     * Generates the bipartite graph for the post-processing step.
+     * The graph's first partition consists of items and the second one consists of empty positions in stacks.
+     * An edge between the partitions means that an item is compatible to the empty position.
+     * The costs of the edges correspond to the savings that are generated if the item is assigned to the empty position.
+     *
+     * @param items          - list of items in the storage area
+     * @param emptyPositions - list of empty positions in the storage area
+     * @param originalCosts  - original costs for each item assignment
+     * @param sol            - solution to be processed
+     * @return the generated bipartite graph
+     */
     public BipartiteGraph generatePostProcessingGraphNewWay(
         ArrayList<Integer> items,
         ArrayList<StorageAreaPosition> emptyPositions,
@@ -523,8 +569,7 @@ public class ThreeCapHeuristic {
 
         GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
-
-        this.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, originalCosts, sol);
+        this.findCompatibleEmptyPositionsForItemsAndAddEdges(postProcessingGraph, items, emptyPositions, originalCosts, sol);
 
         return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
     }
