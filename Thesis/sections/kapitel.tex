@@ -343,12 +343,12 @@ Im Wesentlichen handelt es sich daher um eine Kombination zweier Zielfunktionen,
 welche im Sinne der lexikographischen Optimierung mit eine Präferenzordnung ausgestattet sind.
 Zu Beginn geht es darum, den zur Verfügung stehenden Platz in der Storage-Area durch initiales Generieren
 möglichst vieler $b$-Tupel von Items, ökonomisch zu nutzen. Anschließend werden diese $b$-Tupel
-möglichst günstig den zur Verfügung stehenden Stacks zugewiesen.
+zusammen mit den verbleibenden Items möglichst günstig den zur Verfügung stehenden Stacks zugewiesen.
 
 Ein ausschließlicher Fokus auf Kostenminimierung nachdem die Zulässigkeit erreicht ist, ist durch
-einen Postprocessing-Schritt umsetzbar, in welchem zuletzt ausgewählte $b$-Tupel von Items wieder separiert
-und einzelne Items jeweils eigenen Stacks zugewiesen werden, solange freie Stacks zur Verfügung stehen
-und sich infolgedessen Kosten einsparen lassen.
+einen Postprocessing-Schritt umsetzbar, in welchem zuletzt ausgewählte Items von den ihnen zugewiesenen Positionen
+an andere, freie Positionen verschoben werden, sofern sich infolgedessen Kosten einsparen lassen.
+Dafür stehen auch die bisher als leer verbleibenden Stacks zur Verfügung.
 
 \pagebreak
 
@@ -842,15 +842,13 @@ jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene St
 überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht.
 Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
 
-\pagebreak
-
 Wie bereits in Abschnitt \ref{sec:objective} erwähnt, bietet die Heuristik über den Parameter
 \textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
 auf die Transportkostenminimierung ermöglicht. Wird dieser Wert auf \textit{true} gesetzt, so werden
-ausgewählte Items aus den vollständig gefüllten Stacks entfernt und in einen freien
-Stack verschoben, sofern ein solcher vorliegt und sich dadurch eine Kostenersparnis ergibt.
-Diese Option sollte in Betracht gezogen werden, wenn die Anzahl der verwendeten Stacks keine Rolle spielt
-und lediglich die entstehenden Transportkosten von Relevanz sind.
+ausgewählte Items von den ihnen zugewiesenen Positionen an andere, freie Positionen verschoben,
+sofern sich dadurch eine Kostenersparnis ergibt. Diese Option sollte in Betracht gezogen werden,
+wenn die Anzahl der verwendeten Stacks keine Rolle spielt und lediglich die entstehenden Transportkosten
+von Relevanz sind.
 
 \textbf{Postprocessing-Schritt}
 
