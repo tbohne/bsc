@@ -1,5 +1,6 @@
 package SP.util;
 
+import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.StorageAreaPosition;
 import org.jgrapht.Graph;
@@ -186,6 +187,81 @@ public class GraphUtil {
     }
 
     /**
+     * Adds an edge between the specified pair and unmatched item to the given graph.
+     *
+     * @param graph         - graph the edge is added to
+     * @param unmatchedItem - item to be connected to pair
+     * @param itemPair      - pair the item gets connected to
+     */
+    public static void addEdgeForTriple(DefaultUndirectedGraph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair) {
+        if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
+            graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
+        }
+    }
+
+    /**
+     * Checks whether the specified item can be assigned to the specified pair
+     * in a way that respects the stacking constraints.
+     * The pair is stackable in both directions.
+     *
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param lowerItemOfPair     - lower item of the pair
+     * @param upperItemOfPair     - upper item of the pair
+     * @param unmatchedItem       - item to be checked for compatibility
+     * @return whether or not the item is compatible to the pair
+     */
+    public static boolean checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
+        int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
+    ) {
+        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
+            || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
+            || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
+            || stackingConstraints[upperItemOfPair][unmatchedItem] == 1
+            || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
+            || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1;
+    }
+
+    /**
+     * Checks whether the specified item can be assigned to the specified pair
+     * in a way that respects the stacking constraints.
+     * The pair is only stackable in one direction.
+     *
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param lowerItemOfPair     - lower item of the pair
+     * @param upperItemOfPair     - upper item of the pair
+     * @param unmatchedItem       - item to be checked for compatibility
+     * @return whether or not the item is compatible to the pair
+     */
+    public static boolean checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
+        int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
+    ) {
+        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
+            || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
+            || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1);
+    }
+
+    /**
+     * Adds edges to the post-processing graph connecting an item with a compatible empty position.
+     *
+     * @param postProcessingGraph - graph the edges are added to
+     * @param item                - item to be connected to compatible empty position
+     * @param emptyPos            - empty position the item gets connected to
+     * @param originalCosts       - the current costs for each item assignment
+     * @param instance            - the instance of the stacking problem
+     */
+    public static void addEdgesToPostProcessingGraph(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        int item,
+        StorageAreaPosition emptyPos,
+        HashMap<Integer, Double> originalCosts,
+        Instance instance
+    ) {
+        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
+        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
+        postProcessingGraph.setEdgeWeight(edge, savings);
+    }
+
+    /**
      * Adds an edge to the graph if the given unmatched item can be assigned
      * to the given pair to build up a valid item triple.
      *
@@ -207,36 +283,16 @@ public class GraphUtil {
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
-            if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
-                    || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
-                    || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
-                    || stackingConstraints[upperItemOfPair][unmatchedItem] == 1
-                    || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
-                    || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1
-            ) {
-
-//                if (unmatchedItem == 3 || unmatchedItem == 4 || unmatchedItem == 11) {
-//                    if (itemPair.getVertexOne() == 3 || itemPair.getVertexOne() == 4 || itemPair.getVertexOne() == 11) {
-//                        if (itemPair.getVertexTwo() == 3 || itemPair.getVertexTwo() == 4 || itemPair.getVertexTwo() == 11) {
-//                            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-//                            System.out.println(itemPair);
-//                        }
-//                    }
-//                }
-
-                if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
-                    graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
-                }
+            if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
+                stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
+            )) {
+                GraphUtil.addEdgeForTriple(graph, unmatchedItem, itemPair);
             }
         } else {
-            if (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
-                    || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
-                    || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
-            ) {
-
-                if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
-                    graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
-                }
+            if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
+                stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
+            )) {
+                GraphUtil.addEdgeForTriple(graph, unmatchedItem, itemPair);
             }
         }
     }
@@ -257,14 +313,23 @@ public class GraphUtil {
             }
     }
 
-    public static void addVerticesForListOfItemPairs(ArrayList<ArrayList<Integer>> itemPairs,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
-
-            for (ArrayList<Integer> pair : itemPairs) {
-                bipartiteGraph.addVertex("pair" + pair);
-                partitionOne.add("pair" + pair);
-            }
-
+    /**
+     * Adds the specified item pairs as vertices to the
+     * first partition of the given bipartite graph.
+     *
+     * @param itemPairs      - the item pairs to be added as vertices
+     * @param bipartiteGraph - the bipartite graph the vertices are added to
+     * @param partitionOne   - the first partition of the graph
+     */
+    public static void addVerticesForListOfItemPairs(
+        ArrayList<ArrayList<Integer>> itemPairs,
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        Set<String> partitionOne
+    ) {
+        for (ArrayList<Integer> pair : itemPairs) {
+            bipartiteGraph.addVertex("pair" + pair);
+            partitionOne.add("pair" + pair);
+        }
     }
 
     /**
