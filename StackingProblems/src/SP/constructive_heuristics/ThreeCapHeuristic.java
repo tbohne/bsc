@@ -646,47 +646,18 @@ public class ThreeCapHeuristic {
      * This approach should be used in situations where the number of used stacks is irrelevant
      * and only the minimization of transport costs matters.
      *
-     * Takes the generated solution and moves items from completely filled stacks to empty
-     * stacks if it's possible to reduce the total costs by doing so.
-     * Initially, a bipartite graph between item pairs and triples and empty stacks is generated.
-     * An edge between the two partitions indicates that at least one of the items in the tuple is assignable to
-     * the empty stack. The costs of the edge correspond to the resulting savings if the item that induces higher
-     * savings is assigned to the empty stack. A maximum weight matching is computed on that graph to retrieve an
-     * assignment that leads to a maximum cost reduction.
+     * Takes the generated solution and moves items to empty positions if it's possible to
+     * reduce the total costs by doing so.
+     * Initially, a bipartite graph between items and empty positions is generated.
+     * An edge between the two partitions indicates that an item is assignable to the empty position.
+     * The costs of the edge correspond to the resulting savings if the item is assigned to the empty position.
+     * A maximum weight matching is computed on that graph to retrieve an assignment that leads
+     * to a maximum cost reduction.
      *
      * @param sol - the original solution
      * @return the result of the post-processing procedure
      */
     public Solution postProcessing(Solution sol) {
-        System.out.println("costs before post processing: " + sol.getObjectiveValue());
-
-        // Since the last generated solution is not necessarily the best one,
-        // the stack assignments for the best solution have to be restored before post-processing.
-        this.instance.resetStacks();
-        this.restoreStorageAreaForBestOriginalSolution(sol);
-
-        ArrayList<String> emptyStacks = HeuristicUtil.retrieveEmptyStacks(sol);
-        HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-        ArrayList<ArrayList<Integer>> itemPairs = this.retrieveItemTuples(sol, 2);
-        ArrayList<ArrayList<Integer>> itemTriples = this.retrieveItemTuples(sol, 3);
-
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(
-            emptyStacks, itemTriples, itemPairs, originalCosts
-        );
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
-            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
-        );
-
-        System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
-
-        this.updateStackAssignments(maxSavingsMatching, originalCosts);
-        sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-        sol.lowerItemsThatAreStackedInTheAir();
-        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
-        return sol;
-    }
-
-    public Solution postProcessingNewWay(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         // Since the last generated solution is not necessarily the best one,
@@ -714,7 +685,6 @@ public class ThreeCapHeuristic {
         sol.lowerItemsThatAreStackedInTheAir();
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
-
     }
 
     /**
@@ -765,10 +735,9 @@ public class ThreeCapHeuristic {
 
             bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
-            
+
             if (postProcessing) {
-//                bestSol = this.postProcessing(bestSol);
-                bestSol = this.postProcessingNewWay(bestSol);
+                bestSol = this.postProcessing(bestSol);
                 bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
                 bestSol.lowerItemsThatAreStackedInTheAir();
             }
