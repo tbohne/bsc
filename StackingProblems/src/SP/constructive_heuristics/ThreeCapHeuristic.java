@@ -1,9 +1,6 @@
 package SP.constructive_heuristics;
 
-import SP.representations.BipartiteGraph;
-import SP.representations.Instance;
-import SP.representations.MCMEdge;
-import SP.representations.Solution;
+import SP.representations.*;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
@@ -410,6 +407,128 @@ public class ThreeCapHeuristic {
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
+    public ArrayList<Integer> getLevelsOfOtherSlots(int level) {
+        ArrayList<Integer> levelsOfOtherSlots = new ArrayList<>();
+        for (int i = 0; i < this.instance.getStackCapacity(); i++) {
+            if (i != level) {
+                levelsOfOtherSlots.add(i);
+            }
+        }
+        return levelsOfOtherSlots;
+    }
+
+    // TODO: move to util and apply to 2Cap
+    public void addEdgesForCompatibleItems(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        int item,
+        StorageAreaPosition emptyPos,
+        HashMap<Integer, Double> originalCosts
+    ) {
+        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
+        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, this.instance.getCosts());
+        postProcessingGraph.setEdgeWeight(edge, savings);
+    }
+
+    public void findCompatibleEmptyPositionsForItems(
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+        ArrayList<Integer> items,
+        ArrayList<StorageAreaPosition> emptyPositions,
+        HashMap<Integer, Double> originalCosts,
+        Solution sol
+    ) {
+
+        for (int item : items) {
+            for (StorageAreaPosition emptyPos : emptyPositions) {
+
+                // item compatible with stack
+                if (this.instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / this.instance.getItems().length) {
+
+                    // has always two entries
+                    ArrayList<Integer> levelsOfOtherSlots = this.getLevelsOfOtherSlots(emptyPos.getLevel());
+
+                    // 0 --> top level
+
+                    // two other items in stack
+                    if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
+                        && sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
+
+                            int lowerItemOfPair;
+                            int upperItemOfPair;
+                            if (levelsOfOtherSlots.get(0) < levelsOfOtherSlots.get(1)) {
+                                upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
+                                lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
+                            } else {
+                                upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
+                                lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
+                            }
+
+                            // pair stackable in both directions
+                            if (this.instance.getStackingConstraints()[lowerItemOfPair][upperItemOfPair] == 1
+                                && this.instance.getStackingConstraints()[upperItemOfPair][lowerItemOfPair] == 1) {
+                                    if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
+                                        this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
+                                    )) {
+                                        this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                                    }
+                            // pair stackable in one direction
+                            } else {
+
+                                if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
+                                    this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
+                                )) {
+                                    this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                                }
+                            }
+                    // one other item in stack
+                    } else if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
+                        || sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
+
+                        int levelOfOtherSlot;
+                        if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1) {
+                            levelOfOtherSlot = levelsOfOtherSlots.get(0);
+                        } else {
+                            levelOfOtherSlot = levelsOfOtherSlots.get(1);
+                        }
+
+                        int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
+
+                        // check pair for compatibility
+                        if (this.instance.getStackingConstraints()[item][otherItem] == 1
+                            || this.instance.getStackingConstraints()[otherItem][item] == 1) {
+
+                                this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                        }
+
+                    // no other item in stack
+                    } else {
+                        this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
+                    }
+                }
+            }
+        }
+    }
+
+    public BipartiteGraph generatePostProcessingGraphNewWay(
+        ArrayList<Integer> items,
+        ArrayList<StorageAreaPosition> emptyPositions,
+        HashMap<Integer, Double> originalCosts,
+        Solution sol
+    ) {
+
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(
+            DefaultWeightedEdge.class
+        );
+        Set<String> partitionOne = new HashSet<>();
+        Set<String> partitionTwo = new HashSet<>();
+
+        GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
+        GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
+
+        this.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, originalCosts, sol);
+
+        return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
+    }
+
     /**
      * Retrieves all the tuples of items from the storage area of the original solution.
      *
@@ -567,6 +686,37 @@ public class ThreeCapHeuristic {
         return sol;
     }
 
+    public Solution postProcessingNewWay(Solution sol) {
+        System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
+        // Since the last generated solution is not necessarily the best one,
+        // the stack assignments for the best solution have to be restored before post-processing.
+        this.instance.resetStacks();
+        this.restoreStorageAreaForBestOriginalSolution(sol);
+
+        ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
+        ArrayList<Integer> items = sol.getAssignedItems();
+        HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
+
+        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraphNewWay(
+            items, emptyPositions, originalCosts, sol
+        );
+
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
+            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+        );
+
+        System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
+
+        HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
+
+        sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
+        sol.lowerItemsThatAreStackedInTheAir();
+        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
+        return sol;
+
+    }
+
     /**
      * Solves the given instance of the stacking problem. The objective is to minimize the transport costs.
      *
@@ -615,9 +765,12 @@ public class ThreeCapHeuristic {
 
             bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
-
+            
             if (postProcessing) {
-                bestSol = this.postProcessing(bestSol);
+//                bestSol = this.postProcessing(bestSol);
+                bestSol = this.postProcessingNewWay(bestSol);
+                bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
+                bestSol.lowerItemsThatAreStackedInTheAir();
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
