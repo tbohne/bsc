@@ -429,6 +429,16 @@ public class ThreeCapHeuristic {
         postProcessingGraph.setEdgeWeight(edge, savings);
     }
 
+    /**
+     * Adds edges to the post-processing graph for stacks containing a single item.
+     *
+     * @param sol                 - the solution to be processed
+     * @param emptyPos            - empty positions the compatible items get connected with
+     * @param levelsOfOtherSlots  - the levels the items of the pair are positioned at
+     * @param item                - the item potentially to be added to the stack
+     * @param postProcessingGraph - graph the edges are added to
+     * @param originalCosts       - the current costs for each item assignment
+     */
     public void addEdgesForStacksWithSingleItem(
         Solution sol,
         StorageAreaPosition emptyPos,
@@ -444,17 +454,25 @@ public class ThreeCapHeuristic {
         } else {
             levelOfOtherSlot = levelsOfOtherSlots.get(1);
         }
-
         int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
 
         // check pair for compatibility
         if (this.instance.getStackingConstraints()[item][otherItem] == 1
             || this.instance.getStackingConstraints()[otherItem][item] == 1) {
-
                 this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
         }
     }
 
+    /**
+     * Adds edges to the post-processing graph for stacks already containing a pair of items.
+     *
+     * @param levelsOfOtherSlots  - the levels the items of the pair are positioned at
+     * @param sol                 - the solution to be processed
+     * @param emptyPos            - empty positions the compatible items get connected with
+     * @param postProcessingGraph - graph the edges are added to
+     * @param item                - the item potentially to be added to the stack
+     * @param originalCosts       - the current costs for each item assignment
+     */
     public void addEdgesForStacksFilledWithPairs(
         ArrayList<Integer> levelsOfOtherSlots,
         Solution sol,
@@ -476,17 +494,17 @@ public class ThreeCapHeuristic {
 
         // pair stackable in both directions
         if (this.instance.getStackingConstraints()[lowerItemOfPair][upperItemOfPair] == 1
-                && this.instance.getStackingConstraints()[upperItemOfPair][lowerItemOfPair] == 1) {
+            && this.instance.getStackingConstraints()[upperItemOfPair][lowerItemOfPair] == 1) {
+
             if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
-                    this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
+                this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
                 this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
             }
         // pair stackable in one direction
         } else {
-
             if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
-                    this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
+                this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
                 this.addEdgesForCompatibleItems(postProcessingGraph, item, emptyPos, originalCosts);
             }
