@@ -555,7 +555,6 @@ public class ThreeCapHeuristic {
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         sol.transformStackAssignmentsIntoValidSolutionIfPossible();
-        sol.lowerItemsThatAreStackedInTheAir();
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
     }
@@ -615,7 +614,13 @@ public class ThreeCapHeuristic {
                 this.instance.resetStacks();
                 this.restoreStorageAreaForBestOriginalSolution(bestSol);
 
+                double bestSolutionCost = bestSol.computeCosts();
                 bestSol = this.postProcessing(bestSol);
+                while (bestSol.computeCosts() < bestSolutionCost) {
+                    bestSolutionCost = bestSol.computeCosts();
+                    bestSol = this.postProcessing(bestSol);
+                }
+                bestSol.lowerItemsThatAreStackedInTheAir();
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
