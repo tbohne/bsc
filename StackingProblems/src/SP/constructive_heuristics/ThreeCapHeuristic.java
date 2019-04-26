@@ -559,77 +559,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Updates the stack assignments for the specified triple.
-     *
-     * @param itemOne - the first item of the pair
-     * @param itemTwo - the second item of the pair
-     * @param itemThree - the third item of the pair
-     * @param stack - the target stack
-     * @param costsBefore - the costs for the original item assignments
-     */
-    public void updateStackAssignmentsForTriples(int itemOne, int itemTwo, int itemThree, int stack, HashMap<Integer, Double> costsBefore) {
-
-        // all three items compatible
-        if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-            && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-            && this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-
-                HeuristicUtil.updateAssignmentsForCompatibleTriple(itemOne, itemTwo, itemThree, stack, costsBefore, this.instance);
-        // one and two compatible
-        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-            && this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore, this.instance);
-        // two and three compatible
-        } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-            && this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                HeuristicUtil.updateAssignmentsForCompatiblePair(itemTwo, stack, itemThree, costsBefore, this.instance);
-        // one and three compatible
-        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length
-            && this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-                HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemThree, costsBefore, this.instance);
-        // one compatible
-        } else if (this.instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, this.instance.getStacks());
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemOne;
-        // two compatible
-        } else if (this.instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, this.instance.getStacks());
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemTwo;
-        // three compatible
-        } else if (this.instance.getCosts()[itemThree][stack] < Integer.MAX_VALUE / this.instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemThree, this.instance.getStacks());
-            this.instance.getStacks()[stack][this.instance.getGroundLevel()] = itemThree;
-        }
-    }
-
-    /**
-     * Updates the stack assignments based on the matching that results in the maximum savings.
-     *
-     * @param maxSavingsMatching - matching that results in the maximum savings
-     * @param originalCosts - hashmap containing the original costs for each item assignment
-     */
-    public void updateStackAssignments(
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, HashMap<Integer, Double> originalCosts
-    ) {
-        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            // triple edge
-            if (edge.toString().contains("triple")) {
-                int itemOne = GraphUtil.parseItemOneOfTriple(edge);
-                int itemTwo = GraphUtil.parseItemTwoOfTriple(edge);
-                int itemThree = GraphUtil.parseItemThreeOfTriple(edge);
-                int stack = GraphUtil.parseStackForTriple(edge);
-                this.updateStackAssignmentsForTriples(itemOne, itemTwo, itemThree, stack, originalCosts);
-            // pair edge
-            } else {
-                int itemOne = GraphUtil.parseItemOneOfPair(edge);
-                int itemTwo = GraphUtil.parseItemTwoOfPair(edge);
-                int stack = GraphUtil.parseStackForPair(edge);
-                HeuristicUtil.updateStackAssignmentsForPairs(itemOne, itemTwo, stack, originalCosts, this.instance);
-            }
-        }
-    }
-
-    /**
      * Restores the storage area of the specified solution.
      * Since the last generated solution is not necessarily the best one,
      * in many cases the storage area in the instance for the best original solution has to be restored.
@@ -730,7 +659,7 @@ public class ThreeCapHeuristic {
                 // the stack assignments for the best solution have to be restored before post-processing.
                 this.instance.resetStacks();
                 this.restoreStorageAreaForBestOriginalSolution(bestSol);
-                
+
                 bestSol = this.postProcessing(bestSol);
             }
         } else {
