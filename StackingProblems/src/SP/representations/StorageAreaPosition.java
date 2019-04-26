@@ -41,7 +41,7 @@ public class StorageAreaPosition {
 
     @Override
     public String toString() {
-        return "stack: " + this.stackIdx + ", level: " + this.level;
+        return "(stack: " + this.stackIdx + ", level: " + this.level + ")";
     }
 
     @Override
