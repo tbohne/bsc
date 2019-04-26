@@ -376,6 +376,7 @@ public class ThreeCapHeuristic {
 
         int lowerItemOfPair;
         int upperItemOfPair;
+
         if (levelsOfOtherSlots.get(0) < levelsOfOtherSlots.get(1)) {
             upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
             lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
@@ -554,6 +555,7 @@ public class ThreeCapHeuristic {
         System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
+        sol.lowerItemsThatAreStackedInTheAir();
         sol.transformStackAssignmentsIntoValidSolutionIfPossible();
         System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
@@ -607,6 +609,7 @@ public class ThreeCapHeuristic {
 
             bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
+            bestSol.lowerItemsThatAreStackedInTheAir();
 
             if (postProcessing) {
                 // Since the last generated solution is not necessarily the best one,
@@ -617,10 +620,11 @@ public class ThreeCapHeuristic {
                 double bestSolutionCost = bestSol.computeCosts();
                 bestSol = this.postProcessing(bestSol);
                 while (bestSol.computeCosts() < bestSolutionCost) {
+                    this.instance.resetStacks();
+                    this.restoreStorageAreaForBestOriginalSolution(bestSol);
                     bestSolutionCost = bestSol.computeCosts();
                     bestSol = this.postProcessing(bestSol);
                 }
-                bestSol.lowerItemsThatAreStackedInTheAir();
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
