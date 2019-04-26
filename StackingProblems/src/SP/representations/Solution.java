@@ -240,15 +240,16 @@ public class Solution {
     }
 
     public void lowerItemsThatAreStackedInTheAir() {
-        for (int i = 0; i < this.filledStorageArea.length; i++) {
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
             boolean loweredItem = true;
             while (loweredItem) {
                 loweredItem = false;
-                for (int j = this.filledStorageArea[i].length - 1; j > 0; j--) {
-                    if (this.filledStorageArea[i][j] == -1 && this.filledStorageArea[i][j - 1] != -1) {
-                        this.filledStorageArea[i][j] = this.filledStorageArea[i][j - 1];
-                        this.filledStorageArea[i][j - 1] = -1;
+                for (int level = this.filledStorageArea[stack].length - 1; level > 0; level--) {
+                    if (this.filledStorageArea[stack][level] == -1 && this.filledStorageArea[stack][level - 1] != -1) {
+                        this.filledStorageArea[stack][level] = this.filledStorageArea[stack][level - 1];
+                        this.filledStorageArea[stack][level - 1] = -1;
                         loweredItem = true;
+                        break;
                     }
                 }
             }
