@@ -2138,12 +2138,13 @@ ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kost
 Ist der Postprocessing-Schritt aktiviert, so wird zuletzt die beste generierte Lösung erneut betrachtet
 und es werden ausgewählte Items an freie Positionen in anderen Stacks verschoben, sofern sich dadurch eine
 Kostenersparnis ergibt.
-Dazu wird der bipartiter Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph} dargestellt ist.
+Dazu wird der bipartiter Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph_b=3} dargestellt ist.
 Dieser enthält die Items in der einen Partition und die freien Positionen innerhalb der Stacks in der anderen Partition.
 
-In diesem Beispiel gibt es lediglich einen verbleibenden leeren Stack, d.h. es wird jenes Item-Tupel mit der größten Ersparnis
-mit diesem Stack gematcht. Dies wird durch das \textsc{MaximumWeightBipartiteMatching} erreicht, welches in Abb.
-\ref{fig:mwbm} zu sehen ist.
+Die Positionen sind erneut jeweils in der Notation $pos(stackIdx, level)$ gegeben. In diesem Beispiel gibt es
+mit $pos(1, 0), pos(1, 1), pos(1, 2)$ und $pos(4, 0)$ vier verbleibende freie Positionen in den Stacks.
+Die Kantengewichte sind der Übersichtlichkeit halber nicht im Graphen, sondern in der Tabelle in Abb.
+\ref{fig:post_processing_costs} aufgeführt.
 
 \begin{figure}[H]
 \centering
@@ -2204,8 +2205,75 @@ mit diesem Stack gematcht. Dies wird durch das \textsc{MaximumWeightBipartiteMat
             (N) edge [thick] node {$$} (Q);
 \end{tikzpicture}
 \caption{\textsc{Postprocessing-Graph}.}
-\label{fig:post_processing_graph}
+\label{fig:post_processing_graph_b=3}
 \end{figure}
+
+Wie man der Tabelle in Abb. \ref{fig:post_processing_costs} entnehmen kann, sind im Gegensatz zum Beispiel
+der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} in diesem Fall positive Kantengewichte vorhanden,
+was bedeutet, dass sich durch Verschieben der entsprechenden Items in den jeweiligen Stack mit der freien Position
+Kosten einsparen lassen.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{| c | c | c | c | c |}
+    \hline
+     & $\boldsymbol{pos(1, 0)}$ & $\boldsymbol{pos(1, 1)}$ & $\boldsymbol{pos(1, 2)}$ & $\boldsymbol{pos(4, 0)}$ \\ \hline
+     $1$ & $12.12$ & $12.12$ & $12.12$ & $-$ \\ \hline
+     $3$ & $6.06$ & $6.06$ & $6.06$ & $-$ \\ \hline
+     $4$ & $-18.18$ & $-18.18$ & $-18.18$ & $0.0$ \\ \hline
+     $5$ & $-18.18$ & $-18.18$ & $-18.18$ & $0.0$ \\ \hline
+     $7$ & $-6.06$ & $-6.06$ & $-6.06$ & $-$ \\ \hline
+     $8$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
+     $9$ & $-24.24$ & $-24.24$ & $-24.24$ & $-$ \\ \hline
+     $10$ & $-24.24$ & $-24.24$ & $-24.24$ & $-$ \\ \hline
+     $11$ & $6.06$ & $6.06$ & $6.06$ & $24.24$ \\ \hline
+     $13$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Kantengewichte im Postprocessing-Graphen}.}
+\label{fig:post_processing_costs}
+\end{figure}
+
+Die Item-Zuweisungen, welche zur insgesamt größten Kostenreduktion führen, werden durch
+das Maximum-Weight-Bipartite-Matching auf dem Graphen aus Abb. \ref{fig:post_processing_graph_b=3} ermittelt,
+welches in Abb. \ref{fig:mwbm} dargestellt ist.
+
+
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=1.5cm]
+        \node[state] (A) [thick] {$\boldsymbol{0}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{1}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{2}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{3}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{4}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{5}$};
+        \node[state] (G) [thick, right of=F] {$\boldsymbol{6}$};
+        \node[state] (H) [thick, right of=G] {$\boldsymbol{7}$};
+        \node[state] (I) [thick, right of=H] {$\boldsymbol{8}$};
+        \node[state] (J) [thick, right of=I] {$\boldsymbol{9}$};
+        \node[state] (K) [thick, right of=J] {$\boldsymbol{10}$};
+        \node[state] (L) [thick, right of=K] {$\boldsymbol{11}$};
+        \node[state] (M) [thick, right of=L] {$\boldsymbol{12}$};
+        \node[state] (N) [thick, right of=M] {$\boldsymbol{13}$};
+
+        \node[state] (O) [thick, below = 5cm of B] {$\boldsymbol{pos(1, 0)}$};
+        \node[state] (P) [thick, below = 5cm of F] {$\boldsymbol{pos(1, 1)}$};
+        \node[state] (Q) [thick, below = 5cm of I] {$\boldsymbol{pos(1, 2)}$};
+        \node[state] (R) [thick, below = 5cm of M] {$\boldsymbol{pos(4, 0)}$};
+
+        \path
+            (B) edge [thick, left] node {$12.12$} (O)
+            (D) edge [thick, right] node {$6.06$} (P)
+            (L) edge [thick, right] node {$24.24$} (R);
+\end{tikzpicture}
+\caption{\textsc{Maximum-Weight-Bipartite-Matching}.}
+\label{fig:mwbm}
+\end{figure}
+
+
+
 
 Die Kante des Matchings aus Abb. \ref{fig:mwbm} entspricht einer Ersparnis von $12.12$, wenn das kompatible
 Item bzw. jenes, welches bei einer Verschiebung zur größten Ersparnis führt, aus dem Stack $S_3$,
