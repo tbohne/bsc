@@ -2138,17 +2138,16 @@ ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kost
 Ist der Postprocessing-Schritt aktiviert, so wird zuletzt die beste generierte Lösung erneut betrachtet
 und es werden ausgewählte Items an freie Positionen in anderen Stacks verschoben, sofern sich dadurch eine
 Kostenersparnis ergibt.
-Dazu wird der bipartiter Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph_b=3} dargestellt ist.
+Dazu wird der bipartite Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph_b=3} dargestellt ist.
 Dieser enthält die Items in der einen Partition und die freien Positionen innerhalb der Stacks in der anderen Partition.
 
-Die Positionen sind erneut jeweils in der Notation $pos(stackIdx, level)$ gegeben. In diesem Beispiel gibt es
-mit $pos(1, 0), pos(1, 1), pos(1, 2)$ und $pos(4, 0)$ vier verbleibende freie Positionen in den Stacks.
-Die Kantengewichte sind der Übersichtlichkeit halber nicht im Graphen, sondern in der Tabelle in Abb.
-\ref{fig:post_processing_costs} aufgeführt.
+Die Positionen sind erneut jeweils in der Notation $pos(stackIdx, level)$ gegeben. In diesem Beispiel gibt es,
+wie man Abb. \ref{fig:valid_solution} entnehmen kann, mit $pos(1, 0), pos(1, 1), pos(1, 2)$ und $pos(4, 2)$
+vier verbleibende freie Positionen in den Stacks. Die Kantengewichte des Postprocessing-Graphen sind der Übersichtlichkeit halber nicht an den Kanten notiert, sondern in der Tabelle in Abb. \ref{fig:post_processing_costs} aufgeführt.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=1.5cm]
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=1.5cm]
         \node[state] (A) [thick] {$\boldsymbol{0}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{1}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{2}$};
@@ -2210,8 +2209,7 @@ Die Kantengewichte sind der Übersichtlichkeit halber nicht im Graphen, sondern 
 
 Wie man der Tabelle in Abb. \ref{fig:post_processing_costs} entnehmen kann, sind im Gegensatz zum Beispiel
 der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} in diesem Fall positive Kantengewichte vorhanden,
-was bedeutet, dass sich durch Verschieben der entsprechenden Items in den jeweiligen Stack mit der freien Position
-Kosten einsparen lassen.
+was bedeutet, dass sich durch Verschieben ausgewählter Items an freie Positionen Kosten einsparen lassen.
 
 \begin{figure}[H]
 \centering
@@ -2230,19 +2228,21 @@ Kosten einsparen lassen.
      $11$ & $6.06$ & $6.06$ & $6.06$ & $24.24$ \\ \hline
      $13$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
 \end{tabular}}
-\caption{\textsc{Kantengewichte im Postprocessing-Graphen}.}
+\caption{\textsc{Kantengewichte des Postprocessing-Graphen}.}
 \label{fig:post_processing_costs}
 \end{figure}
 
-Die Zurordnungen von Items zu freien Positionen, welche zur insgesamt größten Kostenreduktion führen, werden durch
+Jene Zurordnungen von Items zu freien Positionen, welche zur insgesamt größten Kostenreduktion führen, werden durch
 das Maximum-Weight-Bipartite-Matching auf dem Graphen aus Abb. \ref{fig:post_processing_graph_b=3} ermittelt,
-welches in Abb. \ref{fig:mwbm} dargestellt ist. Diese entsprechen einer Gesamtersparnis von $42.42$, die sich wie folgt ergibt.
-Item $11$ wird mit einer Ersparnis von $24.24$ in Stack $4$ verschoben. Da die Items $1$ und $3$ beide Stack $1$ zugeordnet werden, wird nur jenes Item mit der größeren Ersparnis verschoben, in diesem Fall also Item $1$ mit einer Ersparnis von $12.12$.
-Somit verringern sich die Gesamtkosten der Lösung von $550.38$ auf $514.02$.
+welches in Abb. \ref{fig:mwbm} dargestellt ist.
+Diese Zuordnungen sorgen für eine Gesamtersparnis von $36.36$, welche sich wie folgt ergibt.
+Item $11$ wird mit einer Ersparnis von $24.24$ in $S_4$ platziert. Da die Items $1$ und $3$ beide $S_1$ zugeordnet werden,
+wird lediglich das Item mit der größeren Ersparnis verschoben. Somit wird Item $1$ mit einer Ersparnis von $12.12$
+in $S_1$ platziert. Insgesamt verringern sich die Kosten der Lösung von $550.38$ auf $514.02$.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=1.5cm]
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=1.5cm]
         \node[state] (A) [thick] {$\boldsymbol{0}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{1}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{2}$};
@@ -2272,12 +2272,12 @@ Somit verringern sich die Gesamtkosten der Lösung von $550.38$ auf $514.02$.
 \label{fig:mwbm}
 \end{figure}
 
-In Abb. \ref{fig:valid_solution_post_processing} ist das finale Ergebnis abgebildet, in welchem
-die verschobenen Items in grün dargestellt sind. Zuletzt muss ggf. wieder in zuvor beschriebener Weise
-die Reihenfolge innerhalb der Stacks angepasst werden, sodass sie den Stacking-Constraints entspricht.
-Da es sich beim Postprocessing um ein iteratives Verfahren handelt, würde dieser Prozess nun wiederholt,
-bis sich keine Verbesserung mehr erzielen lässt. In diesem Beispiel wurde nach der ersten Iteration bereits
-das beste Ergebnis erzielt.
+In Abb. \ref{fig:valid_solution_post_processing} ist das finale Ergebnis zu sehen, in welchem
+die im Zuge des Postprocessings verschobenen Items in grün dargestellt sind.
+Zuletzt muss ggf. in zuvor beschriebener Weise die Reihenfolge innerhalb der Stacks angepasst werden,
+sodass sie den Stacking-Constraints entspricht. Da es sich beim Postprocessing um ein iteratives Verfahren handelt,
+würde dieser Prozess nun wiederholt, bis sich keine Verbesserung der Lösung mehr erzielen lässt.
+In diesem Beispiel wird bereits nach der ersten Iteration das beste Ergebnis erzielt und der Postprocessing-Prozess terminiert.
 
 \begin{figure}[H]
   \centering
