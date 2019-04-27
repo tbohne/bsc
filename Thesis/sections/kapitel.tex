@@ -1788,21 +1788,20 @@ Eine solche Position entspricht einem Level $l \in \{1, ..., b\}$ innerhalb eine
 Es existiert eine Kante $\{i, l\} \in E_p$ zwischen einem Item $i \in V_{p1}$ und einer freien
 Position $l \in V_{p2}$ innerhalb eines Stacks $q \in Q$, wenn das Item $i$ basierend auf den Placement-Constraints
 zu diesem Stack kompatibel ist, also wenn $t_{iq} = 1$ gilt.
-
 Zusätzlich muss das Item $i$ für den Fall, dass sich bereits ein Item $j \in I$ oder sogar ein Paar von Items $j, k \in I$
-im Stack $q$ befindet, basierend auf den Stacking-Constraints mit diesem Item bzw. diesem Item-Paar kompatibel sein.
+im Stack $q$ befindet, basierend auf den Stacking-Constraints mit diesem Item bzw. Item-Paar kompatibel sein.
 Wenn sich also bereits ein einzelnes Item $j$ im Stack $q$ befindet, so muss $s_{ij} = 1$ oder $s_{ji} = 1$ gelten.
 Befindet sich dagegen bereits ein Paar $j, k$ innerhalb des Stacks $q$, so ergeben sich erneut die $3!$ möglichen Permutationen
 eines Tripels, welche in Abb. \ref{fig:triple_permutations} dargestellt sind. Ist eine der Permutationen konform mit den Stacking-Constraints, so kann das Item $i$ dem Stack $q$ zugewiesen werden. Auf diese Weise kann nach der Zuweisung eines Items stets erneut eine den Stacking-Constraints entsprechende Anordnung innerhalb der Stacks erreicht werden.
-Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des Items zum neuen Stack verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$ für ein Item $i \in I$ entspricht erneut der Definition aus Abschnitt \ref{sec:two_cap_heuristic}.
+Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des Items zum neuen Stack verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$ für ein Item $i \in I$ entspricht erneut der Definition aus dem Postprocessing-Schritt in Abschnitt \ref{sec:two_cap_heuristic}.
 
 Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Items
 mit freien Positionen in den Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
-Dabei kann es vorkommen, dass einem Stack zwei oder drei Items zugeordnet werden. Angesichts der Tatsache, dass nicht
-gewährleistet ist, dass diese Items bezüglich der Stacking-Constraints miteinander kompatibel sind, darf
-jedem Stack nur ein neues Item zugewiesen werden. Es wird in solchen Fällen jenes Item mit der größeren Kostenersparnis verschoben. Nachdem die Items an die ihnen zugeordneten Positionen verschoben wurden, wird die Reihenfolge der Items
-innerhalb der Stacks, welchen ein zusätzliches Item zugewiesen wurde ggf. basierend auf den Stacking-Constraints angepasst. Befand sich ein verschobenes Item zuvor unterhalb anderer Items innerhalb eines Stacks, so werden die darüber platzierten Items
-heruntergezogen, sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
+Je nach Anzahl der freien Positionen pro Stack, können einem Stack null bis drei Items zugeordnet werden.
+Angesichts der Tatsache, dass nicht gewährleistet ist, dass diese Items bezüglich der Stacking-Constraints miteinander kompatibel sind, darf jedem Stack allerdings nur ein neues Item zugewiesen werden.
+Es wird im Falle mehrerer Zuordnungen jenes Item mit der größten Kostenersparnis verschoben.
+Nachdem die Items an die ihnen zugeordneten Positionen verschoben wurden, wird die Reihenfolge der Items
+innerhalb der Stacks, welchen mindestens ein zusätzliches Item zugewiesen wurde ggf. basierend auf den Stacking-Constraints angepasst. Befand sich ein verschobenes Item zuvor unterhalb anderer Items innerhalb eines Stacks, so werden die darüber platzierten Items heruntergezogen, sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
 
 Wie bereits in der Heuristik für eine Stack-Kapazität von $b = 2$, wird dieser Postprocessing-Prozess
 iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
