@@ -866,10 +866,6 @@ sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
 
 Dieser Postprocessing-Prozess wird iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
 
-\vfill
-
-\pagebreak
-
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6\}$ sowie eine Stack-Kapazität von $b = 2$.
@@ -1097,26 +1093,47 @@ ist dies trivial in der in Abschnitt \ref{sec:two_cap_heuristic} beschriebenen W
 
 \pagebreak
 
-Ist der Postprocessing-Schritt aktiviert, so werden zuletzt ausgewählte Items in leere Stacks verschoben, sofern
-sich dadurch eine Kostenersparnis ergibt. Dazu wird der bipartite Postprocessing-Graph generiert, welcher in
-Abb. \ref{fig:post_processing_graph_two_cap} dargestellt ist. Dieser enthält die Paare von Items in der einen Partition
-und die verbleibenden leeren Stacks in der anderen Partition. In diesem Beispiel gibt es mit $S_0$ lediglich einen verbleibenden
-leeren Stack. Da sämtliche Kantengewichte im Postprocessing-Graphen negativ sind, kommt durch eine Item-Verschiebung keine Kostenersparnis
-zustande und es ist nicht möglich, die zuvor generierte Lösung im Postprocessing-Schritt zu verbessern, weshalb
-die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverändert bestehen bleiben.
+Ist der Postprocessing-Schritt aktiviert, so werden zuletzt ausgewählte Items an freie Positionen in anderen Stacks
+verschoben, sofern sich dadurch eine Kostenersparnis ergibt. Dazu wird der bipartite Postprocessing-Graph generiert, welcher in
+Abb. \ref{fig:post_processing_graph_two_cap} dargestellt ist. Dieser enthält die Items in der einen Partition
+und die verbleibenden freien Positionen in der anderen Partition. Die Positionen sind jeweils in der Notation
+$pos(stackIdx, level)$ gegeben.
+In diesem Beispiel gibt es mit $pos(0, 0), pos(0, 1)$ und $pos(2, 1)$ drei verbleibende freie Positionen.
+Da sämtliche Kantengewichte im Postprocessing-Graphen negativ oder neutral sind, kommt durch keine Item-Verschiebung
+eine Kostenersparnis zustande und es ist nicht möglich, die zuvor generierte Lösung im Postprocessing-Schritt zu
+verbessern, weshalb die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverändert bestehen bleiben.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 1}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{2, 5}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{3, 6}$};
-        \node[state] (D) [thick, right = 3cm of B] {$\boldsymbol{S_0}$};
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=2.5cm]
+        \node[state] (A) [thick] {$\boldsymbol{0}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{1}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{2}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{3}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{4}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{5}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{6}$};
+
+        \node[state] (H) [thick, right = 8cm of B] {$\boldsymbol{pos(0, 0)}$};
+        \node[state] (I) [thick, right = 8cm of D] {$\boldsymbol{pos(0, 1)}$};
+        \node[state] (J) [thick, right = 8cm of F] {$\boldsymbol{pos(2, 1)}$};
 
         \path
-          (A) edge [thick, near start, above right] node {$-6.06$} (D)
-          (B) edge [thick, near start, above right] node {$-6.06$} (D)
-          (C) edge [thick, near start, below right] node {$-12.12$} (D);
+
+            (A) edge [thick, very near start, above right] node {$-6.06$} (J)
+            (B) edge [thick, near end, above] node {$-6.06$} (H)
+            (B) edge [thick, very near end, above right] node {$-6.06$} (I)
+            (B) edge [thick, very near end, below left] node {$-6.06$} (J)
+            (C) edge [thick, above] node {$-6.06$} (H)
+            (C) edge [thick, very near start, below left] node {$-6.06$} (I)
+            (D) edge [thick, very near start, above left] node {$-12.12$} (H)
+            (D) edge [thick, very near start, above] node {$-12.12$} (I)
+            (E) edge [thick, very near start, above left] node {$-12.12$} (H)
+            (E) edge [thick, above] node {$-12.12$} (I)
+            (E) edge [thick, near end, below] node {$0.0$} (J)
+            (F) edge [thick, very near end, below right] node {$-18.18$} (H)
+            (F) edge [thick, very near start, below right] node {$-18.18$} (I)
+            (G) edge [thick, above] node {$-12.12$} (J);
 \end{tikzpicture}
 
 \caption{\textsc{Postprocessing-Graph}.}
