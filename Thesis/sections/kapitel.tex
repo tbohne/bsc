@@ -1895,12 +1895,16 @@ In Abb. \ref{fig:item_triple_mcm} ist das auf diesem Graphen berechnete \textsc{
 sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(4, 5)$ wird dabei als einziges Paar nicht verwendet
 um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 
+\vfill
+
+\pagebreak
+
 \begin{figure}[H]
 \centering
 
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{0, 11}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{4, 5}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{6, 7}$};
@@ -1931,7 +1935,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 \hspace{10pt}
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm]
+\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm]
         \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0, 11}}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{\textcolor{red}{4, 5}}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{\textcolor{mygreen}{6, 7}}$};
@@ -2107,8 +2111,6 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \label{}
 \end{figure}
 
-\pagebreak
-
 Da keine Kante im \textsc{MWPM} das Gewicht $\infty$ besitzt, handelt es sich um eine günstigste, zulässige Zuweisung
 sämtlicher Item-Tupel zu Stacks, welche insgesamt die Kosten $550.38$ verursacht.
 Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet, wobei die Reihenfolge
@@ -2134,58 +2136,75 @@ Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die b
 ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
 
 Ist der Postprocessing-Schritt aktiviert, so wird zuletzt die beste generierte Lösung erneut betrachtet
-und es werden ausgewählte Items in leere Stacks verschoben, sofern sich dadurch eine Kostenersparnis ergibt.
+und es werden ausgewählte Items an freie Positionen in anderen Stacks verschoben, sofern sich dadurch eine
+Kostenersparnis ergibt.
 Dazu wird der bipartiter Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph} dargestellt ist.
-Dieser enthält die Paare und Tripel von Items in der einen Partition und die leeren Stacks in der anderen Partition.
+Dieser enthält die Items in der einen Partition und die freien Positionen innerhalb der Stacks in der anderen Partition.
+
 In diesem Beispiel gibt es lediglich einen verbleibenden leeren Stack, d.h. es wird jenes Item-Tupel mit der größten Ersparnis
 mit diesem Stack gematcht. Dies wird durch das \textsc{MaximumWeightBipartiteMatching} erreicht, welches in Abb.
 \ref{fig:mwbm} zu sehen ist.
 
 \begin{figure}[H]
-% \begin{figure}[H]
-\begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{12, 10, 9}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{13, 8, 1}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
-        \node[state] (F) [thick, right = 4cm of C] {$\boldsymbol{S_1}$};
+\begin{tikzpicture}[scale=0.6, transform shape, node distance=2cm]
+        \node[state] (A) [thick] {$\boldsymbol{0}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{1}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{2}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{3}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{4}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{5}$};
+        \node[state] (G) [thick, right of=F] {$\boldsymbol{6}$};
+        \node[state] (H) [thick, right of=G] {$\boldsymbol{7}$};
+        \node[state] (I) [thick, right of=H] {$\boldsymbol{8}$};
+        \node[state] (J) [thick, right of=I] {$\boldsymbol{9}$};
+        \node[state] (K) [thick, right of=J] {$\boldsymbol{10}$};
+        \node[state] (L) [thick, right of=K] {$\boldsymbol{11}$};
+        \node[state] (M) [thick, right of=L] {$\boldsymbol{12}$};
+        \node[state] (N) [thick, right of=M] {$\boldsymbol{13}$};
+
+        \node[state] (O) [thick, below = 4cm of B] {$\boldsymbol{pos(1, 0)}$};
+        \node[state] (P) [thick, below = 4cm of F] {$\boldsymbol{pos(1, 1)}$};
+        \node[state] (Q) [thick, below = 4cm of I] {$\boldsymbol{pos(1, 2)}$};
+        \node[state] (R) [thick, below = 4cm of M] {$\boldsymbol{pos(4, 0)}$};
 
         \path
-          (A) edge [thick, near start, above right] node {$6.06$} (F)
-          (B) edge [thick, near start, above right] node {$-6.06$} (F)
-          (C) edge [thick, above] node {$-24.24$} (F)
-          (D) edge [thick, near start, below right] node {$12.12$} (F)
-          (E) edge [thick, near start, below right] node {$-18.18$} (F);
+            (B) edge [thick] node {$$} (O)
+            (B) edge [thick] node {$$} (P)
+            (B) edge [thick] node {$$} (Q)
+            (D) edge [thick] node {$$} (O)
+            (D) edge [thick] node {$$} (P)
+            (D) edge [thick] node {$$} (Q)
+            (E) edge [thick] node {$$} (O)
+            (E) edge [thick] node {$$} (P)
+            (E) edge [thick] node {$$} (Q)
+            (E) edge [thick] node {$$} (R)
+            (F) edge [thick] node {$$} (O)
+            (F) edge [thick] node {$$} (P)
+            (F) edge [thick] node {$$} (Q)
+            (F) edge [thick] node {$$} (R)
+            (H) edge [thick] node {$$} (O)
+            (H) edge [thick] node {$$} (P)
+            (H) edge [thick] node {$$} (Q)
+            (I) edge [thick] node {$$} (O)
+            (I) edge [thick] node {$$} (P)
+            (I) edge [thick] node {$$} (Q)
+            (J) edge [thick] node {$$} (O)
+            (J) edge [thick] node {$$} (P)
+            (J) edge [thick] node {$$} (Q)
+            (K) edge [thick] node {$$} (O)
+            (K) edge [thick] node {$$} (P)
+            (K) edge [thick] node {$$} (Q)
+            (L) edge [thick] node {$$} (O)
+            (L) edge [thick] node {$$} (P)
+            (L) edge [thick] node {$$} (Q)
+            (L) edge [thick] node {$$} (R)
+            (N) edge [thick] node {$$} (O)
+            (N) edge [thick] node {$$} (P)
+            (N) edge [thick] node {$$} (Q);
 \end{tikzpicture}
 \caption{\textsc{Postprocessing-Graph}.}
 \label{fig:post_processing_graph}
-\end{subfigure}
-\hfill
-\begin{subfigure}[b]{0.4\textwidth}
-\centering
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm]
-        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{12, 10, 9}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{\textcolor{mygreen}{13, 8, 1}}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
-        \node[state] (F) [thick, right = 4cm of C] {$\boldsymbol{\textcolor{mygreen}{S_1}}$};
-
-        \path
-          (A) edge [thick, near start, above right] node {$6.06$} (F)
-          (B) edge [thick, near start, above right] node {$-6.06$} (F)
-          (C) edge [thick, above] node {$-24.24$} (F)
-          (D) edge [thick, near start, below right, mygreen] node {$12.12$} (F)
-          (E) edge [thick, near start, below right] node {$-18.18$} (F);
-\end{tikzpicture}
-\caption{\textsc{MWBM}.}
-\label{fig:mwbm}
-\end{subfigure}
-\caption{\textsc{Postprocessing}.}
-\label{}
 \end{figure}
 
 Die Kante des Matchings aus Abb. \ref{fig:mwbm} entspricht einer Ersparnis von $12.12$, wenn das kompatible
