@@ -1777,35 +1777,35 @@ Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 
 Wie bereits die Heuristik aus Abschnitt \ref{sec:two_cap_heuristic}, bietet auch diese Heuristik über den Parameter
 \textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
-auf die Transportkostenminimierung ermöglicht. Wird dieser Wert auf \textit{true} gesetzt, so werden
-ausgewählte Items aus den zu zwei Dritteln bzw. vollständig gefüllten Stacks entfernt und in einen leeren
-Stack verschoben, sofern ein solcher vorliegt und sich dadurch eine Kostenersparnis ergibt.
+auf die Transportkostenminimierung ermöglicht. Wird dieser Wert auf \textit{true} gesetzt, so werden ausgewählte Items aus der zuvor generierten Lösung an andere, freie Positionen verschoben, sofern sich dadurch eine Kostenersparnis ergibt.
 
 \textbf{Postprocessing-Schritt}
 
-Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die Tripel
-und Paare von Items, welche gemeinsam in einem Stack platziert wurden, in der Partition $V_{p1}$ und
-die verbleibenden leeren Stacks in der Partition $V_{p2}$ enthält.
+Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert,
+welcher die zuvor bereits platzierten Items $i \in I$ in der Partition $V_{p1}$ und die verbleibenden
+freien Positionen in den Stacks innerhalb der Storage-Area in der Partition $V_{p2}$ enthält.
+Eine solche Position entspricht einem Level $l \in \{1, ..., b\}$ innerhalb eines Stacks $q \in Q$.
+Es existiert eine Kante $\{i, l\} \in E_p$ zwischen einem Item $i \in V_{p1}$ und einer freien
+Position $l \in V_{p2}$ innerhalb eines Stacks $q \in Q$, wenn das Item $i$ basierend auf den Placement-Constraints
+zu diesem Stack kompatibel ist, also wenn $t_{iq} = 1$ gilt.
 
-Es existiert eine Kante $\{(i, j, k), q\} \in E_p$ zwischen einem Tripel von Items $(i, j, k) \in V_{p1}$ oder
-eine Kante $\{(i, j), q\} \in E_p$ zwischen einem Paar $(i, j) \in V_{p1}$ von Items und einem leeren Stack
-$q \in V_{p2}$, wenn mindestens eines der im Tupel enthaltenen Items basierend auf den Placement-Constraints zu
-diesem Stack kompatibel ist. Dementsprechend muss für das Paar $(i, j)$ $t_{iq} = 1$ oder $t_{jq} = 1$
-gelten. Für das Tripel $(i, j, k)$ muss analog $t_{iq} = 1$, $t_{jq} = 1$ oder $t_{kq} = 1$ gelten.
-Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des kompatiblen Items zum Ground-Level des leeren Stacks verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items.
-Die Kostenersparnis $r_i$ für ein Item $i \in I$ entspricht erneut der Definition aus Abschnitt \ref{sec:two_cap_heuristic}.
-Sind mehrere Items eines Tupels kompatibel, so entsprechen die Kosten der größten Ersparnis, da jeweils
-jenes Item eines Tupels verschoben wird, dessen Verschiebung die größte Kostenersparnis nach sich zieht.
+Zusätzlich muss das Item $i$ für den Fall, dass sich bereits ein Item $j \in I$ oder sogar ein Paar von Items $j, k \in I$
+im Stack $q$ befindet, basierend auf den Stacking-Constraints mit diesem Item bzw. diesem Item-Paar kompatibel sein.
+Wenn sich also bereits ein einzelnes Item $j$ im Stack $q$ befindet, so muss $s_{ij} = 1$ oder $s_{ji} = 1$ gelten.
+Befindet sich dagegen bereits ein Paar $j, k$ innerhalb des Stacks $q$, so ergeben sich erneut die $3!$ möglichen Permutationen
+eines Tripels, welche in Abb. \ref{fig:triple_permutations} dargestellt sind. Ist eine der Permutationen konform mit den Stacking-Constraints, so kann das Item $i$ dem Stack $q$ zugewiesen werden. Auf diese Weise kann nach der Zuweisung eines Items stets erneut eine den Stacking-Constraints entsprechende Anordnung innerhalb der Stacks erreicht werden.
+Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des Items zum neuen Stack verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$ für ein Item $i \in I$ entspricht erneut der Definition aus Abschnitt \ref{sec:two_cap_heuristic}.
 
-Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Tupel von
-Items mit leeren Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
-Anschließend wird jeweils das kompatible Item eines Tupels bzw. im Falle mehrerer kompatibler Items jenes,
-welches zur größeren Ersparnis führt, auf den Ground-Level des leeren Stacks verschoben.
-Handelt es sich dabei um ein Item, welches zuvor auf dem Ground-Level eines Stacks platziert war,
-so werden die darüber platzierten Items heruntergezogen, sodass sich anschließend erneut eine zulässige
-Stacking-Lösung ergibt.
+Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Items
+mit freien Positionen in den Stacks verbinden, welche zur insgesamt größten Kostenreduktion führen.
+Dabei kann es vorkommen, dass einem Stack zwei oder drei Items zugeordnet werden. Angesichts der Tatsache, dass nicht
+gewährleistet ist, dass diese Items bezüglich der Stacking-Constraints miteinander kompatibel sind, darf
+jedem Stack nur ein neues Item zugewiesen werden. Es wird in solchen Fällen jenes Item mit der größeren Kostenersparnis verschoben. Nachdem die Items an die ihnen zugeordneten Positionen verschoben wurden, wird die Reihenfolge der Items
+innerhalb der Stacks, welchen ein zusätzliches Item zugewiesen wurde ggf. basierend auf den Stacking-Constraints angepasst. Befand sich ein verschobenes Item zuvor unterhalb anderer Items innerhalb eines Stacks, so werden die darüber platzierten Items
+heruntergezogen, sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
 
-\pagebreak
+Wie bereits in der Heuristik für eine Stack-Kapazität von $b = 2$, wird dieser Postprocessing-Prozess
+iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
 
 \textbf{Beispiel}
 
