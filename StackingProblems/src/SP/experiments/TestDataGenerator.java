@@ -21,7 +21,7 @@ public class TestDataGenerator {
 
     /******************************* CONFIGURATION *************************************/
     public static final int NUMBER_OF_INSTANCES = 1;
-    public static final int NUMBER_OF_ITEMS = 20;
+    public static final int NUMBER_OF_ITEMS = 500;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -101,7 +101,7 @@ public class TestDataGenerator {
         float yCoord = 0;
 
         for (int i = 0; i < numOfStacks; i++) {
-            if (i == numOfStacks / NUMBER_OF_ROWS_IN_STORAGE_AREA) {
+            if (i == (numOfStacks + 1) / NUMBER_OF_ROWS_IN_STORAGE_AREA) {
                 xCoord = 0;
                 yCoord += STORAGE_AREA_SLOT_WIDTH;
             }
