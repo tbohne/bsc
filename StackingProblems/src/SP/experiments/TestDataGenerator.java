@@ -21,7 +21,7 @@ public class TestDataGenerator {
 
     /******************************* CONFIGURATION *************************************/
     public static final int NUMBER_OF_INSTANCES = 1;
-    public static final int NUMBER_OF_ITEMS = 100;
+    public static final int NUMBER_OF_ITEMS = 20;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
@@ -46,6 +46,8 @@ public class TestDataGenerator {
 //    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
     public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
 
+    public static final int NUMBER_OF_ROWS_IN_STORAGE_AREA = 2;
+
     /***********************************************************************************/
 
     /**
@@ -63,13 +65,12 @@ public class TestDataGenerator {
     }
 
     /**
-     * Generates the positions of the fixed stacks in the storage area.
+     * Generates the positions of the fixed stacks in the storage area in a square.
      *
      * @param numOfStacks - the number of stacks available in the instances
      * @return list of stack positions
      */
-    public static ArrayList<Position> generateStackPositions(int numOfStacks) {
-
+    public static ArrayList<Position> generateStackPositionsSquare(int numOfStacks) {
         ArrayList<Position> stackPositions = new ArrayList<>();
         int stacksPerRow = (int)Math.ceil(Math.sqrt(numOfStacks));
         float xCoord = 0;
@@ -83,6 +84,31 @@ public class TestDataGenerator {
             stackPositions.add(new Position(xCoord, yCoord));
             xCoord += STORAGE_AREA_SLOT_LENGTH;
         }
+        return stackPositions;
+    }
+
+    /**
+     * Generates the positions of the fixed stacks in the storage area
+     * on the specified number of rows.
+     *
+     * @param numOfStacks - the number of stacks available in the instances
+     * @return list of stack positions
+     */
+    public static ArrayList<Position> generateStackPositionsOnSpecifiedRows(int numOfStacks) {
+        ArrayList<Position> stackPositions = new ArrayList<>();
+
+        float xCoord = 0;
+        float yCoord = 0;
+
+        for (int i = 0; i < numOfStacks; i++) {
+            if (i == numOfStacks / NUMBER_OF_ROWS_IN_STORAGE_AREA) {
+                xCoord = 0;
+                yCoord += STORAGE_AREA_SLOT_WIDTH;
+            }
+            stackPositions.add(new Position(xCoord, yCoord));
+            xCoord += STORAGE_AREA_SLOT_LENGTH;
+        }
+
         return stackPositions;
     }
 
@@ -286,7 +312,7 @@ public class TestDataGenerator {
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
 
-            ArrayList<Position> stackPositions = generateStackPositions(numOfStacks);
+            ArrayList<Position> stackPositions = generateStackPositionsOnSpecifiedRows(numOfStacks);
             Item[] items = generateItems(stackPositions);
 
             int[][] stackingConstraintMatrix;
