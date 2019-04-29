@@ -794,6 +794,22 @@ unter dem Namen \textit{MaximumWeightBipartiteMatching} bereit.
 Die Implementation besitzt eine Laufzeitkomplexität von $O(n (m + n \thinspace log \thinspace n))$, wobei $n$ der Knotenanzahl
 und $m$ der Anzahl der Kanten im Graphen entspricht.
 
+\subsection{Untere Schranken}
+\label{sec:lower_bounds}
+
+Zur Abschätzung der Güte von heuristischen Lösungen berechnet man bei Minimierungsproblemen häufig untere Schranken,
+d.h. Werte $LB$, sodass $c(S) \geq LB$ für alle Lösungen $S$ gilt, wobei $c(S)$ dem Zielfunktionswert von $S$ entspricht.
+Zur Berechnung solcher Schranken betrachtet man sogenannte Relaxationen\footnote{Einfachere Probleme, bei denen bestimmte Nebenbedingungen vernachlässigt werden.} des ursprünglichen Problems.
+Da die Lösungsmenge des ursprünglichen Problems eine Teilmenge der Lösungsmenge der Relaxation ist,
+definiert der optimale Zielfunktionswert der Relaxation eine untere Schranke für die optimale Lösung des Ausgangsproblems
+\cite{Knust2017}.
+
+
+
+\vfill
+
+\pagebreak
+
 \subsection{Konstruktive Heuristik ($b = 2$)}
 \label{sec:two_cap_heuristic}
 
