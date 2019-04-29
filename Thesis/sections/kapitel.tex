@@ -802,9 +802,20 @@ d.h. Werte $LB$, sodass $c(S) \geq LB$ für alle Lösungen $S$ gilt, wobei $c(S)
 Zur Berechnung solcher Schranken betrachtet man sogenannte Relaxationen\footnote{Einfachere Probleme, bei denen bestimmte Nebenbedingungen vernachlässigt werden.} des ursprünglichen Problems.
 Da die Lösungsmenge des ursprünglichen Problems eine Teilmenge der Lösungsmenge der Relaxation ist,
 definiert der optimale Zielfunktionswert der Relaxation eine untere Schranke für die optimale Lösung des Ausgangsproblems
-\cite{Knust2017}.
+\cite{Knust2017}.\newline
+Eine untere Schranke für die Transportkosten einer Instanz eines Stacking-Problems lässt sich
+durch eine Relaxation des Problems bezüglich der Stacking-Constraints $s_{ij}$ generieren.
+Die Placement-Constraints $t_{iq}$ sowie die Stack-Kapazität $b$ müssen weiterhin erfüllt werden.
 
+Sei $P$ die Menge aller $mb$ Positionen innerhalb der Stacks und $q(p)$ der Stack, zu welchem die Position $p$ gehört.
+Ferner sei $G^c = (I \cup P, E^c)$ ein bipartiter Graph, in welchem eine Kante $\{i, p\} \in E^c$ existiert,
+wenn $q(p) \in Q^i$, d.h. ein Item $i$ kann dem Stack zugewiesen werden, zu welchem die Position $p$ gehört.
+Das Gewicht der Kante $\{i, p\}$ entspricht den Kosten $c_{iq(p)}$.
 
+Berechnet man nun ein Minimum-Weight-Perfect-Matching zwischen Items und Stack-Positionen, so entspricht
+das Gewicht des Matchings einer unteren Schranke für die Gesamtkosten. Da die Kosten der Zuweisung eines Items
+zu einem Stack unabhängig vom Level innerhalb des Stacks sind, werden die Items jeweils den untersten Positionen
+innerhalb eines Stacks zugewiesen.
 
 \vfill
 
