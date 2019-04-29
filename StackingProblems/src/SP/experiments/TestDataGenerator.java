@@ -99,21 +99,34 @@ public class TestDataGenerator {
 
         float xCoord = 0;
         float yCoord = 0;
+        int perRow = numOfStacks / NUMBER_OF_ROWS_IN_STORAGE_AREA;
+        int remainders = numOfStacks % NUMBER_OF_ROWS_IN_STORAGE_AREA;
+        boolean remainderAttached = false;
+        int rowCnt = 0;
 
         for (int i = 0; i < numOfStacks; i++) {
-            if (i == (numOfStacks + 1) / NUMBER_OF_ROWS_IN_STORAGE_AREA) {
-                xCoord = 0;
-                yCoord += STORAGE_AREA_SLOT_WIDTH;
+            if (rowCnt == perRow || remainderAttached) {
+                if (remainders > 0 && !remainderAttached) {
+                    remainderAttached = true;
+                    remainders--;
+                } else {
+                    xCoord = 0;
+                    yCoord += STORAGE_AREA_SLOT_WIDTH;
+                    remainderAttached = false;
+                    rowCnt = 0;
+                }
             }
             stackPositions.add(new Position(xCoord, yCoord));
             xCoord += STORAGE_AREA_SLOT_LENGTH;
+            rowCnt++;
         }
-
         return stackPositions;
     }
 
     /**
-     * Generates the original positions of the items on the truck.
+     * Generates the original positions of the items on the trucks.
+     * In practical settings, there are often two tracks for arriving vehicles.
+     * Therefore the items are positioned in two rows.
      *
      * @return list of item positions
      */
