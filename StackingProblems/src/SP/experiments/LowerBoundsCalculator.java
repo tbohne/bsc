@@ -99,7 +99,7 @@ public class LowerBoundsCalculator {
         GraphUtil.addVerticesForEmptyPositions(positions, graph, partitionTwo);
         ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
         this.addEdgesForDummyItems(graph, dummyItems, positions);
-        this.addEdges(graph, positions, itemList);
+        this.addEdges(graph, itemList, positions);
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 

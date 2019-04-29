@@ -552,6 +552,7 @@ public class ThreeCapHeuristic {
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
+
         System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
