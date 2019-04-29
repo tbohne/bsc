@@ -227,9 +227,11 @@ public class TwoCapHeuristic {
      */
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
+
         ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
+
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
@@ -280,6 +282,7 @@ public class TwoCapHeuristic {
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+            sol.lowerItemsThatAreStackedInTheAir();
 
             if (postProcessing) {
                 double bestSolutionCost = sol.computeCosts();
