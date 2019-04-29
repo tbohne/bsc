@@ -2,7 +2,6 @@ package SP.constructive_heuristics;
 
 import SP.representations.BipartiteGraph;
 import SP.representations.Instance;
-import SP.representations.Solution;
 import SP.representations.StorageAreaPosition;
 import SP.util.GraphUtil;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
@@ -32,15 +31,11 @@ public class LowerBoundsSolver {
         ArrayList<StorageAreaPosition> positions,
         ArrayList<Integer> itemList
     ) {
-
         for (int item : itemList) {
             for (StorageAreaPosition pos : positions) {
-//                if (this.instance.getCosts()[item][pos.getStackIdx()] < Integer.MAX_VALUE / itemList.size()) {
-
-                    DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "pos" + pos);
-                    double costs = this.instance.getCosts()[item][pos.getStackIdx()];
-                    bipartiteGraph.setEdgeWeight(edge, costs);
-//                }
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "pos" + pos);
+                double costs = this.instance.getCosts()[item][pos.getStackIdx()];
+                bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
     }
@@ -87,30 +82,13 @@ public class LowerBoundsSolver {
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
-    /**
-     *
-     * @return
-     */
-    public Solution solve() {
-
-        Solution sol = new Solution();
-
-
+    public void computeLowerBound() {
         BipartiteGraph bipartiteGraph = this.generateBipartiteGraph();
-
         KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
             new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
-                    bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
+                bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
             )
         ;
-
-        System.out.println(minCostPerfectMatching.getMatching().getWeight());
-
-//        this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
-
-        sol = new Solution(0, 0, this.instance);
-
-        return sol;
+        System.out.println("LB (with relaxed s_ij): " + minCostPerfectMatching.getMatching().getWeight());
     }
-
 }
