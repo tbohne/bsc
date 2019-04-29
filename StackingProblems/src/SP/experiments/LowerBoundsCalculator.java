@@ -12,7 +12,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+ * Computes lower bounds for the total costs of instances of stacking problems
+ * by relaxing the stacking constraints s_ij.
+ *
+ * @author Tim Bohne
+ */
 public class LowerBoundsCalculator {
 
     private Instance instance;
@@ -20,18 +25,25 @@ public class LowerBoundsCalculator {
     /**
      * Constructor
      *
-     * @param instance  - the instance of the stacking problem to be solved
+     * @param instance  - the instance of the stacking problem to compute a LB for
      */
     public LowerBoundsCalculator(Instance instance) {
         this.instance = instance;
     }
 
+    /**
+     * Adds edges to the bipartite graph that connect items with stack positions.
+     *
+     * @param bipartiteGraph - bipartite graph to add the edges to
+     * @param items          - dummy items to be connected to positions
+     * @param positions      - positions the dummy items get connected to
+     */
     public void addEdges(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-        ArrayList<StorageAreaPosition> positions,
-        ArrayList<Integer> itemList
+        ArrayList<Integer> items,
+        ArrayList<StorageAreaPosition> positions
     ) {
-        for (int item : itemList) {
+        for (int item : items) {
             for (StorageAreaPosition pos : positions) {
                 DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "pos" + pos);
                 double costs = this.instance.getCosts()[item][pos.getStackIdx()];
@@ -40,10 +52,17 @@ public class LowerBoundsCalculator {
         }
     }
 
+    /**
+     * Adds edges to the bipartite graph that connect dummy items with stack positions.
+     *
+     * @param bipartiteGraph - bipartite graph to add the edges to
+     * @param dummyItems     - dummy items to be connected to positions
+     * @param positions      - positions the dummy items get connected to
+     */
     public void addEdgesForDummyItems(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-            ArrayList<Integer> dummyItems,
-            ArrayList<StorageAreaPosition> positions
+        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+        ArrayList<Integer> dummyItems,
+        ArrayList<StorageAreaPosition> positions
     ) {
         for (int item : dummyItems) {
             for (StorageAreaPosition pos : positions) {
@@ -53,12 +72,16 @@ public class LowerBoundsCalculator {
         }
     }
 
+    /**
+     * Generates the bipartite graph between items and stack positions.
+     *
+     * @return the generated bipartite graph
+     */
     public BipartiteGraph generateBipartiteGraph() {
 
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
             DefaultWeightedEdge.class
         );
-
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
 
@@ -76,12 +99,17 @@ public class LowerBoundsCalculator {
         GraphUtil.addVerticesForEmptyPositions(positions, graph, partitionTwo);
         ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
         this.addEdgesForDummyItems(graph, dummyItems, positions);
-
         this.addEdges(graph, positions, itemList);
-
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
+    /**
+     * Computes the LB for the instance of the stacking problem by creating a bipartite graph
+     * between items and stack positions. The weight of an edge connecting an item with a position in
+     * a stack corresponds to the transport costs for the assignment.
+     * A minimum-weight-perfect-matching gets computed on this graph and the weight of the matching is
+     * a lower bound on the total costs of the instance.
+     */
     public void computeLowerBound() {
         BipartiteGraph bipartiteGraph = this.generateBipartiteGraph();
         KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
