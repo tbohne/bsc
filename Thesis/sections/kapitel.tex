@@ -807,9 +807,9 @@ Eine untere Schranke für die Transportkosten einer Instanz eines Stacking-Probl
 durch eine Relaxation des Problems bezüglich der Stacking-Constraints $s_{ij}$ generieren.
 Die Placement-Constraints $t_{iq}$ sowie die Stack-Kapazität $b$ müssen weiterhin erfüllt werden.
 
-Sei $P$ die Menge aller $mb$ Positionen innerhalb der Stacks und $q(p)$ der Stack, zu welchem die Position $p$ gehört.
+Sei $P$ die Menge aller $mb$ Positionen innerhalb der Stacks und $q(p)$ jener Stack, zu welchem die Position $p$ gehört.
 Ferner sei $G^c = (I \cup P, E^c)$ ein bipartiter Graph, in welchem eine Kante $\{i, p\} \in E^c$ existiert,
-wenn $q(p) \in Q^i$, d.h. ein Item $i$ kann dem Stack zugewiesen werden, zu welchem die Position $p$ gehört.
+wenn $t_{iq(p)} = 1$, d.h. wenn ein Item $i$ kompatibel zum Stack ist, zu welchem die Position $p$ gehört.
 Das Gewicht der Kante $\{i, p\}$ entspricht den Kosten $c_{iq(p)}$.
 
 Berechnet man nun ein Minimum-Weight-Perfect-Matching zwischen Items und Stack-Positionen, so entspricht
