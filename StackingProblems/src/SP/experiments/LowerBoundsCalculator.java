@@ -1,4 +1,4 @@
-package SP.constructive_heuristics;
+package SP.experiments;
 
 import SP.representations.BipartiteGraph;
 import SP.representations.Instance;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class LowerBoundsSolver {
+public class LowerBoundsCalculator {
 
     private Instance instance;
 
@@ -22,7 +22,7 @@ public class LowerBoundsSolver {
      *
      * @param instance  - the instance of the stacking problem to be solved
      */
-    public LowerBoundsSolver(Instance instance) {
+    public LowerBoundsCalculator(Instance instance) {
         this.instance = instance;
     }
 
