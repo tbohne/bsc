@@ -637,6 +637,11 @@ Da die Lösungsmenge des ursprünglichen Problems eine Teilmenge der Lösungsmen
 definiert der optimale Zielfunktionswert der Relaxation eine untere Schranke für die optimale Lösung des Ausgangsproblems
 \cite{Knust2017}.
 
+Eine Abschätzung der Güte heuristischer Lösungen durch eine untere Schranke ist z.B. bei großen Instanzen hilfreich,
+welche nicht bzw. nicht effizient durch die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen gelöst werden können.
+Der optimale Lösungswert ist in solchen Fällen nicht bekannt, weshalb sich eine untere Schranke als Referenzwert
+zur Beurteilung der Lösungsqualität heranziehen lässt.
+
 Eine untere Schranke für die Transportkosten einer Instanz eines Stacking-Problems lässt sich
 durch eine Relaxation des Problems bezüglich der Stacking-Constraints $s_{ij}$ generieren.
 Die Placement-Constraints $t_{iq}$ sowie die Stack-Kapazität $b$ müssen weiterhin erfüllt werden.
