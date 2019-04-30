@@ -591,10 +591,14 @@ Die Bin-Packing-Formulierung nimmt dabei lediglich Item-Stack-Zuweisungen vor, w
 Items konkreten Positionen innerhalb der Stacks zuweist. Dabei ist allerdings auch bei der Bin-Packing-Formulierung
 sichergestellt, dass eine Item-Stack-Zuweisung nur dann vorgenommen wird, wenn die Items innerhalb des Stacks anschließend
 in einer Weise umsortiert werden können, dass sie den Stacking Constraints entsprechen. Diese Tatsache ergibt sich aus Nebenbedingung (\ref{bin_packing_line_four}), welche fordert, dass Items sich nur dann im selben Stack befinden, wenn sie in mindestens einer Richtung stackbar sind.
-Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert
-werden kann, dass eine valide Lösung, die die Stacking Constraints respektiert, dabei herauskommt.
+Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert werden kann, dass eine valide Lösung, die die Stacking Constraints respektiert, dabei herauskommt.
 
-Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, die die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben. Dies kann durch den simplen Algorithmus \ref{alg:algo1} erreicht werden.
+Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, die die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben.
+Dazu werden sämtliche Stacks, denen mehr als ein Item zugewiesen wurde, betrachtet. Für jeden
+dieser Stacks wird geprüft, ob die aufeinander gestapelten Items jeweils paarweise aufeinander gestapelt sein dürfen.
+Werden zwei Items innerhalb eines Stacks gefunden, welche die Stacking-Constraints verletzen, so werden diese
+vertauscht und der Prozess startet für diesen Stack erneut. Ein vollständig gefüllter Stack mit $b = 3$ ist mit dieser
+Strategie nach spätestens drei Tausch-Operationen korrekt sortiert.
 
 % \begin{algorithm}
 % \fontsize{10pt}{10pt}
@@ -640,10 +644,7 @@ definiert der optimale Zielfunktionswert der Relaxation eine untere Schranke fü
 Eine Abschätzung der Güte heuristischer Lösungen durch eine untere Schranke ist z.B. bei großen Instanzen hilfreich,
 welche nicht bzw. nicht effizient durch die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen gelöst werden können.
 Der optimale Lösungswert ist in solchen Fällen nicht bekannt, weshalb sich eine untere Schranke als Referenzwert
-zur Beurteilung der Lösungsqualität heranziehen lässt.
-
-Eine untere Schranke für die Transportkosten einer Instanz eines Stacking-Problems lässt sich
-durch eine Relaxation des Problems bezüglich der Stacking-Constraints $s_{ij}$ generieren.
+zur Beurteilung der Lösungsqualität heranziehen lässt. Eine untere Schranke für die Transportkosten einer Instanz eines Stacking-Problems lässt sich durch eine Relaxation des Problems bezüglich der Stacking-Constraints $s_{ij}$ generieren.
 Die Placement-Constraints $t_{iq}$ sowie die Stack-Kapazität $b$ müssen weiterhin erfüllt werden.
 
 Sei $P$ die Menge aller $mb$ Positionen innerhalb der Stacks und $q(p)$ jener Stack, zu welchem die Position $p$ gehört.
