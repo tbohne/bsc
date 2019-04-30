@@ -499,9 +499,13 @@ In den ursprünglichen Formulierungen entspricht die Zielfunktion jeweils der Mi
 Die Zielfunktion der Heuristiken stellt, wie in Abschnitt \ref{sec:objective} geschildert, im Grunde die Kombination
 zweier Zielfunktionen dar, welche initial die Anzahl der verwendeten Stacks minimiert, indem möglichst viele
 $b-$Tupel von Items generiert werden, bevor diese möglichst günstig den Stacks zugewiesen werden.
-Insofern ist zu erwarten, dass die MIP-Formulierungen verglichen mit den Heuristiken prinzipiell,
-vorausgesetzt beide Lösungsverfahren lösen eine Instanz zulässig, zu etwas günstigeren Zielfunktionswerten gelangen,
-dafür jedoch mehr Stacks verwenden.
+Insofern ist zu erwarten, dass die MIP-Formulierungen verglichen mit den konstruktiven Heuristiken
+aus Abschnitt \ref{sec:constructive_heuristics} prinzipiell, vorausgesetzt beide Lösungsverfahren lösen eine
+Instanz zulässig, zu etwas günstigeren Zielfunktionswerten gelangen, dafür jedoch mehr Stacks verwenden.
+Tatsächlich vergleichbar sind die Ergebnisse der MIP-Formulierungen mit jenen der Heuristiken allerdings nur,
+wenn beide Lösungsverfahren dieselbe Zielfunktion betrachten. Dies wird durch ein Postprocessing-Verfahren
+ermöglicht, welches beide konstruktiven Heuristiken bereitstellen und welches einen reinen Fokus auf die
+Transportkostenminimierung ermöglicht, nachdem die Zulässigkeit erreicht ist.
 
 Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee des MIP im Allgemeinen
 eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formulation} und \ref{sec:three_idx_formulation} die beiden in dieser Arbeit betrachteten MIP-Formulierungen im Detail vorzustellen.
@@ -520,8 +524,6 @@ Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle 
 In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
 um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
 zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM. \cite{CPLEX2015}
-
-\pagebreak
 
 \subsection{Bin-Packing-Formulierung}
 \label{sec:bin_packing_formulation}
@@ -624,10 +626,6 @@ Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, währe
 % \caption{Korrektur der Item Reihenfolge innerhalb der Stacks.}
 % \label{alg:algo1}
 % \end{algorithm}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Untere Schranken}
 \label{sec:lower_bounds}
