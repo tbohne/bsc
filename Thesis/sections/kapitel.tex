@@ -1209,27 +1209,23 @@ bereitgestellt werden. In diesem Abschnitt werden die Konfigurationen vorgestell
 
 Zunächst zur Anzahl der zur Verfügung stehenden Stacks. In den durchgeführten Experimenten wird ein durchaus geringer Spielraum von
 zusätzlichen $20 \%$ betrachtet, also $a = 0.2 \cdot \ceil{\frac{n}{b}}$, welcher in weiteren Betrachtungen erhöht werden könnte.
-
 Für die Stacking-Constraint-Generierung wird auf die zweite der beiden vorgestellten Varianten zurückgegriffen,
-weil diese realitätsnäher erscheint. Die in den Experimenten betrachteten Intervalle, welche im Folgenden definiert werden,
-führen zu ca. $36\%$ $1$-Einträgen in $S$. Bei Vergrößerung der Intervalle nähert sich dieser
-erwartete Wert den zuvor erwähnten $25\%$ an.
-
-Da wie bereits erwähnt bei den Placement-Constraints in der Praxis tendenziell mehr Item-Stack-Zuweisungen erlaubt
+weil diese realitätsnäher erscheint. Die in den Experimenten betrachteten Intervalle, aus welchen die zufällig generierten
+Item-Maße stammen, welche im Folgenden definiert werden, führen zu ca. $36\%$ $1$-Einträgen in $S$.
+Bei Vergrößerung der Intervalle nähert sich dieser Wert dem beschrieben Erwartungswert von ca. $25\%$ an.
+Da wie bereits erwähnt für die Placement-Constraints gilt, dass in der Praxis tendenziell mehr Item-Stack-Zuweisungen erlaubt
 als verboten sind, beträgt die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür, dass ein Item $i \in I$ in einem
-Stack $q \in Q$ platziert werden darf $70 \%$.
+Stack $q \in Q$ platziert werden darf, $70 \%$.
 
 Besonders viele Konfigurationsmöglichkeiten bietet die Item- und Stackpositionierung.
 Das Grid, welches die initialen Item-Positionen $O_i$ repräsentiert, besteht in den in dieser Arbeit betrachteten
 Instanzen stets aus zwei Reihen, welche beispielsweise zwei nebeneinander stehende Fahrzeuge repräsentieren,
-die simultan entladen werden. Da Storage-Area in der Praxis häufig aus wenigen langen Reihen besteht,
-werden in den Experimenten ebenfalls stets zwei Reihen von Stacks betrachtet.
-
-Eine weitere wichtige Konfigurationsmöglichkeit besteht in der Definition der Zellengrößen.
+die simultan entladen werden. Da die Storage-Area in der Praxis häufig ebenfalls aus wenigen langen Spuren besteht,
+werden auch die Stacks stets auf zwei Reihen verteilt.
 Der als erstes weltweit standardisierte Seecontainer ist der 20-Fuß-Container TEU, welcher bis heute
 international als Maßeinheit gebräuchlich ist. Der TEU ist $6.06 \thinspace m$ lang, $2.44 \thinspace m$ breit
 und $2.59 \thinspace m$ hoch (vgl. \citet{ContainerBasis}).
-In Orientierung am TEU betragen Länge und Breite einer Zelle in den Experimenten $6.06 \thinspace m$ bzw.
+In Orientierung am TEU betragen Länge und Breite einer Zelle in den beiden Grids $6.06 \thinspace m$ bzw.
 $2.44 \thinspace m$. Außerdem lässt sich die Distanz zwischen der Storage-Area und den Fahrzeugen konfigurieren,
 für welche jeweils das fünffache der Zellenbreite, also in diesem Fall $12.20 \thinspace m$ angenommen wird.
 
@@ -1240,12 +1236,10 @@ gibt, werden nicht sämtliche Werte aus diesen Intervallen betrachtet, sondern l
 Folglich sind die Item-Längen $\{1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0\}$ und
 die Item-Breiten $\{1.0, 1.5, 2.0\}$ möglich.
 
-Zuletzt muss noch definiert werden, auf welcher Metrik die Distanzen zwischen Item- und Stackpositionen
-basieren, die schließlich die Transportkosten definieren. In den im Zuge dieser Arbeit durchgeführten
-Experimenten basieren die Distanzen zwischen Item- und Stackpositionen stets auf der Manhattan-Metrik,
-welche die Kranbewegung repräsentiert.
-
-\pagebreak
+Zuletzt wird definiert, auf welcher Metrik die Distanzen zwischen Item- und Stackpositionen
+basieren, die schließlich den Transportkosten entsprechen. In den im Zuge dieser Arbeit durchgeführten
+Experimenten basieren diese Distanzen stets auf der Manhattan-Metrik, welche die Kranbewegung
+in geeigneter Weise repräsentiert.
 
 \subsection{Vergleich der $b = 2$ Solver}
 \label{sec:solver_comp_b=2}
