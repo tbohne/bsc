@@ -21,6 +21,17 @@ import java.util.Arrays;
 public class SolverComparison2Cap implements SolverComparison {
 
     /**
+     * Computes a lower bound for the specified instance using the LowerBoundsCalculator.
+     *
+     * @param instance     - the instance to compute a LB for
+     * @param solutionName - the name of the generated solution
+     */
+    public void computeLowerBound(Instance instance, String solutionName) {
+        LowerBoundsCalculator lbc = new LowerBoundsCalculator(instance);
+        SolutionWriter.writeLowerBound(SOLUTION_PREFIX + solutionName + ".txt", lbc.computeLowerBound());
+    }
+
+    /**
      * Solves the given instance with the bin-packing solver.
      *
      * @param instance     - the instance to be solved
@@ -78,6 +89,8 @@ public class SolverComparison2Cap implements SolverComparison {
                     System.out.println("working on: " + instanceName);
                     Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
                     String solutionName = instanceName.replace("instance", "sol");
+
+                    this.computeLowerBound(instance, solutionName);
 
                     if (solversToBeCompared.contains(Solver.MIP_BINPACKING)) {
                         System.out.println("solve with binpacking");
