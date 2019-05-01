@@ -441,43 +441,34 @@ In der Praxis sind tendenziell mehr Zuweisungen erlaubt als verboten.
 Im Wesentlichen liegen der Item- und Stackpositionierung zwei Grids zugrunde. Zum einen die Storage-Area,
 welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf welchen die Items geliefert werden.
 Die Positionierung der Items und Stacks einer Instanz ist somit an die schematische Darstellung in Abb. \ref{fig:costs}
-angelehnt. In der Storage-Area existiert eine im \textsc{TestDataGenerator} konfigurierbare Anzahl von Reihen,
-auf welche die Stacks verteilt werden.
+angelehnt. Daraus ergeben sich mehrere Konfigurationsmöglichkeiten, welche unterschiedliche Auswirkungen haben
+und durch den \textsc{TestDataGenerator} bereitgestellt werden.
+In der Storage-Area existiert eine konfigurierbare Anzahl von Reihen, auf welche die Stacks verteilt werden.
 Da die Grids nicht notwendigerweise direkt aneinander grenzen, sondern z.B. wie in Abb. \ref{fig:costs}
 durch \textquote{Driving-} und \textquote{Parking-Lane} voneinander getrennt sind, kann zudem eine Distanz
 zwischen der Storage-Area und dem zu entladenen Fahrzeug spezifiziert werden.
-Das Grid, welches die initialen Item-Positionen $O_i$ repräsentiert, besteht in den in dieser Arbeit betrachteten
-Instanzen stets aus zwei Reihen, welche beispielsweise zwei nebeneinander stehende Fahrzeuge repräsentieren,
-die simultan entladen werden.
+Ebenfalls konfigurierbar ist die Anzahl der Reihen im Grid, welches die initialen Item-Positionen $O_i$ repräsentiert.
 
 Die Positionen der Items und Stacks sind jeweils durch $x$- und $y$-Koordinaten definiert,
 welche sich aus der Länge und Breite der Zellen der beiden Grids ergeben, in welchen die Items platziert werden
 bzw. bei ihrer Ankunft platziert sind. Diese Positionen werden gleichmäßig auf die zur Verfügung stehenden
 Item- bzw. Stack-Reihen verteilt. Für die einzelnen Zellen wird eine einheitliche Größe angenommen,
-welche sowohl für die Storage-Area, als auch für die Fahrzeuge gilt.
-Neben der Konfiguration der Anzahl der Reihen, ist daher außerdem die Definition dieser Zellengröße der beiden
-Grids von Relevanz. Der als erstes weltweit standardisierte Seecontainer ist der 20-Fuß-Container TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).}, welcher bis heute international als Maßeinheit gebräuchlich ist. Der TEU ist
-$6.06 \thinspace m$ lang, $2.44 \thinspace m$ breit und $2.59 \thinspace m$ hoch (vgl. \citet{ContainerBasis}).
-In Orientierung am TEU betragen Länge und Breite einer Zelle in den Experimenten $6.06 \thinspace m$ bzw.
-$2.44 \thinspace m$. Außerdem lässt sich die erwähnte Distanz zwischen den beiden Grids konfigurieren.
-Bei den Längen und Breiten der Items selbst handelt es sich um zufällige Werte, welche nicht die Zellengröße überschreiten.
-Die Länge eines Items wird dementsprechend zufällig aus dem Intervall $[1.0, 6.0]$ generiert während die Breite aus dem
-Intervall $[1.0, 2.4]$ stammt. Da es typischerweise nur eine begrenzte Anzahl unterschiedlicher Item-Typen im selben Lager
-gibt, werden nicht sämtliche Werte aus diesen Intervallen betrachtet, sondern lediglich in Schritten von $0.5$.
-Folglich sind die Item-Längen $\{1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0\}$ und
-die Item-Breiten $\{1.0, 1.5, 2.0\}$ möglich.
-Die konkreten Maße der Items sind für deren Positionierung allerdings irrelevant und lediglich für
+welche sowohl für die Storage-Area, als auch für die Fahrzeuge gilt. Neben der Konfiguration der Anzahl der Reihen,
+ist daher außerdem die Definition dieser Zellengröße der beiden Grids von Relevanz.
+
+Die konkreten Maße der Items sind für deren Positionierung irrelevant und lediglich für
 die zweite Variante der Stacking-Constraint-Generierung von Bedeutung.
 Die Itemdimensionen haben dort direkten Einfluss auf die Stacking-Constraints,
 weil beispielsweise die Wahrscheinlichkeit für Item-Paarungen, welche in beide Richtungen stapelbar sind,
-mit steigenden Intervallgrößen abnimmt.
+mit steigenden Intervallgrößen, aus welchen die zufälligen Dimensionen gewählt werden, abnimmt.
 
-Für eine Instanz mit $40$ Items und $17$ Stacks der Kapazität $b = 3$ ergibt sich bei den genannten
-Zellendimensionen, mit einer konfigurierten Anzahl von drei Stackreihen sowie einer Distanz zwischen
-Storage-Area und der ersten Fahrzeugspur vom Fünffachen der Zellenbreite,
-die in Abb. \ref{fig:positioning_example} dargestellte Item- und Stackpositionierung.
-Die Positionen entsprechen in der von oben betrachteten Darstellung
-in der Abbildung stets der unteren linken Ecke eines Items bzw. Stacks.
+Für eine Instanz mit $40$ Items und $17$ Stacks der Kapazität $b = 3$ ergibt sich bei
+Zellendimensionen, welche sich am TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).} orientieren,
+mit einer konfigurierten Anzahl von drei Stackreihen,
+zwei Itemreihen sowie einer Distanz zwischen Storage-Area und der ersten Fahrzeugspur vom Fünffachen
+der Zellenbreite, die in Abb. \ref{fig:positioning_example} dargestellte Item- und Stackpositionierung.
+Die Positionen entsprechen in der von oben betrachteten Darstellung in der Abbildung stets der unteren linken Ecke
+eines Items bzw. Stacks.
 
 \vfill
 \pagebreak
