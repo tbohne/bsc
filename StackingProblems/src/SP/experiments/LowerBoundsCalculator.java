@@ -109,14 +109,18 @@ public class LowerBoundsCalculator {
      * a stack corresponds to the transport costs for the assignment.
      * A minimum-weight-perfect-matching gets computed on this graph and the weight of the matching is
      * a lower bound on the total costs of the instance.
+     *
+     * @return computed lower bound
      */
-    public void computeLowerBound() {
+    public double computeLowerBound() {
         BipartiteGraph bipartiteGraph = this.generateBipartiteGraph();
         KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
             new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                 bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
             )
         ;
-        System.out.println("LB (with relaxed s_ij): " + minCostPerfectMatching.getMatching().getWeight());
+        double lowerBound = minCostPerfectMatching.getMatching().getWeight();
+        System.out.println("LB (with relaxed s_ij): " + lowerBound);
+        return lowerBound;
     }
 }
