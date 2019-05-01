@@ -372,7 +372,7 @@ in drei Kategorien unterteilt:
   \item mittelgroß (\textbf{m}) ($\approx 300$ Items)
   \item groß (\textbf{l}) ($\approx 500$ Items)\newline
 \end{itemize}
-Dabei handelt es sich um einen groben Rahmen, in welchem sich praktisch motivierte Stacking-Probleme
+Dabei handelt es sich um einen groben Rahmen, in welchem sich praktisch motivierte Container-Stacking-Probleme
 typischerweise bewegen. Dieser findet sich auch in der Literatur wieder (vgl. \citet{Le2016}).
 
 Um die entwickelten Lösungsverfahren sinnvoll testen und miteinander vergleichen zu können,
@@ -387,14 +387,13 @@ Die erste vom \textsc{TestDataGenerator} bereitgestellte Konfigurationsmöglichk
 Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl zur Verfügung stehender Stacks $m$ verwendet. Es werden mindestens $\ceil{\frac{n}{b}}$ Stacks benötigt, um sämtliche $n$ Items zuzuweisen.
 Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen bei dieser
 Anzahl an Stacks jedoch unlösbar. Daher wird die Minimalanzahl der Stacks um $a$ erhöht und es gilt
-$m = \ceil{\ceil{\frac{n}{b}} + a}$. In den durchgeführten Experimenten wird ein durchaus geringer Spielraum von
-zusätzlichen $20 \%$ betrachtet, also $a = 0.2 \cdot \ceil{\frac{n}{b}}$, welcher in weiteren Betrachtungen erhöht werden könnte.
+$m = \ceil{\ceil{\frac{n}{b}} + a}$.
 
 \pagebreak
 
 \textbf{Stacking-Constraints}
 
-Die zweite Möglichkeit der Konfiguration besteht in der Stacking-Constraint-Generierung,
+Die zweite Möglichkeit der Konfiguration besteht in der Generierung der Stacking-Constraints,
 von welcher zwei Varianten implementiert wurden, die jeweils spezifische Vor- und Nachteile aufweisen
 und im \textsc{TestDataGenerator} ausgewählt werden können.
 
@@ -404,18 +403,18 @@ Die Stacking-Constraint-Matrix $S$ wird anhand einer definierten Wahrscheinlichk
 
 \textbf{Variante 2}
 
-Für alle $n$ Items wird eine zufällige Länge und Breite generiert. Item $i$ kann auf Item $j$
+Für alle $n$ Items wird eine zufällige Länge und Breite generiert. Item $i \in I$ kann auf Item $j \in I$
 platziert werden, wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq l_j$ und $w_i \leq w_j$.
 Zwei Items $i, j$ sind in beide Richtungen stapelbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
 
-Die zweite Variante erscheint realitätsnäher und wird deshalb in den Experimenten verwendet.
-Aufgrund der Tatsache, dass diese jedoch bei zufälligen Längen und Breiten der Items stets zu einem Anteil
-von $1$-Einträgen in der Stacking-Constraint-Matrix $S$ von ca. $25\%$ führt und jener mit Variante 1 sehr gut
-konfigurierbar ist, wird Variante 1 nicht verworfen und kann ggf. in weiteren Experimenten, in welchen eine
-solche Konfiguration erwünscht ist, zum Einstaz kommen.
+Die zweite Variante erscheint realitätsnäher. Aufgrund der Tatsache, dass diese jedoch bei zufälligen Längen und
+Breiten der Items stets zu einem Anteil von $1$-Einträgen in der Stacking-Constraint-Matrix $S$ von ca. $25\%$ führt
+und jener mit Variante 1 sehr gut konfigurierbar ist, kann Variante $1$ in Situationen zum Einsatz kommen,
+in welchen eine solche Konfiguration erwünscht ist.
 
-Die zu ungefähr einem Viertel mit $1$-Einträgen gefüllte Matrix $S$ ergibt sich bei partiellen Ordnungen der Dimension 2,
-die hier aufgrund der zwei Werte (Länge, Breite), welche pro Item generiert werden, gegeben sind.
+Die zu ungefähr einem Viertel mit $1$-Einträgen gefüllte Matrix $S$ ergibt sich bei partiellen Ordnungen der Dimension $2$,
+die in der zweiten Variante der Stacking-Constraint-Generierung aufgrund der zwei Werte (Länge, Breite),
+welche pro Item generiert werden, gegeben sind.
 Diese partiellen Ordnungen lassen sich auch als Permutationen darstellen, wobei eine Kante zwischen
 zwei Knoten im Vergleichbarkeitsgraphen existiert, wenn diese in der Permutation
 vertauscht sind. Ein solches ungeordnetes Paar von Elementen einer Permutation wird auch Inversion
@@ -426,18 +425,14 @@ basierend auf Variante 2 der Stacking-Constraint-Generierung in mindestens einer
 d.h. die erwartete Anzahl der Inversionen entspricht der erwarteten Anzahl an $1$-Einträgen in $S$.
 Dies gilt im Allgemeinen für zufällige Längen und Breiten der Items und ist nicht zwingend der Fall,
 wenn diese Werte jeweils aus kleineren Intervallen gewählt werden.
-Die in den Experimenten betrachteten Intervalle, welche im Folgenden definiert werden,
-führen zu ca. $36\%$ $1$-Einträgen in $S$. Bei Vergrößerung der Intervalle nähert sich dieser
-erwartete Wert den zuvor erwähnten $25\%$ an.
 
 % sind ausreichend groß, um zumindest tendenziell ein Viertel $1$-Einträge in $S$ zu erhalten.
 
 \textbf{Placement-Constraints}
 
 Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
-dass ein Item $i$ in einem Stack $q$ platziert werden darf, im \textsc{TestDataGenerator} konfiguriert werden kann.
-Die Konfiguration, welche den Experimenten zugrunde liegt, definiert diese Wahrscheinlichkeit
-als $70 \%$, da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten sind.
+dass ein Item $i \in I$ in einem Stack $q \in Q$ platziert werden darf, im \textsc{TestDataGenerator} konfiguriert werden kann.
+In der Praxis sind tendenziell mehr Zuweisungen erlaubt als verboten.
 
 \pagebreak
 
@@ -446,12 +441,14 @@ als $70 \%$, da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten 
 Im Wesentlichen liegen der Item- und Stackpositionierung zwei Grids zugrunde. Zum einen die Storage-Area,
 welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf welchen die Items geliefert werden.
 Die Positionierung der Items und Stacks einer Instanz ist somit an die schematische Darstellung in Abb. \ref{fig:costs}
-angelehnt. In der Storage-Area existiert eine im \textsc{TestDataGenerator} konfigurierbare Anzahl von Stackreihen.
+angelehnt. In der Storage-Area existiert eine im \textsc{TestDataGenerator} konfigurierbare Anzahl von Reihen,
+auf welche die Stacks verteilt werden.
 Da die Grids nicht notwendigerweise direkt aneinander grenzen, sondern z.B. wie in Abb. \ref{fig:costs}
 durch \textquote{Driving-} und \textquote{Parking-Lane} voneinander getrennt sind, kann zudem eine Distanz
 zwischen der Storage-Area und dem zu entladenen Fahrzeug spezifiziert werden.
 Das Grid, welches die initialen Item-Positionen $O_i$ repräsentiert, besteht in den in dieser Arbeit betrachteten
-Instanzen stets aus zwei Reihen.
+Instanzen stets aus zwei Reihen, welche beispielsweise zwei nebeneinander stehende Fahrzeuge repräsentieren,
+die simultan entladen werden.
 
 Die Positionen der Items und Stacks sind jeweils durch $x$- und $y$-Koordinaten definiert,
 welche sich aus der Länge und Breite der Zellen der beiden Grids ergeben, in welchen die Items platziert werden
