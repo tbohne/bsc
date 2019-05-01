@@ -442,7 +442,6 @@ als $70 \%$, da in der Praxis tendenziell mehr Zuweisungen erlaubt als verboten 
 \pagebreak
 
 \textbf{Item- und Stackpositionierung}
-\label{sec:item_stack_positioning}
 
 Im Wesentlichen liegen der Item- und Stackpositionierung zwei Grids zugrunde. Zum einen die Storage-Area,
 welche die Stacks beinhaltet und zum anderen die Fahrzeuge, auf welchen die Items geliefert werden.
@@ -458,12 +457,11 @@ Die Positionen der Items und Stacks sind jeweils als $x$- und $y$-Koordinaten ge
 Diese ergeben sich aus der Länge und Breite der Zellen der beiden Grids, in welchen die Items platziert werden
 bzw. bei ihrer Ankunft platziert sind. Für diese Zellen wird eine einheitliche Größe angenommen,
 welche sowohl für die Storage-Area, als auch für die Fahrzeuge gilt.
-Neben der Konfiguration der Anzahl der Reihen, ist daher außerdem die Konfiguration dieser Zellengröße der beiden
+Neben der Konfiguration der Anzahl der Reihen, ist daher außerdem die Definition dieser Zellengröße der beiden
 Grids von Relevanz. Der als erstes weltweit standardisierte Seecontainer ist der 20-Fuß-Container TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).}, welcher bis heute international als Maßeinheit gebräuchlich ist. Der TEU ist
 $6.06 \thinspace m$ lang, $2.44 \thinspace m$ breit und $2.59 \thinspace m$ hoch (vgl. \citet{ContainerBasis}).
 In Orientierung am TEU betragen Länge und Breite einer Zelle in den Experimenten $6.06 \thinspace m$ bzw.
-$2.44 \thinspace m$. Außerdem lässt sich die erwähnte Distanz zwischen den beiden Grids spezifizieren,
-welche in den Experimenten dem Fünffachen der Zellenbreite, also in diesem Fall $12.20 \thinspace m$ entspricht.
+$2.44 \thinspace m$. Außerdem lässt sich die erwähnte Distanz zwischen den beiden Grids konfigurieren.
 Bei den Längen und Breiten der Items selbst handelt es sich um zufällige Werte, welche nicht die Zellengröße überschreiten.
 Die Länge eines Items wird dementsprechend zufällig aus dem Intervall $[1.0, 6.0]$ generiert während die Breite aus dem
 Intervall $[1.0, 2.4]$ stammt. Da es typischerweise nur eine begrenzte Anzahl unterschiedlicher Item-Typen im selben Lager
@@ -472,12 +470,15 @@ Folglich sind die Item-Längen $\{1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5
 die Item-Breiten $\{1.0, 1.5, 2.0\}$ möglich.
 Die konkreten Maße der Items sind für deren Positionierung allerdings irrelevant und lediglich für
 die zweite Variante der Stacking-Constraint-Generierung von Bedeutung.
-Somit haben die Itemdimensionen direkten Einfluss auf die Stacking-Constraints,
+Die Itemdimensionen haben dort direkten Einfluss auf die Stacking-Constraints,
 weil beispielsweise die Wahrscheinlichkeit für Item-Paarungen, welche in beide Richtungen stapelbar sind,
 mit steigenden Intervallgrößen abnimmt.
 
 Für eine Instanz mit $40$ Items und $17$ Stacks der Kapazität $b = 3$ ergibt sich bei den genannten
-Zellendimensionen und mit einer konfigurierten Anzahl von drei Stackreihen die in Abb. \ref{fig:positioning_example} dargestellte Item- und Stackpositionierung. Die Positionen entsprechen in der von oben betrachteten Darstellung
+Zellendimensionen, mit einer konfigurierten Anzahl von drei Stackreihen sowie einer Distanz zwischen
+Storage-Area und der ersten Fahrzeugspur vom Fünffachen der Zellenbreite,
+die in Abb. \ref{fig:positioning_example} dargestellte Item- und Stackpositionierung.
+Die Positionen entsprechen in der von oben betrachteten Darstellung
 in der Abbildung stets der unteren linken Ecke eines Items bzw. Stacks.
 
 \vfill
