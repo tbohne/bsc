@@ -488,13 +488,14 @@ in der Abbildung stets der unteren linken Ecke eines Items bzw. Stacks.
 
 \textbf{Transportkosten}
 
-Zur Ermittlung der Distanzen zwischen Items und Stacks, werden deren Positionen bestehend aus $x$- und $y$-Koordinaten
-herangezogen. Die Kosten der Verladung eines Items in einen Stack entsprechen, wie in Abschnitt
-\ref{sec:transport_costs} erläutert, der Distanz zwischen der Originalposition dieses Items und der Position
-des jeweiligen Stacks. Daraus ergeben sich mehrere Konfigurationsmöglichkeiten, welche unterschiedliche Auswirkungen haben.
-In den Experimenten basieren die Distanzen zwischen Item- und Stackpositionen auf der Manhattan-Metrik,
-welche die Kranbewegung repräsentiert, in anderen Szenarien können jedoch andere Metriken geeigneter sein
-und dementsprechend im \textsc{TestDataGenerator} definiert werden.
+Die Kosten der Verladung eines Items in einen Stack entsprechen, wie in Abschnitt \ref{sec:transport_costs}
+erläutert, der Distanz zwischen der Originalposition dieses Items und der Position des jeweiligen Stacks.
+Zur Ermittlung der Distanzen zwischen Items und Stacks, werden deren Positionen bestehend aus
+$x$- und $y$-Koordinaten, welche in zuvor beschriebener Weise generiert werden, herangezogen.
+In den im Zuge dieser Arbeit durchgeführten Experimenten basieren die Distanzen zwischen Item- und
+Stackpositionen stets auf der Manhattan-Metrik, welche die Kranbewegung repräsentiert,
+in anderen Szenarien können jedoch andere Metriken geeigneter sein und dementsprechend im \textsc{TestDataGenerator}
+definiert werden.
 
 \vfill
 
