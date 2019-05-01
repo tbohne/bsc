@@ -379,7 +379,7 @@ Um die entwickelten Lösungsverfahren sinnvoll testen und miteinander vergleiche
 werden Instanzen generiert, welche im Idealfall nicht allzu weit von realistischen Szenarien entfernt
 sein sollten. Dazu stellt der \textsc{TestDataGenerator} eine Reihe von Konfigurationsmöglichkeiten
 bereit, welche im Folgenden vorgestellt werden. Um den Vergleichen eine gewisse Aussagekraft zu verleihen,
-werden pro Konfiguration $20$ Instanzen generiert.
+werden in den Experimenten pro Konfiguration $20$ Instanzen generiert.
 
 \textbf{Anzahl zur Verfügung stehender Stacks}
 
@@ -503,10 +503,8 @@ Die Kosten der Verladung eines Items in einen Stack entsprechen, wie in Abschnit
 erläutert, der Distanz zwischen der Originalposition dieses Items und der Position des jeweiligen Stacks.
 Zur Ermittlung der Distanzen zwischen Items und Stacks, werden deren Positionen bestehend aus
 $x$- und $y$-Koordinaten, welche in zuvor beschriebener Weise generiert werden, herangezogen.
-In den im Zuge dieser Arbeit durchgeführten Experimenten basieren die Distanzen zwischen Item- und
-Stackpositionen stets auf der Manhattan-Metrik, welche die Kranbewegung repräsentiert,
-in anderen Szenarien können jedoch andere Metriken geeigneter sein und dementsprechend im \textsc{TestDataGenerator}
-definiert werden.
+Die Metrik, welche der Distanzermittlung zu Grunde liegt, kann sich in unterschiedlichen Szenarien
+unterscheiden und dementsprechend im \textsc{TestDataGenerator} definiert werden.
 
 \vfill
 
