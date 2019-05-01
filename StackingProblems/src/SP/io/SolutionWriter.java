@@ -106,6 +106,33 @@ public class SolutionWriter {
     }
 
     /**
+     * Writes the specified LB to the specified file.
+     *
+     * @param filename   - the file to be written to
+     * @param lowerBound - the lower bound to be written to the file
+     */
+    public static void writeLowerBound(String filename, double lowerBound) {
+        try {
+            File file = new File(filename);
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write("lower bound for relaxed s_ij: " + lowerBound + "\n");
+
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Writes the specified solution to the specified file.
      *
      * @param filename - the file to be written to
