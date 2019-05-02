@@ -32,6 +32,15 @@ public class LowerBoundsCalculator {
     }
 
     /**
+     * Returns the considered instance's name.
+     *
+     * @return the name of the considered instance
+     */
+    public String getNameOfConsideredInstance() {
+        return this.instance.getName();
+    }
+
+    /**
      * Adds edges to the bipartite graph that connect items with stack positions.
      *
      * @param bipartiteGraph - bipartite graph to add the edges to
