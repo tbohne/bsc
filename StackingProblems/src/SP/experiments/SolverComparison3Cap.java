@@ -23,6 +23,19 @@ import java.util.Arrays;
 public class SolverComparison3Cap implements SolverComparison {
 
     /**
+     * Computes a lower bound for the specified instance using the LowerBoundsCalculator.
+     *
+     * @param instance     - the instance to compute a LB for
+     * @param solutionName - the name of the generated solution
+     */
+    public void computeLowerBound(Instance instance, String solutionName) {
+        LowerBoundsCalculator lbc = new LowerBoundsCalculator(instance);
+        double lowerBound = lbc.computeLowerBound();
+        SolutionWriter.writeLowerBound(SOLUTION_PREFIX + solutionName + ".txt", lowerBound);
+        SolutionWriter.writeLowerBoundAsCSV(SOLUTION_PREFIX + "solutions.csv", lowerBound, instance.getName());
+    }
+
+    /**
      * Solves the given instance with the bin-packing solver.
      *
      * @param instance     - the instance to be solved
@@ -126,6 +139,8 @@ public class SolverComparison3Cap implements SolverComparison {
                     Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
                     System.out.println("working on: " + instanceName);
                     String solutionName = instanceName.replace("instance", "sol");
+
+                    this.computeLowerBound(instance, solutionName);
 
                     if (solversToBeCompared.contains(Solver.MIP_BINPACKING)) {
                         this.solveWithBinPacking(instance, solutionName);
