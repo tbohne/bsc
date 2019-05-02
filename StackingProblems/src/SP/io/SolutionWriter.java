@@ -72,6 +72,40 @@ public class SolutionWriter {
     /**
      * Writes the specified solution as CSV to the specified file.
      *
+     * @param filename       - the name of the file to be written to
+     * @param lowerBound     - the LB to be written to the file
+     * @param nameOfInstance - the name of the instance the LB was computed for
+     */
+    public static void writeLowerBoundAsCSV(String filename, double lowerBound, String nameOfInstance) {
+        try {
+            File file = new File(filename);
+            boolean newFile = false;
+
+            if (!file.exists()) {
+                file.createNewFile();
+                newFile = true;
+            }
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            if (newFile) {
+                bw.write("instance,solver,time,val\n");
+            }
+            bw.write(nameOfInstance.replace("instances/slp_instance_", "")
+                + "," + "LB" + "," + "-" + "," + lowerBound + "\n");
+
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Writes the specified solution as CSV to the specified file.
+     *
      * @param filename - the file to be written to
      * @param sol      - the solution to be written to the file
      * @param solver   - the solver used to create the solution

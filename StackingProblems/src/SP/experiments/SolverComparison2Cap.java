@@ -28,7 +28,9 @@ public class SolverComparison2Cap implements SolverComparison {
      */
     public void computeLowerBound(Instance instance, String solutionName) {
         LowerBoundsCalculator lbc = new LowerBoundsCalculator(instance);
-        SolutionWriter.writeLowerBound(SOLUTION_PREFIX + solutionName + ".txt", lbc.computeLowerBound());
+        double lowerBound = lbc.computeLowerBound();
+        SolutionWriter.writeLowerBound(SOLUTION_PREFIX + solutionName + ".txt", lowerBound);
+        SolutionWriter.writeLowerBoundAsCSV(SOLUTION_PREFIX + "solutions.csv", lowerBound, instance.getName());
     }
 
     /**
