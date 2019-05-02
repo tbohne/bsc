@@ -75,8 +75,13 @@ public class TwoCapHeuristic {
         GraphUtil.addVerticesForItemPairs(itemPairs, graph, partitionOne);
         GraphUtil.addVerticesForUnmatchedItems(unmatchedItems, graph, partitionOne);
         GraphUtil.addVerticesForStacks(this.instance.getStacks(), graph, partitionTwo);
-        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
 
+        if (partitionOne.size() > partitionTwo.size()) {
+            System.out.println("Number of item pairs and unmatched items exceeds the number of available stacks, instance cannot be solved.");
+            return null;
+        }
+
+        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
         GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
@@ -274,6 +279,8 @@ public class TwoCapHeuristic {
                 itemPairs, this.instance.getItems()
             );
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemPairs, unmatchedItems);
+            if (bipartiteGraph == null) { return sol; }
+
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
