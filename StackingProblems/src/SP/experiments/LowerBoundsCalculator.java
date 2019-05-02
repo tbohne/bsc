@@ -128,7 +128,7 @@ public class LowerBoundsCalculator {
                 bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()
             )
         ;
-        double lowerBound = minCostPerfectMatching.getMatching().getWeight();
+        double lowerBound = Math.round(minCostPerfectMatching.getMatching().getWeight() * 100.0) / 100.0;
         System.out.println("LB (with relaxed s_ij): " + lowerBound);
         return lowerBound;
     }
