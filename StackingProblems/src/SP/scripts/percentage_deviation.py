@@ -54,6 +54,8 @@ if __name__ == '__main__':
 
     optimally_solved_by_bin_packing = 0
     optimally_solved_by_three_index = 0
+    optimally_solved_by_two_cap = 0
+    optimally_solved_by_three_cap = 0
 
     for line in lines:
 
@@ -63,6 +65,12 @@ if __name__ == '__main__':
         elif "3Idx," in line:
             if optimal_costs[int(get_instance_idx(line))] == get_value(line):
                 optimally_solved_by_three_index += 1
+        elif "2Cap," in line:
+            if optimal_costs[int(get_instance_idx(line))] == get_value(line):
+                optimally_solved_by_two_cap += 1
+        elif "3Cap," in line:
+            if optimal_costs[int(get_instance_idx(line))] == get_value(line):
+                optimally_solved_by_three_cap += 1
 
     sum_of_deviations_bin_packing = 0.0
     sum_of_deviations_three_idx = 0.0
@@ -100,8 +108,10 @@ if __name__ == '__main__':
     print("avg percentage deviation 3Idx: " + str(get_avg_percentage_deviation(sum_of_deviations_three_idx, three_index_solutions)))
     if stack_capacity == 2:
         print("avg percentage deviation 2Cap: " + str(get_avg_percentage_deviation(sum_of_deviations_two_cap, two_cap_solutions)))
+        print("optimally solved by 2Cap: " + str(optimally_solved_by_two_cap))
     else:
         print("avg percentage deviation 3Cap: " + str(get_avg_percentage_deviation(sum_of_deviations_three_cap, three_cap_solutions)))
+        print("optimally solved by 3Cap: " + str(optimally_solved_by_three_cap))
     print()
     print("optimally solved by BinP: " + str((optimally_solved_by_bin_packing / num_of_instances) * 100) + " %")
     print("optimally solved by 3Idx: " + str((optimally_solved_by_three_index / num_of_instances) * 100) + " %")
