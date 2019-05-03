@@ -2,7 +2,7 @@ library(ggplot2)
 
 input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
 solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "2Cap")
-plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver)) + geom_point() + xlab("costs") + ylab("instances")
+plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver)) + geom_point() + xlab("costs") + ylab("instance")
 
 ##############################################################################
 binpData <- subset(input, solver == "BinP")
@@ -18,4 +18,5 @@ twoCapCosts <- subset(twoCapData, select = c(val))
 paste("avg costs of 2Cap: ", mean(twoCapCosts[["val"]]))
 ##############################################################################
 
-ggsave(plotPointsPre, file = "solver_instance_cost.png", width = 6, height = 4)
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(6545.0, 6635.0))
+ggsave(finalPlot, file = "solver_instance_cost.png", width = 6, height = 4)

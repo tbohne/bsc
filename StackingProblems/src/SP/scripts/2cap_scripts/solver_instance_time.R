@@ -3,7 +3,7 @@ library(plyr)
 
 input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
 solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "2Cap")
-plotPointsPre <- ggplot(data = solverEntries, aes(x = time, y = instance, color = solver, group = solver)) + geom_point() + xlab("time (s)") + ylab("instances")
+plotPointsPre <- ggplot(data = solverEntries, aes(x = as.numeric(as.character(time)), y = instance, color = solver, group = solver)) + geom_point() + xlab("runtime (s)") + ylab("instance")
 
 ##############################################################################
 binpData <- subset(input, solver == "BinP")
@@ -19,4 +19,5 @@ twoCapRuntime <- subset(twoCapData, select = c(time))
 paste("avg runtime of 2Cap: ", mean(as.numeric(as.character(twoCapRuntime[["time"]]))))
 ##############################################################################
 
-ggsave(plotPointsPre, file="solver_instance_time.png", width = 8, height = 4)
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(0.0, 3.5))
+ggsave(finalPlot, file="solver_instance_time.png", width = 6, height = 4)
