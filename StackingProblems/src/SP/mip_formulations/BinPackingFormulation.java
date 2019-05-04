@@ -101,12 +101,15 @@ public class BinPackingFormulation {
             System.out.println();
             //cplex.setOut(null);
 
-            // Sets a time limit of 5 minutes.
+            // sets the time limit
             cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
 
             double startTime = cplex.getCplexTime();
             // 1 --> emphasizes feasibility over optimality
             cplex.setParam(IloCplex.IntParam.MIPEmphasis, 1);
+            // sets the tolerance to 0.0 - CPLEX will only terminate before the time limit if the actual optimum is found
+            cplex.setParam(IloCplex.DoubleParam.EpAGap, 0.0);
+            cplex.setParam(IloCplex.DoubleParam.EpGap, 0.0);
 
             if (cplex.solve()) {
                 double timeToSolve = cplex.getCplexTime() - startTime;
