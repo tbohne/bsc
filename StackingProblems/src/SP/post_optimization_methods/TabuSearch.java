@@ -36,7 +36,7 @@ public class TabuSearch {
         this.shiftTabuList = new LinkedList<>();
         this.tabuListClears = 0;
         this.iterationOfLastImprovement = 0;
-        this.maxTabuListLength = TabuSearchConfig.MAX_TABU_LIST_LENGTH;
+        this.maxTabuListLength = TabuSearchConfig.MAX_TABU_LIST_LENGTH_FACTOR * initialSolution.getNumberOfAssignedItems();
     }
 
     /**
@@ -338,6 +338,97 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
+    public Solution getNeighborRowSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
+
+        ArrayList<Solution> nbrs = new ArrayList<>();
+        int failCnt = 0;
+
+        while (nbrs.size() <= 3) {
+
+            Solution neighbor = new Solution(this.currSol);
+            StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
+            int swapItem = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
+            while (swapItem == -1) {
+                posOne = this.getRandomPositionInStorageArea(neighbor);
+                swapItem = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
+            }
+
+            // max number of swaps in a row is m-1
+            int numberOfSwaps = HeuristicUtil.getRandomIntegerInBetween(1, this.currSol.getFilledStorageArea().length - 1);
+
+            ArrayList<Swap> swapList = new ArrayList<>();
+
+            ArrayList<StorageAreaPosition> positionsTheSwapItemHasBeenAt = new ArrayList<>();
+            positionsTheSwapItemHasBeenAt.add(posOne);
+
+            for (int swapCnt = 0; swapCnt < numberOfSwaps; swapCnt++) {
+                StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
+                posTwo.setLevel(posOne.getLevel());
+                while (positionsTheSwapItemHasBeenAt.contains(posTwo)) {
+                    posTwo = this.getRandomPositionInStorageArea(neighbor);
+                    posTwo.setLevel(posOne.getLevel());
+                }
+                Swap swap = this.swapItems(neighbor, posOne, posTwo);
+                swapList.add(swap);
+                positionsTheSwapItemHasBeenAt.add(posTwo);
+                posOne = posTwo;
+            }
+
+            if (onlyFeasible) {
+                if (!neighbor.isFeasible()) { continue; }
+
+                boolean containsTabuSwap = false;
+                for (Swap swap : swapList) {
+                    if (this.swapTabuList.contains(swap)) {
+                        containsTabuSwap = true;
+                    }
+                }
+
+                // FIRST-FIT
+                if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT
+                        && !containsTabuSwap
+                        && neighbor.computeCosts() < this.currSol.computeCosts()) {
+
+
+                    for (Swap swap : swapList) {
+                        this.forbidSwap(swap);
+                    }
+
+                    return neighbor;
+
+                // BEST-FIT
+                } else if (!containsTabuSwap) {
+                    nbrs.add(neighbor);
+
+                    for (Swap swap : swapList) {
+                        this.forbidSwap(swap);
+                    }
+
+                } else {
+                    failCnt++;
+                    if (failCnt == TabuSearchConfig.UNSUCCESSFUL_SWAP_ATTEMPTS) {
+                        this.clearSwapTabuList();
+                        failCnt = 0;
+                    }
+                }
+
+                // ASPIRATION CRITERION
+                if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
+                    if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT) {
+                        return neighbor;
+                    } else {
+                        nbrs.add(neighbor);
+                    }
+                }
+
+            } else {
+
+                // TODO: implement infeasible part
+            }
+        }
+        return HeuristicUtil.getBestSolution(nbrs);
+    }
+
     /**
      * Applies the combined shift- and swap-neighborhood to retrieve the best neighbor.
      *
@@ -350,18 +441,65 @@ public class TabuSearch {
 
         // TODO: find reasonable chances for operator applications
 
-        Solution shiftNeighbor = this.getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
-        Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
+        double rand = Math.random();
 
-        // if b=3 --> perform double-swap additionally
-        if (swapNeighbor.getFilledStorageArea()[0].length == 3) {
-            Solution doubleSwapNeighbor = this.getNeighborDoubleSwap(shortTermStrategy, onlyFeasible, iteration);
-            if (doubleSwapNeighbor.computeCosts() < swapNeighbor.computeCosts() && doubleSwapNeighbor.computeCosts() < shiftNeighbor.computeCosts()) {
-                return doubleSwapNeighbor;
-            }
+        if (rand < 0.1) {
+            System.out.println("row swap");
+            return this.getNeighborRowSwap(shortTermStrategy, onlyFeasible, iteration);
+        } else if (rand < 0.6) {
+            System.out.println("swap");
+            return this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
+        } else {
+            System.out.println("shift");
+            return this.getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
         }
 
-        return shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
+//        Solution shiftNeighbor = new Solution(this.currSol);
+//        // shift is only possible if there are free slots
+//        if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
+//            shiftNeighbor = this.getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
+//        }
+//        Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
+
+
+//        // if b=3 --> perform double-swap additionally
+//        if (swapNeighbor.getFilledStorageArea()[0].length == 3) {
+//            Solution doubleSwapNeighbor = this.getNeighborDoubleSwap(shortTermStrategy, onlyFeasible, iteration);
+//            if (doubleSwapNeighbor.computeCosts() < swapNeighbor.computeCosts()
+//                && doubleSwapNeighbor.computeCosts() < shiftNeighbor.computeCosts()
+//                && doubleSwapNeighbor.computeCosts() < rowSwapNeighbor.computeCosts()) {
+//                    return doubleSwapNeighbor;
+//            }
+//        }
+
+//        double bestCost = shiftNeighbor.computeCosts();
+//        Solution bestNbr = shiftNeighbor;
+//
+//        double swapCosts = swapNeighbor.computeCosts();
+//        double shiftCosts = shiftNeighbor.computeCosts();
+//        double rowSwapCosts = rowSwapNeighbor.computeCosts();
+//
+//        if (rowSwapNeighbor.computeCosts() < bestCost) {
+//            bestCost = rowSwapNeighbor.computeCosts();
+//            bestNbr = rowSwapNeighbor;
+//        }
+//
+//        if (swapNeighbor.computeCosts() < bestCost) {
+//            bestCost = swapNeighbor.computeCosts();
+//            bestNbr = swapNeighbor;
+//        }
+//
+//        if (bestCost == rowSwapCosts) {
+//            System.out.println("ROW SWAP");
+//        } else if (bestCost == shiftCosts) {
+//            System.out.println("SHIFT");
+//        } else if (bestCost == swapCosts) {
+//            System.out.println("SWAP");
+//        }
+
+//        return bestNbr;
+
+//        return shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
     }
 
     /**
