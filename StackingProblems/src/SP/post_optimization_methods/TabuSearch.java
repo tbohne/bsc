@@ -448,50 +448,21 @@ public class TabuSearch {
      */
     public Solution getNeighbor(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
 
-        Solution shiftNeighbor = new Solution(this.currSol);
+        List<Solution> nbrs = new ArrayList<>();
+
         // shift is only possible if there are free slots
         if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
-            shiftNeighbor = this.getNeighborShift(shortTermStrategy);
+            nbrs.add(this.getNeighborShift(shortTermStrategy));
         }
-        Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy);
-        Solution rowSwapNeighbor = this.getNeighborRowSwap(shortTermStrategy);
+        nbrs.add(this.getNeighborSwap(shortTermStrategy));
+        nbrs.add(this.getNeighborRowSwap(shortTermStrategy));
 
         // if b=3 --> perform double-swap additionally
-        if (swapNeighbor.getFilledStorageArea()[0].length == 3) {
-            Solution doubleSwapNeighbor = this.getNeighborDoubleSwap(shortTermStrategy);
-            if (doubleSwapNeighbor.computeCosts() < swapNeighbor.computeCosts()
-                && doubleSwapNeighbor.computeCosts() < shiftNeighbor.computeCosts()
-                && doubleSwapNeighbor.computeCosts() < rowSwapNeighbor.computeCosts()) {
-                    return doubleSwapNeighbor;
-            }
+        if (this.currSol.getFilledStorageArea()[0].length == 3) {
+            nbrs.add(this.getNeighborDoubleSwap(shortTermStrategy));
         }
-
-        double bestCost = shiftNeighbor.computeCosts();
-        Solution bestNbr = shiftNeighbor;
-
-        double swapCosts = swapNeighbor.computeCosts();
-        double shiftCosts = shiftNeighbor.computeCosts();
-        double rowSwapCosts = rowSwapNeighbor.computeCosts();
-
-        if (rowSwapNeighbor.computeCosts() < bestCost) {
-            bestCost = rowSwapNeighbor.computeCosts();
-            bestNbr = rowSwapNeighbor;
-        }
-
-        if (swapNeighbor.computeCosts() < bestCost) {
-            bestCost = swapNeighbor.computeCosts();
-            bestNbr = swapNeighbor;
-        }
-
-        if (bestCost == rowSwapCosts) {
-            System.out.println("ROW SWAP");
-        } else if (bestCost == shiftCosts) {
-            System.out.println("SHIFT");
-        } else if (bestCost == swapCosts) {
-            System.out.println("SWAP");
-        }
-
-        return bestNbr;
+        
+        return Collections.min(nbrs);
     }
 
     /**
