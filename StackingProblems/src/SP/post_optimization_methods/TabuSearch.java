@@ -124,13 +124,15 @@ public class TabuSearch {
      * Shifts the item stored in pos to the shift target.
      *
      * @param sol         - the solution to be updated
+     * @param item        - the item to be shifted
      * @param shiftTarget - the position the item is shifted to
      * @param pos         - the item's original position
      */
-    public void shiftItem(Solution sol, StorageAreaPosition pos, StorageAreaPosition shiftTarget) {
+    public Shift shiftItem(Solution sol, int item, StorageAreaPosition pos, StorageAreaPosition shiftTarget) {
         sol.getFilledStorageArea()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
             sol.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
         sol.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] = -1;
+        return new Shift(item, shiftTarget);
     }
 
     /**
@@ -159,6 +161,10 @@ public class TabuSearch {
         this.shiftTabuList.add(shift);
     }
 
+    /**
+     * Counts the shift failure and resets the shift tabu list if
+     * the number of specified unsuccessful shift attempts is reached.
+     */
     public void shiftFailure() {
         this.shiftFailCnt++;
         if (this.shiftFailCnt == TabuSearchConfig.UNSUCCESSFUL_SHIFT_ATTEMPTS) {
@@ -171,10 +177,9 @@ public class TabuSearch {
      * Generates a neighbor for the current solution using the "shift-neighborhood".
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
-     * @param iteration         - the current iteration in the tabu search
      * @return a neighboring solution
      */
-    public Solution getNeighborShift(TabuSearchConfig.ShortTermStrategies shortTermStrategy, int iteration) {
+    public Solution getNeighborShift(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
         ArrayList<Solution> nbrs = new ArrayList<>();
 
         while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
@@ -184,8 +189,7 @@ public class TabuSearch {
             int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
             if (item == -1) { continue; }
             StorageAreaPosition shiftTarget = this.getRandomFreeSlot(neighbor);
-            this.shiftItem(neighbor, pos, shiftTarget);
-            Shift shift = new Shift(item, shiftTarget);
+            Shift shift = this.shiftItem(neighbor, item, pos, shiftTarget);
 
             if (!neighbor.isFeasible()) { continue; }
 
@@ -458,7 +462,7 @@ public class TabuSearch {
         Solution shiftNeighbor = new Solution(this.currSol);
         // shift is only possible if there are free slots
         if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
-            shiftNeighbor = this.getNeighborShift(shortTermStrategy, iteration);
+            shiftNeighbor = this.getNeighborShift(shortTermStrategy);
         }
 
         Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
