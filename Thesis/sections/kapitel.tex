@@ -3196,20 +3196,19 @@ Anschließend ergibt sich die zulässige Lösung $s'$.
 \pagebreak
 
 Die Nachbarschaft ist allerdings weiterhin nicht zusammenhängend, wie man am Beispiel des Stacking-Graphen
-für die Items $I = \{1, 2, 3, 4, 5, 6\}$ in Abb. \ref{fig:degenerate_stacking_graph} nachvollziehen kann.
+für die Items $I = \{1, 2, 3, 4, 5, 6\}$ in Abb. \ref{fig:counter_2_stacking_graph} nachvollziehen kann.
 Es seien erneut sämtliche Items bezüglich der Placement-Constraints mit allen Stacks kompatibel.
 Dabei handelt es sich um ein konstruiertes Gegenbeispiel, welches in der Praxis vermutlich nicht auftritt,
 dennoch belegt es, dass die Nachbarschaft nicht zusammenhängend ist.
-
 \begin{figure}[H]
   \centering
-    \begin{tikzpicture}[->, scale=0.7, transform shape, node distance=2cm]
+    \begin{tikzpicture}[->, scale=0.85, transform shape, node distance=2cm]
     \node[state] (A) {1};
     \node[state] (B) [right of=A] {3};
     \node[state] (C) [right of=B] {5};
     \node[state] (D) [below of=A] {2};
-    \node[state] (E) [right of=D] {4};
-    \node[state] (F) [right of=E] {6};
+    \node[state] (E) [below of=C] {4};
+    \node[state] (F) [above of=B] {6};
 
     \path
       (A) edge node {} (D)
@@ -3217,14 +3216,14 @@ dennoch belegt es, dass die Nachbarschaft nicht zusammenhängend ist.
       (C) edge node {} (F)
       (B) edge node {} (D)
       (C) edge node {} (E)
-      (A) edge [bend left = 120, distance=3.5cm] node {} (F);
+      (A) edge node {} (F);
   \end{tikzpicture}
   \caption{\textsc{Stacking-Graph}.}
-  \label{fig:degenerate_stacking_graph}
+  \label{fig:counter_2_stacking_graph}
 \end{figure}
 
 In Abb. \ref{fig:degenerate_stacks} sind zwei zulässige Lösungen dargestellt, welche die Stacking-Constraints, die durch den
-Graphen aus Abb. \ref{fig:degenerate_stacking_graph} gegeben sind, erfüllen. Dementsprechend muss sich die Lösung $s$
+Graphen aus Abb. \ref{fig:counter_2_stacking_graph} gegeben sind, erfüllen. Dementsprechend muss sich die Lösung $s$
 aus Abb. \ref{fig:deg_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus Abb. \ref{fig:deg_b} transformieren lassen,
 wenn die Nachbarschaft zusammenhängend ist.
 
@@ -3260,8 +3259,9 @@ wenn die Nachbarschaft zusammenhängend ist.
 
 Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation möglich.
 Auch eine zulässige Swap-Operation ist nicht möglich, da kein Paar von Items vertauscht werden kann, ohne die
-Stacking-Constraints zu verletzen. Zwei Items zwischen $L_1$ und $L_2$ zu vertauschen, führt stets zu unzulässigen Lösungen und da nur drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben Levels stattfinden.
-Somit ist in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
+Stacking-Constraints zu verletzen. Zwei Items zwischen $L_1$ und $L_2$ zu vertauschen, führt ebenfalls stets
+zu unzulässigen Lösungen und da lediglich drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben
+Levels stattfinden. Somit ist in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
 
 
 \vfill
