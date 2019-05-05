@@ -3222,9 +3222,9 @@ dennoch belegt es, dass die Nachbarschaft nicht zusammenhängend ist.
   \label{fig:counter_2_stacking_graph}
 \end{figure}
 
-In Abb. \ref{fig:degenerate_stacks} sind zwei zulässige Lösungen dargestellt, welche die Stacking-Constraints, die durch den
+In Abb. \ref{fig:c_2_stacks} sind zwei zulässige Lösungen dargestellt, welche die Stacking-Constraints, die durch den
 Graphen aus Abb. \ref{fig:counter_2_stacking_graph} gegeben sind, erfüllen. Dementsprechend muss sich die Lösung $s$
-aus Abb. \ref{fig:deg_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus Abb. \ref{fig:deg_b} transformieren lassen,
+aus Abb. \ref{fig:c_2_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus Abb. \ref{fig:c_2_b} transformieren lassen,
 wenn die Nachbarschaft zusammenhängend ist.
 
 \begin{figure}[H]
@@ -3233,12 +3233,12 @@ wenn die Nachbarschaft zusammenhängend ist.
   \resizebox{0.5\textwidth}{!}{
     \begin{tabular}{c|c|c|c|}
     \cline{2-4}
-    $\boldsymbol{L_2}$ & $1$ & $3$ & $5$ \\ \cline{2-4}
-    $\boldsymbol{L_1}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
+    $\boldsymbol{L_1}$ & $1$ & $3$ & $5$ \\ \cline{2-4}
+    $\boldsymbol{L_0}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
     \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} \\
     \end{tabular}}
     \caption{\textsc{Lösung $s$}}
-    \label{fig:deg_a}
+    \label{fig:c_2_a}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.5\textwidth}
@@ -3246,15 +3246,15 @@ wenn die Nachbarschaft zusammenhängend ist.
   \resizebox{0.5\textwidth}{!}{
     \begin{tabular}{c|c|c|c|}
     \cline{2-4}
-    $\boldsymbol{L_2}$ & $3$ & $5$ & $1$ \\ \cline{2-4}
-    $\boldsymbol{L_1}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
+    $\boldsymbol{L_1}$ & $3$ & $5$ & $1$ \\ \cline{2-4}
+    $\boldsymbol{L_0}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
     \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} \\
     \end{tabular}}
     \caption{\textsc{Lösung $s'$}}
-    \label{fig:deg_b}
+    \label{fig:c_2_b}
   \end{subfigure}
   \caption{\textsc{Gegenbeispiel - Nachbarschaft nicht zusammenhängend.}}
-  \label{fig:degenerate_stacks}
+  \label{fig:c_2_stacks}
 \end{figure}
 
 Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation möglich.
@@ -3263,6 +3263,24 @@ Stacking-Constraints zu verletzen. Zwei Items zwischen $L_1$ und $L_2$ zu vertau
 zu unzulässigen Lösungen und da lediglich drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben
 Levels stattfinden. Somit ist in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
 
+Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird also ein weiterer Operator eingeführt,
+welcher in der Lage ist, Situationen, in welchen mehrere Swap-Operationen desselben Items erforderlich sind,
+aufzulösen. Dieser Operator wird \textquote{Row-Swap} genannt, weil ausschließlich mehrere Swap-Operationen
+eines Items innerhalb eines Levels gestattet sind.
+
+\vfill
+\pagebreak
+
+Es können bei einem Row-Swap maximal $m - 1$ Swap-Operationen für ein Item durchgeführt werden.
+Wie bereits beim $2$-Swap wird auch beim Row-Swap jede der durchgeführten Swap-Operationen der Swap-Tabu-Liste hinzugefügt,
+um Zyklen zu vermeiden. Mithilfe des Row-Swaps lässt sich das Beispiel aus Abb. \ref{fig:c_2_stacks} lösen,
+indem auf Lösung $s$ ein Row-Swap der Länge zwei ausgeführt wird.
+Zunächst wird die Swap-Operation $((0, 1), (1, 1), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
+die Positionen tauschen. Anschließend wird die Swap-Operation $((1, 1), (2, 1), 1, 5)$ ausgeführt,
+welche schließlich zur zulässigen Lösung $s'$ führt.
+
+Letztlich ist die Nachbarschaft einer Lösung in der entwickelten Tabu-Suche also durch die vier Operatoren
+Shift, Swap, $2$-Swap und Row-Swap definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt.
 
 \vfill
 \pagebreak
