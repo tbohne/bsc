@@ -9,7 +9,7 @@ import java.util.ArrayList;
  *
  * @author Tim Bohne
  */
-public class Solution {
+public class Solution implements Comparable<Solution> {
 
     private String nameOfSolvedInstance;
     private Instance solvedInstance;
@@ -334,7 +334,7 @@ public class Solution {
                 }
             }
         }
-        return costs;
+        return Math.round(costs * 100.0) / 100.0;
     }
 
     /**
@@ -387,6 +387,7 @@ public class Solution {
      *
      * @return a string visualizing the solution
      */
+    @Override
     public String toString() {
 
         String str = "";
@@ -415,5 +416,14 @@ public class Solution {
             str += "Problem not solved.\n";
         }
         return str;
+    }
+
+    public int compareTo(Solution other) {
+        if (this.computeCosts() < other.computeCosts()) {
+            return -1;
+        } else if (other.computeCosts() < this.computeCosts()) {
+            return 1;
+        }
+        return 0;
     }
 }
