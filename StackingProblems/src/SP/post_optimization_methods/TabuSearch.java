@@ -418,40 +418,43 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
+    public Solution getNeighborBasedOnProbabilities(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
+
+        double rand = Math.random();
+
+        // TODO: find reasonable chances for operator applications
+
+        if (rand < 0.05) {
+            System.out.println("row swap");
+            return this.getNeighborRowSwap(shortTermStrategy);
+        } else if (rand < 0.5) {
+            System.out.println("swap");
+            return this.getNeighborSwap(shortTermStrategy);
+        } else {
+            System.out.println("shift");
+            // no free slots --> no shift possible
+            if (this.currSol.getNumberOfAssignedItems() == this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
+                return this.getNeighborSwap(shortTermStrategy);
+            }
+            return this.getNeighborShift(shortTermStrategy);
+        }
+    }
+
     /**
      * Applies the combined shift- and swap-neighborhood to retrieve the best neighbor.
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
-     * @param onlyFeasible      - determines whether only feasible neighboring solutions are considered during the search
-     * @param iteration         - the current iteration
      * @return best generated neighbor
      */
-    public Solution getNeighbor(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
-
-        // TODO: find reasonable chances for operator applications
-
-//        double rand = Math.random();
-
-//        if (rand < 0.05) {
-//            System.out.println("row swap");
-//            return this.getNeighborRowSwap(shortTermStrategy, onlyFeasible, iteration);
-//        } else if (rand < 0.5) {
-//            System.out.println("swap");
-//            return this.getNeighborSwap(shortTermStrategy, onlyFeasible, iteration);
-//        } else {
-//            System.out.println("shift");
-//            return this.getNeighborShift(shortTermStrategy, onlyFeasible, iteration);
-//        }
+    public Solution getNeighbor(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
 
         Solution shiftNeighbor = new Solution(this.currSol);
         // shift is only possible if there are free slots
         if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
             shiftNeighbor = this.getNeighborShift(shortTermStrategy);
         }
-
         Solution swapNeighbor = this.getNeighborSwap(shortTermStrategy);
         Solution rowSwapNeighbor = this.getNeighborRowSwap(shortTermStrategy);
-
 
         // if b=3 --> perform double-swap additionally
         if (swapNeighbor.getFilledStorageArea()[0].length == 3) {
@@ -489,8 +492,6 @@ public class TabuSearch {
         }
 
         return bestNbr;
-
-//        return shiftNeighbor.computeCosts() < swapNeighbor.computeCosts() ? shiftNeighbor : swapNeighbor;
     }
 
     /**
@@ -502,7 +503,7 @@ public class TabuSearch {
      * @param iteration         - the current iteration
      */
     public void updateCurrentSolution(TabuSearchConfig.ShortTermStrategies shortTermStrategy, boolean onlyFeasible, int iteration) {
-        this.currSol = this.getNeighbor(shortTermStrategy, onlyFeasible, iteration);
+        this.currSol = this.getNeighbor(shortTermStrategy);
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
             this.iterationOfLastImprovement = iteration;
