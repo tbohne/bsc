@@ -1244,16 +1244,31 @@ in geeigneter Weise repräsentiert.
 \subsection{Vergleich der $b = 2$ Solver}
 \label{sec:solver_comp_b=2}
 
-In diesem Kapitel werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeit und die jeweilige prozentuale Abweichung des Zielfunktionswerts vom Optimum.
+In diesem Kapitel werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeiten, der Anteil der Instanzen, welcher pro Solver optimal gelöst wird
+sowie ggf. die jeweilige prozentuale Abweichung der ermittelten Zielfunktionswerte vom Optimum.
 
 Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von CPLEX 12.8.0 implementiert
 und gelöst. Dabei wurde CPLEX über den Parameter \textsc{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
 Priorität vor der Optimalität hat.\cite{IBM_DOC}
 
-Die in dieser Arbeit entwickelten Heuristiken wurden ebenfalls in der Programmiersprache Java implementiert
-und sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
-
+\vfill
 \pagebreak
+
+CPLEX terminiert in der Standardkonfiguration mit einer gewissen Toleranz bezüglich des optimalen Zielfunktionswerts.
+Dabei werden zwei Toleranzen unterschieden, die relative Optimalitätstoleranz, welche über den Parameter
+\textsc{CPX\_PARAM\_EPGAP} konfigurierbar ist und die absolute Optimalitätstoleranz, welche über den Parameter
+\textsc{CPX\_PARAM\_EPAGAP} definiert werden kann. CPLEX terminiert, wenn eines der beiden Kriterien erfüllt ist \cite{CPLEX2015}.
+Damit beide MIP-Formulierungen stets dieselben optimalen Zielfunktionswerte ermitteln, werden in den folgenden
+Experimenten beide Parameter auf $0$ gesetzt, d.h. CPLEX terminiert ausschließlich dann vor dem Zeitlimit,
+wenn die exakte Optimallösung gefunden wurde. In den betrachteten Experimenten wurden die Laufzeiten nur marginal
+von dieser Konfiguration beeinflusst.
+
+Die in dieser Arbeit entwickelten Heuristiken wurden ebenfalls in der Programmiersprache Java implementiert.
+Wie in Abschnitt \ref{sec:two_cap_heuristic} erläutert, stellt die Heuristik für eine Stack-Kapazität von $b = 2$,
+welche in den folgenden Experimenten zum Einsatz kommt, einen über den Parameter \textsc{Postprocessing} konfigurierbaren
+Postprocessing-Schritt bereit, welcher einen reinen Fokus auf Kostenminimierung ermöglicht. Dieser Schritt wird
+in den durchgeführten Experimenten stets aktiviert.
+Sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
 
 \textbf{Kleine Instanzen (s)}
 
@@ -1304,9 +1319,6 @@ aus praktischer Perspektive eher gering sein dürfte.
 \caption{\textsc{Instance-Coverage der $b=2$ Solver (s)}}
 \label{fig:instance_cov_b=2_s}
 \end{figure}
-
-\vfill
-\pagebreak
 
 In Abb. \ref{fig:b=2_s_runtimes} sind die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $3s$ dargestellt.
 Man erkennt, dass die 3-Index-Formulierung deutlich schneller ist als die Bin-Packing-Formulierung und, dass die Heuristik beide MIP-Formulierungen noch einmal deutlich unterbietet. Da in der Abb. nur die absoluten Laufzeitdifferenzen zu sehen sind,
