@@ -1245,11 +1245,11 @@ in geeigneter Weise repräsentiert.
 \label{sec:solver_comp_b=2}
 
 In diesem Kapitel werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeiten, der Anteil der Instanzen, welcher pro Solver optimal gelöst wird
-sowie ggf. die jeweilige prozentuale Abweichung der ermittelten Zielfunktionswerte vom Optimum.
+sowie die jeweilige prozentuale Abweichung der ermittelten Zielfunktionswerte vom Optimum.
 
 Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von CPLEX 12.8.0 implementiert
 und gelöst. Dabei wurde CPLEX über den Parameter \textsc{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
-Priorität vor der Optimalität hat.\cite{IBM_DOC}
+Priorität vor der Optimalität hat \cite{IBM_DOC}.
 
 \vfill
 \pagebreak
@@ -2403,7 +2403,8 @@ wird in den folgenden Experimenten stets auf \textit{false} gesetzt, weil die du
 aus praktischer Perspektive vermutlich in jedem Fall vertretbar sind. Aufgrunddessen liegt der Fokus hier auf dem Erreichen
 möglichst geringer Zielfunktionswerte. Liegt der Fokus in der Praxis hingegen auf einer möglichst geringen Laufzeit, so kann dementsprechend
 \textit{prioritizeRuntime} auf \textit{true} gesetzt werden, was zu erheblich kürzeren Laufzeiten bei nur geringfügig schlechteren
-Zielfunktionswerten führt.
+Zielfunktionswerten führt. Wie bereits bei der Heuristik zur Lösung von Instanzen mit Stacks der Kapazität $b = 2$,
+ist auch der Postprocessing-Schritt der Heuristik für $b = 3$ in den durchgeführten Experimenten stets aktiviert.
 
 \pagebreak
 
