@@ -1259,7 +1259,6 @@ und sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3
 
 Zunächst zum experimentellen Vergleich der Solver für in Kapitel \ref{sec:test_data} als klein definierte Instanzen,
 bei denen es darum geht, $100$ eintreffende Items in die Storage-Area zu verladen.
-
 Die Diagramme in Abb. \ref{fig:instance_cov_b=2_s} zeigen jeweils die Instance-Coverage der einzelnen Solver.
 In \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil der gelösten Instanzen pro Solver bei einem Zeitlimit
 von $1s$ pro Instanz, in \ref{fig:instance_cov_b=2_s_b} bei einem Zeitlimit von $3s$ pro Instanz und in \ref{fig:instance_cov_b=2_s_c}
@@ -1271,15 +1270,11 @@ Im Folgenden wird der Einfachheit halber jedoch immer von drei Solvern gesproche
 CPLEX gelösten MIP-Formulierungen und die Heuristik gemeint sind.
 Die Solver werden in den Diagrammen und Abbildungen im Folgenden stets als \textsc{BinP} (Bin-Packing),
 \textsc{3Idx} (3-Index) und \textsc{2Cap} (Heuristik für $b = 2$) abgekürzt.
-
-Wie bereits in Kapitel \ref{sec:test_data} erläutert, wurden jeweils $20$ Instanzen pro Konfiguration betrachtet,
+Wie bereits in Kapitel \ref{sec:test_data} erläutert, werden jeweils $20$ Instanzen pro Konfiguration betrachtet,
 d.h. die im Folgenden betrachteten Ergebnisse basieren auf der Lösung von in diesem Fall $20$ kleinen Instanzen.
 
-Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, löst die Heuristik bei allen betrachteten Zeitlimits sämtliche Instanzen,
-während die 3-Index-Formulierung beispielsweise bei einem Zeitlimit von $1s$ nur $50 \%$ der Instanzen löst.
-Die Bin-Packing-Formulierung löst bei diesem Zeitlimit sogar überhaupt keine Instanz.\newline
-Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings, dass sämtliche Instanzen bereits bei einem Zeitlimit von $5s$
-von allen Solvern gelöst werden, was darauf hindeutet, dass der Bedarf für eine Laufzeitverbesserung durch eine Heuristik hier
+Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, lösen die Heuristik und die 3-Index-Formulierung bei allen betrachteten Zeitlimits sämtliche Instanzen, während die Bin-Packing-Formulierung bei einem Zeitlimit von $1s$ überhaupt keine Instanz löst.\newline
+Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings, dass sämtliche Instanzen bereits bei einem Zeitlimit von $3s$ von allen Solvern gelöst werden, was darauf hindeutet, dass der Bedarf für eine Laufzeitverbesserung durch eine Heuristik hier
 aus praktischer Perspektive eher gering sein dürfte.
 
 \begin{figure}[H]
@@ -1310,38 +1305,43 @@ aus praktischer Perspektive eher gering sein dürfte.
 \label{fig:instance_cov_b=2_s}
 \end{figure}
 
+\vfill
 \pagebreak
 
-In Abb. \ref{fig:b=2_s_runtimes} sind die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $5s$ dargestellt.
+In Abb. \ref{fig:b=2_s_runtimes} sind die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $3s$ dargestellt.
 Man erkennt, dass die 3-Index-Formulierung deutlich schneller ist als die Bin-Packing-Formulierung und, dass die Heuristik beide MIP-Formulierungen noch einmal deutlich unterbietet. Da in der Abb. nur die absoluten Laufzeitdifferenzen zu sehen sind,
-ist es wichtig, zu erwähnen, dass die Laufzeiten der Heuristik durchschnittlich um den Faktor $55.0$ kleiner sind,
-als die der 3-Index-Formulierung. Zwischen der 3-Index- und der Bin-Packing-Formulierung liegt dagegen nur ein Faktor von $2.7$.
+ist es wichtig, zu erwähnen, dass die Laufzeiten der Heuristik durchschnittlich um den Faktor $21.3$ kleiner sind,
+als die der 3-Index-Formulierung. Zwischen der 3-Index- und der Bin-Packing-Formulierung liegt dagegen nur ein Faktor von $3.2$.
 
-Aufgrund der Tatsache, dass CPLEX nur dann vor dem Zeitlimit terminiert, wenn die Instanz optimal gelöst wurde, ist klar
-ersichtlich, dass die 3-Index-Formulierung sämtliche Instanzen nach etwa $1s$ optimal löst während die Bin-Packing-Formulierung in wenigen Fällen durch das Zeitlimit gestoppt wird.\newline
-Bei den Instanzen $01$ und $08$, bei denen die Bin-Packing-Formulierung durch das Zeitlimit gestoppt wurde und dementsprechend nicht
-notwendigerweise eine optimale Lösung gefunden hat, konnte die Heuristik, wie man Abb. \ref{fig:b=2_s_costs} entnehmen kann, sogar
-bessere Zielfunktionswerte erzielen als die Bin-Packing-Formulierung.\newline
-Die weiteren Zielfunktionswerte der Bin-Packing-Formulierung sind in Abb. \ref{fig:b=2_s_costs}  deshalb nicht zu erkennen,
-weil sie durch die Zielfunktionswerte der 3-Index-Formulierung verdeckt werden. Da beide Formulierungen die entsprechenden
-Instanzen optimal lösen, kommen sie jeweils zum selben Zielfunktionswert.
+Aufgrund der Tatsache, dass CPLEX nur dann vor dem Zeitlimit terminiert, wenn die entsprechende Instanz optimal gelöst wird, ist klar
+ersichtlich, dass die 3-Index-Formulierung sämtliche Instanzen nach etwa $1s$ optimal löst während die Bin-Packing-Formulierung in einigen Fällen durch das Zeitlimit von $3s$ gestoppt wird.
+Bei den Instanzen $01, 03, 06, 07, 13, 14, 15, 18$ und $19$, bei denen die Bin-Packing-Formulierung durch das Zeitlimit gestoppt wird und dementsprechend nicht notwendigerweise eine optimale Lösung findet, kann die Heuristik mit Ausnahme der Instanz
+$18$, wie man Abb. \ref{fig:b=2_s_costs} entnehmen kann, sogar bessere Zielfunktionswerte erzielen als die Bin-Packing-Formulierung.
+Bei den Instanzen $07$ und $19$ ist die Heuristik nur knapp besser, bei den übrigen sogar sehr deutlich.
+Da die Bin-Packing-Formulierung bei Instanz $18$ durch das Zeitlimit terminiert, hat CPLEX offenkundig lediglich
+noch nicht bewiesen, dass es sich um das Optimum handelt, der entsprechende Wert wurde allerdings, wie man Abb.
+\ref{fig:b=2_s_costs} entnehmen kann, bereits ermittelt.
+
+In Fällen, in welchen die Zielfunktionswerte der Bin-Packing-Formulierung in Abb. \ref{fig:b=2_s_costs} nicht zu erkennen sind,
+werden sie durch die Zielfunktionswerte der 3-Index-Formulierung verdeckt, weil beide Formulierungen denselben, optimalen
+Lösungswert ermittelt haben.
 
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_s_5s.png}
+\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_s_3s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=2_s_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_s_5s.png}
+\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_s_3s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=2_s_costs}
 \end{subfigure}
-\caption{\textsc{Ergebnisse bei $5s$ Zeitlimit}.}
+\caption{\textsc{Ergebnisse bei $3s$ Zeitlimit}.}
 \end{figure}
 
 Die exakten Ergebnisse der MIP-Formulierungen sind den Tabellen in Abb. \ref{fig:table} zu entnehmen.
@@ -1358,9 +1358,9 @@ vom optimalen Zielfunktionswert pro Instanz an.
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{35 \%}$ \\ \hline
-    \textbf{Laufzeit} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{0.9 s}$ \\ \hline
-    \textbf{Abweichung} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{2.0 \%}$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{0 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{0.84 s}$ \\ \hline
+    \textbf{Abweichung} & $\textcolor{red}{---}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Zeitlimit} $1s$}
 \label{fig:res_b=2_s_a}
@@ -1372,9 +1372,9 @@ vom optimalen Zielfunktionswert pro Instanz an.
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{10 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{3.0 s}$ & \O $\thinspace \textcolor{mygreen}{1.1 s}$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{4.7 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
+    \textbf{Optimal} & $ \textcolor{red}{60 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{2.71 s}$ & \O $\thinspace \textcolor{mygreen}{0.85 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{3.05 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Zeitlimit} $3s$}
 \label{fig:res_b=2_s_b}
@@ -1387,9 +1387,9 @@ vom optimalen Zielfunktionswert pro Instanz an.
 \begin{tabular}{ | l | l | l |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
-    \textbf{Optimal} & $ \textcolor{red}{90 \%}$ & $ \textcolor{mygreen}{100 \%}$ \\ \hline
-    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{3.9 s}$ & \O $\thinspace \textcolor{mygreen}{1.1 s}$ \\ \hline
-    \textbf{Abweichung} & \O $\thinspace \textcolor{red}{0.4 \%}$ & \O $\thinspace \textcolor{mygreen}{0.0 \%}$ \\ \hline
+    \textbf{Optimal} & $ 100 \%$ & $ 100 \%$ \\ \hline
+    \textbf{Laufzeit} & \O $\thinspace \textcolor{red}{2.72 s}$ & \O $\thinspace \textcolor{mygreen}{0.82 s}$ \\ \hline
+    \textbf{Abweichung} & \O $\thinspace 0.0 \%$ & \O $\thinspace 0.0 \%$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Zeitlimit} $5s$}
 \label{fig:res_b=2_s_c}
@@ -1399,14 +1399,11 @@ vom optimalen Zielfunktionswert pro Instanz an.
 \label{fig:table}
 \end{figure}
 
-Abbildung \ref{fig:table} zeigt, dass die 3-Index-Formulierung bei jedem betrachteten Zeitlimit eine geringere Laufzeit benötigt
-als die Bin-Packing-Formulierung und somit zu besseren Ergebnissen kommt.
-
-Da die Zeitlimits aufgrund der geringen Laufzeit für die Heuristik keine Rolle spielen, kommt diese stets zum selben Ergebnis.
-Sie weicht durchschnittlich um $2.0 \%$ vom Optimum ab und benötigt dafür eine Laufzeit von nur $0.02s$.
-
-Trotz dieser guten Ergebnisse der Heuristik, besteht aufgrund der Tatsache, dass die 3-Index-Formulierung sämtliche Instanzen
-mit einer durchschnittlichen Laufzeit von $1.1s$ optimal löst, aus praktischer Perspektive vermutlich kein großer Bedarf für
+Abbildung \ref{fig:table} zeigt, dass die 3-Index-Formulierung der Bin-Packing-Formulierung in dieser Kategorie vorzuziehen ist,
+da diese bei jedem betrachteten Zeitlimit zu besseren Ergebnissen kommt und mit einer sehr geringen Laufzeit sämtliche Instanzen
+optimal löst. Da die Zeitlimits aufgrund der geringen Laufzeit für die Heuristik keine Rolle spielen, kommt diese stets zum selben Ergebnis. Sie weicht durchschnittlich um $0.29 \%$ vom Optimum ab und benötigt dafür eine Laufzeit von nur $0.04s$.
+Trotz dieser sehr guten Ergebnisse der Heuristik, besteht aufgrund der Tatsache, dass die 3-Index-Formulierung sämtliche Instanzen
+mit einer durchschnittlichen Laufzeit von ca. $0.82s$ optimal löst, aus praktischer Perspektive vermutlich kein großer Bedarf für
 eine Laufzeitverbesserung durch eine Heuristik.
 
 \textbf{Mittelgroße Instanzen (m)}
@@ -1426,21 +1423,21 @@ in jedem Fall sämtliche Instanzen.
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_m_60s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_m_60s.png}
 \caption{\textsc{Zeitlimit} $1min$}
 \label{fig:instance_cov_b=2_m_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_m_600s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_m_600s.png}
 \caption{\textsc{Zeitlimit} $10min$}
 \label{fig:instance_cov_b=2_m_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_m_1200s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_m_1200s.png}
 \caption{\textsc{Zeitlimit} $20min$}
 \label{fig:instance_cov_b=2_m_c}
 \end{subfigure}
@@ -1468,14 +1465,14 @@ $7.1$ besteht. Die absolute Darstellung ist in diesem Fall also etwas irreführe
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_m_1200s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_m_1200s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=2_m_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_m_1200s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_m_1200s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=2_m_costs}
 \end{subfigure}
@@ -1564,21 +1561,21 @@ In diesem Szenario ist die 3-Index-Formulierung der Bin-Packing-Formulierung fol
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_900s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_900s.png}
 \caption{\textsc{Zeitlimit} $15min$}
 \label{fig:instance_cov_b=2_l_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_1800s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_1800s.png}
 \caption{\textsc{Zeitlimit} $30min$}
 \label{fig:instance_cov_b=2_l_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_2700s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_l_2700s.png}
 \caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_cov_b=2_l_c}
 \end{subfigure}
@@ -1605,14 +1602,14 @@ konkurrenzfähig ist.
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_2700s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_2700s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=2_l_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_2700s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_2700s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=2_l_costs}
 \end{subfigure}
@@ -2430,21 +2427,21 @@ da diese mit einer durchschnittlichen Laufzeit von $0.09s$ sämtliche Instanzen 
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_s_3s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_s_3s.png}
 \caption{\textsc{Zeitlimit} $3s$}
 \label{fig:instance_coverage_b=3_s_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_s_5s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_s_5s.png}
 \caption{\textsc{Zeitlimit} $5s$}
 \label{fig:instance_coverage_b=3_s_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_s_10s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_s_10s.png}
 \caption{\textsc{Zeitlimit} $10s$}
 \label{fig:instance_coverage_b=3_s_c}
 \end{subfigure}
@@ -2477,14 +2474,14 @@ verdecken die Einträge der 3-Index-Formulierung in der Abb. jeweils die Einträ
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_s_10s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_s_10s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=3_s_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_s_10s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_s_10s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=3_s_costs}
 \end{subfigure}
@@ -2569,21 +2566,21 @@ in keinem Fall vom Zeitlimit betroffen.
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_600s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_600s.png}
 \caption{\textsc{Zeitlimit} $10min$}
 \label{fig:instance_coverage_b=3_m_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1200s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1200s.png}
 \caption{\textsc{Zeitlimit} $20min$}
 \label{fig:instance_coverage_b=3_m_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1800s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1800s.png}
 \caption{\textsc{Zeitlimit} $30min$}
 \label{fig:instance_coverage_b=3_m_c}
 \end{subfigure}
@@ -2607,14 +2604,14 @@ obwohl diese dort auch zu zulässigen Lösungen gelangt.
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_m_1800s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_m_1800s.png}
 \caption{\textsc{Laufzeiten ($30min$ Zeitlimit)}}
 \label{fig:b=3_m_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_m_600s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_m_600s.png}
 \caption{\textsc{Kosten ($10min$ Zeitlimit)}}
 \label{fig:b=3_m_costs}
 \end{subfigure}
@@ -2707,21 +2704,21 @@ vom Zeitlimit betroffen.
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
 \caption{\textsc{Zeitlimit} $45min$}
 \label{fig:instance_coverage_b=3_l_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_5400s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_5400s.png}
 \caption{\textsc{Zeitlimit} $90min$}
 \label{fig:instance_coverage_b=3_l_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_7200s.png}
+% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_7200s.png}
 \caption{\textsc{Zeitlimit} $120min$}
 \label{fig:instance_coverage_b=3_l_c}
 \end{subfigure}
@@ -2742,14 +2739,14 @@ erneut nur sehr gering sind.
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_l_7200s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_l_7200s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=3_l_runtimes}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_l_7200s.png}
+% \includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_l_7200s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=3_l_costs}
 \end{subfigure}
@@ -3259,14 +3256,15 @@ wenn die Nachbarschaft zusammenhängend ist.
 
 Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation möglich.
 Auch eine zulässige Swap-Operation ist nicht möglich, da kein Paar von Items vertauscht werden kann, ohne die
-Stacking-Constraints zu verletzen. Zwei Items zwischen $L_1$ und $L_2$ zu vertauschen, führt ebenfalls stets
+Stacking-Constraints zu verletzen. Zwei Items zwischen $L_0$ und $L_1$ zu vertauschen, führt ebenfalls stets
 zu unzulässigen Lösungen und da lediglich drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben
 Levels stattfinden. Somit ist in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
 
 Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird also ein weiterer Operator eingeführt,
-welcher in der Lage ist, Situationen, in welchen mehrere Swap-Operationen desselben Items erforderlich sind,
-aufzulösen. Dieser Operator wird \textquote{Row-Swap} genannt, weil ausschließlich mehrere Swap-Operationen
-eines Items innerhalb eines Levels gestattet sind.
+welcher eine Möglichkeit bereitstellt, Situationen, in welchen mehrere Swap-Operationen desselben Items
+hintereinander erforderlich sind, aufzulösen.
+Dieser Operator wird \textquote{Row-Swap} genannt, weil ausschließlich mehrere Swap-Operationen eines Items innerhalb
+eines Levels gestattet sind.
 
 \vfill
 \pagebreak
@@ -3281,6 +3279,12 @@ welche schließlich zur zulässigen Lösung $s'$ führt.
 
 Letztlich ist die Nachbarschaft einer Lösung in der entwickelten Tabu-Suche also durch die vier Operatoren
 Shift, Swap, $2$-Swap und Row-Swap definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt.
+
+% Die beiden Gegenbeispiele aus Abb. \ref{fig:} und Abb. \ref{fig:} behandeln genau jene Situationen,
+% welche die einfache Shift- und Swap-Nachbarschaft nicht auflösen kann. $2$-Swap behandelt dabei
+% Situationen, in welchen zwischen zwei Stacks zwei Paare von Items simultan vertauscht werden müssen,
+% um zur zulässigen Lösung zu gelangen. Row-Swap ermöglicht eine Kette von Swaps desselben Items,
+% welche nacheinander ausgeführt werden.
 
 \vfill
 \pagebreak
