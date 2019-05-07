@@ -1673,8 +1673,8 @@ Selbst in Bezug auf die Qualität der Zielfunktionswerte können die MIP-Formuli
 
 Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität $b = 2$ in der Kategorie der kleinen Instanzen
 aufgrund der geringen Laufzeit der MIP-Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht.
-Anders in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik bei nur kleinen Abweichungen zu einer
-derart großen Laufzeiteinparung führt, dass sie eine in der Praxis relevante Alternative darstellt.
+Anders in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik bei sehr geringen Abweichungen
+von den Optimalwerden zu einer derart großen Laufzeiteinparung führt, dass sie eine in der Praxis relevante Alternative darstellt.
 
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
@@ -2399,12 +2399,11 @@ bezüglich der Vergleichskategorien, der \textsc{CPLEX}-Konfiguration sowie der 
 Der in Abschnitt \ref{sec:three_cap_heuristic} eingeführte Parameter \textit{prioritizeRuntime} zur Konfiguration der Heuristik
 wird in den folgenden Experimenten stets auf \textit{false} gesetzt, weil die durch Verwendung des Rating-Systems erhöhten Laufzeiten
 aus praktischer Perspektive vermutlich in jedem Fall vertretbar sind. Aufgrunddessen liegt der Fokus hier auf dem Erreichen
-möglichst geringer Zielfunktionswerte. Liegt der Fokus in der Praxis hingegen auf einer möglichst geringen Laufzeit, so kann dementsprechend
-\textit{prioritizeRuntime} auf \textit{true} gesetzt werden, was zu erheblich kürzeren Laufzeiten bei nur geringfügig schlechteren
-Zielfunktionswerten führt. Wie bereits bei der Heuristik zur Lösung von Instanzen mit Stacks der Kapazität $b = 2$,
-ist auch der Postprocessing-Schritt der Heuristik für $b = 3$ in den durchgeführten Experimenten stets aktiviert.
-
-\pagebreak
+möglichst geringer Zielfunktionswerte. Liegt der Fokus in der Praxis hingegen auf einer möglichst geringen Laufzeit, so kann dementsprechend \textit{prioritizeRuntime} auf \textit{true} gesetzt werden, was zu erheblich kürzeren Laufzeiten bei nur geringfügig schlechteren Zielfunktionswerten führt.
+Des Weiteren wird der ebenfalls in Abschnitt \ref{sec:three_cap_heuristic} eingeführte Parameter \textit{postProcessing}
+stets auf \textit{true} gesetzt, damit, wie bereits bei der Heuristik zur Lösung von Instanzen mit Stacks der Kapazität $b = 2$,
+ein reiner Fokus auf Kostenminimierung besteht, welcher eine Vergleichbarkeit mit den MIP-Formulierungen erlaubt, die ebenfalls
+ausschließlich Kosten minimieren.
 
 \textbf{Kleine Instanzen (s)}
 
