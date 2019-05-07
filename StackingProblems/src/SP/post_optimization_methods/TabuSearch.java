@@ -208,6 +208,11 @@ public class TabuSearch {
             }
 
             StorageAreaPosition shiftTarget = this.getRandomFreeSlot(neighbor);
+            // the shift target shouldn't be in the same stack
+            while (shiftTarget.getStackIdx() == pos.getStackIdx()) {
+                shiftTarget = this.getRandomFreeSlot(neighbor);
+            }
+
             Shift shift = this.shiftItem(neighbor, item, pos, shiftTarget);
 
             if (!neighbor.isFeasible()) { continue; }
