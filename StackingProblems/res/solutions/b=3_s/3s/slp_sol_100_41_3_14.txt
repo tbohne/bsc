@@ -1,0 +1,151 @@
+lower bound for relaxed s_ij: 9617.48
+
+#####################################################
+
+solved with: SP.mip_formulations.BinPackingFormulation
+time limit: 3 s
+time to solve: 1,77 s
+objective value: 9621.1
+
+stacks (top to bottom):
+stack  0:    
+stack  1:    1 
+stack  2:    2 
+stack  3:    
+stack  4:    
+stack  5:    
+stack  6:    73 81 30 
+stack  7:    20 28 57 
+stack  8:    89 59 58 
+stack  9:    97 14 44 
+stack 10:    87 25 10 
+stack 11:    83 61 36 
+stack 12:    31 12 42 
+stack 13:    23 63 22 
+stack 14:    39 95 33 
+stack 15:    65 88 35 
+stack 16:    84 66 91 
+stack 17:    79 17 47 
+stack 18:    74 69 70 
+stack 19:    49 76 37 
+stack 20:    85 75 98 
+stack 21:    0 50 
+stack 22:    52 51 
+stack 23:    53 
+stack 24:    3 
+stack 25:    54 4 
+stack 26:    43 55 5 
+stack 27:    6 26 56 
+stack 28:    7 82 21 
+stack 29:    67 8 41 
+stack 30:    93 9 68 
+stack 31:    60 78 92 
+stack 32:    29 11 71 
+stack 33:    90 24 62 
+stack 34:    94 64 13 
+stack 35:    45 34 19 
+stack 36:    15 40 27 
+stack 37:    16 18 80 
+stack 38:    77 38 96 
+stack 39:    46 48 86 
+stack 40:    32 99 72 
+
+#####################################################
+
+solved with: SP.mip_formulations.ThreeIndexFormulation
+time limit: 3 s
+time to solve: 2,32 s
+objective value: 9621.1
+
+stacks (top to bottom):
+stack  0:    
+stack  1:    1 
+stack  2:    2 
+stack  3:    
+stack  4:    
+stack  5:    
+stack  6:    89 24 6 
+stack  7:    57 11 71 
+stack  8:    16 65 58 
+stack  9:    9 41 99 
+stack 10:    61 79 10 
+stack 11:    64 26 68 
+stack 12:    12 88 62 
+stack 13:    81 63 19 
+stack 14:    97 39 95 
+stack 15:    37 42 92 
+stack 16:    25 75 21 
+stack 17:    31 20 49 
+stack 18:    73 80 72 
+stack 19:    83 28 47 
+stack 20:    70 82 30 
+stack 21:    0 50 
+stack 22:    52 51 
+stack 23:    53 
+stack 24:    3 
+stack 25:    54 4 
+stack 26:    14 55 5 
+stack 27:    8 56 91 
+stack 28:    59 60 7 
+stack 29:    85 29 66 
+stack 30:    84 45 34 
+stack 31:    43 78 48 
+stack 32:    69 96 36 
+stack 33:    77 33 15 
+stack 34:    90 38 13 
+stack 35:    74 23 98 
+stack 36:    32 94 40 
+stack 37:    87 76 67 
+stack 38:    93 17 46 
+stack 39:    18 22 86 
+stack 40:    44 35 27 
+
+#####################################################
+
+solved with: SP.constructive_heuristics.ThreeCapHeuristic
+time limit: 3 s
+time to solve: 0,08 s
+objective value: 9656.28
+
+stacks (top to bottom):
+stack  0:    
+stack  1:    1 
+stack  2:    52 
+stack  3:    3 
+stack  4:    
+stack  5:    57 98 
+stack  6:    8 7 
+stack  7:    12 11 92 
+stack  8:    6 99 13 
+stack  9:    93 9 10 
+stack 10:    97 60 62 
+stack 11:    63 64 30 
+stack 12:    31 65 66 
+stack 13:    79 17 15 
+stack 14:    20 75 14 
+stack 15:    89 46 47 
+stack 16:    83 39 38 
+stack 17:    67 68 96 
+stack 18:    77 33 36 
+stack 19:    32 34 80 
+stack 20:    29 28 76 
+stack 21:    0 50 
+stack 22:    51 
+stack 23:    
+stack 24:    2 
+stack 25:    54 53 4 
+stack 26:    55 5 
+stack 27:    45 56 91 
+stack 28:    59 95 58 
+stack 29:    90 87 48 
+stack 30:    24 84 26 
+stack 31:    61 71 86 
+stack 32:    74 23 21 
+stack 33:    22 19 72 
+stack 34:    43 88 40 
+stack 35:    16 73 18 
+stack 36:    25 78 27 
+stack 37:    82 41 42 
+stack 38:    94 69 70 
+stack 39:    85 49 44 
+stack 40:    81 37 35 
