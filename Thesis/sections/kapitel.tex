@@ -3073,6 +3073,9 @@ Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
 Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt
 werden.
 
+\vfill
+\pagebreak
+
 \textbf{First-Fit}
 
 Bei der First-Fit-Strategie wird die Nachbarschaft einer Lösung lediglich solange durchsucht, bis eine bessere
@@ -3102,6 +3105,9 @@ was an folgendem Gegenbeispiel nachvollzogen werden kann.
 Es sei der Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
 dessen transitiver Abschluss dem Stacking-Graphen der Item-Menge $I$ entspricht. Außerdem seien sämtliche
 Items mit den Stacks $S_0$ und $S_1$ kompatibel.
+
+\vfill
+\pagebreak
 
 \begin{figure}[H]
   \centering
@@ -3178,25 +3184,23 @@ durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demn
 
 Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige
 Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
-Dazu wird die Liste der Operatoren um einen Mehrfach-Swap erweitert, welcher mehrere simultane Swap-Operationen
-ermöglicht. Es können maximal $b - 1$ Swaps durchgeführt werden, denn sonst würde der gesamte Stack-Inhalt
-vertauscht. Dies ist nicht sinnvoll, denn wenn sich auf diese Weise eine günstigere Zuweisung erzielen ließe,
+
+Dieses Problem ließe sich durch einen weiteren Operator beheben, welcher mehrere simultane Swap-Operationen
+zwischen zwei Stacks ermöglicht. Dabei müssten maximal $b - 1$ Swaps durchgeführt werden, denn sonst würde der gesamte
+Stack-Inhalt vertauscht. Dies ist nicht sinnvoll, denn wenn sich auf diese Weise eine günstigere Zuweisung erzielen ließe,
 wäre diese bereits Teil des Matchings in der konstruktiven Heuristik gewesen. Da in dieser Arbeit lediglich
-Stacking-Probleme mit Stacks der Kapazitäten $b = 2$ und $b = 3$ betrachtet werden, wird höchstens ein $2$-Swap
-benötigt. Bei $b = 2$ ist sogar bereits die einfache Swap-Operation ausreichend.
+Stacking-Probleme mit Stacks der Kapazitäten $b = 2$ und $b = 3$ betrachtet werden, würde höchstens ein $2$-Swap
+benötigt. Bei $b = 2$ wäre sogar bereits die einfache Swap-Operation ausreichend.
 
-Mithilfe des $2$-Swaps lässt sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
-indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt werden.
-Anschließend ergibt sich die zulässige Lösung $s'$.
+Mithilfe des $2$-Swaps ließe sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
+indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt würden.
+Anschließend ergäbe sich die zulässige Lösung $s'$.
 
-\vfill
-\pagebreak
-
-Die Nachbarschaft ist allerdings weiterhin nicht zusammenhängend, wie man am Beispiel des Stacking-Graphen
+Die Nachbarschaft wäre allerdings weiterhin nicht zusammenhängend, wie man am Beispiel des Stacking-Graphen
 für die Items $I = \{1, 2, 3, 4, 5, 6\}$ in Abb. \ref{fig:counter_2_stacking_graph} nachvollziehen kann.
 Es seien erneut sämtliche Items bezüglich der Placement-Constraints mit allen Stacks kompatibel.
 Dabei handelt es sich um ein konstruiertes Gegenbeispiel, welches in der Praxis vermutlich nicht auftritt,
-dennoch belegt es, dass die Nachbarschaft nicht zusammenhängend ist.
+dennoch belegt es, dass die Nachbarschaft weiterhin nicht zusammenhängend wäre.
 \begin{figure}[H]
   \centering
     \begin{tikzpicture}[->, scale=0.85, transform shape, node distance=2cm]
@@ -3258,33 +3262,19 @@ Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation mögl
 Auch eine zulässige Swap-Operation ist nicht möglich, da kein Paar von Items vertauscht werden kann, ohne die
 Stacking-Constraints zu verletzen. Zwei Items zwischen $L_0$ und $L_1$ zu vertauschen, führt ebenfalls stets
 zu unzulässigen Lösungen und da lediglich drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben
-Levels stattfinden. Somit ist in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
+Levels stattfinden. Somit wäre in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
 
-Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird also ein weiterer Operator eingeführt,
-welcher eine Möglichkeit bereitstellt, Situationen, in welchen mehrere Swap-Operationen desselben Items
-hintereinander erforderlich sind, aufzulösen.
-Dieser Operator wird \textquote{Row-Swap} genannt, weil ausschließlich mehrere Swap-Operationen eines Items innerhalb
-eines Levels gestattet sind.
+Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $2$-Swap Operators
+ein $x$-Swap eingeführt. Dieser ermöglicht es $x \in \mathbb{N}$ Swap-Operationen nacheinander auszuführen.
+Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit wird erst nach Anwendung des Operators
+überprüft. Das erste Gegenbeispiel aus Abb. \ref{fig:counter_example_stacks} lässt sich mit $x = 2$ in geschilderter Weise
+wie mit dem $2$-Swap Operator lösen.
 
-\vfill
-\pagebreak
-
-Es können bei einem Row-Swap maximal $m - 1$ Swap-Operationen für ein Item durchgeführt werden.
-Wie bereits beim $2$-Swap wird auch beim Row-Swap jede der durchgeführten Swap-Operationen der Swap-Tabu-Liste hinzugefügt,
-um Zyklen zu vermeiden. Mithilfe des Row-Swaps lässt sich das Beispiel aus Abb. \ref{fig:c_2_stacks} lösen,
-indem auf Lösung $s$ ein Row-Swap der Länge zwei ausgeführt wird.
-Zunächst wird die Swap-Operation $((0, 1), (1, 1), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
+Das zweite Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} kann ebenfalls mit $x = 2$ gelöst werden,
+weil es die Eigenschaft von $x$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
+auszuführen. Zunächst wird die Swap-Operation $((0, 1), (1, 1), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
 die Positionen tauschen. Anschließend wird die Swap-Operation $((1, 1), (2, 1), 1, 5)$ ausgeführt,
 welche schließlich zur zulässigen Lösung $s'$ führt.
-
-Letztlich ist die Nachbarschaft einer Lösung in der entwickelten Tabu-Suche also durch die vier Operatoren
-Shift, Swap, $2$-Swap und Row-Swap definiert, wobei $2$-Swap lediglich bei $b = 3$ zum Einsatz kommt.
-
-% Die beiden Gegenbeispiele aus Abb. \ref{fig:} und Abb. \ref{fig:} behandeln genau jene Situationen,
-% welche die einfache Shift- und Swap-Nachbarschaft nicht auflösen kann. $2$-Swap behandelt dabei
-% Situationen, in welchen zwischen zwei Stacks zwei Paare von Items simultan vertauscht werden müssen,
-% um zur zulässigen Lösung zu gelangen. Row-Swap ermöglicht eine Kette von Swaps desselben Items,
-% welche nacheinander ausgeführt werden.
 
 \vfill
 \pagebreak
