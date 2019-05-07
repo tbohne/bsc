@@ -1,0 +1,61 @@
+lower bound for relaxed s_ij: 9617.48
+
+#####################################################
+
+solved with: SP.mip_formulations.BinPackingFormulation
+Problem not solved.
+
+#####################################################
+
+solved with: SP.mip_formulations.ThreeIndexFormulation
+Problem not solved.
+
+#####################################################
+
+solved with: SP.constructive_heuristics.ThreeCapHeuristic
+time limit: 1 s
+time to solve: 0,11 s
+objective value: 9647.78
+
+stacks (top to bottom):
+stack  0:    
+stack  1:    1 
+stack  2:    52 
+stack  3:    4 
+stack  4:    
+stack  5:    55 
+stack  6:    8 6 90 
+stack  7:    57 96 
+stack  8:    94 60 58 
+stack  9:    10 11 48 
+stack 10:    64 99 65 
+stack 11:    43 41 89 
+stack 12:    20 85 22 
+stack 13:    18 75 16 
+stack 14:    69 68 98 
+stack 15:    86 39 42 
+stack 16:    19 79 17 
+stack 17:    44 73 71 
+stack 18:    36 82 33 
+stack 19:    78 30 32 
+stack 20:    24 21 74 
+stack 21:    0 50 
+stack 22:    51 
+stack 23:    2 
+stack 24:    53 
+stack 25:    54 3 
+stack 26:    9 7 5 
+stack 27:    92 87 63 
+stack 28:    56 59 91 
+stack 29:    97 12 13 
+stack 30:    25 23 49 
+stack 31:    62 93 61 
+stack 32:    15 14 81 
+stack 33:    37 35 80 
+stack 34:    38 84 40 
+stack 35:    67 95 66 
+stack 36:    28 76 29 
+stack 37:    27 77 26 
+stack 38:    83 34 31 
+stack 39:    72 45 70 
+stack 40:    47 88 46 
