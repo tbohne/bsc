@@ -201,7 +201,12 @@ public class TabuSearch {
             Solution neighbor = new Solution(this.currSol);
             StorageAreaPosition pos = this.getRandomPositionInStorageArea(neighbor);
             int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
-            if (item == -1) { continue; }
+
+            while (item == -1) {
+                pos = this.getRandomPositionInStorageArea(neighbor);
+                item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
+            }
+
             StorageAreaPosition shiftTarget = this.getRandomFreeSlot(neighbor);
             Shift shift = this.shiftItem(neighbor, item, pos, shiftTarget);
 
@@ -250,12 +255,12 @@ public class TabuSearch {
 
         // TODO: compute fewer nbrs with increasing number of swaps
 
-        int consideredNeighbors = numberOfSwaps > 1 ? (int)(TabuSearchConfig.NUMBER_OF_NEIGHBORS * 0.3) : TabuSearchConfig.NUMBER_OF_NEIGHBORS;
+        int consideredNeighbors = numberOfSwaps > 1 ? (int)(TabuSearchConfig.NUMBER_OF_NEIGHBORS * 0.1) : TabuSearchConfig.NUMBER_OF_NEIGHBORS;
 
         while (nbrs.size() < consideredNeighbors) {
 
             cnt++;
-            if (cnt == 25000) {
+            if (cnt == 2500) {
                 return HeuristicUtil.getBestSolution(nbrs);
             }
 
@@ -362,15 +367,9 @@ public class TabuSearch {
             nbrs.add(this.getNeighborShift(shortTermStrategy));
         }
 
-//        nbrs.add(this.getNeighborSwap(shortTermStrategy));
         nbrs.add(this.getNeighborXSwap(shortTermStrategy, 1));
 
         nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, 5)));
-
-//        // if b=3 --> perform double-swap additionally
-//        if (this.currSol.getFilledStorageArea()[0].length == 3) {
-//            nbrs.add(this.getNeighborDoubleSwap(shortTermStrategy));
-//        }
 
         if (Collections.min(nbrs).computeCosts() == nbrs.get(2).computeCosts()) {
             System.out.println("x SWAP");
