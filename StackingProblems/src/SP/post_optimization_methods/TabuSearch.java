@@ -194,6 +194,8 @@ public class TabuSearch {
     public Solution getNeighborShift(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
         ArrayList<Solution> nbrs = new ArrayList<>();
 
+        System.out.println("shift");
+
         while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
 
             Solution neighbor = new Solution(this.currSol);
@@ -239,6 +241,8 @@ public class TabuSearch {
      */
     public Solution getNeighborSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
 
+        System.out.println("swap");
+
         ArrayList<Solution> nbrs = new ArrayList<>();
 
         while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
@@ -277,70 +281,6 @@ public class TabuSearch {
     }
 
     /**
-     * Generates a neighbor for the current solution using the "double-swap-neighborhood".
-     *
-     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
-     * @return a neighboring solution
-     */
-    public Solution getNeighborDoubleSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
-
-        ArrayList<Solution> nbrs = new ArrayList<>();
-
-        while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
-
-            Solution neighbor = new Solution(this.currSol);
-            StorageAreaPosition posOneFirstSwap = this.getRandomPositionInStorageArea(neighbor);
-            StorageAreaPosition posTwoFirstSwap = this.getRandomPositionInStorageArea(neighbor);
-            Swap swapOne = this.swapItems(neighbor, posOneFirstSwap, posTwoFirstSwap);
-
-            StorageAreaPosition posOneSecondSwap = new StorageAreaPosition(
-                posOneFirstSwap.getStackIdx(),
-                HeuristicUtil.getRandomIntegerInBetweenWithException(
-                    0, neighbor.getFilledStorageArea()[0].length - 1, posOneFirstSwap.getLevel()
-                )
-            );
-            StorageAreaPosition posTwoSecondSwap = new StorageAreaPosition(
-                posTwoFirstSwap.getStackIdx(),
-                HeuristicUtil.getRandomIntegerInBetweenWithException(
-                    0, neighbor.getFilledStorageArea()[0].length - 1, posTwoFirstSwap.getLevel()
-                )
-            );
-            Swap swapTwo = this.swapItems(neighbor, posOneSecondSwap, posTwoSecondSwap);
-
-            if (!neighbor.isFeasible()) { continue; }
-
-            // FIRST-FIT
-            if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT && !this.swapTabuList.contains(swapOne)
-                && !this.swapTabuList.contains(swapTwo) && neighbor.computeCosts() < this.currSol.computeCosts()) {
-
-                this.forbidSwap(swapOne);
-                this.forbidSwap(swapTwo);
-
-                return neighbor;
-
-            // BEST-FIT
-            } else if (!this.swapTabuList.contains(swapOne) && !this.swapTabuList.contains(swapTwo)) {
-                nbrs.add(neighbor);
-                this.forbidSwap(swapOne);
-                this.forbidSwap(swapTwo);
-
-            } else {
-                this.swapFailure();
-            }
-
-            // ASPIRATION CRITERION
-            if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
-                if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT) {
-                    return neighbor;
-                } else {
-                    nbrs.add(neighbor);
-                }
-            }
-        }
-        return HeuristicUtil.getBestSolution(nbrs);
-    }
-
-    /**
      * Generates a neighbor for the current solution using the "x-swap-neighborhood".
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
@@ -349,9 +289,18 @@ public class TabuSearch {
      */
     public Solution getNeighborXSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy, int numberOfSwaps) {
 
+        System.out.println("xswap");
+
         ArrayList<Solution> nbrs = new ArrayList<>();
 
-        while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
+        int cnt = 0;
+
+        while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS * 0.3) {
+
+            cnt++;
+            if (cnt == 25000) {
+                return HeuristicUtil.getBestSolution(nbrs);
+            }
 
             Solution neighbor = new Solution(this.currSol);
 
@@ -455,9 +404,10 @@ public class TabuSearch {
         if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
             nbrs.add(this.getNeighborShift(shortTermStrategy));
         }
+
         nbrs.add(this.getNeighborSwap(shortTermStrategy));
 
-        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(1, 3)));
+        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, 5)));
 
 //        // if b=3 --> perform double-swap additionally
 //        if (this.currSol.getFilledStorageArea()[0].length == 3) {
