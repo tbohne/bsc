@@ -341,41 +341,41 @@ public class TabuSearch {
     }
 
     /**
-     * Generates a neighbor for the current solution using the "row-swap-neighborhood".
+     * Generates a neighbor for the current solution using the "x-swap-neighborhood".
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
+     * @param numberOfSwaps     - number of swaps to be performed
      * @return a neighboring solution
      */
-    public Solution getNeighborRowSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
+    public Solution getNeighborXSwap(TabuSearchConfig.ShortTermStrategies shortTermStrategy, int numberOfSwaps) {
 
         ArrayList<Solution> nbrs = new ArrayList<>();
 
-        while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS * 0.1) {
+        while (nbrs.size() < TabuSearchConfig.NUMBER_OF_NEIGHBORS) {
 
             Solution neighbor = new Solution(this.currSol);
-            StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
-            int swapItem = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
-            if (swapItem == -1) { continue; }
-
-            // max number of swaps in a row is m-1
-            int numberOfSwaps = HeuristicUtil.getRandomIntegerInBetween(1, this.currSol.getFilledStorageArea().length - 1);
 
             ArrayList<Swap> swapList = new ArrayList<>();
 
-            ArrayList<StorageAreaPosition> positionsTheSwapItemHasBeenAt = new ArrayList<>();
-            positionsTheSwapItemHasBeenAt.add(posOne);
-
             for (int swapCnt = 0; swapCnt < numberOfSwaps; swapCnt++) {
+
+                StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
                 StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
-                posTwo.setLevel(posOne.getLevel());
-                while (positionsTheSwapItemHasBeenAt.contains(posTwo)) {
-                    posTwo = this.getRandomPositionInStorageArea(neighbor);
-                    posTwo.setLevel(posOne.getLevel());
+
+                int swapItemOne = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
+                int swapItemTwo = this.currSol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+
+                while (swapItemOne == -1) {
+                    posOne = this.getRandomPositionInStorageArea(neighbor);
+                    swapItemOne = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
                 }
+                while (swapItemTwo == -1) {
+                    posTwo = this.getRandomPositionInStorageArea(neighbor);
+                    swapItemTwo = this.currSol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+                }
+
                 Swap swap = this.swapItems(neighbor, posOne, posTwo);
                 swapList.add(swap);
-                positionsTheSwapItemHasBeenAt.add(posTwo);
-                posOne = posTwo;
             }
 
             if (!neighbor.isFeasible()) { continue; }
@@ -420,24 +420,25 @@ public class TabuSearch {
 
     public Solution getNeighborBasedOnProbabilities(TabuSearchConfig.ShortTermStrategies shortTermStrategy) {
 
-        double rand = Math.random();
-
-        // TODO: find reasonable chances for operator applications
-
-        if (rand < 0.05) {
-            System.out.println("row swap");
-            return this.getNeighborRowSwap(shortTermStrategy);
-        } else if (rand < 0.5) {
-            System.out.println("swap");
-            return this.getNeighborSwap(shortTermStrategy);
-        } else {
-            System.out.println("shift");
-            // no free slots --> no shift possible
-            if (this.currSol.getNumberOfAssignedItems() == this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
-                return this.getNeighborSwap(shortTermStrategy);
-            }
-            return this.getNeighborShift(shortTermStrategy);
-        }
+//        double rand = Math.random();
+//
+//        // TODO: find reasonable chances for operator applications
+//
+//        if (rand < 0.05) {
+//            System.out.println("row swap");
+////            return this.getNeighborRowSwap(shortTermStrategy);
+//        } else if (rand < 0.5) {
+//            System.out.println("swap");
+//            return this.getNeighborSwap(shortTermStrategy);
+//        } else {
+//            System.out.println("shift");
+//            // no free slots --> no shift possible
+//            if (this.currSol.getNumberOfAssignedItems() == this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
+//                return this.getNeighborSwap(shortTermStrategy);
+//            }
+//            return this.getNeighborShift(shortTermStrategy);
+//        }
+        return this.currSol;
     }
 
     /**
@@ -455,13 +456,19 @@ public class TabuSearch {
             nbrs.add(this.getNeighborShift(shortTermStrategy));
         }
         nbrs.add(this.getNeighborSwap(shortTermStrategy));
-        nbrs.add(this.getNeighborRowSwap(shortTermStrategy));
 
-        // if b=3 --> perform double-swap additionally
-        if (this.currSol.getFilledStorageArea()[0].length == 3) {
-            nbrs.add(this.getNeighborDoubleSwap(shortTermStrategy));
+        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(1, 3)));
+
+//        // if b=3 --> perform double-swap additionally
+//        if (this.currSol.getFilledStorageArea()[0].length == 3) {
+//            nbrs.add(this.getNeighborDoubleSwap(shortTermStrategy));
+//        }
+
+        if (Collections.min(nbrs).computeCosts() == nbrs.get(2).computeCosts()) {
+            System.out.println("x SWAP");
         }
-        
+
+
         return Collections.min(nbrs);
     }
 
