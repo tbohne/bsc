@@ -3185,14 +3185,9 @@ durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demn
 Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige
 Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
 
-Dieses Problem ließe sich durch einen weiteren Operator beheben, welcher mehrere simultane Swap-Operationen
-zwischen zwei Stacks ermöglicht. Dabei müssten maximal $b - 1$ Swaps durchgeführt werden, denn sonst würde der gesamte
-Stack-Inhalt vertauscht. Dies ist nicht sinnvoll, denn wenn sich auf diese Weise eine günstigere Zuweisung erzielen ließe,
-wäre diese bereits Teil des Matchings in der konstruktiven Heuristik gewesen. Da in dieser Arbeit lediglich
-Stacking-Probleme mit Stacks der Kapazitäten $b = 2$ und $b = 3$ betrachtet werden, würde höchstens ein $2$-Swap
-benötigt. Bei $b = 2$ wäre sogar bereits die einfache Swap-Operation ausreichend.
-
-Mithilfe des $2$-Swaps ließe sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
+Dieses Problem ließe sich durch einen weiteren Operator $b$-Swap beheben, welcher $1$ bis $b$ simultane Swap-Operationen
+zwischen zwei Stacks ermöglicht. Dabei müssten maximal $b$ Swaps durchgeführt werden, um den gesamten Stackinhalt zu vertauschen.
+Mithilfe des $b$-Swaps ließe sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
 indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt würden.
 Anschließend ergäbe sich die zulässige Lösung $s'$.
 
@@ -3262,13 +3257,13 @@ Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation mögl
 Auch eine zulässige Swap-Operation ist nicht möglich, da kein Paar von Items vertauscht werden kann, ohne die
 Stacking-Constraints zu verletzen. Zwei Items zwischen $L_0$ und $L_1$ zu vertauschen, führt ebenfalls stets
 zu unzulässigen Lösungen und da lediglich drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben
-Levels stattfinden. Somit wäre in diesem Beispiel sogar die um $2$-Swap erweiterte Nachbarschaft nicht ausreichend.
+Levels stattfinden. Somit wäre in diesem Beispiel sogar die um $b$-Swap erweiterte Nachbarschaft nicht ausreichend.
 
-Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $2$-Swap Operators
-ein $x$-Swap eingeführt. Dieser ermöglicht es $x \in \mathbb{N}$ Swap-Operationen nacheinander auszuführen.
-Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit wird erst nach Anwendung des Operators
-überprüft. Das erste Gegenbeispiel aus Abb. \ref{fig:counter_example_stacks} lässt sich mit $x = 2$ in geschilderter Weise
-wie mit dem $2$-Swap Operator lösen.
+Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $b$-Swap Operators,
+welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein $x$-Swap eingeführt. Dieser erlaubt es, $x \in \mathbb{N}$
+Swap-Operationen nacheinander auszuführen. Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit
+wird erst nach Anwendung des Operators überprüft. Das erste Gegenbeispiel aus Abb. \ref{fig:counter_example_stacks}
+lässt sich mit $x = 2$ analog zum $b$-Swap Operator lösen.
 
 Das zweite Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} kann ebenfalls mit $x = 2$ gelöst werden,
 weil es die Eigenschaft von $x$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
