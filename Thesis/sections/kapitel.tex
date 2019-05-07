@@ -3018,9 +3018,9 @@ Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lamb
 \lambda = 1, ..., k - 1$, als auch die Placement-Constraints mit $t_{i_\lambda q} = 1 \thinspace \forall
 \thinspace i_\lambda$ respektiert werden.
 Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
-welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, d.h. $q \neq r$, $i \in q$ und $j \in r$.
-Sind beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack,
-so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
+d.h. $i \neq j$. Ein Swap kann innerhalb eines Stacks $q \in Q$ stattfinden. In diesem Fall ist ausgehend von einer zulässigen Lösung
+bereits sichergestellt, dass beide Items bezüglich der Placement-Constraints mit diesem Stack kompatibel sind und es müssen lediglich
+im Anschluss die Stacking-Constraints überprüft werden. Im Falle eines Swaps zwischen zwei Items $i, j \in I$, welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, wobei $i \in q$ und $j \in r$, müssen beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack sein. Ist dies der Fall, so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
 
 \textbf{Forbidding-Strategy}
 
