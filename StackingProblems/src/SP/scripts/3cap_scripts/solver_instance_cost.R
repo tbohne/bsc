@@ -16,14 +16,7 @@ paste("avg costs of 3Idx: ", mean(threeidxCosts[["val"]]))
 threeCapData <- subset(input, solver == "3Cap")
 threeCapCosts <- subset(threeCapData, select = c(val))
 paste("avg costs of 3Cap: ", mean(threeCapCosts[["val"]]))
-
-# threeCapPermData <- subset(input, solver == "3CapPerm")
-# threeCapPermCosts <- subset(threeCapPermData, select = c(val))
-# paste("avg costs of 3CapPerm: ", mean(threeCapPermCosts[["val"]]))
-
-# threeCapRecData <- subset(input, solver == "3CapRec")
-# threeCapRecCosts <- subset(threeCapRecData, select = c(val))
-# paste("avg costs of 3CapRec: ", mean(threeCapRecCosts[["val"]]))
 ##############################################################################
 
-ggsave(plotPointsPre, file="solver_instance_cost.png", width = 8, height = 5)
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(9600.0, 9950.0))
+ggsave(finalPlot, file="solver_instance_cost.png", width = 6, height = 4)
