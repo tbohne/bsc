@@ -3104,7 +3104,7 @@ was an folgendem Gegenbeispiel nachvollzogen werden kann.
 
 Es sei der Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
 dessen transitiver Abschluss dem Stacking-Graphen der Item-Menge $I$ entspricht. Außerdem seien sämtliche
-Items mit den Stacks $S_0$ und $S_1$ kompatibel.
+Items mit den zur Verfügung stehenden Stacks $S_0$ und $S_1$ kompatibel.
 
 \vfill
 \pagebreak
@@ -3132,7 +3132,7 @@ Items mit den Stacks $S_0$ und $S_1$ kompatibel.
   \label{fig:counter_example_stacking_graph}
 \end{figure}
 
-In Abb. \ref{fig:counter_example_stacks} sind zwei zulässige Lösungen dargestellt. Dementsprechend muss
+In Abb. \ref{fig:counter_example_stacks} sind zwei zulässige Lösungen des geschilderten Problems dargestellt. Dementsprechend muss
 sich die Lösung $s$ aus Abb. \ref{fig:counter_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus
 Abb. \ref{fig:counter_b} transformieren lassen, wenn die Nachbarschaft zusammenhängend ist.
 
@@ -3182,8 +3182,7 @@ durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demn
   \label{fig:counter_example_stacks}
 \end{figure}
 
-Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige
-Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
+Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
 
 Dieses Problem ließe sich durch einen weiteren Operator $b$-Swap beheben, welcher $1$ bis $b$ simultane Swap-Operationen
 zwischen zwei Stacks ermöglicht. Dabei müssten maximal $b$ Swaps durchgeführt werden, um den gesamten Stackinhalt zu vertauschen.
@@ -3218,7 +3217,7 @@ dennoch belegt es, dass die Nachbarschaft weiterhin nicht zusammenhängend wäre
   \label{fig:counter_2_stacking_graph}
 \end{figure}
 
-In Abb. \ref{fig:c_2_stacks} sind zwei zulässige Lösungen dargestellt, welche die Stacking-Constraints, die durch den
+In Abb. \ref{fig:c_2_stacks} sind zwei zulässige Lösungen des Problems dargestellt, welche die Stacking-Constraints, die durch den
 Graphen aus Abb. \ref{fig:counter_2_stacking_graph} gegeben sind, erfüllen. Dementsprechend muss sich die Lösung $s$
 aus Abb. \ref{fig:c_2_a} in einer endlichen Anzahl von Schritten in die Lösung $s'$ aus Abb. \ref{fig:c_2_b} transformieren lassen,
 wenn die Nachbarschaft zusammenhängend ist.
@@ -3255,21 +3254,37 @@ wenn die Nachbarschaft zusammenhängend ist.
 
 Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation möglich.
 Auch eine zulässige Swap-Operation ist nicht möglich, da kein Paar von Items vertauscht werden kann, ohne die
-Stacking-Constraints zu verletzen. Zwei Items zwischen $L_0$ und $L_1$ zu vertauschen, führt ebenfalls stets
-zu unzulässigen Lösungen und da lediglich drei Stacks zur Verfügung stehen, kann kein $2$-Swap innerhalb desselben
-Levels stattfinden. Somit wäre in diesem Beispiel sogar die um $b$-Swap erweiterte Nachbarschaft nicht ausreichend.
+Stacking-Constraints zu verletzen. Auch der $b$-Swap Operator könnte diese Situation nicht auflösen.
+Somit wäre für dieses Beispiel sogar die um $b$-Swap erweiterte Nachbarschaft nicht ausreichend.
+
+\vfill
+\pagebreak
 
 Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $b$-Swap Operators,
-welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein $x$-Swap eingeführt. Dieser erlaubt es, $x \in \mathbb{N}$
+welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein Operator $x$-Swap eingeführt. Dieser erlaubt es, $x \in \mathbb{N}$
 Swap-Operationen nacheinander auszuführen. Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit
 wird erst nach Anwendung des Operators überprüft. Das erste Gegenbeispiel aus Abb. \ref{fig:counter_example_stacks}
-lässt sich mit $x = 2$ analog zum $b$-Swap Operator lösen.
-
+lässt sich mit $x = 2$ analog zum $b$-Swap Operator mit $b = 2$ lösen.
 Das zweite Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} kann ebenfalls mit $x = 2$ gelöst werden,
 weil es die Eigenschaft von $x$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
 auszuführen. Zunächst wird die Swap-Operation $((0, 1), (1, 1), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
 die Positionen tauschen. Anschließend wird die Swap-Operation $((1, 1), (2, 1), 1, 5)$ ausgeführt,
 welche schließlich zur zulässigen Lösung $s'$ führt.
+
+Um Zyklen innerhalb einer $x$-Swap Operation zu vermeiden, wird eine temporäre, lokale Tabu-Liste eingeführt,
+welche analog zur globalen Swap-Tabu-Liste bereits durchgeführte Swap-Operationen speichert und zukünftig verbietet.
+Entsteht eine zulässige Nachbarlösung, so werden die Einträge der lokalen Tabu-Liste in die globale Swap-Tabu-Liste
+integriert. Andernfalls wird die lokale Tabu-Liste verworfen.
+Letztlich ist die Nachbarschaft einer Lösung in der entwickelten Tabu-Suche also durch die beiden Operatoren
+Shift und  $x$-Swap definiert, wobei $x$-Swap mit $x = 1$ die einfache Swap-Operation abdeckt.
+Bei dieser Nachbarschaft handelt es sich mit $x \in [1, n]$ um eine zusammenhängende Nachbarschaft, in
+welcher jede Kombination und damit jede Lösung in einer endlichen Anzahl von Operator-Anwendungen erreichbar ist.
+Mit steigendem $x$ wächst allerdings auch die Größe der Nachbarschaft und somit der Zeitaufwand, um diese zu durchsuchen.
+Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden lediglich $x$-Werte aus dem Intervall
+$[1, 4]$ betrachtet. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren
+lassen, für die ein $4$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz,
+sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang
+der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit der Heuristik geopfert.
 
 \vfill
 \pagebreak
