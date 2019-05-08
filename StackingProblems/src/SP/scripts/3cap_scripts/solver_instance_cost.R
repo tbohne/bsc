@@ -1,7 +1,7 @@
 library(ggplot2)
 
 input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
-solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "3Cap")
+solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "3Cap" | solver == "LB")
 plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver)) + geom_point() + xlab("costs") + ylab("instance")
 
 ##############################################################################
@@ -16,7 +16,11 @@ paste("avg costs of 3Idx: ", mean(threeidxCosts[["val"]]))
 threeCapData <- subset(input, solver == "3Cap")
 threeCapCosts <- subset(threeCapData, select = c(val))
 paste("avg costs of 3Cap: ", mean(threeCapCosts[["val"]]))
+
+lowerBoundData <- subset(input, solver == "LB")
+lowerBoundCosts <- subset(lowerBoundData, select = c(val))
+paste("avg LB: ", mean(lowerBoundCosts[["val"]]))
 ##############################################################################
 
-finalPlot <- plotPointsPre + scale_x_continuous(limits = c(78735.0, 78860.0))
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(9600, 10000.0))
 ggsave(finalPlot, file="solver_instance_cost.png", width = 6, height = 4)

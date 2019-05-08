@@ -19,5 +19,5 @@ twoCapRuntime <- subset(twoCapData, select = c(time))
 paste("avg runtime of 2Cap: ", mean(as.numeric(as.character(twoCapRuntime[["time"]]))))
 ##############################################################################
 
-finalPlot <- plotPointsPre + scale_x_continuous(limits = c(0.0, 3.5))
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(0.0, 1355.0))
 ggsave(finalPlot, file="solver_instance_time.png", width = 6, height = 4)
