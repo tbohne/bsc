@@ -214,6 +214,7 @@ public class TabuSearch {
             }
 
             Shift shift = this.shiftItem(neighbor, item, pos, shiftTarget);
+            neighbor.lowerItemsThatAreStackedInTheAir();
 
             if (!neighbor.isFeasible()) { continue; }
 
@@ -265,6 +266,7 @@ public class TabuSearch {
         while (nbrs.size() < consideredNeighbors) {
 
             cnt++;
+
             if (cnt == 2500) {
                 return HeuristicUtil.getBestSolution(nbrs);
             }
@@ -273,7 +275,9 @@ public class TabuSearch {
 
             ArrayList<Swap> swapList = new ArrayList<>();
 
-            for (int swapCnt = 0; swapCnt < numberOfSwaps; swapCnt++) {
+            int swapCnt = 0;
+
+            while (swapCnt < numberOfSwaps) {
 
                 StorageAreaPosition posOne = this.getRandomPositionInStorageArea(neighbor);
                 StorageAreaPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
@@ -285,13 +289,20 @@ public class TabuSearch {
                     posOne = this.getRandomPositionInStorageArea(neighbor);
                     swapItemOne = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
                 }
-                while (swapItemTwo == -1) {
+                // the swapped items should differ
+                while (swapItemTwo == -1 || swapItemTwo == swapItemOne) {
                     posTwo = this.getRandomPositionInStorageArea(neighbor);
                     swapItemTwo = this.currSol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
                 }
 
-                Swap swap = this.swapItems(neighbor, posOne, posTwo);
-                swapList.add(swap);
+                Solution tmpSol = new Solution(neighbor);
+                Swap swap = this.swapItems(tmpSol, posOne, posTwo);
+                if (!swapList.contains(swap)) {
+                    swapList.add(swap);
+                    neighbor = tmpSol;
+                    swapCnt++;
+                    neighbor.lowerItemsThatAreStackedInTheAir();
+                }
             }
 
             if (!neighbor.isFeasible()) { continue; }
@@ -374,7 +385,8 @@ public class TabuSearch {
 
         nbrs.add(this.getNeighborXSwap(shortTermStrategy, 1));
 
-        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, 5)));
+        // TODO: check whether both limits inclusive
+        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, 4)));
 
         if (Collections.min(nbrs).computeCosts() == nbrs.get(2).computeCosts()) {
             System.out.println("x SWAP");
