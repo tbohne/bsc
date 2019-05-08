@@ -22,5 +22,5 @@ lowerBoundCosts <- subset(lowerBoundData, select = c(val))
 paste("avg LB: ", mean(lowerBoundCosts[["val"]]))
 ##############################################################################
 
-finalPlot <- plotPointsPre + scale_x_continuous(limits = c(129700.0, 130400.0))
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(129400, 129950)) + scale_color_manual(values=c("#28bd5a", "#fa9f27", "#5428ff", "#f5503b"))
 ggsave(finalPlot, file = "solver_instance_cost.png", width = 6, height = 4)
