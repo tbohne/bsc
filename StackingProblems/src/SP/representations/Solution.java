@@ -256,6 +256,17 @@ public class Solution implements Comparable<Solution> {
         }
     }
 
+    public boolean containsGaps() {
+        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+            for (int level = this.filledStorageArea[stack].length - 1; level > 0; level--) {
+                if (this.filledStorageArea[stack][level] == -1 && this.filledStorageArea[stack][level - 1] != -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns whether the solution is feasible which means that all items have been
      * assigned to a position in a stack in a way that respects the stacking- and
@@ -270,9 +281,10 @@ public class Solution implements Comparable<Solution> {
 //            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
 //            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
 //            System.out.println("contains duplicates: " + this.containsDuplicates());
+//            System.out.println("contains gaps: " + this.containsGaps());
         }
         return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
-            && this.placementConstraintsRespected() && !this.containsDuplicates();
+            && this.placementConstraintsRespected() && !this.containsDuplicates() && !this.containsGaps();
     }
 
     /**
