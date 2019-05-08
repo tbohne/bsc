@@ -18,5 +18,5 @@ threeCapCosts <- subset(threeCapData, select = c(val))
 paste("avg costs of 3Cap: ", mean(threeCapCosts[["val"]]))
 ##############################################################################
 
-finalPlot <- plotPointsPre + scale_x_continuous(limits = c(9600.0, 9950.0))
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(78735.0, 78860.0))
 ggsave(finalPlot, file="solver_instance_cost.png", width = 6, height = 4)
