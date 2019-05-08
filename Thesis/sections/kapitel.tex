@@ -2548,17 +2548,11 @@ und kein wirklicher Bedarf für eine Laufzeitvebessrung durch eine Heuristik her
 
 \textbf{Mittelgroße Instanzen (m)}
 
-In der Kategorie der mittelgroßen Instanzen werden Zeitlimits von $10$, $20$ und $30$ Minuten pro Instanz betrachtet.
-In Abb. \ref{fig:instance_coverage_b=3_m} ist klar zu erkennen, dass die Bin-Packing-Formulierung in dieser Kategorie erfolgsversprechender ist, als die 3-Index-Formulierung, welche selbst bei einem Zeitlimit von $30$ Minuten nur $40 \%$ der Instanzen löst (vgl. Abb. \ref{fig:instance_coverage_b=3_m_c}).
-Wie man den Abbildungen \ref{fig:instance_coverage_b=3_m_a} und \ref{fig:instance_coverage_b=3_m_b} entnehmen kann,
-ändert sich die Instance-Coverage der 3-Index-Formulierung zwischen dem betrachteten Zeitlimit von $10$ Minuten pro
-Instanz und jenem von $20$ Minuten pro Instanz nur marginal.
-Die Erhöhung des Zeitlimits von $20$ auf $30$ Minuten pro Instanz bringt sogar überhaupt keine Erhöhung der Instance-Coverage
-mit sich. Dies deutet daraufhin, dass die 3-Index-Formulierung noch erheblich mehr Zeit zur Lösung sämtlicher Instanzen benötigt.
-
-Die Bin-Packing-Formulierung löst, wie in Abb. \ref{fig:instance_coverage_b=3_m_b} zu sehen
-ist, bereits bei einem Zeitlimit von $20$ Minuten sämtliche Instanzen.
-Die Heuristik löst sämtliche Instanzen mit einer durchschnittlichen Laufzeit von $1.01s$ und ist erneut
+In der Kategorie der mittelgroßen Instanzen werden Zeitlimits von $3$, $5$ und $10$ Minuten pro Instanz betrachtet.
+In Abb. \ref{fig:instance_coverage_b=3_m} ist klar zu erkennen, dass die Bin-Packing-Formulierung in dieser Kategorie erfolgsversprechender ist, als die 3-Index-Formulierung, welche selbst bei einem Zeitlimit von $10$ Minuten nur $70 \%$ der Instanzen löst (vgl. Abb. \ref{fig:instance_coverage_b=3_m_c}).
+Wie man Abb. \ref{fig:instance_coverage_b=3_m_a} entnehmen kann, wird bei einem Zeitlimit von $3$ Minuten pro Instanz keine Instanz von den MIP-Formulierungen gelöst. Beim betrachteten Zeitlimit von $5$ Minuten löst die Bin-Packing-Formulierung dagegen bereits sämtliche Instanzen, d.h. Bin-Packing benötigt für sämtliche Instanzen eine Laufzeit zwischen $3$ und $5$ Minuten (vgl. Abb. \ref{fig:instance_coverage_b=3_m_b}). Die 3-Index-Formulierung löst bei einem $5$ Minuten Zeitlimit lediglich $20 \%$ der Instanzen.
+Beim verdoppelten Zeitlimit von $10$ Minuten löst die 3-Index-Formulierung schließlich $70 \%$ der Instanzen (vgl. Abb. \ref{fig:instance_coverage_b=3_m_c}).
+Die Heuristik löst sämtliche Instanzen mit einer durchschnittlichen Laufzeit von $1.6s$ und ist somit erneut
 in keinem Fall vom Zeitlimit betroffen.
 
 \begin{figure}[H]
@@ -2566,22 +2560,22 @@ in keinem Fall vom Zeitlimit betroffen.
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_600s.png}
-\caption{\textsc{Zeitlimit} $10min$}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_180s.png}
+\caption{\textsc{Zeitlimit} $3min$}
 \label{fig:instance_coverage_b=3_m_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1200s.png}
-\caption{\textsc{Zeitlimit} $20min$}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_300s.png}
+\caption{\textsc{Zeitlimit} $5min$}
 \label{fig:instance_coverage_b=3_m_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_1800s.png}
-\caption{\textsc{Zeitlimit} $30min$}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_m_600s.png}
+\caption{\textsc{Zeitlimit} $10min$}
 \label{fig:instance_coverage_b=3_m_c}
 \end{subfigure}
 \caption{\textsc{Instance-Coverage der $b = 3$ Solver (m)}.}
