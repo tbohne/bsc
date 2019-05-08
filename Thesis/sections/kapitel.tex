@@ -3280,11 +3280,10 @@ Shift und  $x$-Swap definiert, wobei $x$-Swap mit $x = 1$ die einfache Swap-Oper
 Bei dieser Nachbarschaft handelt es sich mit $x \in [1, n]$ um eine zusammenhängende Nachbarschaft, in
 welcher jede Kombination und damit jede Lösung in einer endlichen Anzahl von Operator-Anwendungen erreichbar ist.
 Mit steigendem $x$ wächst allerdings auch die Größe der Nachbarschaft und somit der Zeitaufwand, um diese zu durchsuchen.
-Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden lediglich $x$-Werte aus dem Intervall
-$[1, 4]$ betrachtet. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren
-lassen, für die ein $4$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz,
-sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang
-der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit der Heuristik geopfert.
+Bei $x = n$ wird bereits das vollständige Problem betrachtet.
+Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden lediglich $x$-Werte aus einem kleineren Intervall
+$[1, x_n]$ betrachtet, wobei $x_n < n$. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren lassen, für die ein $x_n$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz, sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit der Heuristik geopfert. Die konkrete Größe des Intervals
+wird experimentell ermittelt und ist Teil der Konfiguration der Tabu-Suche, welche im nächsten Abschnitt thematisiert wird.
 
 \vfill
 \pagebreak
