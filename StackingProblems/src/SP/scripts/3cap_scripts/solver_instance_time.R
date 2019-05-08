@@ -18,5 +18,5 @@ threeCapRuntime <- subset(threeCapData, select = c(time))
 paste("avg runtime of 3Cap: ", mean(as.numeric(as.character(threeCapRuntime[["time"]]))))
 ##############################################################################
 
-finalPlot <- plotPointsPre + scale_x_continuous(limits = c(0.0, 601.0))
+finalPlot <- plotPointsPre + scale_x_continuous(limits = c(0.0, 601.0)) + scale_color_manual(values=c("#fa9f27", "#5428ff", "#f5503b", "#28bd5a"))
 ggsave(finalPlot, file="solver_instance_time.png", width=6, height=4)
