@@ -113,8 +113,9 @@ Für jedes Item $i \in I$ ist dessen Originalposition $O_i$ auf dem Fahrzeug, mi
 in $x$- und $y$-Koordinaten gegeben. Ebenso ist für jeden Stack $q \in Q$ dessen fixierte Position $F_q$ in der von oben betrachteten Storage-Area in zweidimensionalen Koordinaten gegeben.
 
 Neben den in Abb. \ref{fig:parameters} aufgeführten Parametern existieren Nebenbedingungen, welche beim Lösen der Stacking-Probleme
-berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_restrictions} vorgestellten Stacking-Constraints $s_{ij}$, bei denen es sich um Restriktionen handelt, welche angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
-Zum anderen die Placement-Constraints $t_{iq}$, welche in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack $q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
+berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_restrictions} vorgestellten Stacking-Constraints
+$s_{ij} \in \{0, 1\}$, bei denen es sich um Restriktionen handelt, welche angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
+Zum anderen die Placement-Constraints $t_{iq} \in \{0, 1\}$, welche in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack $q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
 
 Items, welche in einem Stack platziert werden, sind durch ein Tupel $(i_k, ..., i_1)$ definiert, wobei
 $i_\lambda$ das Item auf Level $\lambda$ beschreibt. $\lambda = 1$ entspricht dabei dem
@@ -143,11 +144,11 @@ optimiert wird.
 \subsection{Transportkosten}
 \label{sec:transport_costs}
 Die Transportkosten beziehen sich auf jene Kosten, welche bei der Verladung der Items in die Storage-Area entstehen
-und sind praktisch zum Beispiel durch Kranbetriebskosten, Wartezeiten oder Arbeitszeiten motiviert.\newline
+und sind praktisch zum Beispiel durch Kranbetriebskosten, Energiekosten oder Arbeitszeiten motiviert.\newline
 Jeder Stack $q \in Q$ besitzt eine fixierte Position $F_q$ in der Storage-Area.
 Außerdem besitzt jedes Item $i \in I$ eine gegebene Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird.
-Die Kosten der Zuweisung eines Items zu einem Stack ergeben sich aus der Manhattan-Distanz zwischen Itemposition $O_i$ und
-zugewiesener Stack-Position $F_q$, da diese der Kranbewegung entspricht.
+Die Kosten der Zuweisung eines Items zu einem Stack ergeben sich aus der Distanz zwischen Itemposition $O_i$ und
+zugewiesener Stack-Position $F_q$, wobei dieser Distanz je nach betrachtetem Szenario diverse Metriken zugrunde liegen können.
 
 In Abb. \ref{fig:costs} ist ein Beispielszenario visualisiert, in welchem die Items auf Zügen geliefert und durch Kräne auf die ihnen zugewiesenen Stackpositionen in der Storage-Area verladen werden.
 Jedes Item besitzt in diesem Szenario eine gegebene Position auf einem der in der Darstellung als \textquote{Freight Train} bezeichneten Güterzüge. Außerdem besitzt jeder Stack, also jede Zelle der als Grid dargestellten Storage-Area,
@@ -163,9 +164,15 @@ Storage-Area und können dabei in horizontaler und vertikaler Richtung bewegt we
 \caption{Schematische Darstellung eines Bahn-Terminals \cite{Briskorn2018}.}
 \label{fig:costs}
 \end{figure}
+
+\vfill
+\pagebreak
+
 Die Transportkosten werden in einer Matrix $C = (c_{iq})_{n \times m}$ kodiert,
-wobei $c_{iq} \coloneqq d_{man}(O_i, F_q)$. D.h. der Eintrag an der Stelle $c_{iq}$ entspricht
-den Kosten für den Transport des Items $i$ in den Stack $q$.
+wobei $c_{iq} \coloneqq d(O_i, F_q)$. D.h. der Eintrag an der Stelle $c_{iq}$ entspricht
+den Kosten für den Transport eines Items $i \in I$ in einen Stack $q \in Q$.
+Die Zuweisung des Items $i$ zu den unterschiedlichen Leveln $l \in \{1, b\}$ innerhalb des Stacks $q$
+verursacht stets dieselben Kosten.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
