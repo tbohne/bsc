@@ -26,6 +26,23 @@ ein- und ausgelagert werden, als zu reinen Loading-Problemen, welche Gegenstand 
 Der folgende Literaturüberblick beschränkt sich auf diese wenigen Veröffentlichungen, welche zusätzlich bestimmte Konzepte,
 die im Verlauf der Arbeit verwendet oder erweitert werden, etablieren, oder themennahe Problemstellungen behandeln.
 
+Zunächst werden im Anschluss an den folgenden Literaturüberblick in Abschnitt \ref{sec:literature_review}
+in Kapitel \ref{sec:stacking_problems} Stacking-Probleme im Allgemeinen eingeführt und anschließend formal definiert.
+Da­r­auf­fol­gend geht es in Kapitel \ref{sec:test_data} um die Testinstanzen, welche generiert werden,
+um die entwickelten Heuristiken testen und miteinander vergleichen zu können.
+Ebenfalls dem experimentellen Vergleich dienen die in Kapitel \ref{sec:mip_formulations} eingeführten MIP-Formulierungen,
+welche durch Ermittlung der optimalen Zielfunktionswerte eine Beurteilung der Lösungsqualität der Heuristiken ermöglichen.
+In Kapitel \ref{sec:constructive_heuristics} werden die entwickelten konstruktiven Heuristiken vorgestellt und
+die Ergebnisse der experimentellen Vergleiche präsentiert. Anschließend wird in Kapitel \ref{sec:post_optimization} ein Verbesserungsverfahren entwickelt, welches eine von den Heuristiken aus Kapitel \ref{sec:constructive_heuristics} generierte Lösung als Eingabe erhält.
+Dieses Verfahren hat zum Ziel, die Initiallösung basierend auf einer lokalen Suche
+zu verbessern. Abschließend wird in Kapitel \ref{sec:conclusion} ein Fazit formuliert.
+
+\vfill
+\pagebreak
+
+\section{Literaturüberblick}
+\label{sec:literature_review}
+
 \citet{Kim2000} betrachten ein Loading-Problem, bei welchem es darum geht, die Positionierung eintreffender
 Container basierend auf ihrem Gewicht vorzunehmen. Es wird ein Ansatz mit dynamischer Programmierung beschrieben,
 welcher die Position der Container in der Lagerfläche bestimmt und dabei die Anzahl der erwarteten
@@ -36,8 +53,6 @@ Es wird mit der Minimierung der Anzahl der erwarteten Relocation-Operationen all
 als in dieser Arbeit betrachtet.\newline
 \citet{Kang2006} beschäftigen sich mit einem ähnlichen Problem und beschreiben einen Simulated-Annealing-Ansatz,
 welcher Stacking-Strategien für Container mit ungewissen Gewichtsinformationen bereitstellt.
-
-\pagebreak
 
 Eine weitere themennahe Veröffentlichung liefern \citet{Delgado2012}, welche sich mit einem
 Loading-Problem beschäftigen, bei dem ein Containerschiff mit einer Menge an Items beladen wird.
@@ -62,6 +77,9 @@ in einem Hafen zum Einsatz. Auch wenn es sich prinzipiell um eine der Problemste
 Arbeit nicht ferne Ausgangssituation handelt, gibt es doch einige grundlegende Unterschiede.
 Unter anderem stellt das Stapeln von Containern im dort betrachteten Szenario eher die Ausnahme dar.
 
+\vfill
+\pagebreak
+
 \citet{Bruns2015} haben erste Ergebnisse zur Komplexität verschiedener Stacking-Probleme veröffentlicht.
 Daraus stammt unter anderem die Erkenntnis, dass eine der in dieser Arbeit betrachteten Problemstellungen stark NP-vollständig ist.
 Des Weiteren wurden Polynomialzeit-Algorithmen für einige Stacking-Probleme vorgestellt,
@@ -75,16 +93,5 @@ Diese Beispiele stehen exemplarisch dafür, dass es sich bei Storage-Loading- bz
 ein aktives Forschungsgebiet handelt, welches auch aus praktischer Perspektive von großer Relevanz ist.
 Außerdem verdeutlichen sie, dass der Fokus bisher in der Regel auf der Optimierung anderer Zielfunktionen lag.
 
-Zunächst werden in Kapitel \ref{sec:stacking_problems} Stacking-Probleme im Allgemeinen
-eingeführt und anschließend formal definiert.
-Da­r­auf­fol­gend geht es in Kapitel \ref{sec:test_data} um die Testinstanzen, welche generiert werden,
-um die entwickelten Heuristiken testen und miteinander vergleichen zu können.
-Ebenfalls dem experimentellen Vergleich dienen die in Kapitel \ref{sec:mip_formulations} eingeführten MIP-Formulierungen,
-welche durch Ermittlung der optimalen Zielfunktionswerte eine Beurteilung der Lösungsqualität der Heuristiken ermöglichen.
-In Kapitel \ref{sec:constructive_heuristics} werden die entwickelten konstruktiven Heuristiken vorgestellt und
-die Ergebnisse der experimentellen Vergleiche präsentiert. Anschließend wird in Kapitel \ref{sec:post_optimization} ein Verbesserungsverfahren entwickelt, welches eine von den Heuristiken aus Kapitel \ref{sec:constructive_heuristics} generierte Lösung als Eingabe erhält.
-Dieses Verfahren hat zum Ziel, die Initiallösung basierend auf einer lokalen Suche
-zu verbessern. Abschließend wird in Kapitel \ref{sec:conclusion} ein Fazit formuliert.
-
-
+\vfill
 \pagebreak
