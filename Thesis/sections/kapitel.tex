@@ -254,7 +254,7 @@ wenn $s_{ij} = 1$ gilt.
 \end{figure}
 In dieser Arbeit werden ausschließlich transitive Stacking-Constraints betrachtet, d.h.
 wenn $(i, j), (j, h) \in A^S$, dann gilt ebenfalls $(i, h) \in A^S$.
-Diese Einschränkung ist auch in der Praxis zumeist gegeben, da die Stacking-Constraints häufig auf Eigenschaften wie dem Gewicht oder der Länge der Items basieren. Restriktionen dieser Art haben die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j$ gilt $s_{ij} = 1$ oder $s_{ji} = 1$, was zur Folge hat,
+Diese Einschränkung ist auch in der Praxis zumeist gegeben, da die Stacking-Constraints häufig auf Eigenschaften wie dem Gewicht oder der Länge der Items basieren. Restriktionen dieser Art haben außerdem die besondere Eigenschaft, dass alle Items vergleichbar sind, d.h. für alle $i \neq j$ gilt $s_{ij} = 1$ oder $s_{ji} = 1$, was zur Folge hat,
 dass eine totale Ordnung auf allen Items definiert wird (vgl. \citet{Bruns2015}).
 
 \pagebreak
@@ -307,7 +307,7 @@ die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, welche in Abschnitt \ref
 \[
     c_{iq} =
 \begin{cases}
-    d_{man}(O_i, F_q), & \text{wenn $t_{iq} = 1$}\\
+    d(O_i, F_q), & \text{wenn $t_{iq} = 1$}\\
     \infty, & \text{sonst}
 \end{cases}
 \]
@@ -323,7 +323,7 @@ der Kosten $\infty$ enthält.
 \subsection{Komplexität}
 \label{sec:complexity}
 
-In den folgenden Kapiteln werden Instanzen von Stacking-Problemen mit Stacks der Kapazitäten $b = 2$
+In den folgenden Kapiteln werden Stacking-Probleme mit Stacks der Kapazitäten $b = 2$
 und $b = 3 $ betrachtet, welche besonders in Szenarien aus der Praxis, in denen es darum geht,
 Container zu stapeln, von Interesse sind.
 
@@ -408,9 +408,7 @@ in drei Kategorien unterteilt:
 Dabei handelt es sich um einen groben Rahmen, in welchem sich praktisch motivierte Container-Stacking-Probleme
 typischerweise bewegen. Dieser findet sich auch in der Literatur wieder (vgl. \citet{Le2016}).
 
-Um die entwickelten Lösungsverfahren sinnvoll testen und miteinander vergleichen zu können,
-werden Instanzen generiert, welche im Idealfall nicht allzu weit von realistischen Szenarien entfernt
-sein sollten. Dazu stellt der \textsc{TestDataGenerator} eine Reihe von Konfigurationsmöglichkeiten
+Der \textsc{TestDataGenerator} stellt zur Generierung der Test-Instanzen eine Reihe von Konfigurationsmöglichkeiten
 bereit, welche im Folgenden vorgestellt werden. Um den Vergleichen eine gewisse Aussagekraft zu verleihen,
 werden in den Experimenten pro Konfiguration $20$ Instanzen generiert.
 
@@ -437,6 +435,9 @@ Die Stacking-Constraint-Matrix $S$ wird anhand einer definierten Wahrscheinlichk
 Für alle $n$ Items wird eine zufällige Länge und Breite generiert. Item $i \in I$ kann auf Item $j \in I$
 platziert werden, wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq l_j$ und $w_i \leq w_j$.
 Zwei Items $i, j$ sind in beide Richtungen stapelbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
+
+\vfill
+\pagebreak
 
 Die zweite Variante erscheint realitätsnäher. Aufgrund der Tatsache, dass diese jedoch bei zufälligen Längen und
 Breiten der Items stets zu einem Anteil von $1$-Einträgen in der Stacking-Constraint-Matrix $S$ von ca. $25\%$ führt
@@ -560,7 +561,7 @@ wenn beide Lösungsverfahren dieselbe Zielfunktion betrachten. Dies wird durch e
 ermöglicht, welches beide konstruktiven Heuristiken bereitstellen und welches einen reinen Fokus auf die
 Transportkostenminimierung ermöglicht, nachdem die Zulässigkeit erreicht ist.
 
-Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee des MIP im Allgemeinen
+Zunächst wird in Abschnitt \ref{sec:mip_definition} kurz die Idee der gemischt-ganzzahligen linearen Programmierung im Allgemeinen
 eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formulation} und \ref{sec:three_idx_formulation} die beiden in dieser Arbeit betrachteten MIP-Formulierungen im Detail vorzustellen.
 
 \subsection{Mixed Integer Linear Programming (MIP)}
@@ -568,27 +569,29 @@ eingeführt, um dann im Anschluss in den Abschnitten \ref{sec:bin_packing_formul
 
 Viele kombinatorische Optimierungsprobleme lassen sich als lineare Programme formulieren, die sich dadurch
 auszeichnen, dass die Zielfunktion eine lineare Funktion in Abhängigkeit von den Entscheidungsvariablen ist
-und alle Nebenbedingungen in Form von linearen Gleichungen und Ungleichungen vorliegen. Für diese Probleme gibt es mit dem Simplexverfahren ein sehr effizientes Lösungsverfahren.\cite{Knust2017}
+und alle Nebenbedingungen in Form von linearen Gleichungen und Ungleichungen vorliegen. Für diese Probleme gibt es mit dem Simplexverfahren ein sehr effizientes Lösungsverfahren \cite{Knust2017}.
 
 Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm, welches kontinuierliche und ganzzahligen Variablen
 enthält. Im Gegensatz zur kontinuierlichen Variante, ist die Lösung von ganzzahligen linearen Programmen NP-schwer.
-Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle Solver in wenigen Minuten gelöst werden können, gilt dies nicht für ganzzahlige lineare Programme. Diese können nur mit deutlich zeitaufwändigeren Algorithmen wie Branch \& Bound gelöst werden.\cite{Brucker2006}
+Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle Solver in wenigen Minuten gelöst werden können, gilt dies nicht für ganzzahlige lineare Programme. Diese können nur mit deutlich zeitaufwändigeren Algorithmen wie Branch \& Bound gelöst werden \cite{Brucker2006}.
 
 In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
 um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
-zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM. \cite{CPLEX2015}
+zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM \cite{CPLEX2015}.
 
 \subsection{Bin-Packing-Formulierung}
 \label{sec:bin_packing_formulation}
 
-Die Bin-Packing-Formulierung orientiert sich dem Namen nach am klassichen \textsc{Bin-Packing} Problem, bei dem es darum geht,
+Die Bin-Packing-Formulierung orientiert sich dem Namen nach am klassischen \textsc{Bin-Packing} Problem, bei dem es darum geht,
 eine Menge von Objekten so auf eine Menge von Behältern zu verteilen, dass die Behälterkapazitäten eingehalten werden.
+Wird dabei eine Lösung gesucht, die möglichst wenig Behälter verwendet, so handelt es sich um eines der klassischen NP-vollständigen
+Probleme (vgl. \citet{Garey1979}).
 Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
 die diesen Behältern zugeordnet werden, wobei die Behälter- bzw. Stack-Kapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
 
 Es sei eine Menge von Items $I = \{1, ..., n\}$ und eine Menge von Stacks $Q = \{1, ..., m\}$ mit einer Kapazität von $b$ gegeben.
-Außerdem sei $G = (I, A)$ ein transitiver Stacking-Constraint-Graph, bei dem eine Kante $(i, j) \in A$ bedeutet,
-dass die Items $i$ und $j$ in mindestens einer Richtung stackbar sind, also $s_{ij} = 1$ oder $s_{ji} = 1$.\newline
+Außerdem sei $G = (I, E)$ ein transitiver Stacking-Constraint-Graph, bei dem eine Kante $(i, j) \in E$ bedeutet,
+dass die Items $i$ und $j$ in mindestens einer Richtung stapelbar sind, also $s_{ij} = 1$ oder $s_{ji} = 1$.\newline
 Bei den Variablen $x_{iq}$ handelt es sich um Binärvariablen, wobei $x_{iq} = 1$ bedeutet, dass Item $i$ Stack $q$ zugewiesen wird.
 Die Kosten werden über die Variablen $c_{iq}$ modelliert, wobei $c_{iq}$ den Kosten für den Transport des Items $i$ in den Stack $q$
 entspricht.
@@ -597,14 +600,16 @@ entspricht.
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
 \thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
 \quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \label{bin_packing_line_three} \\
-\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin A \label{bin_packing_line_four} \\
+\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall (i, j) \notin E \label{bin_packing_line_four} \\
 \thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace \label{bin_packing_line_five}
 \end{gather}
 
 In (\ref{bin_packing_line_one}) wird die betrachtete Zielfunktion definiert, welche die Summe der Kosten sämtlicher
-Item-Stack-Zuweisungen minimiert, was der Minimierung der Transportkosten entspricht.
+Item-Stack-Zuweisungen minimiert, was der Minimierung der Transportkosten entspricht. Außerdem berücksichtigt die Zielfunktion implizit
+die Placement-Constraints, da diese wie in Abschnitt \ref{sec:placement_restrictions} beschrieben, durch hohe Kostenwerte
+implementiert werden.
 Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass für sämtliche Stacks die Stack-Kapazität eingehalten werden muss, d.h.
-die Summe der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stackbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
+die Anzahl der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stapelbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
 
 \subsection{3-Index-Formulierung}
 \label{sec:three_idx_formulation}
