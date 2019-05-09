@@ -611,6 +611,10 @@ implementiert werden.
 Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass für sämtliche Stacks die Stack-Kapazität eingehalten werden muss, d.h.
 die Anzahl der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stapelbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
 
+Für diese MIP-Formulierung ist die Transitivität der Stacking-Constraints Voraussetzung, denn durch Nebenbedingung (\ref{bin_packing_line_four}) wird lediglich sichergestellt, dass die Items, welche gemeinsam in einem Stack platziert werden,
+paarweise in einer Richtung stapelbar sind. Erst in Verbindung mit der Transitivität ergibt sich, dass auch für drei oder
+mehr Items stets eine Reihenfolge existiert, in welcher diese innerhalb eines Stacks gestapelt werden dürfen.
+
 \subsection{3-Index-Formulierung}
 \label{sec:three_idx_formulation}
 
