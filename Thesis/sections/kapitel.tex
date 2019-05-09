@@ -363,9 +363,35 @@ wird der Postprocessing-Schritt in den Experimenten stets durchgeführt.
 \section{Testdaten-Generierung}
 \label{sec:test_data}
 
-Zu Testzwecken werden durch einen im Zuge dieser Arbeit implementierten \textsc{TestDataGenerator}
-unterschiedlich große Instanzen von Stacking-Problemen generiert. Die Größe einer
-Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
+Um die im Zuge dieser Arbeit entwickelten Heuristiken testen, miteinander vergleichen
+und bewerten zu können, galt es zunächst, möglichst realistische Instanzen von Stacking-Problemen
+für die in dieser Arbeit betrachteten Szenarien zu generieren.
+
+\citet{Briskorn2018} haben einen Testdaten-Generator für verschiedene Szenarien entwickelt, bei denen
+es darum geht, den Prozess zu simulieren, in welchem Kräne Container in einer Lagerfläche positionieren.
+Dieser deckt unterschiedliche Ausgangssituationen ab, welche beispielsweise in Hafen-Containerterminals,
+Lagerhallen und Bahnterminals auftreten.
+Ein Großteil der zahlreichen Konfigurations- und Spezifikationsmöglichkeiten, welche dieser
+Generator bereitstellt, spielt für die in dieser Arbeit betrachteten Problemstellungen allerdings keine Rolle.
+Es lassen sich dort Übergabepositionen, Bewegungseigenschaften für die Container, Daten zur Freigabe und Auslieferung von
+Containern, Vorgängerlisten der Container basierend auf Ausliegerungszeiten und viele weitere, in dieser Arbeit
+ungenutzte Eigenschaften setzen, von denen viele verpflichtend sind. Die Regeln zur Generierung der Stacking-Constraints,
+welche essenzieller Bestandteil jeder in dieser Arbeit betrachteten Instanz sind, sind dagegen nicht Teil des Generators.
+Bei Verwendung dieses Generators müssten viele Eigenschaften spezifiziert werden, die in dieser Arbeit nicht
+berücksichtigt werden und die generierten Instanzen enthielten dementsprechend zahlreiche ungenutzte Informationen,
+weshalb es insgesamt sinnvoller ist, einen eigenen Testdaten-Generator zu implementieren, für die Generierung der
+Stacking-Constraints hätte ohnehin auf eine eigene Implementation zurückgegriffen werden müssen.
+Sollten in Zukunft weitere Aspekte einbezogen werden, welche von diesem Testdaten-Generator bereitgestellt
+werden, wie z.B. Ein- und Auslagerungszeiten, so kann es ggf. zu einem späteren Zeitpunkt sinnvoll
+sein, auf diesen zurückzugreifen. Zum jetzigen Zeitpunkt hält sich der Aufwand für eine eigene Implementation,
+welche die Anforderungen der in dieser Arbeit betrachteten Szenarien besser abdeckt, in Grenzen und vermeidet den
+erheblichen Overhead an ungenutzten Daten innerhalb der Instanzen.
+
+\vfill
+\pagebreak
+
+Dieser zu Testzwecken entwickelte \textsc{TestDataGenerator} generiert unterschiedlich große Instanzen von Stacking-Problemen.
+Die Größe einer Instanz bezieht sich dabei stets auf die Anzahl der betrachteten Items. Die Testinstanzen werden
 in drei Kategorien unterteilt:
 \begin{itemize}
   \item klein (\textbf{s}) ($\leq 100$ Items)
@@ -388,8 +414,6 @@ Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert 
 Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen bei dieser
 Anzahl an Stacks jedoch unlösbar. Daher wird die Minimalanzahl der Stacks um $a$ erhöht und es gilt
 $m = \ceil{\ceil{\frac{n}{b}} + a}$.
-
-\pagebreak
 
 \textbf{Stacking-Constraints}
 
@@ -434,8 +458,6 @@ Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichke
 dass ein Item $i \in I$ in einem Stack $q \in Q$ platziert werden darf, im \textsc{TestDataGenerator} konfiguriert werden kann.
 In der Praxis sind tendenziell mehr Zuweisungen erlaubt als verboten.
 
-\pagebreak
-
 \textbf{Item- und Stackpositionierung}
 
 Im Wesentlichen liegen der Item- und Stackpositionierung zwei Grids zugrunde. Zum einen die Storage-Area,
@@ -469,9 +491,6 @@ zwei Itemreihen sowie einer Distanz zwischen Storage-Area und der ersten Fahrzeu
 der Zellenbreite, die in Abb. \ref{fig:positioning_example} dargestellte Item- und Stackpositionierung.
 Die Positionen entsprechen in der von oben betrachteten Darstellung in der Abbildung stets der unteren linken Ecke
 eines Items bzw. Stacks.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
 \centering
