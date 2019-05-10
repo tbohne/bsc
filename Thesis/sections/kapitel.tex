@@ -1789,12 +1789,12 @@ welche wie folgt definiert sind:
     c_{(i, j)q} \quad := \quad
 \begin{cases}
     c_{iq} + c_{jq}, & \text{wenn $t_{iq} = 1$ und $t_{jq} = 1$}\\
-    xa, & \text{sonst}
+    za, & \text{sonst}
 \end{cases}
 \]
 D.h. die Kosten der Zuweisung entsprechen nur dann der Summe der beiden Einzelzuweisungen, wenn beide Items des Paares basierend
 auf den Placement-Constraints kompatibel zum Stack sind. Ist dies nicht der Fall, so wird die Inkompatibilität durch
-einen Kostenwert von $xa$ mit $x \in \mathbb{R}$, also dem $x$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
+einen Kostenwert von $za$ mit $z \in \mathbb{R}$, also dem $z$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
 \[ avgC_{ij} = \frac{\sum_{q \in Q} c_{(i, j)q}}{|Q|}  \]
 
 Anschließend wird über sämtliche Paare, die sich aus den Kanten $\{i, j\} \in M$ ergeben, hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
@@ -1941,10 +1941,10 @@ Die präsentierte Heuristik stellt an einigen Stellen Konfigurationsmöglichkeit
 ermittelte Werte gesetzt werden.
 
 Zunächst zur Bestimmung der Kosten $c_{(i, j)q}$ einer gemeinsamen Stackzuweisung eines Item-Paares $(i, j)$ zu einem Stack $q$.
-Sind nicht beide Items kompatibel zum Stack $q$, so wird die Inkompatibilität durch das $x$-fache der Kosten einer
-durchschnittlichen Item-Stack-Zuweisung bestraft, wobei $x \in \mathbb{R}$. Die Inkompatibilität sollte durchaus einen Einfluss auf die
+Sind nicht beide Items kompatibel zum Stack $q$, so wird die Inkompatibilität durch das $z$-fache der Kosten einer
+durchschnittlichen Item-Stack-Zuweisung bestraft, wobei $z \in \mathbb{R}$. Die Inkompatibilität sollte durchaus einen Einfluss auf die
 Bewertung der Paare haben. Gleichzeitig sollte der Einfluss eines inkompatiblen Stacks nicht zu groß sein.
-Für die folgenden Experimente hat sich $x = 5$ als sinnvoller Wert herausgestellt.
+Für die folgenden Experimente hat sich $z = 5$ als sinnvoller Wert herausgestellt.
 
 Der \textquote{Deviation-Threshold} $d_t$ wird in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
 unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
