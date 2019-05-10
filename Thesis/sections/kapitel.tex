@@ -914,10 +914,8 @@ Items, welche nicht inzident zu einer Kante des Matchings sind, werden auf dem G
 Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet, denn auch wenn der eigentliche Gegenstand der Optimierung die Transportkosten sind, steht zunächst stets im Vordergrund, überhaupt eine zulässige Lösung zu finden, weshalb die Maximierung der Anzahl der vollständig gefüllten Stacks initial eine gute Strategie darstellt.
 Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching und die Anzahl der nicht gematchten Knoten in der Summe nicht größer ist als $m$.
 
-Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch die bestmögliche Zuweisung von
-Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem
-kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
-Eine Kante $\{i, q\} \in A$ zwischen einem Knoten $i \in V_1$ und einem Knoten $q \in V_2$ gibt an, dass das entsprechende Item oder Item-Paar $i$ dem jeweiligen Stack $q$ zugeordnet werden kann. Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
+Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch eine bestmögliche Zuweisung von Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
+Eine Kante in $A$, welche ein Item $i \in V_1$ oder ein Item-Paar $(i, j) \in V_1$ mit einem Stack $q \in V_2$ verbindet, gibt an, dass das entsprechende Item $i$ bzw. Item-Paar $(i, j)$ dem jeweiligen Stack $q$ zugeordnet werden kann. Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
 aus $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2 \thinspace \exists \thinspace \{i, q\} \in A$.
 Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird, zum Stack $q$
 in der Storage-Area. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
@@ -937,9 +935,9 @@ werden können, während eine Zuweisung echter Items und Item-Paare stets Kosten
 echte Items bei der Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
 
 Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als
-Stackzuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items und Item-Paare zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung der generierten Item-Paare und Unmatched Items zu den Stacks, welche die Placement-Constraints respektiert.
+Stackzuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items und Item-Paare zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung der generierten Item-Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
 
-Abschließend muss ggf. die Reihenfolge der Items innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist, dass sie kompatibel und somit in mindestens einer Richtung stackbar sind. Die Richtung, in welcher sie stackbar sind, wurde bei der Zuweisung jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene Stacks, welche ein Item-Paar beinhalten, überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht. Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
+Abschließend muss ggf. die Reihenfolge der Items innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist, dass sie kompatibel und somit in mindestens einer Richtung stapelbar sind. Die Richtung, in welcher sie stapelbar sind, wurde bei der Zuweisung jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene Stacks, welche ein Item-Paar beinhalten, überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht. Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
 
 Wie bereits in Abschnitt \ref{sec:objective} erwähnt, bietet die Heuristik über den Parameter
 \textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
@@ -1191,7 +1189,7 @@ Die entsprechende Interpretation des \textsc{MWPM} als zulässige Stack-Zuweisun
 
 Zuletzt muss ggf. noch die Reihenfolge innerhalb der Stacks angepasst werden, da es sich bisher nur um zulässige Zuweisungen,
 nicht aber um eine zulässige Ordnung der Items innerhalb der Stacks handelt.
-Da jedoch sichergestellt ist, dass die Item-Paare kompatibel, d.h. in mindestens einer Richtung stackbar sind,
+Da jedoch sichergestellt ist, dass die Item-Paare kompatibel, d.h. in mindestens einer Richtung stapelbar sind,
 ist dies trivial in der in Abschnitt \ref{sec:two_cap_heuristic} beschriebenen Weise möglich.
 
 \pagebreak
@@ -1316,10 +1314,10 @@ Sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00G
 
 \textbf{Kleine Instanzen (s)}
 
-Zunächst zum experimentellen Vergleich der Solver für in Kapitel \ref{sec:test_data} als klein definierte Instanzen,
+Zunächst zum experimentellen Vergleich der Solver für die in Kapitel \ref{sec:test_data} als klein definierte Instanzen,
 bei denen es darum geht, $100$ eintreffende Items in die Storage-Area zu verladen.
 Die Diagramme in Abb. \ref{fig:instance_cov_b=2_s} zeigen jeweils die Instance-Coverage der einzelnen Solver.
-In \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil der gelösten Instanzen pro Solver bei einem Zeitlimit
+In \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil der zulässig gelösten Instanzen pro Solver bei einem Zeitlimit
 von $1s$ pro Instanz, in \ref{fig:instance_cov_b=2_s_b} bei einem Zeitlimit von $3s$ pro Instanz und in \ref{fig:instance_cov_b=2_s_c}
 schließlich bei $5s$ pro Instanz.\newline
 Auf der $y$-Achse ist jeweils der prozentuale Anteil der gelösten Instanzen aufgetragen und auf der $x$-Achse der jeweilige Solver.
@@ -1332,7 +1330,8 @@ Die Solver werden in den Diagrammen und Abbildungen im Folgenden stets als \text
 Wie bereits in Kapitel \ref{sec:test_data} erläutert, werden jeweils $20$ Instanzen pro Konfiguration betrachtet,
 d.h. die im Folgenden betrachteten Ergebnisse basieren auf der Lösung von in diesem Fall $20$ kleinen Instanzen.
 
-Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, lösen die Heuristik und die 3-Index-Formulierung bei allen betrachteten Zeitlimits sämtliche Instanzen, während die Bin-Packing-Formulierung bei einem Zeitlimit von $1s$ überhaupt keine Instanz löst.\newline
+Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, finden die Heuristik und die 3-Index-Formulierung bei allen betrachteten Zeitlimits für sämtliche Instanzen eine zulässige Lösung, während die Bin-Packing-Formulierung bei einem Zeitlimit von $1s$
+überhaupt keine Instanz löst.\newline
 Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings, dass sämtliche Instanzen bereits bei einem Zeitlimit von $3s$ von allen Solvern gelöst werden, was darauf hindeutet, dass der Bedarf für eine Laufzeitverbesserung durch eine Heuristik hier
 aus praktischer Perspektive eher gering sein dürfte.
 
