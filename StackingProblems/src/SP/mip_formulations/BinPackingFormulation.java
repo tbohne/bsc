@@ -69,7 +69,9 @@ public class BinPackingFormulation {
             for (int i = 0; i < this.instance.getItems().length; i++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
                 for (int q = 0; q < this.instance.getStacks().length; q++) {
-                    expr.addTerm(1, x[i][q]);
+                    if (this.instance.getPlacementConstraints()[i][q] == 1) {
+                        expr.addTerm(1, x[i][q]);
+                    }
                 }
                 cplex.addEq(expr, 1);
             }
@@ -99,7 +101,7 @@ public class BinPackingFormulation {
             }
 
             System.out.println();
-            //cplex.setOut(null);
+            cplex.setOut(null);
 
             // sets the time limit
             cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
@@ -116,6 +118,7 @@ public class BinPackingFormulation {
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
                 sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, timeLimit, this.instance);
+                sol.lowerItemsThatAreStackedInTheAir();
             }
             cplex.end();
 
