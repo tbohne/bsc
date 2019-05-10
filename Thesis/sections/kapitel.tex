@@ -1937,6 +1937,30 @@ iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt w
 
 \textbf{Konfiguration der Heuristik}
 
+Die präsentierte Heuristik stellt an einigen Stellen Konfigurationsmöglichkeiten bereit, welche durch experimentell
+ermittelte Werte gesetzt werden.
+
+Zunächst zur Bestimmung der Kosten $c_{(i, j)q}$ einer gemeinsamen Stackzuweisung eines Item-Paares $(i, j)$ zu einem Stack $q$.
+Sind nicht beide Items kompatibel zum Stack $q$, so wird die Inkompatibilität durch das $x$-fache der Kosten einer
+durchschnittlichen Item-Stack-Zuweisung bestraft, wobei $x \in \mathbb{R}$. Die Inkompatibilität sollte durchaus einen Einfluss auf die
+Bewertung der Paare haben. Gleichzeitig sollte der Einfluss eines inkompatiblen Stacks nicht zu groß sein.
+Für die folgenden Experimente hat sich $x = 5$ als sinnvoller Wert herausgestellt.
+
+Der \textquote{Deviation-Threshold} $d_t$ wird in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
+unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
+Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$ Abweichung in der Summe.
+Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird.
+
+Eine weitere wichtige Konfigurationsmöglichkeit besteht in der Anzahl der Paare $x$, welche im Merge-Prozess wieder
+separiert werden. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
+
+\textbf{Einfluss des Rating-Systems}
+
+Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit pro Instanz in der Kategorie der großen
+Instanzen, in welcher es die größte Auswirkung auf die Laufzeiten zeigt, von $0.5 s$ auf $4.2 s$. Dabei verringert
+sich der Zielfunktionswert in den unterschiedlichen Kategorien um durchschnittlich $0.007 \% (l), 0.04 \% (m)$
+und $0.13 \% (s)$.
+
 \vfill
 \pagebreak
 
