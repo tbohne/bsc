@@ -77,8 +77,10 @@ public class ThreeIndexFormulation {
             for (int i = 0; i < this.instance.getItems().length; i++) {
                 IloLinearIntExpr expr = cplex.linearIntExpr();
                 for (int q = 0; q < this.instance.getStacks().length; q++) {
-                    for (int l = 0; l < this.instance.getStackCapacity(); l++) {
-                        expr.addTerm(1, x[i][q][l]);
+                    if (this.instance.getPlacementConstraints()[i][q] == 1) {
+                        for (int l = 0; l < this.instance.getStackCapacity(); l++) {
+                            expr.addTerm(1, x[i][q][l]);
+                        }
                     }
                 }
                 cplex.addEq(expr, 1);
@@ -112,7 +114,7 @@ public class ThreeIndexFormulation {
             }
 
             System.out.println();
-//            cplex.setOut(null);
+            cplex.setOut(null);
 
             // sets the time limit
             cplex.setParam(Param.TimeLimit, timeLimit);
@@ -128,6 +130,7 @@ public class ThreeIndexFormulation {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
                 sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, timeLimit, this.instance);
+                sol.lowerItemsThatAreStackedInTheAir();
             }
             cplex.end();
 
