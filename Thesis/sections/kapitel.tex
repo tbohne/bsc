@@ -632,7 +632,9 @@ Jeder Stack enthält dementsprechend die Level $L = \{1, ..., b\}$. Des Weiteren
 $G = (I, A)$ gegeben, bei dem eine Kante $i \rightarrow j \in A$ bedeutet, dass das Item $i$ direkt auf das Item $j$ gestapelt werden darf.
 Die Kosten seien durch die gegebene Transportkostenmatrix $C$ definiert, in der an der Stelle $c_{iq}$ die Kosten für den
 Transport von Item $i$ in Stack $q$ stehen. Bei den Variablen $x_{iql}$ handelt es sich um Binärvariablen,
-bei denen $x_{iql} = 1$ bedeutet, dass Item $i$ in Stack $q$ auf Level $l$ platziert wird.
+bei denen $x_{iql} = 1$ bedeutet, dass Item $i$ in Stack $q$ auf Level $l$ platziert wird. Wie bei der Bin-Packing-Formulierung
+werden die Placement-Constraints auch hier explizit umgesetzt und die kompatiblen Stacks sind durch Mengen $Q^i$ für
+alle Items $i \in I$ gegeben.
 
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} \sum_{l \in L} c_{iq} x_{iql} \label{three_idx_line_one} \\
@@ -645,7 +647,8 @@ bei denen $x_{iql} = 1$ bedeutet, dass Item $i$ in Stack $q$ auf Level $l$ platz
 
 In (\ref{three_idx_line_one}) wird die Zielfunktion definiert, die erneut die Summe der Kosten sämtlicher Item-Zuweisungen
 und somit die Transportkosten minimiert.
-Nebenbedingung (\ref{three_idx_line_two}) fordert, dass sich jedes Item in genau einem Stack an genau einer Position (Level) befindet,
+Nebenbedingung (\ref{three_idx_line_two}) fordert, dass sich jedes Item in genau einem kompatiblen Stack an genau
+einer Position (Level) befindet,
 also im Grunde, dass jedes Item einer Position in einem Stack zugewiesen wird.
 Anschließend wird in (\ref{three_idx_line_three}) gefordert, dass sich an jeder Position in jedem Stack höchstens ein Item befindet und
 (\ref{three_idx_line_four}) formuliert die Einschränkung, dass jedes Item, welches oberhalb des Ground-Levels platziert wird,
