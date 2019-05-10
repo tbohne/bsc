@@ -1456,7 +1456,7 @@ vom optimalen Zielfunktionswert pro Instanz an.
 
 Abbildung \ref{fig:table} zeigt, dass die 3-Index-Formulierung der Bin-Packing-Formulierung in dieser Kategorie vorzuziehen ist,
 da diese bei jedem betrachteten Zeitlimit zu besseren Ergebnissen kommt und mit einer sehr geringen Laufzeit sämtliche Instanzen
-optimal löst. Da die Zeitlimits aufgrund der geringen Laufzeit für die Heuristik keine Rolle spielen, kommt diese stets zum selben Ergebnis. Sie weicht durchschnittlich um $0.29 \%$ vom Optimum ab und benötigt dafür eine Laufzeit von nur $0.04s$.
+optimal löst. Da die Zeitlimits aufgrund der geringen Laufzeit für die Heuristik keine Rolle spielen, kommt diese stets zum selben Ergebnis. Sie weicht durchschnittlich um $0.29 \%$ vom Optimum ab und benötigt dafür eine durchschnittliche Laufzeit von nur $0.04s$.
 Trotz dieser sehr guten Ergebnisse der Heuristik, besteht aufgrund der Tatsache, dass die 3-Index-Formulierung sämtliche Instanzen
 mit einer durchschnittlichen Laufzeit von ca. $0.82s$ optimal löst, aus praktischer Perspektive vermutlich kein großer Bedarf für
 eine Laufzeitverbesserung durch eine Heuristik.
@@ -1500,7 +1500,7 @@ Die Heuristik löst, wie bereits in der Kategorie der kleinen Instanzen, in jede
 
 Da die Zeitlimits aufgrund der geringen Laufzeit der Heuristik für diese erneut keine Rolle spielen,
 kommt sie stets zum selben Ergebnis. Sie weicht durchschnittlich um $0.06 \%$ vom
-Optimum ab und benötigt dafür eine Laufzeit von $0.41s$.
+Optimum ab und benötigt dafür eine durchschnittliche Laufzeit von $0.41s$.
 
 In Abb. \ref{fig:res_plots_b=2_m} sind die Laufzeiten und ermittelten Zielfunktionswerte der Solver bei einem Zeitlimit von $10$
 Minuten dargestellt. Da die Bin-Packing- und die 3-Index-Formulierung bei diesem Zeitlimit sämtliche Instanzen optimal lösen,
@@ -1727,23 +1727,16 @@ an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic
 Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden überdies
 erweiternde Ansätze präsentiert.
 
-Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden. Dazu wird ein
-Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$.
-Dieser Graph besitzt eine Kante $\{i, j\} \in E$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$
-basierend auf den Stacking-Constraints in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$
-und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints
-zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für mindestens einen Stack $q \in Q$ gilt.
-
+Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden.
+Dazu wird analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} ein Stacking-Constraint-Graph $G = (V, E)$ generiert.
 Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
 $i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind.
-In der Regel ist anschließend die Mehrheit oder sogar die Gesamtheit der Items einer Instanz Teil eines Paares.
-Dies hängt allerdings von den gegebenen Stacking-Constraints ab und gilt nur für die zweite Variante der Stacking-Constraint-Generierung, welche in Kapitel \ref{sec:test_data} beschrieben wird. Da diese jedoch realitätsnäher zu sein scheint und daher auch in sämtlichen Experimenten zum Einsatz kommt, ist davon auszugehen, dass an dieser Stelle keine oder wenige Unmatched-Items verbleiben.
-Dieser Sachverhalt hat dazu geführt, dass sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
+In der Regel ist anschließend basierend auf den Stacking-Constraints die Mehrheit oder sogar die Gesamtheit der Items einer Instanz Teil eines Paares, weshalb sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
 um erste Tripel zu bilden, welche in einer früheren Version der Heuristik an dieser Stelle stattfand, als nicht zielführend
 erwies.
 
 Da die Stacks nun nicht nur Paare, sondern Tripel von Items beinhalten können, geht es im Folgenden darum,
-ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die zuvor gebildeten Item-Paare zu Item-Tripeln gemergt.
+ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die zuvor gebildeten Item-Paare zu Item-Tripeln zusammengeführt.
 Zunächst muss allerdings entschieden werden, welche dieser Paare sinnvollerweise wieder separiert werden sollten,
 um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis
 und möglichst vollständig gefüllte Stacks getrennt werden sollten.
@@ -1769,8 +1762,8 @@ zugewiesen werden kann, so ergeben sich die in Abb. \ref{fig:triple_permutations
 \caption{\textsc{Item-Tripel Permutationen.}}
 \label{fig:triple_permutations}
 \end{figure}
-Sind die Items $s, t \in I$, welche das betrachtete Paar bilden, in beide Richtungen stackbar, also $s_{st} + s_{ts} = 2$, so sind sämtliche
-Permutationen zu überprüfen.
+Sind die Items $s, t \in I$, welche das betrachtete Paar bilden, in beide Richtungen stapelbar, also
+$s_{st} + s_{ts} = 2$, so sind sämtliche Permutationen zu überprüfen.
 Aufgrund der Transitivität der Stacking-Constraints ist das Item $i$ in diesem Fall allerdings bereits dann kompatibel zum Paar $(s, t)$,
 wenn $s_{is} + s_{it} + s_{si} + s_{ti} \geq 1$ gilt.
 Darf Item $s$ auf Item $t$ gestapelt werden, jedoch nicht andersherum, also $s_{st} = 1$ und $s_{ts} = 0$,
@@ -1782,7 +1775,7 @@ wenn $s_{it} + s_{si} \geq 1$ oder $s_{ti} + s_{is} = 2$ gilt.\newline
 Auf diese Weise wird die Kompatibilität sämtlicher Items, welche Teil eines Paares sind, zu den verbleibenden Paaren bestimmt.
 Ausschlaggebend ist dabei jeweils die Anzahl der kompatiblen Paare des weniger kompatiblen Items eines Paares,
 da stets beide Items erneut zugewiesen werden müssen. Diese wird im Folgenden als \textquote{Worst-Compatibility}
-$w_{ij}$ des Items $(i, j)$ bezeichnet.
+$w_{ij}$ des Item-Paares $(i, j)$ bezeichnet.
 
 Des Weiteren werden für jedes Item-Paar $(i, j)$ die durchschnittlichen Kosten einer gemeinsamen Stack-Zuweisung berechnet.
 Zu diesem Zweck werden zunächst die durchschnittlichen Kosten $a$ einer zulässigen Zuweisung eines Items zu einem Stack berechnet,
@@ -1799,7 +1792,7 @@ welche wie folgt definiert sind:
 D.h. die Kosten der Zuweisung entsprechen nur dann der Summe der beiden Einzelzuweisungen, wenn beide Items des Paares basierend
 auf den Placement-Constraints kompatibel zum Stack sind. Ist dies nicht der Fall, so wird die Inkompatibilität durch
 einen Kostenwert von $5a$, also dem $5$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
-\[ avgC_{ij} = \frac{\sum_{q \in Q} (c_{(i, j)q})}{|Q|}  \]
+\[ avgC_{ij} = \frac{\sum_{q \in Q} c_{(i, j)q}}{|Q|}  \]
 
 Anschließend wird über sämtliche Paare, die sich aus den Kanten $\{i, j\} \in M$ ergeben, hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
 denn es ist überdurchschnittlich flexibel für eine erneute Zuweisung und seine gegenwärtige Zuweisung ist ohnehin überdurchschnittlich teuer.
