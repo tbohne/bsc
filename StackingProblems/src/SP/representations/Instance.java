@@ -249,6 +249,22 @@ public class Instance {
         return this.costs;
     }
 
+    public int[][] getPlacementConstraints() {
+
+        int[][] placementConstraints = new int[this.items.length][this.stacks.length];
+
+        for (int item = 0; item < this.items.length; item++) {
+            for (int stack = 0; stack < this.stacks.length; stack++) {
+                if (this.costs[item][stack] < Integer.MAX_VALUE / this.items.length) {
+                    placementConstraints[item][stack] = 1;
+                } else {
+                    placementConstraints[item][stack] = 0;
+                }
+            }
+        }
+        return placementConstraints;
+    }
+
     /**
      * Returns the instance's stack capacity.
      *
