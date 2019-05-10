@@ -1741,6 +1741,9 @@ Zunächst muss allerdings entschieden werden, welche dieser Paare sinnvollerweis
 um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis
 und möglichst vollständig gefüllte Stacks getrennt werden sollten.
 
+\vfill
+\pagebreak
+
 \textbf{Rating-System}
 
 Initial wird jede Kante $\{i, j\} \in M$, also jedes Item-Paar, mit dem Basis-Rating $0$ bewertet.
@@ -1786,12 +1789,12 @@ welche wie folgt definiert sind:
     c_{(i, j)q} \quad := \quad
 \begin{cases}
     c_{iq} + c_{jq}, & \text{wenn $t_{iq} = 1$ und $t_{jq} = 1$}\\
-    5a, & \text{sonst}
+    xa, & \text{sonst}
 \end{cases}
 \]
 D.h. die Kosten der Zuweisung entsprechen nur dann der Summe der beiden Einzelzuweisungen, wenn beide Items des Paares basierend
 auf den Placement-Constraints kompatibel zum Stack sind. Ist dies nicht der Fall, so wird die Inkompatibilität durch
-einen Kostenwert von $5a$, also dem $5$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
+einen Kostenwert von $xa$ mit $x \in \mathbb{R}$, also dem $x$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
 \[ avgC_{ij} = \frac{\sum_{q \in Q} c_{(i, j)q}}{|Q|}  \]
 
 Anschließend wird über sämtliche Paare, die sich aus den Kanten $\{i, j\} \in M$ ergeben, hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
@@ -1813,30 +1816,26 @@ Das Rating $r_{ij}$ des Paares $(i, j)$ ergibt sich dementsprechend folgenderma�
 \]
 Die Tatsache, dass das Rating $r_{ij}$ eines Paares $(i, j)$ direkt der Summe seiner Abweichungen $d_{ij}$
 vom Durchschnitt entspricht, sofern diese den Schwellenwert $d_t$ überschreitet, hat zur Folge, dass die Höhe der Abweichungen
-einen Einfluss auf die Bewertung der Paare hat.
+einen Einfluss auf die Bewertung der Paare hat. Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen. Dazu wird experimentell ein Wertebereich bestimmt, in welchem $d_t$ in jeder Iteration inkrementiert wird.
+Es entstehen demnach mehrere unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM},
+welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
-Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
-unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
-Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$ Abweichung in der Summe.
-Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
+\vfill
+\pagebreak
 
 Da die Verwendung des beschriebenen Rating-Systems zu einer durchaus signifikanten Laufzeitverlängerung führt,
 wird in der Implementation der Heuristik ein Parameter \textit{prioritizeRuntime} eingeführt, welcher ein Deaktivieren des
 Rating-Systems ermöglicht, um eine möglichst geringe Laufzeit zu gewährleisten. Wird dieser Parameter auf \textit{true}
 gesetzt, so wird das initiale Ergebnis des \textsc{MCM} als einzige Liste von Item-Paaren im Merge-Prozess verwendet und
 resultiert schließlich auch nur in einer einzigen Lösung.
-Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit pro Instanz in der Kategorie der großen
-Instanzen, in welcher es die größte Auswirkung auf die Laufzeiten zeigt, von $0.5 s$ auf $4.2 s$. Dabei verringert
-sich der Zielfunktionswert in den unterschiedlichen Kategorien um durchschnittlich $0.007 \% (l), 0.04 \% (m)$
-und $0.13 \% (s)$. Trotz der vergleichsweise geringen Verbesserungen der Zielfunktionswerte im Durchschnitt,
-ist diese im Einzelfall durchaus relevant. Gerade in Anbetracht der ohnehin bereits geringen Abweichung der Heuristik vom Optimum,
-kann diese jenem durch Verwendung des Rating-Systems noch einmal näher kommen. Wenn also eine Laufzeit von wenigen Sekunden, welche
-die MIP-Formulierungen weiterhin um Größenordnungen unterbietet, akzeptabel ist, sollte dies in Betracht gezogen werden.
+Trotz vergleichsweise geringer Verbesserungen der Zielfunktionswerte im Durchschnitt, welche das Rating-System mit sich bringt,
+sind diese im Einzelfall durchaus relevant. Gerade in Anbetracht der ohnehin bereits geringen Abweichungen der Heuristik vom Optimum,
+kann diese jenem durch Verwendung des Rating-Systems noch einmal näher kommen.
 
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
 prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden
-$|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
+$|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking-Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen.
 
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
 Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E_1)$ bestehend aus den Paaren und separierten Items generiert.
@@ -1895,7 +1894,7 @@ jeweils um eine günstigste Zuweisung handelt, da die Kantenkosten jeweils den T
 Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung
 der generierten Tripel, Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
 
-Auf diese Weise entstehen $13$ Lösungen, von denen schließlich die günstigste ausgewählt wird.
+Auf diese Weise entsteht eine Menge von Lösungen, von denen schließlich die günstigste ausgewählt wird.
 Zuletzt muss dann wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
 dass sie die Stacking-Constraints respektiert. Dazu werden sämtliche Stacks, denen mehr als
 ein Item zugewiesen wurde, betrachtet. Für jeden dieser Stacks wird geprüft, ob die aufeinander
@@ -1935,6 +1934,11 @@ innerhalb der Stacks, welchen mindestens ein zusätzliches Item zugewiesen wurde
 
 Wie bereits in der Heuristik für eine Stack-Kapazität von $b = 2$, wird dieser Postprocessing-Prozess
 iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
+
+\textbf{Konfiguration der Heuristik}
+
+\vfill
+\pagebreak
 
 \textbf{Beispiel}
 
@@ -2443,7 +2447,7 @@ ausschließlich Kosten minimieren.
 
 \textbf{Kleine Instanzen (s)}
 
-Zunächst zum experimentellen Vergleich der Solver für in Kapitel \ref{sec:test_data} als klein definierte
+Zunächst zum experimentellen Vergleich der Solver für die in Kapitel \ref{sec:test_data} als klein definierte
 Instanzen, bei denen es darum geht, 100 eintreffende Items in die Storage-Area zu verladen.
 
 In Abb. \ref{fig:instance_coverage_b=3_s} ist die Instance-Coverage der einzelnen Solver bei einem Zeitlimit von $1, 3$
@@ -3008,7 +3012,7 @@ Abbruckriterium erfüllt ist.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{img/tabu_search_algo_placeholder.png}
-\caption{\textsc{Tabu-Suche. \cite{Knust2017}}}
+\caption{\textsc{Tabu-Suche \cite{Knust2017}.}}
 \label{fig:tabu_search_algo}
 \end{figure}
 
