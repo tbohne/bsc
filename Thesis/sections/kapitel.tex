@@ -584,7 +584,7 @@ zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren 
 
 Die Bin-Packing-Formulierung orientiert sich dem Namen nach am klassischen \textsc{Bin-Packing} Problem, bei dem es darum geht,
 eine Menge von Objekten so auf eine Menge von Behältern zu verteilen, dass die Behälterkapazitäten eingehalten werden.
-Wird dabei eine Lösung gesucht, die möglichst wenig Behälter verwendet, so handelt es sich um eines der klassischen NP-vollständigen
+Wird dabei eine Lösung gesucht, die möglichst wenige Behälter verwendet, so handelt es sich um eines der klassischen NP-vollständigen
 Probleme (vgl. \citet{Garey1979}).
 Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
 die diesen Behältern zugeordnet werden, wobei die Behälter- bzw. Stack-Kapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
@@ -596,19 +596,24 @@ Bei den Variablen $x_{iq}$ handelt es sich um Binärvariablen, wobei $x_{iq} = 1
 Die Kosten werden über die Variablen $c_{iq}$ modelliert, wobei $c_{iq}$ den Kosten für den Transport des Items $i$ in den Stack $q$
 entspricht.
 
+Die Placement-Constraints werden implizit durch die Zielfunktion, welche die Transportkosten minimiert, berücksichtigt,
+da diese, wie in Abschnitt \ref{sec:placement_restrictions} beschrieben, durch hohe Kostenwerte implementiert sind.
+Es ist allerdings von Vorteil, diese in den MIP-Formulierungen explizit umzusetzen, weil sich dadurch kürzere
+Laufzeiten erzielen lassen. Zu diesem Zweck seien die Placement-Constraints im Folgenden für jedes Item $i \in I$
+durch die Menge $Q^i$ gegeben, wobei $Q^i$ der Menge an Stacks entspricht, denen Item $i$ basierend auf den Placement-Constraints zugewiesen werden darf, also sämtliche $q \in Q$, für die $t_{iq} = 1$ gilt.
+
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
-\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
+\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q^i} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
 \quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \label{bin_packing_line_three} \\
-\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall (i, j) \notin E \label{bin_packing_line_four} \\
+\thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin E \label{bin_packing_line_four} \\
 \thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace \label{bin_packing_line_five}
 \end{gather}
 
 In (\ref{bin_packing_line_one}) wird die betrachtete Zielfunktion definiert, welche die Summe der Kosten sämtlicher
-Item-Stack-Zuweisungen minimiert, was der Minimierung der Transportkosten entspricht. Außerdem berücksichtigt die Zielfunktion implizit
-die Placement-Constraints, da diese wie in Abschnitt \ref{sec:placement_restrictions} beschrieben, durch hohe Kostenwerte
-implementiert werden.
-Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird. Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass für sämtliche Stacks die Stack-Kapazität eingehalten werden muss, d.h.
+Item-Stack-Zuweisungen minimiert, was der Minimierung der Transportkosten entspricht.
+Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird, mit welchem es kompatibel ist.
+Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass für sämtliche Stacks die Stack-Kapazität eingehalten werden muss, d.h.
 die Anzahl der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stapelbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
 
 Für diese MIP-Formulierung ist die Transitivität der Stacking-Constraints Voraussetzung, denn durch Nebenbedingung (\ref{bin_packing_line_four}) wird lediglich sichergestellt, dass die Items, welche gemeinsam in einem Stack platziert werden,
@@ -631,7 +636,7 @@ bei denen $x_{iql} = 1$ bedeutet, dass Item $i$ in Stack $q$ auf Level $l$ platz
 
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} \sum_{l \in L} c_{iq} x_{iql} \label{three_idx_line_one} \\
-\boldsymbol{s.t.} \quad \sum_{q \in Q} \sum_{l \in L} x_{iql} = 1 \quad\thinspace\thinspace\quad\quad\quad\quad \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \label{three_idx_line_two} \\
+\boldsymbol{s.t.} \quad \sum_{q \in Q^i} \sum_{l \in L} x_{iql} = 1 \quad\thinspace\thinspace\quad\quad\quad\quad \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \label{three_idx_line_two} \\
 \sum_{i \in I} x_{iql} \leq 1 \thinspace\quad\quad\quad\quad\quad\quad\quad \forall q \in Q, l \in L \thinspace\thinspace\thinspace\thinspace\quad\quad\quad\thinspace \label{three_idx_line_three} \\
 \sum_{j \in I | i \rightarrow j \in A} x_{jq(l-1)} - x_{iql} \geq 0 \thinspace\quad\quad \forall i \in I, q \in Q, l \in L \textbackslash \{1\}
 \label{three_idx_line_four} \\
@@ -3088,7 +3093,7 @@ ausgeschlossen, was bei der Definition dieser Länge berücksichtigt werden soll
 
 Die Short-Term-Strategy gibt im Wesentlichen an, wie zulässige Nachbarlösungen ausgewählt werden.
 Eine Operation, welche eine Nachbarlösung generiert, ist dann zulässig, wenn diese nicht tabu ist,
-oder, wenn sie das Aspirationskriterium erfüllt. Das Aspirationskriterium hat die Funktion bestimmte
+oder, wenn sie das Aspirationskriterium erfüllt. Das Aspirationskriterium hat die Funktion, bestimmte
 Operationen zu akzeptieren, obwohl diese tabu sind, sofern das Kriterium erfüllt wird.
 In der entwickelten Tabu-Suche enspricht dieses Kriterium der Generierung einer bisher besten Lösung.
 Es wäre nicht sinnvoll, eine solche Lösung zu verbieten.\newline
