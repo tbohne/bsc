@@ -2,7 +2,18 @@ library(ggplot2)
 
 input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRUE, sep = ",")
 solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "2Cap" | solver == "LB")
-plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver)) + geom_point() + xlab("costs") + ylab("instance")
+
+# LOG SCALING
+# breaks <- c(6550, 6600, 6750, 7000, 7500)
+# baseline = 6530
+# plotPointsPre <- ggplot(data = solverEntries, aes(x = val - baseline, y = instance, color = solver, group = solver))
+# scaledPlot <- plotPointsPre + geom_point() + xlab("costs") + ylab("instance") + scale_x_log10(breaks = breaks - baseline, labels = breaks)
+
+plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver))
+scaledPlot <- plotPointsPre + geom_point() + xlab("costs") + ylab("instance") #+ scale_x_continuous(limits = c(6500, 6750))
+finalPlot <- scaledPlot + scale_color_manual(values=c("#fa9f27", "#5428ff", "#f5503b", "#28bd5a"))
+
+ggsave(finalPlot, file = "solver_instance_cost.png", width=6, height=4)
 
 ##############################################################################
 binpData <- subset(input, solver == "BinP")
@@ -21,6 +32,3 @@ lowerBoundData <- subset(input, solver == "LB")
 lowerBoundCosts <- subset(lowerBoundData, select = c(val))
 paste("avg LB: ", mean(lowerBoundCosts[["val"]]))
 ##############################################################################
-
-finalPlot <- plotPointsPre + scale_x_continuous(limits = c(129400, 129950)) + scale_color_manual(values=c("#fa9f27", "#5428ff", "#f5503b", "#28bd5a"))
-ggsave(finalPlot, file = "solver_instance_cost.png", width = 6, height = 4)
