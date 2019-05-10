@@ -1937,19 +1937,20 @@ iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt w
 
 \textbf{Konfiguration der Heuristik}
 
-Die präsentierte Heuristik stellt an einigen Stellen Konfigurationsmöglichkeiten bereit, welche durch experimentell
-ermittelte Werte gesetzt werden.
+Neben den vorgestellten Parametern \textit{prioritizeRuntime} und \textit{postProcessing} bietet
+die präsentierte Heuristik weitere Möglichkeiten der Konfiguration, welche mit experimentell
+bestimmten Werten gesetzt werden.
 
-Zunächst zur Bestimmung der Kosten $c_{(i, j)q}$ einer gemeinsamen Stackzuweisung eines Item-Paares $(i, j)$ zu einem Stack $q$.
-Sind nicht beide Items kompatibel zum Stack $q$, so wird die Inkompatibilität durch das $z$-fache der Kosten einer
-durchschnittlichen Item-Stack-Zuweisung bestraft, wobei $z \in \mathbb{R}$. Die Inkompatibilität sollte durchaus einen Einfluss auf die
-Bewertung der Paare haben. Gleichzeitig sollte der Einfluss eines inkompatiblen Stacks nicht zu groß sein.
-Für die folgenden Experimente hat sich $z = 5$ als sinnvoller Wert herausgestellt.
+Im Zuge des Rating-Systems werden für Item-Paare $(i, j)$ die durchschnittlichen Kosten einer gemeinsamen
+Stack-Zuweisung berechnet. Dabei wird die Inkompatibilität eines Paares zu einem Stack mit dem $z$-fachen
+der Kosten einer durchschnittlichen Item-Stack-Zuweisung bestraft, wobei $z \in \mathbb{R}$.
+Die Inkompatibilität sollte durchaus einen Einfluss auf die Bewertung der Paare haben.
+Gleichzeitig sollte dieser Einfluss begrenzt sein. Für die folgenden Experimente hat sich $z = 5$ als sinnvoller Wert herausgestellt.
 
-Der \textquote{Deviation-Threshold} $d_t$ wird in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit
-unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen.
-Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$ Abweichung in der Summe.
-Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbeweret und unsortiert betrachtet wird.
+Der \textquote{Deviation-Threshold} $d_t$, welcher ebenfalls Teil des Rating-Systems ist, wird in einem bestimmten
+Wertebereich variiert. Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$
+Abweichung in der Summe. Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich
+bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbewertet und unsortiert betrachtet wird.
 
 Eine weitere wichtige Konfigurationsmöglichkeit besteht in der Anzahl der Paare $x$, welche im Merge-Prozess wieder
 separiert werden. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
