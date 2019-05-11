@@ -1936,8 +1936,7 @@ iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt w
 \textbf{Konfiguration der Heuristik}
 
 Neben den vorgestellten Parametern \textit{prioritizeRuntime} und \textit{postProcessing} bietet
-die präsentierte Heuristik weitere Möglichkeiten der Konfiguration, welche mit experimentell
-bestimmten Werten gesetzt werden.
+die präsentierte Heuristik weitere Möglichkeiten der Konfiguration, welche im Folgenden erörtert werden.
 
 Im Zuge des Rating-Systems werden für Item-Paare $(i, j)$ die durchschnittlichen Kosten einer gemeinsamen
 Stack-Zuweisung berechnet. Dabei wird die Inkompatibilität eines Paares zu einem Stack mit dem $z$-fachen
@@ -1947,74 +1946,74 @@ Gleichzeitig sollte dieser Einfluss begrenzt sein. Für die folgenden Experiment
 
 Der \textquote{Deviation-Threshold} $d_t$, welcher ebenfalls Teil des Rating-Systems ist, wird in einem bestimmten
 Wertebereich variiert. Dieser Wertebereich wurde experimentell bestimmt, indem $100$ Instanzen der größten Kategorie generiert
-wurden und $d_t$ für jede Instanz sämtliche ganzzahligen Werte aus dem Intervall $[20, 150]$ angenommen hat.
+wurden und $d_t$ bei der Lösung jeder Instanz sämtliche ganzzahligen Werte aus dem Intervall $[20, 150]$ angenommen hat.
 Für jede Instanz wurde anschließend betrachtet, bei welchem $d_t$-Wert die beste Lösung generiert wurde.
 Daraufhin wurde ein möglichst kleiner Wertebereich bestimmt, welcher die am häufigsten auftretenden Werte enthält.
 Dieser Bereich sollte als möglichst klein definiert werden, weil größere Wertebereiche längere Laufzeiten zur Folge haben.
 Dabei hat sich das Intervall $[20, 75]$ als sinnvoll erwiesen, weil es den Großteil der jeweils besten $d_t$-Werte
-abdeckt und gleichzeitg eine effizient handhabbare Größe besitzt, da zusätzlich nicht jeder ganzzahlige Wert aus diesem Intervall betrachtet wird, sondern $d_t$ in jeder Iteration um $5$ erhöht wird. Dies ist ausreichend, weil sich bei den Tests außerdem herausgestellt hat, dass feingranulare Schritte überflüssig sind, da sich der Einfluss der $d_t$ typischerweise über mehrere Werte hinweg nicht
-bzw. nur marginal verändert. Der Wertebereich reicht dementsprechend von $d_t = 20 \%$ bis $d_t = 75 \%$
-Abweichung in der Summe und wird in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich
-bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbewertet und unsortiert betrachtet wird.
+abdeckt und gleichzeitg eine effizient handhabbare Größe besitzt, da zusätzlich nicht jeder ganzzahlige Wert aus diesem Intervall betrachtet wird, sondern $d_t$ in jeder Iteration um $5$ erhöht wird. Dies ist ausreichend, weil sich bei den Tests außerdem herausgestellt hat, dass feingranulare Schritte überflüssig sind, da sich der Einfluss der $d_t$ typischerweise über mehrere Werte hinweg nicht bzw. nur marginal verändert. Der Wertebereich reicht dementsprechend von
+$d_t = 20 \%$ bis $d_t = 75 \%$ Abweichung in der Summe und wird in jeder Iteration um $5 \%$ inkrementiert.
+Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM},
+welches unbewertet und unsortiert betrachtet wird.
 
 Eine weitere wichtige Konfigurationsmöglichkeit besteht in der Anzahl der Paare $x$, welche im Merge-Prozess wieder
 separiert werden. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
 
 \textbf{Einfluss des Rating-Systems}
 
-Da das Rating-System unabhängig vom Postprocessing-Schritt nutzbar ist, werden in der Analyse des Einflusses ebendieses
-Lösungen vor dem Postprocessing-Schritt betrachtet. Um den Einfluss des Rating-Systems auf Laufzeiten und Lösungsqualität zu
-ermitteln, wurden $100$ Instanzen pro Größenordnung generiert und gelöst.
-
+Da das Rating-System unabhängig vom Postprocessing-Schritt nutzbar ist, werden in der Analyse Lösungen vor dem Postprocessing-Schritt betrachtet. Um den Einfluss des Rating-Systems auf die Laufzeiten und die Qualität der
+Lösungen zu ermitteln, wurden $100$ Instanzen pro Kategorie generiert und gelöst, wobei sich die Kategorie
+auf die Instanzgrößen bezieht, welche in Abschnitt \ref{sec:test_data} eingeführt wurden.
 In Abb. \ref{fig:impact_of_rating_system} sind jeweils die durchschnittlichen Laufzeiten und Kosten der Lösungen
-innerhalb der jeweiligen Kategorie aufgetragen, welche mit und ohne Verwendung des Rating-Systems (RS) entstehen.
+innerhalb der jeweiligen Kategorie aufgeführt, welche mit aktiviertem ($+$) und deaktiviertem ($-$)
+Rating-System entstehen.
 
 Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit in der Kategorie der kleinen Instanzen
 um $540 \%$, die durchschnittlichen Kosten verringern sich dabei um $0.26 \%$ (vgl. Abb. \ref{fig:rs_impact_a}).
 In der Kategorie der mittelgroßen Instanzen erhöht sich die durchschnittliche Laufzeit um $611.11 \%$ bei einer
 Verringerung der durchschnittlichen Kosten um $0.05 \%$ (vgl. Abb. \ref{fig:rs_impact_b}).
-In der Kategorie der großen Instanzen erhöht sich die durchschnittliche Laufzeit um $533.33 \%$
+Die Erhöhung der durchschnittlichen Laufzeit in der Kategorie der großen Instanzen beträgt $533.33 \%$
 bei einer Verringerung der durchschnittlichen Kosten um $0.03 \%$ (vgl. Abb. \ref{fig:rs_impact_c}).
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.325\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{ | c | c | c |}
     \hline
-     & \textbf{mit RS} & \textbf{ohne RS} \\ \hline
+     & \textbf{RS ($+$)} & \textbf{RS ($-$)} \\ \hline
     \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $0.06$ & $0.01$ \\ \hline
     \textbf{\O \thinspace Kosten} & $9822.19$ & $9847.67$ \\ \hline
 \end{tabular}}
 \caption{\textsc{s-Instanzen}}
 \label{fig:rs_impact_a}
 \end{subfigure}
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.325\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{ | c | c | c |}
     \hline
-     & \textbf{mit RS} & \textbf{ohne RS} \\ \hline
+     & \textbf{RS ($+$)} & \textbf{RS ($-$)} \\ \hline
     \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $1.28$ & $0.18$ \\ \hline
     \textbf{\O \thinspace Kosten} & $79549.07$ & $79587.97$ \\ \hline
 \end{tabular}}
 \caption{\textsc{m-Instanzen}}
 \label{fig:rs_impact_b}
 \end{subfigure}
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.325\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{ | c | c | c |}
     \hline
-     & \textbf{mit RS} & \textbf{ohne RS} \\ \hline
+     & \textbf{RS ($+$)} & \textbf{RS ($-$)} \\ \hline
     \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $5.51$ & $0.87$ \\ \hline
     \textbf{\O \thinspace Kosten} & $213735.81$ & $213808.86$ \\ \hline
 \end{tabular}}
 \caption{\textsc{l-Instanzen}}
 \label{fig:rs_impact_c}
 \end{subfigure}
-\caption{\textsc{Einfluss des Rating-Systems.}}
+\caption{\textsc{Einfluss des Rating-Systems (RS).}}
 \label{fig:impact_of_rating_system}
 \end{figure}
 
