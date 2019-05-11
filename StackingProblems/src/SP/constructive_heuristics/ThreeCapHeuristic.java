@@ -28,6 +28,9 @@ public class ThreeCapHeuristic {
     private double startTime;
     private int timeLimit;
 
+    private int thresholdLB = 20;
+    private int thresholdUB = 75;
+
     /**
      * Constructor
      *
@@ -172,7 +175,8 @@ public class ThreeCapHeuristic {
         // the first list (idx 0) should be unrated and unsorted
         int ratingSystemIdx = 1;
 
-        for (int deviationThreshold = 65; deviationThreshold < 125; deviationThreshold += 5) {
+        for (int deviationThreshold = this.thresholdLB; deviationThreshold < this.thresholdUB; deviationThreshold += 5) {
+
             if (itemPairLists.size() == ratingSystemIdx) {
                 itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
             }
@@ -276,8 +280,6 @@ public class ThreeCapHeuristic {
 
         ArrayList<Solution> solutions = new ArrayList<>();
 
-        int cnt = 0;
-
         for (ArrayList<ArrayList<Integer>> itemTriples : itemTripleLists) {
             this.instance.resetStacks();
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(itemTriples, this.instance.getItems());
@@ -298,10 +300,8 @@ public class ThreeCapHeuristic {
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
             Solution sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
-//            System.out.println(cnt++ + ": " + sol.computeCosts());
             solutions.add(new Solution(sol));
         }
-
         return solutions;
     }
 
@@ -600,7 +600,7 @@ public class ThreeCapHeuristic {
                     cnt++;
                 }
             }
-            System.out.println("pairs: " + itemPairs.size() + " both dir: " + cnt);
+//            System.out.println("pairs: " + itemPairs.size() + " both dir: " + cnt);
             ///////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////
 
