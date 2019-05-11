@@ -114,7 +114,7 @@ public class ThreeIndexFormulation {
             }
 
             System.out.println();
-            cplex.setOut(null);
+//            cplex.setOut(null);
 
             // sets the time limit
             cplex.setParam(Param.TimeLimit, timeLimit);

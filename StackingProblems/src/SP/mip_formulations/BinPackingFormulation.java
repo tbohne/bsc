@@ -101,7 +101,7 @@ public class BinPackingFormulation {
             }
 
             System.out.println();
-            cplex.setOut(null);
+//            cplex.setOut(null);
 
             // sets the time limit
             cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
