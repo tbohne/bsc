@@ -2032,7 +2032,7 @@ möglich, welche in Abschnitt \ref{sec:solver_comp_b=3} ausführlich präsentier
 
 \textbf{Beispiel}
 
-Gegeben sei die Item-Menge $I = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13\}$ sowie eine Stack-Kapazität von $b = 3$.
+Gegeben sei die Item-Menge $I = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\}$ sowie eine Stack-Kapazität von $b = 3$.
 Die Anzahl der zur Verfügung stehenden Stacks ergibt sich, wie in Abschnitt \ref{sec:test_data} beschrieben,
 durch $m = \ceil{\ceil{\frac{14}{3}} + 0.2 \cdot  \ceil{\frac{14}{3}}} = 6$.
 
@@ -2045,13 +2045,13 @@ welches die Kanten dieses \textsc{MCM} interpretiert als kompatible Item-Paare z
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[auto, transform shape, node distance=2cm, state/.style={circle, draw, fill=gray!40, minimum size=1.5cm}]
-        \node[state] (A) [thick] {$\boldsymbol{0, 11}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 2}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 12}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{4, 5}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{6, 7}$};
-        \node[state] (F) [thick, right of=E] {$\boldsymbol{8, 13}$};
-        \node[state] (G) [thick, right of=F] {$\boldsymbol{9, 10}$};
+        \node[state] (A) [thick] {$\boldsymbol{1, 12}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 3}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{4, 13}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{5, 6}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{7, 8}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{9, 14}$};
+        \node[state] (G) [thick, right of=F] {$\boldsymbol{10, 11}$};
         \path;
 \end{tikzpicture}
 \caption{\textsc{Resultierende Item-Paare}.}
@@ -2064,9 +2064,9 @@ entschieden werden, welche der Paare dazu wieder separiert werden. Durch die Bew
 ergeben sich die Abb. \ref{fig:lists_of_pairs} zu entnehmenden unterschiedlich sortierten Listen.
 \begin{figure}[H]
 \begin{gather*}
-  [(1, 2), (3, 12), (9, 10), (8, 13), (6, 7), (4, 5), (0, 11)] \\
-  [(9, 10), (8, 13), (6, 7), (4, 5), (3, 12), (1, 2), (0, 11)] \\
-  [(1, 2), (9, 10), (8, 13), (6, 7), (4, 5), (3, 12), (0, 11)]
+  [(2, 3), (4, 13), (10, 11), (9, 14), (7, 8), (5, 6), (1, 12)] \\
+  [(10, 11), (9, 14), (7, 8), (5, 6), (4, 13), (2, 3), (1, 12)] \\
+  [(2, 3), (10, 11), (9, 14), (7, 8), (5, 6), (4, 13), (1, 12)]
 \end{gather*}
 \caption{\textsc{Unterschiedlich sortierte Listen der Item-Paare}.}
 \label{fig:lists_of_pairs}
@@ -2086,8 +2086,8 @@ ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung i
 \begin{subfigure}[b]{\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm, state/.style={circle, draw, fill=gray!40, minimum size=1.5cm}]
-        \node[state] (A) [thick] {$\boldsymbol{1, 2}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{3, 12}$};
+        \node[state] (A) [thick] {$\boldsymbol{2, 3}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{4, 13}$};
         \path;
 \end{tikzpicture}
 \caption{\textsc{Split-Pairs}.}
@@ -2096,11 +2096,11 @@ ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung i
 \begin{subfigure}[b]{\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm, state/.style={circle, draw, fill=gray!40, minimum size=1.5cm}]
-        \node[state] (A) [thick] {$\boldsymbol{9, 10}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{8, 13}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{6, 7}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{4, 5}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{0, 11}$};
+        \node[state] (A) [thick] {$\boldsymbol{10, 11}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{9, 14}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{7, 8}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{5, 6}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{1, 12}$};
         \path;
 \end{tikzpicture}
 \caption{\textsc{Assign-Pairs}.}
@@ -2110,13 +2110,13 @@ ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung i
 \label{fig:pre_merge_step}
 \end{figure}
 
-Zwecks Zuweisung der aus der Separation der Paare aus Abb. \ref{fig:split_pairs} hervorgehenden einzelnen Items $1, 2, 3$ und $12$
-zu den verbleibenden Paaren aus Abb. \ref{fig:assign_pairs}, um Tripel zu bilden, wird der in Abb.
+Zwecks Zuweisung der aus der Separation der Paare aus Abb. \ref{fig:split_pairs} hervorgehenden einzelnen
+Items $2, 3, 4$ und $13$ zu den verbleibenden Paaren aus Abb. \ref{fig:assign_pairs}, um Tripel zu bilden, wird der in Abb.
 \ref{fig:bipartite_graph_pairs_and_unmatched} dargestellte bipartite Graph generiert, welcher die Paare in der einen Partition
 und die einzelnen Items in der anderen Partition enthält. Eine Kante zwischen einem einzelnen Item und einem Paar bedeutet,
 dass dieses Item dem Paar zugeordnet werden kann, sodass ein kompatibles Tripel entsteht.
 In Abb. \ref{fig:item_triple_mcm} ist das auf diesem Graphen berechnete \textsc{MCM} in grün dargestellt, in welchem
-sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(4, 5)$ wird dabei als einziges Paar nicht verwendet
+sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(5, 6)$ wird dabei als einziges Paar nicht verwendet
 um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 
 \vfill
@@ -2129,15 +2129,15 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.25cm}]
-        \node[state] (A) [thick] {$\boldsymbol{0, 11}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{4, 5}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{6, 7}$};
-        \node[state] (D) [thick, below of =C] {$\boldsymbol{8, 13}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{9, 10}$};
-        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{1}$};
-        \node[state] (G) [thick, below of=F] {$\boldsymbol{2}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{3}$};
-        \node[state] (I) [thick, below of=H] {$\boldsymbol{12}$};
+        \node[state] (A) [thick] {$\boldsymbol{1, 12}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{5, 6}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{7, 8}$};
+        \node[state] (D) [thick, below of =C] {$\boldsymbol{9, 14}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{10, 11}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{2}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{3}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{4}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{13}$};
         \path
           (A) edge [thick] node {} (H)
 
@@ -2160,15 +2160,15 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.25cm}]
-        \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{0, 11}}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{\textcolor{red}{4, 5}}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{\textcolor{mygreen}{6, 7}}$};
-        \node[state] (D) [thick, below of =C] {$\boldsymbol{\textcolor{mygreen}{8, 13}}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{\textcolor{mygreen}{9, 10}}$};
-        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{\textcolor{mygreen}{1}}$};
-        \node[state] (G) [thick, below of=F] {$\boldsymbol{\textcolor{mygreen}{2}}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{\textcolor{mygreen}{3}}$};
-        \node[state] (I) [thick, below of=H] {$\boldsymbol{\textcolor{mygreen}{12}}$};
+        \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{1, 12}}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{\textcolor{red}{5, 6}}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{\textcolor{mygreen}{7, 8}}$};
+        \node[state] (D) [thick, below of =C] {$\boldsymbol{\textcolor{mygreen}{9, 14}}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{\textcolor{mygreen}{10, 11}}$};
+        \node[state] (F) [thick, right = 4cm of A] {$\boldsymbol{\textcolor{mygreen}{2}}$};
+        \node[state] (G) [thick, below of=F] {$\boldsymbol{\textcolor{mygreen}{3}}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{\textcolor{mygreen}{4}}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{\textcolor{mygreen}{13}}$};
         \path
           (A) edge [thick, mygreen] node {} (H)
 
@@ -2197,11 +2197,11 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.85, transform shape, node distance=2.5cm, state/.style={circle, draw, fill=gray!40, minimum size=2cm}]
-        \node[state] (A) [thick] {$\boldsymbol{9, 10, 12}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{1, 8, 13}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{2, 6, 7}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{0, 3, 11}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{4, 5}$};
+        \node[state] (A) [thick] {$\boldsymbol{10, 11, 13}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 9, 14}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 7, 8}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{1, 4, 12}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{5, 6}$};
         \path;
 \end{tikzpicture}
 \caption{\textsc{Merge-Ergebnis.}}
@@ -2214,21 +2214,21 @@ Dazu wird zunächst der vollständig bipartite Graph, welcher in Abb. \ref{fig:c
 generiert. Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
 und die Stacks in der anderen Partition.
 Da es lediglich $5$ Item-Tupel bei $6$ zur Verfügung stehenden Stacks gibt und somit die Partitionen nicht dieselbe
-Größe besitzen, wird ein Dummy-Item $D_0$ eingeführt.
+Größe besitzen, wird ein Dummy-Item $D_1$ eingeführt.
 Die Kantengewichte sind der Übersichtlichkeit halber nicht in der Darstellung aufgetragen, sondern stattdessen
 der Tabelle in Abb. \ref{fig:item_tuple_costs_three_cap} zu entnehmen.
 \begin{figure}[H]
 \centering
-\resizebox{0.5\textwidth}{!}{
+\resizebox{0.7\textwidth}{!}{
 \begin{tabular}{| c | c | c | c | c | c | c |}
     \hline
-     & $\boldsymbol{S_0}$ & $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\boldsymbol{S_4}$ & $\boldsymbol{S_5}$ \\ \hline
-    $\boldsymbol{(0, 11, 3)}$ & $128.76$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ \\ \hline
-    $\boldsymbol{(6, 7, 2)}$ & $134.82$ & $\infty$ & $98.46$ & $\infty$ & $\infty$ & $80.28$ \\ \hline
-    $\boldsymbol{(8, 13, 1)}$ & $\infty$ & $159.06$ & $\infty$ & $146.94$ & $\infty$ & $134.82$ \\ \hline
-    $\boldsymbol{(9, 10, 12)}$ & $231.78$ & $\infty$ & $195.42$ & $\infty$ & $159.06$ & $140.88$ \\ \hline
-    $\boldsymbol{(4, 5)}$ & $83.82$ & $71.7$ & $59.58$ & $\infty$ & $35.34$ & $\infty$ \\ \hline
-    $\boldsymbol{D_0}$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ \\ \hline
+     & $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\boldsymbol{S_4}$ & $\boldsymbol{S_5}$ & $\boldsymbol{S_6}$ \\ \hline
+    $\boldsymbol{(1, 12, 4)}$ & $128.76$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ \\ \hline
+    $\boldsymbol{(7, 8, 3)}$ & $134.82$ & $\infty$ & $98.46$ & $\infty$ & $\infty$ & $80.28$ \\ \hline
+    $\boldsymbol{(9, 14, 2)}$ & $\infty$ & $159.06$ & $\infty$ & $146.94$ & $\infty$ & $134.82$ \\ \hline
+    $\boldsymbol{(10, 11, 13)}$ & $231.78$ & $\infty$ & $195.42$ & $\infty$ & $159.06$ & $140.88$ \\ \hline
+    $\boldsymbol{(5, 6)}$ & $83.82$ & $71.7$ & $59.58$ & $\infty$ & $35.34$ & $\infty$ \\ \hline
+    $\boldsymbol{D_1}$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ & $0.0$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Kosten der Stack-Zuweisungen}.}
 \label{fig:item_tuple_costs_three_cap}
@@ -2242,19 +2242,19 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.55, transform shape, node distance=2.25cm, state/.style={circle, draw, minimum size=2cm}]
-        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{8, 13, 1}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{9, 10, 12}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
-        \node[state] (F) [thick, below of=E] {$\boldsymbol{D_0}$};
+        \node[state] (A) [thick] {$\boldsymbol{1, 12, 4}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{7, 8, 3}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{9, 14, 2}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{10, 11, 13}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{5, 6}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{D_1}$};
 
-        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_0}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_1}$};
-        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_2}$};
-        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_3}$};
-        \node[state] (K) [thick, below of=J] {$\boldsymbol{S_4}$};
-        \node[state] (L) [thick, below of=K] {$\boldsymbol{S_5}$};
+        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_2}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_3}$};
+        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_4}$};
+        \node[state] (K) [thick, below of=J] {$\boldsymbol{S_5}$};
+        \node[state] (L) [thick, below of=K] {$\boldsymbol{S_6}$};
 
         \path
           (A) edge [thick] node {} (G)
@@ -2306,19 +2306,19 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \begin{tikzpicture}[scale=0.55, transform shape, node distance=2.25cm, state/.style={circle, draw, minimum size=2cm}]
-        \node[state] (A) [thick] {$\boldsymbol{0, 11, 3}$};
-        \node[state] (B) [thick, below of=A] {$\boldsymbol{6, 7, 2}$};
-        \node[state] (C) [thick, below of=B] {$\boldsymbol{8, 13, 1}$};
-        \node[state] (D) [thick, below of=C] {$\boldsymbol{9, 10, 12}$};
-        \node[state] (E) [thick, below of=D] {$\boldsymbol{4, 5}$};
-        \node[state] (F) [thick, below of=E] {$\boldsymbol{D_0}$};
+        \node[state] (A) [thick] {$\boldsymbol{1, 12, 4}$};
+        \node[state] (B) [thick, below of=A] {$\boldsymbol{7, 8, 3}$};
+        \node[state] (C) [thick, below of=B] {$\boldsymbol{9, 14, 2}$};
+        \node[state] (D) [thick, below of=C] {$\boldsymbol{10, 11, 13}$};
+        \node[state] (E) [thick, below of=D] {$\boldsymbol{5, 6}$};
+        \node[state] (F) [thick, below of=E] {$\boldsymbol{D_1}$};
 
-        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_0}$};
-        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_1}$};
-        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_2}$};
-        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_3}$};
-        \node[state] (K) [thick, below of=J] {$\boldsymbol{S_4}$};
-        \node[state] (L) [thick, below of=K] {$\boldsymbol{S_5}$};
+        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (H) [thick, below of=G] {$\boldsymbol{S_2}$};
+        \node[state] (I) [thick, below of=H] {$\boldsymbol{S_3}$};
+        \node[state] (J) [thick, below of=I] {$\boldsymbol{S_4}$};
+        \node[state] (K) [thick, below of=J] {$\boldsymbol{S_5}$};
+        \node[state] (L) [thick, below of=K] {$\boldsymbol{S_6}$};
 
         \path
           (A) edge [thick, above] node {$128.76$} (G)
@@ -2344,12 +2344,12 @@ innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
   \resizebox{0.4\textwidth}{!}{
     \begin{tabular}{c|c|c|c|c|c|c|}
     \cline{2-7}
-    $\boldsymbol{L_2}$ & $3$ & $$ & $2$ & $1$ & $$ & $12$ \\ \cline{2-7}
-    $\boldsymbol{L_1}$ & $11$ & $$ & $7$ & $13$ & $5$ & $10$\\ \cline{2-7}
-    $\boldsymbol{L_0}$ & $0$ & $$ & $6$ & $8$ & $4$ & $9$ \\ \cline{2-7}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_5}$} \\
+    $\boldsymbol{L_3}$ & $4$ & $$ & $3$ & $2$ & $$ & $13$ \\ \cline{2-7}
+    $\boldsymbol{L_2}$ & $12$ & $$ & $8$ & $14$ & $6$ & $11$\\ \cline{2-7}
+    $\boldsymbol{L_1}$ & $1$ & $$ & $7$ & $9$ & $5$ & $10$ \\ \cline{2-7}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} & \multicolumn{1}{c}{$\boldsymbol{S_5}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_6}$} \\
     \end{tabular}}
     \caption{\textsc{Zulässige Zuweisungen.}}
     \label{fig:valid_solution}
@@ -2366,31 +2366,31 @@ Dazu wird der bipartite Postprocessing-Graph generiert, welcher in Abb. \ref{fig
 Dieser enthält die Items in der einen Partition und die freien Positionen innerhalb der Stacks in der anderen Partition.
 
 Die Positionen sind erneut jeweils in der Notation $pos(stackIdx, level)$ gegeben. In diesem Beispiel gibt es,
-wie man Abb. \ref{fig:valid_solution} entnehmen kann, mit $pos(1, 0), pos(1, 1), pos(1, 2)$ und $pos(4, 2)$
+wie man Abb. \ref{fig:valid_solution} entnehmen kann, mit $pos(2, 1), pos(2, 2), pos(2, 3)$ und $pos(5, 3)$
 vier verbleibende freie Positionen in den Stacks. Die Kantengewichte des Postprocessing-Graphen sind der Übersichtlichkeit halber nicht an den Kanten notiert, sondern in der Tabelle in Abb. \ref{fig:post_processing_costs} aufgeführt.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.5, transform shape, node distance=1.5cm, state/.style={circle, draw, minimum size=1.25cm}]
-        \node[state] (A) [thick] {$\boldsymbol{0}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{1}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{2}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{3}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{4}$};
-        \node[state] (F) [thick, right of=E] {$\boldsymbol{5}$};
-        \node[state] (G) [thick, right of=F] {$\boldsymbol{6}$};
-        \node[state] (H) [thick, right of=G] {$\boldsymbol{7}$};
-        \node[state] (I) [thick, right of=H] {$\boldsymbol{8}$};
-        \node[state] (J) [thick, right of=I] {$\boldsymbol{9}$};
-        \node[state] (K) [thick, right of=J] {$\boldsymbol{10}$};
-        \node[state] (L) [thick, right of=K] {$\boldsymbol{11}$};
-        \node[state] (M) [thick, right of=L] {$\boldsymbol{12}$};
-        \node[state] (N) [thick, right of=M] {$\boldsymbol{13}$};
+        \node[state] (A) [thick] {$\boldsymbol{1}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{2}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{3}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{4}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{5}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{6}$};
+        \node[state] (G) [thick, right of=F] {$\boldsymbol{7}$};
+        \node[state] (H) [thick, right of=G] {$\boldsymbol{8}$};
+        \node[state] (I) [thick, right of=H] {$\boldsymbol{9}$};
+        \node[state] (J) [thick, right of=I] {$\boldsymbol{10}$};
+        \node[state] (K) [thick, right of=J] {$\boldsymbol{11}$};
+        \node[state] (L) [thick, right of=K] {$\boldsymbol{12}$};
+        \node[state] (M) [thick, right of=L] {$\boldsymbol{13}$};
+        \node[state] (N) [thick, right of=M] {$\boldsymbol{14}$};
 
-        \node[state] (O) [thick, below = 5cm of B] {$\boldsymbol{pos(1, 0)}$};
-        \node[state] (P) [thick, below = 5cm of F] {$\boldsymbol{pos(1, 1)}$};
-        \node[state] (Q) [thick, below = 5cm of I] {$\boldsymbol{pos(1, 2)}$};
-        \node[state] (R) [thick, below = 5cm of M] {$\boldsymbol{pos(4, 0)}$};
+        \node[state] (O) [thick, below = 5cm of B] {$\boldsymbol{pos(2, 1)}$};
+        \node[state] (P) [thick, below = 5cm of F] {$\boldsymbol{pos(2, 2)}$};
+        \node[state] (Q) [thick, below = 5cm of I] {$\boldsymbol{pos(2, 3)}$};
+        \node[state] (R) [thick, below = 5cm of M] {$\boldsymbol{pos(5, 3)}$};
 
         \path
             (B) edge [thick] node {$$} (O)
@@ -2440,17 +2440,17 @@ was bedeutet, dass sich durch Verschieben ausgewählter Items an freie Positione
 \resizebox{0.5\textwidth}{!}{
 \begin{tabular}{| c | c | c | c | c |}
     \hline
-     & $\boldsymbol{pos(1, 0)}$ & $\boldsymbol{pos(1, 1)}$ & $\boldsymbol{pos(1, 2)}$ & $\boldsymbol{pos(4, 0)}$ \\ \hline
-     $1$ & $12.12$ & $12.12$ & $12.12$ & $-$ \\ \hline
-     $3$ & $6.06$ & $6.06$ & $6.06$ & $-$ \\ \hline
-     $4$ & $-18.18$ & $-18.18$ & $-18.18$ & $0.0$ \\ \hline
+     & $\boldsymbol{pos(2, 1)}$ & $\boldsymbol{pos(2, 2)}$ & $\boldsymbol{pos(2, 3)}$ & $\boldsymbol{pos(5, 3)}$ \\ \hline
+     $2$ & $12.12$ & $12.12$ & $12.12$ & $-$ \\ \hline
+     $4$ & $6.06$ & $6.06$ & $6.06$ & $-$ \\ \hline
      $5$ & $-18.18$ & $-18.18$ & $-18.18$ & $0.0$ \\ \hline
-     $7$ & $-6.06$ & $-6.06$ & $-6.06$ & $-$ \\ \hline
-     $8$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
-     $9$ & $-24.24$ & $-24.24$ & $-24.24$ & $-$ \\ \hline
+     $6$ & $-18.18$ & $-18.18$ & $-18.18$ & $0.0$ \\ \hline
+     $8$ & $-6.06$ & $-6.06$ & $-6.06$ & $-$ \\ \hline
+     $9$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
      $10$ & $-24.24$ & $-24.24$ & $-24.24$ & $-$ \\ \hline
-     $11$ & $6.06$ & $6.06$ & $6.06$ & $24.24$ \\ \hline
-     $13$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
+     $11$ & $-24.24$ & $-24.24$ & $-24.24$ & $-$ \\ \hline
+     $12$ & $6.06$ & $6.06$ & $6.06$ & $24.24$ \\ \hline
+     $14$ & $-12.12$ & $-12.12$ & $-12.12$ & $-$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Kantengewichte des Postprocessing-Graphen}.}
 \label{fig:post_processing_costs}
@@ -2460,32 +2460,32 @@ Jene Zurordnungen von Items zu freien Positionen, welche zur insgesamt größten
 das Maximum-Weight-Bipartite-Matching auf dem Graphen aus Abb. \ref{fig:post_processing_graph_b=3} ermittelt,
 welches in Abb. \ref{fig:mwbm} dargestellt ist.
 Diese Zuordnungen sorgen für eine Gesamtersparnis von $36.36$, welche sich wie folgt ergibt.
-Item $11$ wird mit einer Ersparnis von $24.24$ in $S_4$ platziert. Da die Items $1$ und $3$ beide $S_1$ zugeordnet werden,
-wird lediglich das Item mit der größeren Ersparnis verschoben. Somit wird Item $1$ mit einer Ersparnis von $12.12$
-in $S_1$ platziert. Insgesamt verringern sich die Kosten der Lösung von $550.38$ auf $514.02$.
+Item $12$ wird mit einer Ersparnis von $24.24$ in $S_5$ platziert. Da die Items $2$ und $4$ beide $S_2$ zugeordnet werden,
+wird lediglich das Item mit der größeren Ersparnis verschoben. Somit wird Item $2$ mit einer Ersparnis von $12.12$
+in $S_2$ platziert. Insgesamt verringern sich die Kosten der Lösung von $550.38$ auf $514.02$.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.5, transform shape, node distance=1.5cm, state/.style={circle, draw, minimum size=1.25cm}]
-        \node[state] (A) [thick] {$\boldsymbol{0}$};
-        \node[state] (B) [thick, right of=A] {$\boldsymbol{1}$};
-        \node[state] (C) [thick, right of=B] {$\boldsymbol{2}$};
-        \node[state] (D) [thick, right of=C] {$\boldsymbol{3}$};
-        \node[state] (E) [thick, right of=D] {$\boldsymbol{4}$};
-        \node[state] (F) [thick, right of=E] {$\boldsymbol{5}$};
-        \node[state] (G) [thick, right of=F] {$\boldsymbol{6}$};
-        \node[state] (H) [thick, right of=G] {$\boldsymbol{7}$};
-        \node[state] (I) [thick, right of=H] {$\boldsymbol{8}$};
-        \node[state] (J) [thick, right of=I] {$\boldsymbol{9}$};
-        \node[state] (K) [thick, right of=J] {$\boldsymbol{10}$};
-        \node[state] (L) [thick, right of=K] {$\boldsymbol{11}$};
-        \node[state] (M) [thick, right of=L] {$\boldsymbol{12}$};
-        \node[state] (N) [thick, right of=M] {$\boldsymbol{13}$};
+        \node[state] (A) [thick] {$\boldsymbol{1}$};
+        \node[state] (B) [thick, right of=A] {$\boldsymbol{2}$};
+        \node[state] (C) [thick, right of=B] {$\boldsymbol{3}$};
+        \node[state] (D) [thick, right of=C] {$\boldsymbol{4}$};
+        \node[state] (E) [thick, right of=D] {$\boldsymbol{5}$};
+        \node[state] (F) [thick, right of=E] {$\boldsymbol{6}$};
+        \node[state] (G) [thick, right of=F] {$\boldsymbol{7}$};
+        \node[state] (H) [thick, right of=G] {$\boldsymbol{8}$};
+        \node[state] (I) [thick, right of=H] {$\boldsymbol{9}$};
+        \node[state] (J) [thick, right of=I] {$\boldsymbol{10}$};
+        \node[state] (K) [thick, right of=J] {$\boldsymbol{11}$};
+        \node[state] (L) [thick, right of=K] {$\boldsymbol{12}$};
+        \node[state] (M) [thick, right of=L] {$\boldsymbol{13}$};
+        \node[state] (N) [thick, right of=M] {$\boldsymbol{14}$};
 
-        \node[state] (O) [thick, below = 2cm of B] {$\boldsymbol{pos(1, 0)}$};
-        \node[state] (P) [thick, below = 2cm of F] {$\boldsymbol{pos(1, 1)}$};
-        \node[state] (Q) [thick, below = 2cm of I] {$\boldsymbol{pos(1, 2)}$};
-        \node[state] (R) [thick, below = 2cm of M] {$\boldsymbol{pos(4, 0)}$};
+        \node[state] (O) [thick, below = 2cm of B] {$\boldsymbol{pos(2, 1)}$};
+        \node[state] (P) [thick, below = 2cm of F] {$\boldsymbol{pos(2, 2)}$};
+        \node[state] (Q) [thick, below = 2cm of I] {$\boldsymbol{pos(2, 3)}$};
+        \node[state] (R) [thick, below = 2cm of M] {$\boldsymbol{pos(5, 3)}$};
 
         \path
             (B) edge [thick, left] node {$12.12$} (O)
@@ -2508,12 +2508,12 @@ In diesem Beispiel wird bereits nach der ersten Iteration das beste Ergebnis erz
   \resizebox{0.4\textwidth}{!}{
     \begin{tabular}{c|c|c|c|c|c|c|}
     \cline{2-7}
-    $\boldsymbol{L_2}$ & $$ & $$ & $2$ & $$ & $\textcolor{mygreen}{11}$ & $12$ \\ \cline{2-7}
-    $\boldsymbol{L_1}$ & $3$ & $$ & $7$ & $13$ & $5$ & $10$\\ \cline{2-7}
-    $\boldsymbol{L_0}$ & $0$ & $\textcolor{mygreen}{1}$ & $6$ & $8$ & $4$ & $9$ \\ \cline{2-7}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$}
-    & \multicolumn{1}{c}{$\boldsymbol{S_5}$} \\
+    $\boldsymbol{L_3}$ & $$ & $$ & $3$ & $$ & $\textcolor{mygreen}{12}$ & $13$ \\ \cline{2-7}
+    $\boldsymbol{L_2}$ & $4$ & $$ & $8$ & $14$ & $6$ & $11$\\ \cline{2-7}
+    $\boldsymbol{L_1}$ & $1$ & $\textcolor{mygreen}{2}$ & $7$ & $9$ & $5$ & $10$ \\ \cline{2-7}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\boldsymbol{S_4}$} & \multicolumn{1}{c}{$\boldsymbol{S_5}$}
+    & \multicolumn{1}{c}{$\boldsymbol{S_6}$} \\
     \end{tabular}}
     \caption{\textsc{Postprocessing-Ergebnis.}}
     \label{fig:valid_solution_post_processing}
