@@ -1962,10 +1962,71 @@ separiert werden. Experimentell hat sich $3.4$ als guter Divisor herausgestellt,
 
 \textbf{Einfluss des Rating-Systems}
 
-Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit pro Instanz in der Kategorie der großen
-Instanzen, in welcher es die größte Auswirkung auf die Laufzeiten zeigt, von $0.5 s$ auf $4.2 s$. Dabei verringert
-sich der Zielfunktionswert in den unterschiedlichen Kategorien um durchschnittlich $0.007 \% (l), 0.04 \% (m)$
-und $0.13 \% (s)$.
+Da das Rating-System unabhängig vom Postprocessing-Schritt nutzbar ist, werden in der Analyse des Einflusses ebendieses
+Lösungen vor dem Postprocessing-Schritt betrachtet. Um den Einfluss des Rating-Systems auf Laufzeiten und Lösungsqualität zu
+ermitteln, wurden $100$ Instanzen pro Größenordnung generiert und gelöst.
+
+In Abb. \ref{fig:impact_of_rating_system} sind jeweils die durchschnittlichen Laufzeiten und Kosten der Lösungen
+innerhalb der jeweiligen Kategorie aufgetragen, welche mit und ohne Verwendung des Rating-Systems (RS) entstehen.
+
+Wird das Rating-System verwendet, so erhöht sich die durchschnittliche Laufzeit in der Kategorie der kleinen Instanzen
+um $540 \%$, die durchschnittlichen Kosten verringern sich dabei um $0.26 \%$ (vgl. Abb. \ref{fig:rs_impact_a}).
+In der Kategorie der mittelgroßen Instanzen erhöht sich die durchschnittliche Laufzeit um $611.11 \%$ bei einer
+Verringerung der durchschnittlichen Kosten um $0.05 \%$ (vgl. Abb. \ref{fig:rs_impact_b}).
+In der Kategorie der großen Instanzen erhöht sich die durchschnittliche Laufzeit um $533.33 \%$
+bei einer Verringerung der durchschnittlichen Kosten um $0.03 \%$ (vgl. Abb. \ref{fig:rs_impact_c}).
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | c | c | c |}
+    \hline
+     & \textbf{mit RS} & \textbf{ohne RS} \\ \hline
+    \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $0.06$ & $0.01$ \\ \hline
+    \textbf{\O \thinspace Kosten} & $9822.19$ & $9847.67$ \\ \hline
+\end{tabular}}
+\caption{\textsc{s-Instanzen}}
+\label{fig:rs_impact_a}
+\end{subfigure}
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | c | c | c |}
+    \hline
+     & \textbf{mit RS} & \textbf{ohne RS} \\ \hline
+    \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $1.28$ & $0.18$ \\ \hline
+    \textbf{\O \thinspace Kosten} & $79549.07$ & $79587.97$ \\ \hline
+\end{tabular}}
+\caption{\textsc{m-Instanzen}}
+\label{fig:rs_impact_b}
+\end{subfigure}
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ | c | c | c |}
+    \hline
+     & \textbf{mit RS} & \textbf{ohne RS} \\ \hline
+    \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $5.51$ & $0.87$ \\ \hline
+    \textbf{\O \thinspace Kosten} & $213735.81$ & $213808.86$ \\ \hline
+\end{tabular}}
+\caption{\textsc{l-Instanzen}}
+\label{fig:rs_impact_c}
+\end{subfigure}
+\caption{\textsc{Einfluss des Rating-Systems.}}
+\label{fig:impact_of_rating_system}
+\end{figure}
+
+Somit führt das Rating-System in jedem Fall zu durchschnittlich besseren Zielfunktionswerten.
+Trotz der im Vergleich zur Kostenersparnis signifikanteren Erhöhung der Laufzeit, muss berücksichtigt werden,
+dass die Laufzeiten der Heuristik auch mit Verwendung des Rating-Systems erheblich schneller sind als jene der
+exakten Solver, wie in den Experimenten in Abschnitt \ref{sec:solver_comp_b=3} nachvollzogen werden kann.
+Weiterhin sollten die vergleichsweise geringen Verringerungen der durchschnittlichen Kosten nicht unterschätzt werden,
+da die Ergebnisse der Heuristik ohnehin nur geringfügig von den optimalen Zielfunktionswerten abweichen.
+Außerdem handelt es sich dabei um Durchschnittswerte, welche im Einzelfall durchaus relevant sein können.
+Eine sinnvolle Einschätzung dieser Ergebnisse ist im Wesentlichen nur möglich, wenn die Ergebnisse der exakten Solver
+berücksichtigt werden, welche in Abschnitt \ref{sec:solver_comp_b=3} ausführlich präsentiert werden.
 
 \vfill
 \pagebreak
