@@ -1946,8 +1946,15 @@ Die Inkompatibilität sollte durchaus einen Einfluss auf die Bewertung der Paare
 Gleichzeitig sollte dieser Einfluss begrenzt sein. Für die folgenden Experimente hat sich $z = 5$ als sinnvoller Wert herausgestellt.
 
 Der \textquote{Deviation-Threshold} $d_t$, welcher ebenfalls Teil des Rating-Systems ist, wird in einem bestimmten
-Wertebereich variiert. Dieser Wertebereich wurde experimentell bestimmt und reicht von $d_t = 65 \%$ bis $d_t = 120 \%$
-Abweichung in der Summe. Dabei wird $d_t$ in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich
+Wertebereich variiert. Dieser Wertebereich wurde experimentell bestimmt, indem $100$ Instanzen der größten Kategorie generiert
+wurden und $d_t$ für jede Instanz sämtliche ganzzahligen Werte aus dem Intervall $[20, 150]$ angenommen hat.
+Für jede Instanz wurde anschließend betrachtet, bei welchem $d_t$-Wert die beste Lösung generiert wurde.
+Daraufhin wurde ein möglichst kleiner Wertebereich bestimmt, welcher die am häufigsten auftretenden Werte enthält.
+Dieser Bereich sollte als möglichst klein definiert werden, weil größere Wertebereiche längere Laufzeiten zur Folge haben.
+Dabei hat sich das Intervall $[20, 75]$ als sinnvoll erwiesen, weil es den Großteil der jeweils besten $d_t$-Werte
+abdeckt und gleichzeitg eine effizient handhabbare Größe besitzt, da zusätzlich nicht jeder ganzzahlige Wert aus diesem Intervall betrachtet wird, sondern $d_t$ in jeder Iteration um $5$ erhöht wird. Dies ist ausreichend, weil sich bei den Tests außerdem herausgestellt hat, dass feingranulare Schritte überflüssig sind, da sich der Einfluss der $d_t$ typischerweise über mehrere Werte hinweg nicht
+bzw. nur marginal verändert. Der Wertebereich reicht dementsprechend von $d_t = 20 \%$ bis $d_t = 75 \%$
+Abweichung in der Summe und wird in jeder Iteration um $5 \%$ inkrementiert. Es entstehen demnach $12$ unterschiedlich
 bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM}, welches unbewertet und unsortiert betrachtet wird.
 
 Eine weitere wichtige Konfigurationsmöglichkeit besteht in der Anzahl der Paare $x$, welche im Merge-Prozess wieder
