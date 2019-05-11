@@ -736,13 +736,13 @@ innerhalb eines Stacks zugewiesen.
 \label{sec:constructive_heuristics}
 
 Bei den entwickelten konstruktiven Heuristiken handelt es sich um effiziente Lösungsverfaren für die in Kapitel \ref{sec:stacking_problems}
-beschriebenen Problemstellungen. Zunächst werden vier wichtige Konzepte eingeführt, welche in den Heuristiken Verwendung finden.
-In \ref{sec:digression_bipartite_graph} bipartite Graphen, in \ref{sec:digression_mwpm} Minimum-Weight-Perfect-Matchings, in \ref{sec:digression_mcm} Maximum-Cardinality-Matchings und in \ref{sec:digression_mwbm} Maximum-Weight-Bipartite-Matchings. Anschließend geht es in \ref{sec:two_cap_heuristic} um eine konstruktive Heuristik für eine Stack-Kapazität von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen experimentellen Vergleich der Solver für eben diese Stack-Kapazität in Bezug auf die benötigten Laufzeiten und die Qualität der generierten Lösungen. Abschnitt \ref{sec:three_cap_heuristic} behandelt eine konstruktive Heuristik für eine Stack-Kapazität von $b=3$, worauf erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
+beschriebenen Problemstellungen. Zunächst werden in Abschnitt \ref{sec:digressions} mit bipartiten Graphen, Minimum-Weight-Perfect-Matchings, Maximum-Cardinality-Matchings und Maximum-Weight-Bipartite-Matchings vier wichtige Konzepte eingeführt,
+welche in den Heuristiken Verwendung finden. Anschließend geht es in \ref{sec:two_cap_heuristic} um eine konstruktive Heuristik für eine Stack-Kapazität von $b=2$ und darauffolgend in \ref{sec:solver_comp_b=2} um einen experimentellen Vergleich der Solver für eben diese Stack-Kapazität in Bezug auf die benötigten Laufzeiten und die Qualität der generierten Lösungen. Abschnitt \ref{sec:three_cap_heuristic} behandelt eine konstruktive Heuristik für eine Stack-Kapazität von $b=3$, worauf erneut ein Vergleich der entsprechenden Solver in \ref{sec:solver_comp_b=3} folgt.
 
 \subsection{Hintergrund}
+\label{sec:digressions}
 
-\subsubsection{Bipartiter Graph}
-\label{sec:digression_bipartite_graph}
+\textbf{Bipartiter Graph}
 
 Ein Graph $G = (V, E)$ heißt bipartit (vgl. Abb. \ref{fig:digression_bipartite_graph}), wenn die Knotenmenge in zwei disjunkte Teilmengen zerfällt
 $(V = S \cup T$ mit $S \cap T = \emptyset$), sodass jede Kante einen Knoten aus $S$ mit einem Knoten aus $T$ verbindet \cite{HochschuleDarmstadt}.\newline
@@ -783,8 +783,7 @@ Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen
 der anderen Teilmenge durch eine Kante verbunden ist. Der in Abb. \ref{fig:digression_bipartite_graph}
 dargestellte Graph ist dementsprechend nicht vollständig bipartit.
 
-\subsubsection{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
-\label{sec:digression_mwpm}
+\textbf{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 
 Gegeben sei ein ungerichteter Graph $G = (V, E)$. Eine Menge $M \subseteq E$ heißt Matching,
 wenn keine zwei Kanten aus $M$ einen Knoten gemeinsam haben \cite{Gibbons1985}. Bei einem Matching handelt es sich also
@@ -827,8 +826,7 @@ Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cu
 $\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in E$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
 also $|S| = |T|$. Bei der Rückgabe des Algorithmus handelt es sich um ein Perfect-Matching der geringsten Kosten.
 
-\subsubsection{Maximum-Cardinality-Matching (MCM)}
-\label{sec:digression_mcm}
+\textbf{Maximum-Cardinality-Matching (MCM)}
 
 Ein Maximum-Cardinality-Matching ist ein Matching, welches eine maximale Anzahl von Kanten enthält \cite{Gibbons1985}.
 Es kann mehrere unterschiedliche MCMs in einem Graphen geben.
@@ -888,8 +886,7 @@ Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$, wobei $n$ der Anzahl der Knoten
 und $m$ der Anzahl der Kanten im Graphen entspricht.
 
-\subsubsection{Maximum-Weight-Bipartite-Matching (MWBM)}
-\label{sec:digression_mwbm}
+\textbf{Maximum-Weight-Bipartite-Matching (MWBM)}
 
 Bei einem Maximum-Weight-Bipartite-Matching handelt es sich um ein Matching in einem gewichteten bipartiten Graphen,
 in welchem die Summe der Kantengewichte maximal ist. Auch diesen Algorithmus stellt \textit{JGraphT} \cite{JGraphT}
@@ -3362,5 +3359,5 @@ mit welcher die im Folgenden vorgestellten Experimente durchgeführt wurden.
 
 \pagebreak
 
-\section{Fazit}
+\section{Fazit und Ausblick}
 \label{sec:conclusion}
