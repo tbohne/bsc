@@ -3225,7 +3225,7 @@ was an folgendem Gegenbeispiel nachvollzogen werden kann.
 
 Es sei der Graph aus Abb. \ref{fig:counter_example_stacking_graph} für die Items $I = \{1, 2, 3, 4, 5, 6\}$ gegeben,
 dessen transitiver Abschluss dem Stacking-Graphen der Item-Menge $I$ entspricht. Außerdem seien sämtliche
-Items mit den zur Verfügung stehenden Stacks $S_0$ und $S_1$ kompatibel.
+Items mit den zur Verfügung stehenden Stacks $S_1$ und $S_2$ kompatibel.
 
 \vfill
 \pagebreak
@@ -3262,14 +3262,13 @@ sind Shift-Operationen nicht gestattet, weil sonst die Stack-Kapazität verletzt
 Die Transformation muss daher durch Anwendung einer endliche Anzahl von Swap-Operationen auf $s$ gelingen.
 Dabei können zwei Items innerhalb eines Stacks basierend auf dem Graphen aus Abb. \ref{fig:counter_example_stacking_graph}  nicht vertauscht werden ohne die Stacking-Constraints zu verletzen.
 Demzufolge können nur Items zwischen den beiden Stacks vertauscht werden. Es gibt also initial drei mögliche
-Swap-Operationen: $swap_1 = ((0, 2), (1, 2), 1, 4), swap_2 = ((0, 1), (1, 1), 2, 5)$ und $swap_3 = ((0, 0), (1, 0), 3, 6)$.
+Swap-Operationen: $swap_1 = ((1, 3), (2, 3), 1, 4), swap_2 = ((1, 2), (2, 2), 2, 5)$ und $swap_3 = ((1, 1), (2, 1), 3, 6)$.
 Wird $swap_1$ durchgeführt, so wird Item $4$ auf Item $2$ platziert, was gegen die Stacking-Constraints vertößt.
 Somit ist die erste Swap-Operation nicht zielführend. Die zweite Swap-Operation $swap_2$ sorgt ebenfalls dafür,
 dass sich Item $4$ oberhalb von Item $2$ befindet und ist somit gleichermaßen unzulässig.
 Die letzte Swap-Operation $swap_3$ führt zunächst zu einer zulässigen Zwischenlösung mit den Stack-Zuweisungen
-$S_0 = (1, 2, 6)$ und $S_1 = (4, 5, 3)$. Diese entspricht allerdings noch nicht der Ziellösung $s'$,
-weshalb anschließend die Swap-Operation $((0, 2), (1, 2), 1, 4)$ oder $((0, 1), (1, 1), 2, 5)$
-durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demnach ist Lösung $s'$ nicht durch Anwendung einer endlichen Folge von Operationen innerhalb der definierten Nachbarschaft von Lösung $s$ erreichbar, was bedeutet, dass die Nachbarschaft nicht zusammenhängend ist.
+$S_1 = (1, 2, 6)$ und $S_2 = (4, 5, 3)$. Diese entspricht allerdings noch nicht der Ziellösung $s'$,
+weshalb anschließend die Swap-Operation $swap_1$ oder $swap_2$ durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demnach ist Lösung $s'$ nicht durch Anwendung einer endlichen Folge von Operationen innerhalb der definierten Nachbarschaft von Lösung $s$ erreichbar, was bedeutet, dass die Nachbarschaft nicht zusammenhängend ist.
 
 \begin{figure}[H]
   \begin{subfigure}[b]{0.5\textwidth}
@@ -3277,10 +3276,10 @@ durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demn
   \resizebox{0.4\textwidth}{!}{
     \begin{tabular}{c|c|c|}
     \cline{2-3}
-    $\boldsymbol{L_2}$ & $1$ & $4$ \\ \cline{2-3}
-    $\boldsymbol{L_1}$ & $2$ & $5$ \\ \cline{2-3}
-    $\boldsymbol{L_0}$ & $3$ & $6$ \\ \cline{2-3}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} \\
+    $\boldsymbol{L_3}$ & $1$ & $4$ \\ \cline{2-3}
+    $\boldsymbol{L_2}$ & $2$ & $5$ \\ \cline{2-3}
+    $\boldsymbol{L_1}$ & $3$ & $6$ \\ \cline{2-3}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} \\
     \end{tabular}}
     \caption{\textsc{Lösung $s$}}
     \label{fig:counter_a}
@@ -3291,10 +3290,10 @@ durchgeführt werden muss, welche beide zu unzulässigen Lösungen führen. Demn
   \resizebox{0.4\textwidth}{!}{
     \begin{tabular}{c|c|c|}
     \cline{2-3}
-    $\boldsymbol{L_2}$ & $4$ & $1$ \\ \cline{2-3}
-    $\boldsymbol{L_1}$ & $5$ & $2$ \\ \cline{2-3}
-    $\boldsymbol{L_0}$ & $3$ & $6$ \\ \cline{2-3}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} \\
+    $\boldsymbol{L_3}$ & $4$ & $1$ \\ \cline{2-3}
+    $\boldsymbol{L_2}$ & $5$ & $2$ \\ \cline{2-3}
+    $\boldsymbol{L_1}$ & $3$ & $6$ \\ \cline{2-3}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} \\
     \end{tabular}}
     \caption{\textsc{Lösung $s'$}}
     \label{fig:counter_b}
@@ -3349,9 +3348,9 @@ wenn die Nachbarschaft zusammenhängend ist.
   \resizebox{0.5\textwidth}{!}{
     \begin{tabular}{c|c|c|c|}
     \cline{2-4}
-    $\boldsymbol{L_1}$ & $1$ & $3$ & $5$ \\ \cline{2-4}
-    $\boldsymbol{L_0}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} \\
+    $\boldsymbol{L_2}$ & $1$ & $3$ & $5$ \\ \cline{2-4}
+    $\boldsymbol{L_1}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} \\
     \end{tabular}}
     \caption{\textsc{Lösung $s$}}
     \label{fig:c_2_a}
@@ -3362,9 +3361,9 @@ wenn die Nachbarschaft zusammenhängend ist.
   \resizebox{0.5\textwidth}{!}{
     \begin{tabular}{c|c|c|c|}
     \cline{2-4}
-    $\boldsymbol{L_1}$ & $3$ & $5$ & $1$ \\ \cline{2-4}
-    $\boldsymbol{L_0}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
-    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_0}$} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} \\
+    $\boldsymbol{L_2}$ & $3$ & $5$ & $1$ \\ \cline{2-4}
+    $\boldsymbol{L_1}$ & $2$ & $4$ & $6$ \\ \cline{2-4}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$} & \multicolumn{1}{c}{$\boldsymbol{S_3}$} \\
     \end{tabular}}
     \caption{\textsc{Lösung $s'$}}
     \label{fig:c_2_b}
@@ -3388,8 +3387,8 @@ wird erst nach Anwendung des Operators überprüft. Das erste Gegenbeispiel aus 
 lässt sich mit $x = 2$ analog zum $b$-Swap Operator mit $b = 2$ lösen.
 Das zweite Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} kann ebenfalls mit $x = 2$ gelöst werden,
 weil es die Eigenschaft von $x$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
-auszuführen. Zunächst wird die Swap-Operation $((0, 1), (1, 1), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
-die Positionen tauschen. Anschließend wird die Swap-Operation $((1, 1), (2, 1), 1, 5)$ ausgeführt,
+auszuführen. Zunächst wird die Swap-Operation $((1, 2), (2, 2), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
+die Positionen tauschen. Anschließend wird die Swap-Operation $((2, 2), (3, 2), 1, 5)$ ausgeführt,
 welche schließlich zur zulässigen Lösung $s'$ führt.
 
 Um Zyklen innerhalb einer $x$-Swap Operation zu vermeiden, wird eine temporäre, lokale Tabu-Liste eingeführt,
