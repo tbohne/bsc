@@ -3162,8 +3162,8 @@ solange sich dieser nicht verändert. Ein Swap lässt sich durch zwei Shift-Oper
 zwei Shift-Operationen in der Tabu-Liste gespeichert werden. Befindet sich ein Item $i \in I$ in Stack $q_1 \in Q$ auf Level
 $l_1 \in \{1, ..., b\}$ und ein weiteres Item $j \in I$ in Stack $q_2 \in Q$ auf Level $l_2 \in \{1, ..., b\}$,
 so wird die Swap-Operation zwischen diesen beiden Items in Form von $shift_1 = (i, (q_2, l_2))$ und $shift_2 = (j, (q_1, l_1))$
-in der Tabu-Liste gespeichert. Die Swap-Notation, welche im Folgenden stets verwendet wird, lautet dementsprechend
-$swap := (shift_1, shift_2)$.
+in der Tabu-Liste gespeichert. Die Notation, welche im Folgenden stets für Swap-Operationen verwendet wird,
+entspricht daher $swap := (shift_1, shift_2)$.
 
 \textbf{Freeing-Strategy}
 
@@ -3299,10 +3299,10 @@ weshalb anschließend die Swap-Operation $swap_1$ oder $swap_2$ durchgeführt we
 
 Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
 
-Dieses Problem ließe sich durch einen weiteren Operator $b$-Swap beheben, welcher $1$ bis $b$ simultane Swap-Operationen
+Dieses Problem ließe sich durch einen weiteren Operator $sim_b$-Swap beheben, welcher $1$ bis $b$ simultane Swap-Operationen
 zwischen zwei Stacks ermöglicht, sodass keine Zwischenlösung entsteht.
 Dabei müssten maximal $b$ Swaps durchgeführt werden, um den gesamten Stackinhalt zu vertauschen.
-Mithilfe des $b$-Swaps ließe sich die Transformation der Lösung aus Abb. \ref{fig:counter_a} in die Lösung aus Abb. \ref{fig:counter_b} erreichen, indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt würden.
+Mithilfe des $sim_b$-Swaps ließe sich die Transformation der Lösung aus Abb. \ref{fig:counter_a} in die Lösung aus Abb. \ref{fig:counter_b} erreichen, indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt würden.
 Anschließend ergäbe sich die zulässige Lösung $s'$.
 
 Die Nachbarschaft wäre allerdings weiterhin nicht zusammenhängend, wie man am Beispiel des Stacking-Graphen
@@ -3369,17 +3369,18 @@ wenn die Nachbarschaft zusammenhängend ist.
 
 Da sämtliche Stacks vollständig gefüllt sind, ist keine Shift-Operation möglich.
 Auch eine zulässige Swap-Operation ist nicht möglich, da kein Paar von Items vertauscht werden kann, ohne die
-Stacking-Constraints zu verletzen. Auch der $b$-Swap Operator könnte diese Situation nicht auflösen.
-Somit wäre für dieses Beispiel sogar die um $b$-Swap erweiterte Nachbarschaft nicht ausreichend.
+Stacking-Constraints zu verletzen. Sogar der $sim_b$-Swap Operator könnte diese Situation nicht auflösen,
+weshalb für dieses Beispiel auch die um $sim_b$-Swap erweiterte Nachbarschaft nicht ausreicht,
+um die Zusammenhangseigenschaft zu garantieren.
 
 \vfill
 \pagebreak
 
-Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $b$-Swap Operators,
+Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $sim_b$-Swap Operators,
 welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein Operator $k$-Swap eingeführt. Dieser erlaubt es, $k \in \mathbb{N}$
 Swap-Operationen nacheinander auszuführen. Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit
-wird erst nach Anwendung des Operators überprüft. Das erste Gegenbeispiel aus Abb. \ref{fig:counter_example_stacks}
-lässt sich mit $k = 2$ analog zum $b$-Swap Operator mit $b = 2$ lösen.
+wird erst nach Anwendung des Operators überprüft. Die Transformation des ersten Gegenbeispiels aus Abb. \ref{fig:counter_example_stacks}
+lässt sich mit $k = 2$ analog zum $sim_b$-Swap Operator mit $b = 2$ lösen.
 Die Situation im zweiten Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} lässt sich ebenfalls mit $k = 2$ auflösen,
 weil es die Eigenschaft von $k$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
 auszuführen. Zunächst wird die Swap-Operation $((1, (2, 2)), (3, (1, 2)))$ ausgeführt, bei welcher die Items $1$ und $3$
