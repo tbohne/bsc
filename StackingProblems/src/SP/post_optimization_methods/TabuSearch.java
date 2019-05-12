@@ -17,14 +17,11 @@ public class TabuSearch {
     private Solution currSol;
     private Solution bestSol;
 
-    private Queue<Swap> swapTabuList;
-    private Queue<Shift> shiftTabuList;
+    private Queue<Shift> tabuList;
     private int tabuListClears;
     private int maxTabuListLength;
 
-    private int shiftFailCnt;
-    private int swapFailCnt;
-
+    private int failCnt;
     private int iterationOfLastImprovement;
 
     /**
@@ -35,30 +32,19 @@ public class TabuSearch {
     public TabuSearch(Solution initialSolution) {
         this.currSol = new Solution(initialSolution);
         this.bestSol = new Solution(initialSolution);
-        this.swapTabuList = new LinkedList<>();
-        this.shiftTabuList = new LinkedList<>();
+        this.tabuList = new LinkedList<>();
         this.tabuListClears = 0;
-        this.shiftFailCnt = 0;
-        this.swapFailCnt = 0;
+        this.failCnt = 0;
         this.iterationOfLastImprovement = 0;
         this.maxTabuListLength = TabuSearchConfig.MAX_TABU_LIST_LENGTH_FACTOR * initialSolution.getNumberOfAssignedItems();
     }
 
     /**
-     * Clears the entries in the swap tabu list and increments the clear counter.
-     */
-    public void clearSwapTabuList() {
-        System.out.println("clearing swap tabu list...");
-        this.swapTabuList = new LinkedList<>();
-        this.tabuListClears++;
-    }
-
-    /**
      * Clears the entries in the shift tabu list and increments the clear counter.
      */
-    public void clearShiftTabuList() {
-        System.out.println("clearing shift tabu list...");
-        this.shiftTabuList = new LinkedList<>();
+    public void clearTabuList() {
+        System.out.println("clearing tabu list...");
+        this.tabuList = new LinkedList<>();
         this.tabuListClears++;
     }
 
@@ -106,7 +92,6 @@ public class TabuSearch {
 
     /**
      * Exchanges the items in the specified positions in the storage area of the given solution.
-     * If only one position is occupied with an item, the item simply gets moved to the other position.
      *
      * @param sol    - the solution to be altered
      * @param posOne - the first position of the exchange
@@ -115,9 +100,12 @@ public class TabuSearch {
     public Swap swapItems(Solution sol, StorageAreaPosition posOne, StorageAreaPosition posTwo) {
         int itemOne = sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
         int itemTwo = sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+
         sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
         sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
-        return new Swap(posOne, posTwo, itemOne, itemTwo);
+
+        // the swap operations consists of two shift operations
+        return new Swap(new Shift(itemOne, posTwo), new Shift(itemTwo, posOne));
     }
 
     /**
@@ -136,52 +124,27 @@ public class TabuSearch {
     }
 
     /**
-     * Adds the specified swap operation to the swap tabu list.
-     * Replaces the oldest entry if the maximum length of the tabu list is reached.
-     *
-     * @param swap - the swap operation to be added to the tabu list
-     */
-    public void forbidSwap(Swap swap) {
-        if (this.swapTabuList.size() >= this.maxTabuListLength) {
-            this.swapTabuList.poll();
-        }
-        this.swapTabuList.add(swap);
-    }
-
-    /**
-     * Adds the specified shift operation to the shift tabu list.
+     * Adds the specified shift operation to the tabu list.
      * Replaces the oldest entry if the maximum length of the tabu list is reached.
      *
      * @param shift - the shift operation to be added to the tabu list
      */
     public void forbidShift(Shift shift) {
-        if (this.shiftTabuList.size() >= this.maxTabuListLength) {
-            this.shiftTabuList.poll();
+        if (this.tabuList.size() >= this.maxTabuListLength) {
+            this.tabuList.poll();
         }
-        this.shiftTabuList.add(shift);
+        this.tabuList.add(shift);
     }
 
     /**
      * Counts the shift failure and resets the shift tabu list if
      * the number of specified unsuccessful shift attempts is reached.
      */
-    public void shiftFailure() {
-        this.shiftFailCnt++;
-        if (this.shiftFailCnt == TabuSearchConfig.UNSUCCESSFUL_SHIFT_ATTEMPTS) {
-            this.clearShiftTabuList();
-            this.shiftFailCnt = 0;
-        }
-    }
-
-    /**
-     * Counts the swap failure and resets the swap tabu list if
-     * the number of specified unsuccessful swap attempts is reached.
-     */
-    public void swapFailure() {
-        this.swapFailCnt++;
-        if (this.swapFailCnt == TabuSearchConfig.UNSUCCESSFUL_SWAP_ATTEMPTS) {
-            this.clearSwapTabuList();
-            this.swapFailCnt = 0;
+    public void neighborGenerationFailure() {
+        this.failCnt++;
+        if (this.failCnt == TabuSearchConfig.UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS) {
+            this.clearTabuList();
+            this.failCnt = 0;
         }
     }
 
@@ -220,16 +183,16 @@ public class TabuSearch {
 
             // FIRST-FIT
             if (shortTermStrategy == TabuSearchConfig.ShortTermStrategies.FIRST_FIT
-                && !this.shiftTabuList.contains(shift)
+                && !this.tabuList.contains(shift)
                 && neighbor.computeCosts() < this.currSol.computeCosts()) {
                     this.forbidShift(shift);
                     return neighbor;
             // BEST-FIT
-            } else if (!this.shiftTabuList.contains(shift)) {
+            } else if (!this.tabuList.contains(shift)) {
                 nbrs.add(neighbor);
                 this.forbidShift(shift);
             } else {
-                this.shiftFailure();
+                this.neighborGenerationFailure();
             }
 
             // ASPIRATION CRITERION
@@ -261,15 +224,16 @@ public class TabuSearch {
 
         // TODO: compute fewer nbrs with increasing number of swaps
 
-        int consideredNeighbors = numberOfSwaps > 1 ? (int)(TabuSearchConfig.NUMBER_OF_NEIGHBORS * 0.1) : TabuSearchConfig.NUMBER_OF_NEIGHBORS;
+//        int consideredNeighbors = numberOfSwaps > 1 ? (int)(TabuSearchConfig.NUMBER_OF_NEIGHBORS * 0.1) : TabuSearchConfig.NUMBER_OF_NEIGHBORS;
+        int consideredNeighbors = TabuSearchConfig.NUMBER_OF_NEIGHBORS;
 
         while (nbrs.size() < consideredNeighbors) {
 
             cnt++;
 
-            if (cnt == 2500) {
-                return HeuristicUtil.getBestSolution(nbrs);
-            }
+//            if (cnt == 500) {
+//                return HeuristicUtil.getBestSolution(nbrs);
+//            }
 
             Solution neighbor = new Solution(this.currSol);
 
@@ -309,7 +273,8 @@ public class TabuSearch {
 
             boolean containsTabuSwap = false;
             for (Swap swap : swapList) {
-                if (this.swapTabuList.contains(swap)) {
+                // a swap consists of two shift operations
+                if (this.tabuList.contains(swap.getShiftOne()) && this.tabuList.contains(swap.getShiftTwo())) {
                     containsTabuSwap = true;
                 }
             }
@@ -319,7 +284,8 @@ public class TabuSearch {
                 && !containsTabuSwap && neighbor.computeCosts() < this.currSol.computeCosts()) {
 
                 for (Swap swap : swapList) {
-                    this.forbidSwap(swap);
+                    this.forbidShift(swap.getShiftOne());
+                    this.forbidShift(swap.getShiftTwo());
                 }
                 return neighbor;
 
@@ -327,10 +293,11 @@ public class TabuSearch {
             } else if (!containsTabuSwap) {
                 nbrs.add(neighbor);
                 for (Swap swap : swapList) {
-                    this.forbidSwap(swap);
+                    this.forbidShift(swap.getShiftOne());
+                    this.forbidShift(swap.getShiftTwo());
                 }
             } else {
-                this.swapFailure();
+                this.neighborGenerationFailure();
             }
 
             // ASPIRATION CRITERION
@@ -385,12 +352,12 @@ public class TabuSearch {
 
         nbrs.add(this.getNeighborXSwap(shortTermStrategy, 1));
 
-        // TODO: check whether both limits inclusive
-        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, 4)));
-
-        if (Collections.min(nbrs).computeCosts() == nbrs.get(2).computeCosts()) {
-            System.out.println("x SWAP");
-        }
+//        // TODO: check whether both limits inclusive
+//        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, 2)));
+//
+//        if (Collections.min(nbrs).computeCosts() == nbrs.get(2).computeCosts()) {
+//            System.out.println("x SWAP");
+//        }
 
 
         return Collections.min(nbrs);
