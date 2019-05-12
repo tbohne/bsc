@@ -3148,23 +3148,21 @@ sondern bestimmte Attribute der Lösungen oder Operatoren, welche zur Generierun
 Dabei ist es wichtig, Attribute bzw. Informationen zu speichern, welche eine Lösung möglichst genau identifizieren,
 um zu verhindern, dass weitere Lösungen mit ähnlichen Eigenschaften ausgeschlossen werden.
 
-Die entwickelte Tabu-Suche verwaltet aufgrund der kombinierten Shift- und Swap-Nachbarschaft zwei unterschiedliche
-Tabu-Listen. Die Shift-Tabu-Liste speichert durchgeführte Shift-Operationen, also eine Kombination aus einem Item und einer Position innerhalb eines Stacks in der Storage-Area, an welche dieses verschoben wird. Eine Shift-Operation entspricht daher dem folgenden $2$-Tupel.
-\begin{gather*}
-shift := (item, shiftPos)
-\end{gather*}
+\vfill
+\pagebreak
+
+Die entwickelte Tabu-Suche stellt eine Tabu-Liste bereit, welche aufgrund der kombinierten Shift- und Swap-Nachbarschaft
+sowohl Shift- als auch Swap-Operationen speichert. Bei einer Shift-Operationen handelt es sich um eine Kombination aus einem Item
+$i \in I$ und einer Position $p$ innerhalb eines Stacks $q \in Q$ in der Storage-Area, an welche dieses verschoben wird. Eine Shift-Operation ist dementsprechend durch das $2$-Tupel $shift := (i, p)$ definiert.
+Eine Position $p$ zeichnet sich wiederum durch ein $2$-Tupel bestehend aus einem Stack $q \in Q$ und einem Level $l \in \{1, ..., b\}$ innerhalb dieses Stacks aus, also $p := (q, l)$.
 Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
-In der Swap-Tabu-Liste werden entsprechend Swap-Operationen gespeichert. Dabei handelt es sich um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, welche sie beinhalten.
-D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt, solange sich dieser nicht verändert.
-Swap-Operationen sind durch das folgende $4$-Tupel definiert.
-\begin{gather*}
-swap := (pos_1, pos_2, item_1, item_2)
-\end{gather*}
-Eine Position zeichnet sich sowohl im Shift- als auch im Swap-Operator durch ein $2$-Tupel bestehend aus einem
-Stack-Index und einem Level innerhalb dieses Stacks aus.
-\begin{gather*}
- pos = (stackIdx, level)
-\end{gather*}
+
+Bei einer Swap-Operation handelt es sich hingegen um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, welche sie beinhalten. D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt,
+solange sich dieser nicht verändert. Ein Swap lässt sich durch zwei Shift-Operationen repräsentieren, weshalb für jede Swap-Operation
+zwei Shift-Operationen in der Tabu-Liste gespeichert werden. Befindet sich ein Item $i \in I$ in Stack $q_1 \in Q$ auf Level
+$l_1 \in \{1, ..., b\}$ und ein weiteres Item $j \in I$ in Stack $q_2 \in Q$ auf Level $l_2 \in \{1, ..., b\}$,
+so wird die Swap-Operation zwischen diesen beiden Items in Form von $shift_1 = (i, (q_2, l_2))$ und $shift_2 = (j, (q_1, l_1))$
+in der Tabu-Liste gespeichert.
 
 \textbf{Freeing-Strategy}
 
