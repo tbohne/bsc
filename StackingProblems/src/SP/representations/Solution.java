@@ -408,7 +408,7 @@ public class Solution implements Comparable<Solution> {
             str += "time limit: " + this.timeLimit + " s\n";
             str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s";
             str += this.timeToSolve > this.timeLimit ? " (time limit exceeded)\n" : "\n";
-            str += "objective value: " + this.objectiveValue;
+            str += "objective value: " + this.computeCosts();
             str += this.timeToSolve > this.timeLimit ? " (not optimal)\n\n" : "\n\n";
             str += "stacks (top to bottom):\n";
 

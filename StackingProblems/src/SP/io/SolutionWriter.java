@@ -6,6 +6,7 @@ import SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic;
 import SP.constructive_heuristics.TwoCapHeuristic;
 import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
+import SP.post_optimization_methods.TabuSearch;
 import SP.representations.Solution;
 
 import java.io.*;
@@ -39,6 +40,8 @@ public class SolutionWriter {
                 return ThreeCapPermutationHeuristic.class.getName();
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
                 return ThreeCapRecursiveMCMHeuristic.class.getName();
+            case TABU_SEARCH:
+                return TabuSearch.class.getName();
             default:
                 return "";
         }
@@ -64,6 +67,8 @@ public class SolutionWriter {
                 return "3CapPerm";
             case CONSTRUCTIVE_THREE_CAP_RECURSION:
                 return "3CapRec";
+            case TABU_SEARCH:
+                return "TS";
             default:
                 return "";
         }
@@ -127,7 +132,7 @@ public class SolutionWriter {
             if (sol.isFeasible()) {
                 bw.write(
                     sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
-                    + "," + mip + "," + sol.getTimeToSolve() + "," + sol.getObjectiveValue() + "\n"
+                    + "," + mip + "," + sol.getTimeToSolve() + "," + sol.computeCosts() + "\n"
                 );
             }
             bw.close();
