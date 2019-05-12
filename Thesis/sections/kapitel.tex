@@ -3162,7 +3162,8 @@ solange sich dieser nicht verändert. Ein Swap lässt sich durch zwei Shift-Oper
 zwei Shift-Operationen in der Tabu-Liste gespeichert werden. Befindet sich ein Item $i \in I$ in Stack $q_1 \in Q$ auf Level
 $l_1 \in \{1, ..., b\}$ und ein weiteres Item $j \in I$ in Stack $q_2 \in Q$ auf Level $l_2 \in \{1, ..., b\}$,
 so wird die Swap-Operation zwischen diesen beiden Items in Form von $shift_1 = (i, (q_2, l_2))$ und $shift_2 = (j, (q_1, l_1))$
-in der Tabu-Liste gespeichert.
+in der Tabu-Liste gespeichert. Die Swap-Notation, welche im Folgenden stets verwendet wird, lautet dementsprechend
+$swap := (shift_1, shift_2)$.
 
 \textbf{Freeing-Strategy}
 
@@ -3185,9 +3186,8 @@ Es wäre nicht sinnvoll, eine solche Lösung zu verbieten.\newline
 In der Regel wird nicht nur eine Nachbarlösung generiert, sondern entweder sämtliche Nachbarlösungen,
 sofern dies effizient möglich ist, oder, wie in diesem Fall, eine Teilmenge der Nachbarlösungen,
 welche eine definierte, feste Kardinalität besitzt. Es muss also jeweils eine Nachbarlösung aus dieser
-Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
-Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt
-werden.
+Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird. Für die Selektion der Nachbarlösungen wurden
+zwei Strategien implementiert, welche im Folgenden vorgestellt werden.
 
 \vfill
 \pagebreak
@@ -3201,7 +3201,7 @@ so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.
 
 \textbf{Best-Fit}
 
-Die Best-Fit-Strategie generiert die gesamte Teilmenge fester Kardinalität und liefert schließlich die
+Die Best-Fit-Strategie generiert die gesamte Teilmenge einer konfigurierten Kardinalität und liefert schließlich die
 beste Nachbarlösung aus dieser Teilmenge.\newline
 
 Als Abbruchkriterien stehen drei verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können.
@@ -3213,7 +3213,7 @@ entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche 
 Eine wichtige Eigenschaft einer Nachbarschaft ist der sogenannte Zusammenhang. Eine Nachbarschaft wird als zusammenhängend bezeichnet, wenn von einer Lösung $s$ durch Anwendung einer endlichen Folge von Operatoren jede andere Lösung $s'$ erreicht
 werden kann \cite{Brucker2006}. Bei einer zusammenhängenden Nachbarschaft existieren Konvergenzaussagen für Tabu-Suchen.
 Auch praktische Experimente haben gezeigt, dass lokale Suchverfahren im Allgemeinen bessere Ergebnisse
-liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängend\footnote{Analog zum Zusammenhang, allerdings müssen nur sämtliche optimalen Lösungen erreichbar sein.} sind \cite{Knust2017}.
+liefern, wenn die betrachteten Nachbarschaften mindestens opt-zusammenhängend\footnote{Analog zum Zusammenhang, allerdings muss lediglich jeweils eine optimale Lösung erreichbar sein.} sind \cite{Knust2017}.
 Dementsprechend ist ein solcher Zusammenhang bei der Nachbarschaftsstruktur erstrebenswert.
 Die zuvor beschriebene kombinierte Shift- und Swap-Nachbarschaft ist allerdings noch nicht zusammenhängend,
 was an folgendem Gegenbeispiel nachvollzogen werden kann.
@@ -3257,7 +3257,7 @@ sind Shift-Operationen nicht gestattet, weil sonst die Stack-Kapazität verletzt
 Die Transformation muss daher durch Anwendung einer endliche Anzahl von Swap-Operationen auf $s$ gelingen.
 Dabei können zwei Items innerhalb eines Stacks basierend auf dem Graphen aus Abb. \ref{fig:counter_example_stacking_graph}  nicht vertauscht werden ohne die Stacking-Constraints zu verletzen.
 Demzufolge können nur Items zwischen den beiden Stacks vertauscht werden. Es gibt also initial drei mögliche
-Swap-Operationen: $swap_1 = ((1, 3), (2, 3), 1, 4), swap_2 = ((1, 2), (2, 2), 2, 5)$ und $swap_3 = ((1, 1), (2, 1), 3, 6)$.
+Swap-Operationen: $swap_1 = ((1, (2, 3)), (4, (1, 3))), swap_2 = ((2, (2, 2)), (5, (1, 2)))$ und $swap_3 = ((3, (2, 1)), (6, (1, 1)))$.
 Wird $swap_1$ durchgeführt, so wird Item $4$ auf Item $2$ platziert, was gegen die Stacking-Constraints vertößt.
 Somit ist die erste Swap-Operation nicht zielführend. Die zweite Swap-Operation $swap_2$ sorgt ebenfalls dafür,
 dass sich Item $4$ oberhalb von Item $2$ befindet und ist somit gleichermaßen unzulässig.
@@ -3300,9 +3300,9 @@ weshalb anschließend die Swap-Operation $swap_1$ oder $swap_2$ durchgeführt we
 Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
 
 Dieses Problem ließe sich durch einen weiteren Operator $b$-Swap beheben, welcher $1$ bis $b$ simultane Swap-Operationen
-zwischen zwei Stacks ermöglicht. Dabei müssten maximal $b$ Swaps durchgeführt werden, um den gesamten Stackinhalt zu vertauschen.
-Mithilfe des $b$-Swaps ließe sich das Beispiel aus Abb. \ref{fig:counter_example_stacks} lösen,
-indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt würden.
+zwischen zwei Stacks ermöglicht, sodass keine Zwischenlösung entsteht.
+Dabei müssten maximal $b$ Swaps durchgeführt werden, um den gesamten Stackinhalt zu vertauschen.
+Mithilfe des $b$-Swaps ließe sich die Transformation der Lösung aus Abb. \ref{fig:counter_a} in die Lösung aus Abb. \ref{fig:counter_b} erreichen, indem auf Lösung $s$ gleichzeitig die zuvor eingeführten Swap-Operationen $swap_1$ und $swap_2$ durchgeführt würden.
 Anschließend ergäbe sich die zulässige Lösung $s'$.
 
 Die Nachbarschaft wäre allerdings weiterhin nicht zusammenhängend, wie man am Beispiel des Stacking-Graphen
@@ -3376,28 +3376,28 @@ Somit wäre für dieses Beispiel sogar die um $b$-Swap erweiterte Nachbarschaft 
 \pagebreak
 
 Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $b$-Swap Operators,
-welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein Operator $x$-Swap eingeführt. Dieser erlaubt es, $x \in \mathbb{N}$
+welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein Operator $k$-Swap eingeführt. Dieser erlaubt es, $k \in \mathbb{N}$
 Swap-Operationen nacheinander auszuführen. Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit
 wird erst nach Anwendung des Operators überprüft. Das erste Gegenbeispiel aus Abb. \ref{fig:counter_example_stacks}
-lässt sich mit $x = 2$ analog zum $b$-Swap Operator mit $b = 2$ lösen.
-Das zweite Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} kann ebenfalls mit $x = 2$ gelöst werden,
-weil es die Eigenschaft von $x$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
-auszuführen. Zunächst wird die Swap-Operation $((1, 2), (2, 2), 1, 3)$ ausgeführt, bei welcher die Items $1$ und $3$
-die Positionen tauschen. Anschließend wird die Swap-Operation $((2, 2), (3, 2), 1, 5)$ ausgeführt,
+lässt sich mit $k = 2$ analog zum $b$-Swap Operator mit $b = 2$ lösen.
+Die Situation im zweiten Gegenbeispiel aus Abb. \ref{fig:c_2_stacks} lässt sich ebenfalls mit $k = 2$ auflösen,
+weil es die Eigenschaft von $k$-Swap ausnutzt, welche es erlaubt, die Swaps nicht simultan, sondern hintereinander
+auszuführen. Zunächst wird die Swap-Operation $((1, (2, 2)), (3, (1, 2)))$ ausgeführt, bei welcher die Items $1$ und $3$
+die Positionen tauschen. Anschließend wird die Swap-Operation $((1, (3, 2)), (5, (2, 2)))$ ausgeführt,
 welche schließlich zur zulässigen Lösung $s'$ führt.
 
-Um Zyklen innerhalb einer $x$-Swap Operation zu vermeiden, wird eine temporäre, lokale Tabu-Liste eingeführt,
-welche analog zur globalen Swap-Tabu-Liste bereits durchgeführte Swap-Operationen speichert und zukünftig verbietet.
-Entsteht eine zulässige Nachbarlösung, so werden die Einträge der lokalen Tabu-Liste in die globale Swap-Tabu-Liste
+Um Zyklen innerhalb einer $k$-Swap Operation zu vermeiden, wird eine temporäre, lokale Tabu-Liste eingeführt,
+welche analog zur globalen Tabu-Liste bereits durchgeführte Swap-Operationen speichert und zukünftig verbietet.
+Entsteht eine zulässige Nachbarlösung, so werden die Einträge der lokalen Tabu-Liste in die globale Tabu-Liste
 integriert. Andernfalls wird die lokale Tabu-Liste verworfen.
 Letztlich ist die Nachbarschaft einer Lösung in der entwickelten Tabu-Suche also durch die beiden Operatoren
-Shift und  $x$-Swap definiert, wobei $x$-Swap mit $x = 1$ die einfache Swap-Operation abdeckt.
-Bei dieser Nachbarschaft handelt es sich mit $x \in [1, n]$ um eine zusammenhängende Nachbarschaft, in
+Shift und  $k$-Swap definiert, wobei $k$-Swap mit $k = 1$ die einfache Swap-Operation abdeckt.
+Bei dieser Nachbarschaft handelt es sich mit $k \in [1, n]$ um eine zusammenhängende Nachbarschaft, in
 welcher jede Kombination und damit jede Lösung in einer endlichen Anzahl von Operator-Anwendungen erreichbar ist.
-Mit steigendem $x$ wächst allerdings auch die Größe der Nachbarschaft und somit der Zeitaufwand, um diese zu durchsuchen.
-Bei $x = n$ wird bereits das vollständige Problem betrachtet.
-Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden lediglich $x$-Werte aus einem kleineren Intervall
-$[1, x_n]$ betrachtet, wobei $x_n < n$. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren lassen, für die ein $x_n$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz, sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit der Heuristik geopfert. Die konkrete Größe des Intervals
+Mit steigendem $k$ wächst allerdings auch die Größe der Nachbarschaft und somit der Zeitaufwand, um diese zu durchsuchen.
+Bei $k = n$ wird bereits das vollständige Problem betrachtet.
+Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden lediglich $k$-Werte aus einem kleineren Intervall
+$[1, k_n]$ betrachtet, wobei $k_n < n$. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren lassen, für die ein $k_n$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz, sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit der Heuristik geopfert. Die konkrete Größe des Intervals
 wird experimentell ermittelt und ist Teil der Konfiguration der Tabu-Suche, welche im nächsten Abschnitt thematisiert wird.
 
 \vfill
