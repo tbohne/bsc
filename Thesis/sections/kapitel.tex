@@ -3421,6 +3421,15 @@ definiert: Shift ($50 \%$), $1$-Swap ($45 \%$) und $k$-Swap ($5 \%$). Diese Wahr
 der Laufzeit der Operator-Anwendungen begründet. Shift ist geringfügig schneller als $1$-Swap und sowohl Shift
 als auch $1$-Swap sind erheblich schneller als $k$-Swap mit $k > 1$.
 
+Zunächst zur Kardinalität der Teilmenge der Nachbarschaft, welche bei jeder Operator-Anwendung generiert wird
+und aus welcher schließlich die beste Nachbarlösung (Best-Fit) bzw. die erste zulässige Nachbarlösung (First-Fit)
+ausgewählt wird. Um die Wahrscheinlichkeit zu erhöhen, eine möglichst gute Nachbarlösung zu finden, ist es sinnvoll, eine
+große Teilmenge zu betrachten. Je größer die betrachtete Teilmenge ist, desto länger dauert es allerdings,
+diese zu generieren. Damit das Ziel einer möglichst geringen Laufzeit erreicht werden kann, wird eine Kardinalität
+von $1000$ Nachbarlösungen definiert, welche sich in mehreren Tests als ausreichend groß, um in vielen Fällen zu guten
+Ergebnissen zu gelangen, erwiesen hat und gleichzeitig einigermaßen effizient generierbar ist.
+
+
 \vfill
 \pagebreak
 
