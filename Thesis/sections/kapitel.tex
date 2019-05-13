@@ -3404,22 +3404,24 @@ wird experimentell ermittelt und ist Teil der Konfiguration der Tabu-Suche, welc
 \vfill
 \pagebreak
 
-\textbf{Konfiguration der Tabu-Suche}\newline
-
-% TODO: Complete Section
+\subsection{Konfiguration der Tabu-Suche}
 
 Die Tabu-Suche bietet viele Konfigurationsmöglichkeiten, welche zu qualitativ unterschiedlichen
 Ergebnissen führen. In diesem Abschnitt wird die Konfiguration der Tabu-Suche vorgestellt,
-mit welcher die im Folgenden vorgestellten Experimente durchgeführt wurden.
+mit welcher die im Folgenden präsentierten Experimente durchgeführt wurden.
 
-%  und zumeist experimentell bestimmt wurden.
-% Zunächst muss zwischen First-Fit und Best-Fit gewählt werden. First-Fit sollte in Betracht gezogen werden,
-% wenn möglichst geringe Laufzeiten angestrebt werden. Ist dagegen die Qualität der Lösung wichtiger,
-% so sollte Best-Fit bevorzugt werden. Als Abbruchkriterium wird in den Experimenten die Anzahl nichtverbessernder
-% Iterationen betrachtet.
+Grundsätzlich ist es so, dass ein Kompromiss zwischen Laufzeit und Lösungsverbesserung gefunden werden muss,
+denn je länger die Tabu-Suche läuft, desto wahrscheinlicher ist eine große Verbesserung der Lösung.
+Gleichzeitig ist das Ziel, dass die Kombination aus Anwendung der konstruktiven Heuristik und anschließender Verbesserung
+durch die Tabu-Suche möglichst zusammen weiterhin die Laufzeiten der exakten Verfahren unterbietet.
+
+Die erste Maßnahme zum Erreichen dieses Ziels ist, dass nicht in jeder Iteration sämtliche Operatoren angewandt werden.
+Stattdessen findet pro Iteration eine Operator-Anwendung statt. Die Wahrscheinlichkeiten sind dabei wie folgt
+definiert: Shift ($50 \%$), $1$-Swap ($45 \%$) und $k$-Swap ($5 \%$). Diese Wahrscheinlichkeiten sind in
+der Laufzeit der Operator-Anwendungen begründet. Shift ist geringfügig schneller als $1$-Swap und sowohl Shift
+als auch $1$-Swap sind erheblich schneller als $k$-Swap mit $k > 1$.
 
 \vfill
-
 \pagebreak
 
 \section{Fazit und Ausblick}
