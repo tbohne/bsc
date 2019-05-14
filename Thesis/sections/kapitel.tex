@@ -3469,3 +3469,17 @@ keinem Stack zugewiesen. Die Zuweisung der Partitionen zu Stacks findet erst im 
 eine optimale Zuweisung. Um jedem Item einen Level innerhalb eines Stacks zuzuweisen, müssen die Partitionen
 analog zum letzten Schritt der konstruktiven Heuristiken lediglich basierend auf den transitiven Stacking-Constraints
 sortiert werden.
+
+Zudem lassen sich auch für Stack-Kapazitäten von $b > 3$ praktische Szenarien finden, für die weitere
+Heuristiken entwickelt werden können. Die Matching-Ansätze der konstruktiven Heuristiken sind nicht für
+beliebige $b$ skalierbar, dennoch wäre beispielsweise für $b = 4$ ein weiterer Ansatz, welcher verschiedene Matchings
+kombiniert, denkbar. Diese und weitere Aspekte verdeutlichen, dass es auch in Zukunft noch sinnvoll ist,
+sich mit Varianten der betrachteten Stacking-Probleme auseinanderzusetzen.
+Dazu kann das im Zuge dieser Arbeit entstandene Framework verwendet werden,
+welches neben Repräsentationen für Instanzen von Stacking-Problemen und deren Lösungen,
+Reader und Writer für ebendiese, einen Generator für Test-Instanzen, welcher diverse Konfigurationsmöglichkeiten
+bereitstellt und leicht um weitere erweitert werden kann, sowie die MIP-Formulierungen, welche auch für
+größere $b$ als Vergleichsmöglichkeit herangezogen werden können, bereitstellt.
+Außerdem kann ggf. auf diverse Funktionalitäten zum Erstellen und Parsen von Matchings zurückgegriffen werden.
+In vielerlei Hinsicht eignet sich das entstandene Framework daher als Grundlage der Entwicklung
+weiterer heuristischer Lösungsverfahren für Varianten von Stacking-Problemen.
