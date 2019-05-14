@@ -3452,3 +3452,20 @@ welches von den konstruktiven Heuristiken generierte Lösungen als Eingabe bekom
 im Laufe des Verfahrens zu verbessern. Dabei war weiterhin das Ziel, bei geringen Laufzeiten zu guten Ergebnissen
 zu gelangen, um auch in Kombination mit den konstruktiven Heuristiken eine effiziente Alternative zu exakten Solvern bereitzustellen.
 % TODO: Auf Ergebnisse der TS eingehen (Laufzeit, Verbesserungen, Optimale Lsg, ...)
+
+Im Rahmen dieser Arbeit haben sich an vielen Stellen, vor allem durch unterschiedliche
+praktisch motivierte Szenarien Konfigurationsmöglichkeiten ergeben, welche weitere, zukünftige
+Betrachtungen sinnvoll erscheinen lassen.
+
+Darüber hinaus kann das vorgestellte Verbesserungsverfahren in Zukunft weiter entwickelt werden.
+Es können beispielsweise weitere Nachbarschaftsstrukturen definiert werden, welche unter Umständen
+zu noch besseren Ergebnissen gelangen. Erstrebenswert wäre es dabei, eine verglichen mit der gegenwärtigen
+kleinere Nachbarschaft zu definieren, welche die Zusammenhangseigenschaft erfüllt.
+Außerdem benötigt das systematische Dursuchen des Lösungsraums aus theoretischer Perspektive weniger Zeit,
+als das bisher verwendete randomisierte Verfahren, weshalb sich dies auch praktisch als vorteilhaft erweisen könnte.
+Auch die Betrachtung einer weiteren Lösungsrepräsentation, in welcher Lösungen durch Partitionen kompatibler Items
+gegeben sind, sollte untersucht werden. Die Items sind in dieser Repräsentation dementsprechend initial noch
+keinem Stack zugewiesen. Die Zuweisung der Partitionen zu Stacks findet erst im Anschluss an das Verfahren statt, indem ein Minimum-Weight-Bipartite-Perfect-Matching zwischen Partitionen und Stacks ermittelt wird. Dabei handelt es sich um
+eine optimale Zuweisung. Um jedem Item einen Level innerhalb eines Stacks zuzuweisen, müssen die Partitionen
+analog zum letzten Schritt der konstruktiven Heuristiken lediglich basierend auf den transitiven Stacking-Constraints
+sortiert werden.
