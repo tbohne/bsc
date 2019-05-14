@@ -1204,7 +1204,7 @@ verbessern, weshalb die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverä
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.5, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
+\begin{tikzpicture}[scale=0.45, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
         \node[state] (A) [thick] {$\boldsymbol{1}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{2}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{3}$};
@@ -2044,7 +2044,7 @@ welches die Kanten dieses \textsc{MCM} interpretiert als kompatible Item-Paare z
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[auto, transform shape, node distance=2cm, state/.style={circle, draw, fill=gray!40, minimum size=1.5cm}]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.5cm}]
         \node[state] (A) [thick] {$\boldsymbol{1, 12}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 3}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{4, 13}$};
@@ -2085,7 +2085,7 @@ ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung i
 \centering
 \begin{subfigure}[b]{\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm, state/.style={circle, draw, fill=gray!40, minimum size=1.5cm}]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.5cm}]
         \node[state] (A) [thick] {$\boldsymbol{2, 3}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{4, 13}$};
         \path;
@@ -2095,7 +2095,7 @@ ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung i
 \end{subfigure}
 \begin{subfigure}[b]{\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2cm, state/.style={circle, draw, fill=gray!40, minimum size=1.5cm}]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.5cm}]
         \node[state] (A) [thick] {$\boldsymbol{10, 11}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{9, 14}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{7, 8}$};
@@ -2128,7 +2128,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.25cm}]
+\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.5cm}]
         \node[state] (A) [thick] {$\boldsymbol{1, 12}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{5, 6}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{7, 8}$};
@@ -2159,7 +2159,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 \hspace{10pt}
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.25cm}]
+\begin{tikzpicture}[scale=0.7, transform shape, node distance=2cm, state/.style={circle, draw, minimum size=1.5cm}]
         \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{1, 12}}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{\textcolor{red}{5, 6}}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{\textcolor{mygreen}{7, 8}}$};
@@ -2196,7 +2196,7 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
 \textsc{MCM} zusätzlich zum verbleibenden Item-Paar vier Item-Tripel generiert wurden.
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.85, transform shape, node distance=2.5cm, state/.style={circle, draw, fill=gray!40, minimum size=2cm}]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
         \node[state] (A) [thick] {$\boldsymbol{10, 11, 13}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 9, 14}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 7, 8}$};
@@ -2241,7 +2241,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 % \begin{figure}[H]
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.55, transform shape, node distance=2.25cm, state/.style={circle, draw, minimum size=2cm}]
+\begin{tikzpicture}[scale=0.45, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2.25cm}]
         \node[state] (A) [thick] {$\boldsymbol{1, 12, 4}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{7, 8, 3}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{9, 14, 2}$};
@@ -2249,7 +2249,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
         \node[state] (E) [thick, below of=D] {$\boldsymbol{5, 6}$};
         \node[state] (F) [thick, below of=E] {$\boldsymbol{D_1}$};
 
-        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (G) [thick, right = 5cm of A] {$\boldsymbol{S_1}$};
         \node[state] (H) [thick, below of=G] {$\boldsymbol{S_2}$};
         \node[state] (I) [thick, below of=H] {$\boldsymbol{S_3}$};
         \node[state] (J) [thick, below of=I] {$\boldsymbol{S_4}$};
@@ -2305,7 +2305,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 \hfill
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.55, transform shape, node distance=2.25cm, state/.style={circle, draw, minimum size=2cm}]
+\begin{tikzpicture}[scale=0.45, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2.25cm}]
         \node[state] (A) [thick] {$\boldsymbol{1, 12, 4}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{7, 8, 3}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{9, 14, 2}$};
@@ -2313,7 +2313,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
         \node[state] (E) [thick, below of=D] {$\boldsymbol{5, 6}$};
         \node[state] (F) [thick, below of=E] {$\boldsymbol{D_1}$};
 
-        \node[state] (G) [thick, right = 4cm of A] {$\boldsymbol{S_1}$};
+        \node[state] (G) [thick, right = 5cm of A] {$\boldsymbol{S_1}$};
         \node[state] (H) [thick, below of=G] {$\boldsymbol{S_2}$};
         \node[state] (I) [thick, below of=H] {$\boldsymbol{S_3}$};
         \node[state] (J) [thick, below of=I] {$\boldsymbol{S_4}$};
@@ -2371,7 +2371,7 @@ vier verbleibende freie Positionen in den Stacks. Die Kantengewichte des Postpro
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.5, transform shape, node distance=1.5cm, state/.style={circle, draw, minimum size=1.25cm}]
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=2.25cm, state/.style={circle, draw, minimum size=1cm}]
         \node[state] (A) [thick] {$\boldsymbol{1}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{2}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{3}$};
@@ -3447,7 +3447,7 @@ Verringerung der Kosten betrachtet. Als Abbruchkriterium dienten jeweils $50$ ni
 \begin{tabular}{| c | c | c |}
     \hline
     \textbf{max $\boldsymbol{|TL|}$} & \textbf{\O \thinspace abs. Verringerung der Kosten} & \textbf{Laufzeit (s)} \\ \hline
-    $5|N|$ & $$ & $$ \\ \hline
+    $5|N|$ & $7.01$ & $275.69$ \\ \hline
     $7|N|$ & $$ & $$ \\ \hline
     $9|N|$ & $$ & $$ \\ \hline
     $11|N|$ & $$ & $$ \\ \hline
