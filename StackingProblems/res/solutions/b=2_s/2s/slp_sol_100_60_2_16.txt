@@ -3,8 +3,8 @@ lower bound for relaxed s_ij: 6547.42
 #####################################################
 
 solved with: SP.mip_formulations.BinPackingFormulation
-time limit: 5 s
-time to solve: 1,06 s
+time limit: 2 s
+time to solve: 1,16 s
 objective value: 6552.3
 
 stacks (top to bottom):
@@ -72,7 +72,7 @@ stack 59:    94 30
 #####################################################
 
 solved with: SP.mip_formulations.ThreeIndexFormulation
-time limit: 5 s
+time limit: 2 s
 time to solve: 0,74 s
 objective value: 6552.3
 
@@ -141,8 +141,8 @@ stack 59:    49 37
 #####################################################
 
 solved with: SP.constructive_heuristics.TwoCapHeuristic
-time limit: 5 s
-time to solve: 0,04 s
+time limit: 2 s
+time to solve: 0,03 s
 objective value: 6558.36
 
 stacks (top to bottom):
