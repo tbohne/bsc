@@ -3409,12 +3409,10 @@ wird experimentell ermittelt und ist Teil der Konfiguration der Tabu-Suche, welc
 Die Tabu-Suche bietet viele Konfigurationsmöglichkeiten, welche zu qualitativ unterschiedlichen
 Ergebnissen führen. In diesem Abschnitt wird die Konfiguration der Tabu-Suche vorgestellt,
 mit welcher die im Folgenden präsentierten Experimente durchgeführt wurden.
-
 Grundsätzlich ist es so, dass ein Kompromiss zwischen Laufzeit und Lösungsverbesserung gefunden werden muss,
 denn je länger die Tabu-Suche läuft, desto wahrscheinlicher ist eine große Verbesserung der Lösung.
 Gleichzeitig ist das Ziel, dass die Kombination aus Anwendung der konstruktiven Heuristik und anschließender Verbesserung
 durch die Tabu-Suche möglichst zusammen weiterhin die Laufzeiten der exakten Verfahren unterbietet.
-
 Die erste Maßnahme zum Erreichen dieses Ziels ist, dass nicht in jeder Iteration sämtliche Operatoren angewandt werden.
 Stattdessen findet pro Iteration eine Operator-Anwendung statt. Die Wahrscheinlichkeiten sind dabei wie folgt
 definiert: Shift ($50 \%$), $1$-Swap ($45 \%$) und $k$-Swap ($5 \%$). Diese Wahrscheinlichkeiten sind in
@@ -3428,6 +3426,37 @@ große Teilmenge zu betrachten. Je größer die betrachtete Teilmenge ist, desto
 diese zu generieren. Damit das Ziel einer möglichst geringen Laufzeit erreicht werden kann, wird eine Kardinalität
 von $1000$ Nachbarlösungen definiert, welche sich in mehreren Tests als ausreichend groß, um in vielen Fällen zu guten
 Ergebnissen zu gelangen, erwiesen hat und gleichzeitig einigermaßen effizient generierbar ist.
+
+Die Maximallänge der Tabu-Liste $TL$ basiert stets auf der Größe der in jeder Iteration betrachteten Teilmenge der
+Nachbarschaft, welche im Folgenden als $N$ bezeichnet wird. Der Faktor, mit welchem die Kardinalität der Teilmgenge $N$ jeweils
+multipliziert wird, um die maximale Länge der $TL$ zu definieren, wurde experimentell bestimmt.
+Es hat sich in einer Vielzahl von Tests als sinnvoll erwiesen, die Maximallänge der $TL$ so zu wählen,
+dass diese auch tatsächlich erreicht wird. Damit dies der Fall ist und die $TL$ effizient durchsuchbar bleibt,
+wurde das $15$-fache der Kardinalität von $N$ als Obergrenze für die Maximallänge der $TL$ definiert.
+Außerdem sollte die $TL$ nicht zu wenige Züge speichern, um sinnvoll Zyklen zu vermeiden,
+weshalb von einer Mindestlänge von $5|N|$ ausgegangen wird.
+Innerhalb dieses Bereichs wurde experimentell die erfolgversprechendste Maximallänge ermittelt.
+In Abb. \ref{fig:TL_experiments} sind jeweils die Ergebnisse der Tabu-Suche mit unterschiedlichen maximalen Längen der
+$TL$ dargestellt. Für jeden betrachteten Faktor wurde für $20$ von den konstruktiven Heuristiken generierte Lösungen
+die Tabu-Suche durchgeführt. Dabei wurde jeweils die Laufzeit der Tabu-Suche sowie die durchschnittliche absolute
+Verringerung der Kosten betrachtet. Als Abbruchkriterium dienten jeweils $50$ nichtverbessernde Iterationen.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{| c | c | c |}
+    \hline
+    \textbf{max $\boldsymbol{|TL|}$} & \textbf{\O \thinspace abs. Verringerung der Kosten} & \textbf{Laufzeit (s)} \\ \hline
+    $5|N|$ & $$ & $$ \\ \hline
+    $7|N|$ & $$ & $$ \\ \hline
+    $9|N|$ & $$ & $$ \\ \hline
+    $11|N|$ & $$ & $$ \\ \hline
+    $13|N|$ & $$ & $$ \\ \hline
+    $15|N|$ & $$ & $$ \\ \hline
+\end{tabular}}
+\caption{\textsc{Ermittlung einer geeigneten Maximallänge der $TL$}.}
+\label{fig:TL_experiments}
+\end{figure}
 
 \vfill
 \pagebreak
