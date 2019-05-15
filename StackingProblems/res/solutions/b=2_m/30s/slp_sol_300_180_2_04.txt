@@ -3,197 +3,13 @@ lower bound for relaxed s_ij: 48756.94
 #####################################################
 
 solved with: SP.mip_formulations.BinPackingFormulation
-time limit: 300 s
-time to solve: 195,42 s
-objective value: 48781.26
-
-stacks (top to bottom):
-stack   0:    150 
-stack   1:    
-stack   2:    
-stack   3:    153 
-stack   4:    154 
-stack   5:    5 
-stack   6:    156 
-stack   7:    8 
-stack   8:    158 
-stack   9:    9 
-stack  10:    10 
-stack  11:    161 
-stack  12:    13 
-stack  13:    
-stack  14:    164 
-stack  15:    
-stack  16:    
-stack  17:    167 
-stack  18:    168 
-stack  19:    
-stack  20:    20 
-stack  21:    
-stack  22:    
-stack  23:    
-stack  24:    174 
-stack  25:    
-stack  26:    
-stack  27:    26 
-stack  28:    28 
-stack  29:    
-stack  30:    93 30 
-stack  31:    31 113 
-stack  32:    290 107 
-stack  33:    136 241 
-stack  34:    34 279 
-stack  35:    273 185 
-stack  36:    36 227 
-stack  37:    37 38 
-stack  38:    268 197 
-stack  39:    252 272 
-stack  40:    114 289 
-stack  41:    191 194 
-stack  42:    111 275 
-stack  43:    110 193 
-stack  44:    44 88 
-stack  45:    118 195 
-stack  46:    46 90 
-stack  47:    203 47 
-stack  48:    228 127 
-stack  49:    148 103 
-stack  50:    292 50 
-stack  51:    51 274 
-stack  52:    133 143 
-stack  53:    281 121 
-stack  54:    207 54 
-stack  55:    60 126 
-stack  56:    206 266 
-stack  57:    214 115 
-stack  58:    208 76 
-stack  59:    210 209 
-stack  60:    72 108 
-stack  61:    239 89 
-stack  62:    141 271 
-stack  63:    287 144 
-stack  64:    116 129 
-stack  65:    244 215 
-stack  66:    216 277 
-stack  67:    124 68 
-stack  68:    112 256 
-stack  69:    276 220 
-stack  70:    142 94 
-stack  71:    263 280 
-stack  72:    119 147 
-stack  73:    223 283 
-stack  74:    74 269 
-stack  75:    149 242 
-stack  76:    296 97 
-stack  77:    249 250 
-stack  78:    122 98 
-stack  79:    245 140 
-stack  80:    120 230 
-stack  81:    137 231 
-stack  82:    248 232 
-stack  83:    83 99 
-stack  84:    104 145 
-stack  85:    288 293 
-stack  86:    247 262 
-stack  87:    299 237 
-stack  88:    128 146 
-stack  89:    257 297 
-stack  90:    0 
-stack  91:    1 151 
-stack  92:    152 2 
-stack  93:    3 
-stack  94:    4 
-stack  95:    155 
-stack  96:    6 
-stack  97:    7 157 
-stack  98:    
-stack  99:    159 
-stack 100:    160 
-stack 101:    11 
-stack 102:    12 162 
-stack 103:    163 
-stack 104:    14 165 
-stack 105:    15 
-stack 106:    16 166 
-stack 107:    18 
-stack 108:    17 
-stack 109:    169 19 
-stack 110:    170 
-stack 111:    171 22 
-stack 112:    21 172 
-stack 113:    173 23 
-stack 114:    24 
-stack 115:    175 25 
-stack 116:    176 
-stack 117:    27 177 
-stack 118:    29 178 
-stack 119:    179 
-stack 120:    254 180 
-stack 121:    102 181 
-stack 122:    32 182 
-stack 123:    183 33 
-stack 124:    35 184 
-stack 125:    285 243 
-stack 126:    186 260 
-stack 127:    187 240 
-stack 128:    80 188 
-stack 129:    39 189 
-stack 130:    40 190 
-stack 131:    259 41 
-stack 132:    192 42 
-stack 133:    43 253 
-stack 134:    213 219 
-stack 135:    87 45 
-stack 136:    255 196 
-stack 137:    139 67 
-stack 138:    198 48 
-stack 139:    49 199 
-stack 140:    200 202 
-stack 141:    211 201 
-stack 142:    130 52 
-stack 143:    278 53 
-stack 144:    251 204 
-stack 145:    205 55 
-stack 146:    109 56 
-stack 147:    132 57 
-stack 148:    58 282 
-stack 149:    91 59 
-stack 150:    258 95 
-stack 151:    61 138 
-stack 152:    62 212 
-stack 153:    117 63 
-stack 154:    64 125 
-stack 155:    65 135 
-stack 156:    267 66 
-stack 157:    261 217 
-stack 158:    123 218 
-stack 159:    235 69 
-stack 160:    70 221 
-stack 161:    71 265 
-stack 162:    222 106 
-stack 163:    96 73 
-stack 164:    246 224 
-stack 165:    75 225 
-stack 166:    134 226 
-stack 167:    77 295 
-stack 168:    84 78 
-stack 169:    229 79 
-stack 170:    92 291 
-stack 171:    81 82 
-stack 172:    100 131 
-stack 173:    233 105 
-stack 174:    234 101 
-stack 175:    264 85 
-stack 176:    86 236 
-stack 177:    270 286 
-stack 178:    294 238 
-stack 179:    298 284 
+Problem not solved.
 
 #####################################################
 
 solved with: SP.mip_formulations.ThreeIndexFormulation
-time limit: 300 s
-time to solve: 28,06 s
+time limit: 30.0 s
+time to solve: 28,32 s
 objective value: 48781.26
 
 stacks (top to bottom):
@@ -381,8 +197,8 @@ stack 179:    268 106
 #####################################################
 
 solved with: SP.constructive_heuristics.TwoCapHeuristic
-time limit: 300 s
-time to solve: 0,40 s
+time limit: 30.0 s
+time to solve: 0,38 s
 objective value: 48826.12
 
 stacks (top to bottom):
