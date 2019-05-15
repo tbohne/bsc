@@ -3476,7 +3476,14 @@ Verringerung der Kosten betrachtet. Als Abbruchkriterium dienten jeweils $50$ ni
 Wie man der Tabelle in Abb. \ref{fig:TL_experiments} entnehmen kann, kommt die Tabu-Suche bei einer Maximallänge der $TL$
 von $9|N|$ zur durschnittlich größten Verbesserung. Grundsätzlich ist zu erkennen, dass eine maximale Länge der $TL$
 vom ca. $10$-fachen und vom ca. $20$-fachen der Kardinalität von $N$ zu guten Ergebnissen kommt.
-In den folgenden Experimenten wird eine maximale Länge der $TL$ von $9|N|$ betrachtet.
+In den folgenden Experimenten wird eine maximale Länge der $TL$ von $9|N|$ betrachtet. Der Einfluss der Länge der Tabu-Liste
+auf die Laufzeit ist innerhalb der gesetzten Grenzen zu vernachlässigen, da die höchste durchschnittliche Laufzeit von $280.13s$
+bei einer maximalen Länge von $21|N|$ auftritt und diese annähernd auch bei einer Maximallänge von $5|N|$ auftritt (vgl. \ref{fig:TL_experiments}).
+
+Wird in einer Iteration eine bestimmte Anzahl an zulässigen Nachbarlösungen hintereinander generiert, welche allesamt
+tabu sind, so findet eine Zurücksetzung der Tabu-Liste statt. Diese Anzahl an Iterationen wird auf $1000$ gesetzt,
+um solche Situationen nach wenigen Sekunden aufzulösen. Im Falle des $k$-Swap Operators wird diese Anzahl an Iterationen zudem dazu verwendet, die Suche abzubrechen, und die beste bisher generierte Nachbarlösung auszuwählen, da höhere Werte beim $k$-Swap mitunter zu erheblich längeren Laufzeiten führen. Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden zusätzlich für den $k$-Swap Operator lediglich Werte aus dem Intervall $[1, 4]$ betrachtet. Werte darüber hinaus führen
+neben einer erheblichen Laufzeitverlängerung nur sehr selten zum Erfolg.
 
 \vfill
 \pagebreak
