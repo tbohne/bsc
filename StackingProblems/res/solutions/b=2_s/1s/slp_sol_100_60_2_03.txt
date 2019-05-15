@@ -3,76 +3,12 @@ lower bound for relaxed s_ij: 6547.42
 #####################################################
 
 solved with: SP.mip_formulations.BinPackingFormulation
-time limit: 1 s
-time to solve: 1,00 s (time limit exceeded)
-objective value: 11373.7 (not optimal)
-
-stacks (top to bottom):
-stack  0:    96 52 
-stack  1:    80 
-stack  2:    83 26 
-stack  3:    25 
-stack  4:    84 22 
-stack  5:    68 20 
-stack  6:    12 
-stack  7:    91 14 
-stack  8:    24 
-stack  9:    16 94 
-stack 10:    67 4 
-stack 11:    65 48 
-stack 12:    98 77 
-stack 13:    60 82 
-stack 14:    63 70 
-stack 15:    17 23 
-stack 16:    
-stack 17:    36 61 
-stack 18:    32 
-stack 19:    43 
-stack 20:    13 29 
-stack 21:    76 50 
-stack 22:    2 
-stack 23:    0 8 
-stack 24:    27 
-stack 25:    73 90 
-stack 26:    15 31 
-stack 27:    71 19 
-stack 28:    92 69 
-stack 29:    42 11 
-stack 30:    35 
-stack 31:    87 
-stack 32:    53 28 
-stack 33:    78 6 
-stack 34:    58 3 
-stack 35:    79 97 
-stack 36:    59 49 
-stack 37:    64 81 
-stack 38:    95 1 
-stack 39:    72 41 
-stack 40:    10 34 
-stack 41:    44 51 
-stack 42:    89 9 
-stack 43:    37 75 
-stack 44:    46 
-stack 45:    45 74 
-stack 46:    5 7 
-stack 47:    54 
-stack 48:    40 85 
-stack 49:    56 18 
-stack 50:    62 66 
-stack 51:    88 86 
-stack 52:    99 39 
-stack 53:    33 
-stack 54:    38 
-stack 55:    57 
-stack 56:    
-stack 57:    21 47 
-stack 58:    30 
-stack 59:    93 55 
+Problem not solved.
 
 #####################################################
 
 solved with: SP.mip_formulations.ThreeIndexFormulation
-time limit: 1 s
+time limit: 1.0 s
 time to solve: 0,71 s
 objective value: 6549.86
 
@@ -141,7 +77,7 @@ stack 59:    84 91
 #####################################################
 
 solved with: SP.constructive_heuristics.TwoCapHeuristic
-time limit: 1 s
+time limit: 1.0 s
 time to solve: 0,03 s
 objective value: 6555.92
 
