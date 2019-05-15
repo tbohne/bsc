@@ -3485,6 +3485,17 @@ tabu sind, so findet eine Zurücksetzung der Tabu-Liste statt. Diese Anzahl an I
 um solche Situationen nach wenigen Sekunden aufzulösen. Im Falle des $k$-Swap Operators wird diese Anzahl an Iterationen zudem dazu verwendet, die Suche abzubrechen, und die beste bisher generierte Nachbarlösung auszuwählen, da höhere Werte beim $k$-Swap mitunter zu erheblich längeren Laufzeiten führen. Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden zusätzlich für den $k$-Swap Operator lediglich Werte aus dem Intervall $[1, 4]$ betrachtet. Werte darüber hinaus führen
 neben einer erheblichen Laufzeitverlängerung nur sehr selten zum Erfolg.
 
+Als Abbruchkriterium wird in den Experimenten eine Anzahl nichtverbessernder Iterationen betrachtet,
+weil sich dies in einigen Tests als das im Durchschnitt erfolgreichste Abbruchkriterium herausgestellt hat.
+Dieses wird allerdings mit einem Zeitlimit kombiniert, welches dazu führt, dass die Tabu-Suche terminiert,
+sobald eines der beiden Kriterien erfüllt ist. Dies ermöglicht es beispielsweise, bei großen Instanzen
+Zeitlimits zu setzen, die es verhindern, die Laufzeiten der exakten Verfahren zu überschreiten.
+Da die unterschiedlichen Größenkategorien der Instanzen zu unterschiedlichen Laufzeiten
+führen, könnte die Anzahl der nichtverbessernden Iterationen bei kleineren Instanzen erhöht werden.
+Da jedoch die Laufzeit weiterhin eine Rolle spielt, wird davon abgesehen, um den Laufzeitvorteil bei
+kleineren Instanzen zu erhalten, wird in jedem Fall eine Anzahl nichtverbessernder Iterationen von $50$ betrachtet,
+welche auch bei den großen Instanzen nach wenigen Minuten ohne Verbesserung zur Terminierung führt.
+
 \vfill
 \pagebreak
 
