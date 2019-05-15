@@ -328,8 +328,7 @@ und $b = 3 $ betrachtet, welche besonders in Szenarien aus der Praxis, in denen 
 Container zu stapeln, von Interesse sind.
 
 Wie \citet{Bruns2015} zeigten, handelt es sich bei dem Zulässigkeitsproblem mit einer Stack-Kapazität von $b=3$ und gegebenen transitiven Stacking-Constraints $s_{ij}$ um ein stark NP-vollständiges Problem. Erst kürzlich wurde zudem gezeigt, dass auch das Zulässigkeitsproblem mit einer Stack-Kapazität von $b=2$, gegebenen transitiven
-Stacking-Constraints $s_{ij}$ und Placement-Constraints $t_{iq}$, NP-vollständig ist. Der entsprechende Beweis
-wurde allerdings noch nicht veröffentlicht.
+Stacking-Constraints $s_{ij}$ und Placement-Constraints $t_{iq}$, NP-vollständig ist (vgl. \citet{Chernykh2019}).
 
 Somit sind die in dieser Arbeit betrachteten Stacking-Probleme, bei welchen zusätzlich die Transportkosten minimiert
 und jeweils Stacking- sowie Placement-Constraints berücksichtigt werden, ebenfalls NP-vollständig.
@@ -3445,9 +3444,14 @@ Verringerung der Kosten betrachtet. Als Abbruchkriterium dienten jeweils $50$ ni
     $5|N|$ & $7.01$ & $275.69$ \\ \hline
     $7|N|$ & $7.61$ & $253.99$ \\ \hline
     $9|N|$ & $8.17$ & $247.99$ \\ \hline
-    $11|N|$ & $$ & $$ \\ \hline
-    $13|N|$ & $$ & $$ \\ \hline
-    $15|N|$ & $$ & $$ \\ \hline
+    $11|N|$ & $6.84$ & $238.24$ \\ \hline
+    $13|N|$ & $5.07$ & $259.72$ \\ \hline
+    $15|N|$ & $6.95$ & $256.74$ \\ \hline
+    $17|N|$ & $7.44$ & $245.36$ \\ \hline
+    $19|N|$ & $7.32$ & $239.32$ \\ \hline
+    $21|N|$ & $6.83$ & $280.13$ \\ \hline
+    $23|N|$ & $6.65$ & $241.44$ \\ \hline
+    $25|N|$ & $$ & $$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Ermittlung einer geeigneten Maximallänge der $TL$}.}
 \label{fig:TL_experiments}
