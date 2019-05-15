@@ -602,10 +602,26 @@ Es ist allerdings von Vorteil, diese in den MIP-Formulierungen explizit umzusetz
 Laufzeiten erzielen lassen. Zu diesem Zweck seien die Placement-Constraints im Folgenden für jedes Item $i \in I$
 durch die Menge $Q^i$ gegeben, wobei $Q^i$ der Menge an Stacks entspricht, denen Item $i$ basierend auf den Placement-Constraints zugewiesen werden darf, also sämtliche $q \in Q$, für die $t_{iq} = 1$ gilt.
 
+% \begin{equation}
+% \begin{aligned}
+% & \text{min} & & \displaystyle\sum\limits_{i \in I}^{}\sum\limits_{q \in Q}^{} c_{iq} x_{iq} \\
+% & \text{s.t.} & & \displaystyle\sum\limits_{q \in Q^i} x_{iq} = 1 & \forall i \in I\\
+% &  & & \displaystyle\sum\limits_{i \in I} x_{iq} \leq b & \forall q \in Q\\
+% \end{aligned}
+% \end{equation}
+
+% \begin{equation}
+% \begin{array}{ll@{}ll}
+% \text{minimize}   & \displaystyle\sum\limits_{i \in I}^{}\sum\limits_{q \in Q}^{} c_{iq} x_{iq} &\\
+% \text{s.t.}       & \displaystyle\sum\limits_{q \in Q^i} x_{iq} = 1 & & \forall i \in I\\
+%                   & \displaystyle\sum\limits_{i \in I} x_{iq} \leq b & & \forall q \in Q\\
+% \end{array}
+% \end{equation}
+
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
-\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad\thinspace\thinspace\thinspace\quad\thinspace \quad \sum_{q \in Q^i} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
-\quad \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \label{bin_packing_line_three} \\
+\thinspace\thinspace \boldsymbol{s.t.} \quad \quad \sum_{q \in Q^i} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
+\thinspace \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \label{bin_packing_line_three} \\
 \thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin E \label{bin_packing_line_four} \\
 \thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace \label{bin_packing_line_five}
 \end{gather}
@@ -3426,7 +3442,7 @@ Nachbarschaft, welche im Folgenden als $N$ bezeichnet wird. Der Faktor, mit welc
 multipliziert wird, um die maximale Länge der $TL$ zu definieren, wurde experimentell bestimmt.
 Es hat sich in einer Vielzahl von Tests als sinnvoll erwiesen, die Maximallänge der $TL$ so zu wählen,
 dass diese auch tatsächlich erreicht wird. Damit dies der Fall ist und die $TL$ effizient durchsuchbar bleibt,
-wurde das $15$-fache der Kardinalität von $N$ als Obergrenze für die Maximallänge der $TL$ definiert.
+wurde das $25$-fache der Kardinalität von $N$ als Obergrenze für die Maximallänge der $TL$ definiert.
 Außerdem sollte die $TL$ nicht zu wenige Züge speichern, um sinnvoll Zyklen zu vermeiden,
 weshalb von einer Mindestlänge von $5|N|$ ausgegangen wird.
 Innerhalb dieses Bereichs wurde experimentell die erfolgversprechendste Maximallänge ermittelt.
@@ -3451,11 +3467,16 @@ Verringerung der Kosten betrachtet. Als Abbruchkriterium dienten jeweils $50$ ni
     $19|N|$ & $7.32$ & $239.32$ \\ \hline
     $21|N|$ & $6.83$ & $280.13$ \\ \hline
     $23|N|$ & $6.65$ & $241.44$ \\ \hline
-    $25|N|$ & $$ & $$ \\ \hline
+    $25|N|$ & $6.41$ & $258.20$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Ermittlung einer geeigneten Maximallänge der $TL$}.}
 \label{fig:TL_experiments}
 \end{figure}
+
+Wie man der Tabelle in Abb. \ref{fig:TL_experiments} entnehmen kann, kommt die Tabu-Suche bei einer Maximallänge der $TL$
+von $9|N|$ zur durschnittlich größten Verbesserung. Grundsätzlich ist zu erkennen, dass eine maximale Länge der $TL$
+vom ca. $10$-fachen und vom ca. $20$-fachen der Kardinalität von $N$ zu guten Ergebnissen kommt.
+In den folgenden Experimenten wird eine maximale Länge der $TL$ von $9|N|$ betrachtet.
 
 \vfill
 \pagebreak
