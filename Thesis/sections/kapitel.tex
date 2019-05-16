@@ -2833,19 +2833,19 @@ vom Optimum in Kauf zu nehmen.
 
 \textbf{Große Instanzen (l)}
 
-Zuletzt werden die Solver für die in Kapitel \ref{sec:test_data} als groß bezeichneten Instanzen,
+Zuletzt werden die Solver für in Kapitel \ref{sec:test_data} als groß bezeichnete Instanzen,
 bei denen es darum geht, $500$ eintreffende Items in die Storage-Area zu verladen, verglichen.
-In dieser Kategorie werden Zeitlimits von $45, 90$ und $120$ Minuten pro Instanz betrachtet.
+In dieser Kategorie werden Zeitlimits von $5, 15$ und $30$ Minuten pro Instanz betrachtet.
 
-Wie man Abb. \ref{fig:instance_coverage_b=3_l_a} entnehmen kann, findet keine der beiden MIP-Formulierungen
-bei einem Zeitlimit von $45$ Minuten pro Instanz eine zulässige Lösung für eine der Instanzen.
-Beim verdoppelten Zeitlimit von $90$ Minuten pro Instanz wird erkennbar, dass die Bin-Packing-Formulierung
-mit einer Instance-Coverage von $80 \%$ auch in dieser Kategorie besser geeignet scheint, als die 3-Index-Formulierung,
-welche selbst bei diesem Zeitlimit noch keine Instanz zulässig löst (vgl. \ref{fig:instance_coverage_b=3_l_b}).
-Bei einem Zeitlimit von $120$ Minuten pro Instanz löst die Bin-Packing-Formulierung schließlich sämtliche Instanzen,
-während die 3-Index-Formulierung sogar dort nur $20 \%$ der Instanzen löst (vgl. \ref{fig:instance_coverage_b=3_l_c}).
-
-Die Heuristik ist mit einer durchschnittlichen Laufzeit von $3.9s$ pro Instanz erneut in keinem Fall
+Wie man Abb. \ref{fig:instance_coverage_b=3_l_a} entnehmen kann, findet die Bin-Packing-Formulierung
+bei einem Zeitlimit von $5$ Minuten pro Instanz keine zulässige Lösung, während die 3-Index-Formulierung
+$85 \%$ der Instanzen zulässig löst.
+Beim nächsten betrachteten Zeitlimit von $15$ Minuten pro Instanz löst die Bin-Packing-Formulierung dagegen
+sämtliche Instanzen zulässig, während die 3-Index-Formulierung weiterhin eine Instance-Coverage von $85 \%$
+besitzt (vgl. Abb. \ref{fig:instance_coverage_b=3_l_b}). Es ist bemerkenswert, dass die Bin-Packing-Formulierung bei einem Zeitlimit von $5$ Minuten noch keine Instanz zulässig löst und beim Zeitimit von $15$ Minuten eine höhere Instance-Coverage als die 3-Index-Formulierung erreicht. Die verbleibenden $15 \%$ der von der 3-Index-Formulierung ungelösten Instanzen erfordern offensichtlich erheblich längere Laufzeiten.
+In Abb. \ref{fig:instance_coverage_b=3_l_c} ist die Instance-Coverage bei einem Zeitlimit von $30$ Minuten dargestellt,
+bei welchem schließlich sämtliche Solver alle betrachteten Instanzen zulässig lösen.
+Die Heuristik ist mit einer durchschnittlichen Laufzeit von $6.72s$ pro Instanz erneut in keinem Fall
 vom Zeitlimit betroffen.
 
 \begin{figure}[H]
@@ -2853,22 +2853,22 @@ vom Zeitlimit betroffen.
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_2700s.png}
-\caption{\textsc{Zeitlimit} $45min$}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_300s.png}
+\caption{\textsc{Zeitlimit} $5min$}
 \label{fig:instance_coverage_b=3_l_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_5400s.png}
-\caption{\textsc{Zeitlimit} $90min$}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_900s.png}
+\caption{\textsc{Zeitlimit} $15min$}
 \label{fig:instance_coverage_b=3_l_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-% \includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_7200s.png}
-\caption{\textsc{Zeitlimit} $120min$}
+\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_1800s.png}
+\caption{\textsc{Zeitlimit} $30min$}
 \label{fig:instance_coverage_b=3_l_c}
 \end{subfigure}
 \caption{\textsc{Instance-Coverage der $b = 3$ Solver (l)}.}
