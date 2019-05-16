@@ -3527,6 +3527,15 @@ Zunächst geht es um die Verbesserung der generierten Lösungen für eine Stack-
 In der Kategorie der kleinen Instanzen dient lediglich die Anzahl der nichtverbessernden Iterationen
 als Abbruchkriterium, da die Laufzeiten der exakten Solver in dieser Kategorie vom Verbesserungsverfahren nicht unterboten werden können. Es geht also ausschließlich um eine Verbesserung der Zielfunktionswerte bei weiterhin akzeptablen Laufzeiten, da die Heuristik in dieser Kategorie ohnehin nur dann eine Alternative darstellt, wenn der kommerzielle Solver, welcher, wie in Abschnitt \ref{sec:solver_comp_b=2} geschildert, in dieser Kategorie in durchschnittlich unter einer Sekunde den optimalen Zielfunktionswert liefert, nicht zur Verfügung steht.
 
+In Abb. \ref{fig:imp_res_b=2_s} sind die Ergebnisse nach Anwendung der Tabu-Suche dargestellt.
+\textsc{OPT} entspricht der jeweils besseren MIP-Formulierung, welche die optimalen Zielfunktionswerte liefert,
+\textsc{2Cap} entspricht der Heuristik, welche die Initiallösungen der Tabu-Suche generiert
+und \textsc{2Cap + TS} entspricht schließlich der Kombination aus Anwendung der Heuristik und anschließender Verbesserung durch die Tabu-Suche.
+
+Die Verbesserungen der Tabu-Suche sind in Abb. \ref{fig:imp_b=2_s_costs} nachzuvollziehen,
+wobei \textsc{2Cap} dem Stand vor Anwendung der Tabu-Suche, \textsc{2Cap + TS} dem finalen Ergebnis
+und \textsc{OPT} dem jeweils optimalen Zielfunktionswert entspricht.
+
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.49\textwidth}
@@ -3541,6 +3550,7 @@ als Abbruchkriterium, da die Laufzeiten der exakten Solver in dieser Kategorie v
 \label{fig:imp_b=2_s_runtimes}
 \end{subfigure}
 \caption{\textsc{Ergebnisse der Verbesserung}.}
+\label{fig:imp_res_b=2_s}
 \end{figure}
 
 \vfill
