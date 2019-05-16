@@ -4,6 +4,7 @@ import SP.constructive_heuristics.ThreeCapHeuristic;
 import SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic;
 import SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic;
 import SP.constructive_heuristics.TwoCapHeuristic;
+import SP.experiments.OptimizableSolution;
 import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
 import SP.post_optimization_methods.TabuSearch;
@@ -98,6 +99,39 @@ public class SolutionWriter {
             }
             bw.write(nameOfInstance.replace("instances/slp_instance_", "")
                 + "," + "LB" + "," + "-" + "," + lowerBound + "\n");
+
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void writeOptAndImpAsCSV(String filename, OptimizableSolution sol, Solution impSol) {
+        try {
+            File file = new File(filename);
+            boolean newFile = false;
+            if (!file.exists()) {
+                file.createNewFile();
+                newFile = true;
+            }
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            if (newFile) {
+                bw.write("instance,solver,time,val\n");
+            }
+
+            bw.write(impSol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
+                + "," + "OPT" + "," + sol.getRuntimeForOptimalSolution() + "," + sol.getOptimalObjectiveValue() + "\n");
+
+            String solver = sol.getSol().getFilledStorageArea()[0].length == 2 ? "2Cap + TS" : "3Cap + TS";
+            double totalRuntime = (double)Math.round((sol.getSol().getTimeToSolveAsDouble() + impSol.getTimeToSolveAsDouble()) * 100) / 100;
+
+            bw.write(impSol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
+                + "," + solver + "," + totalRuntime + "," + impSol.computeCosts() + "\n");
 
             bw.close();
             fw.close();
