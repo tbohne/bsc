@@ -1,0 +1,66 @@
+solved with: SP.post_optimization_methods.TabuSearch
+time limit: 1.0 s
+time to solve: 33,86 s (time limit exceeded)
+objective value: 6599.6 (not optimal)
+
+stacks (top to bottom):
+stack  0:    0 
+stack  1:    
+stack  2:    2 
+stack  3:    53 
+stack  4:    54 
+stack  5:    55 5 
+stack  6:    
+stack  7:    57 
+stack  8:    
+stack  9:    10 
+stack 10:    61 60 
+stack 11:    11 12 
+stack 12:    64 65 
+stack 13:    70 74 
+stack 14:    94 29 
+stack 15:    22 19 
+stack 16:    66 67 
+stack 17:    68 69 
+stack 18:    34 47 
+stack 19:    77 75 
+stack 20:    25 93 
+stack 21:    28 88 
+stack 22:    83 46 
+stack 23:    91 90 
+stack 24:    79 78 
+stack 25:    82 89 
+stack 26:    95 92 
+stack 27:    96 97 
+stack 28:    44 45 
+stack 29:    40 37 
+stack 30:    50 
+stack 31:    51 
+stack 32:    1 
+stack 33:    3 52 
+stack 34:    
+stack 35:    6 
+stack 36:    4 56 
+stack 37:    7 58 
+stack 38:    8 
+stack 39:    9 59 
+stack 40:    99 13 
+stack 41:    63 
+stack 42:    33 62 
+stack 43:    17 16 
+stack 44:    15 14 
+stack 45:    26 20 
+stack 46:    71 84 
+stack 47:    43 73 
+stack 48:    21 18 
+stack 49:    49 24 
+stack 50:    36 23 
+stack 51:    32 38 
+stack 52:    76 72 
+stack 53:    85 98 
+stack 54:    41 35 
+stack 55:    80 81 
+stack 56:    31 30 
+stack 57:    27 42 
+stack 58:    39 48 
+stack 59:    87 86 
