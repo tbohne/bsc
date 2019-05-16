@@ -33,12 +33,12 @@ public class ThreeCapPermutationHeuristic {
     private ArrayList<Integer> additionalUnmatchedItems;
     private ArrayList<List<Integer>> alreadyUsedShuffles;
     private double startTime;
-    private int timeLimit;
+    private double timeLimit;
     private int priorizationFactor;
 
     private Solution bestSolution;
 
-    public ThreeCapPermutationHeuristic(Instance instance, int timeLimit) {
+    public ThreeCapPermutationHeuristic(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
         this.unstackableItems = new ArrayList<>();

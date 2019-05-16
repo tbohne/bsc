@@ -27,7 +27,7 @@ public class TwoCapHeuristic {
 
     private Instance instance;
     private double startTime;
-    private int timeLimit;
+    private double timeLimit;
 
     /**
      * Constructor
@@ -35,7 +35,7 @@ public class TwoCapHeuristic {
      * @param instance  - the instance of the stacking problem to be solved
      * @param timeLimit - the time limit for the solving procedure
      */
-    public TwoCapHeuristic(Instance instance, int timeLimit) {
+    public TwoCapHeuristic(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }

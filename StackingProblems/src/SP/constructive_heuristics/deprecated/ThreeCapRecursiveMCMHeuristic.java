@@ -17,10 +17,10 @@ public class ThreeCapRecursiveMCMHeuristic {
     private Instance instance;
     private ArrayList<ArrayList<Integer>> stackAssignments;
     private double startTime;
-    private int timeLimit;
+    private double timeLimit;
     private ArrayList<ArrayList<MCMEdge>> alreadyUsedEdgeShuffles;
 
-    public ThreeCapRecursiveMCMHeuristic(Instance instance, int timeLimit) {
+    public ThreeCapRecursiveMCMHeuristic(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
         this.stackAssignments = new ArrayList<>();

@@ -26,7 +26,7 @@ public class ThreeCapHeuristic {
 
     private Instance instance;
     private double startTime;
-    private int timeLimit;
+    private double timeLimit;
 
     private int thresholdLB = 20;
     private int thresholdUB = 75;
@@ -37,7 +37,7 @@ public class ThreeCapHeuristic {
      * @param instance  - the instance of the stacking problem to be solved
      * @param timeLimit - the time limit for the solving procedure
      */
-    public ThreeCapHeuristic(Instance instance, int timeLimit) {
+    public ThreeCapHeuristic(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }
