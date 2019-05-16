@@ -14,7 +14,7 @@ public class Solution implements Comparable<Solution> {
     private String nameOfSolvedInstance;
     private Instance solvedInstance;
     private double timeToSolve;
-    private int timeLimit;
+    private double timeLimit;
     private double objectiveValue;
     private int[][] filledStorageArea;
     private boolean empty;
@@ -35,7 +35,7 @@ public class Solution implements Comparable<Solution> {
      * @param timeLimit      - the considered time limit
      * @param solvedInstance - the solved instance
      */
-    public Solution(double timeToSolve, double objectiveValue, int timeLimit, Instance solvedInstance) {
+    public Solution(double timeToSolve, double objectiveValue, double timeLimit, Instance solvedInstance) {
         this.timeToSolve = timeToSolve;
         this.objectiveValue = objectiveValue;
         this.empty = false;
@@ -52,7 +52,7 @@ public class Solution implements Comparable<Solution> {
      * @param timeLimit      - the considered time limit
      * @param solvedInstance - the solved instance
      */
-    public Solution(double timeToSolve, int timeLimit, Instance solvedInstance) {
+    public Solution(double timeToSolve, double timeLimit, Instance solvedInstance) {
         this.timeToSolve = timeToSolve;
         this.empty = false;
         this.nameOfSolvedInstance = solvedInstance.getName();
@@ -105,7 +105,7 @@ public class Solution implements Comparable<Solution> {
      *
      * @return the considered time limit
      */
-    public int getTimeLimit() {
+    public double getTimeLimit() {
         return this.timeLimit;
     }
 
