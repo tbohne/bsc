@@ -110,6 +110,9 @@ public class InstanceReader {
      * @return the read instance of a stacking problem
      */
     public static Instance readInstance(String filename) {
+
+        filename = filename.replace("_imp", "");
+
         int numberOfItems = 0;
         int numberOfStacks = 0;
         int stackCapacity = 0;

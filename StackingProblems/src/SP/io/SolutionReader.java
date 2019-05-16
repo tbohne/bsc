@@ -1,5 +1,6 @@
 package SP.io;
 
+import SP.experiments.OptimizableSolution;
 import SP.representations.Instance;
 import SP.representations.Solution;
 import SP.io.InstanceReader;
@@ -10,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provides functionalities to read solutions for stacking problems from the file system.
@@ -26,7 +29,7 @@ public class SolutionReader {
      * @throws IOException
      */
     public static void readStorageArea(BufferedReader br, ArrayList<ArrayList<Integer>> storageArea) throws IOException {
-        for (String line; (line = br.readLine()) != null; ) {
+        for (String line; (line = br.readLine()) != null && !line.contains("###############"); ) {
             ArrayList<Integer> stack = new ArrayList<>();
             String[] splitArr = line.split(":");
             if (splitArr.length > 1) {
@@ -74,22 +77,20 @@ public class SolutionReader {
         }
     }
 
-    /**
-     * Reads the solution of a stacking-problem from the specified file.
-     *
-     * @param file            - the file to read from
-     * @param instanceDirName - the name of the instance directory
-     * @param solver          - specifies the solver for which the solution is to be read
-     * @return the read solution
-     */
-    public static Solution readSolution(File file, String instanceDirName, String solver) {
+    public static Solution actuallyReadSolution(BufferedReader br, String instanceDirName, File file) {
+
         Solution sol = new Solution();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            skipOtherSolutions(br, solver);
+        try {
             String line = br.readLine();
-            int timeLimit = Integer.parseInt(line.split(":")[1].replace("s", "").trim());
+            if (line.contains("Problem not solved")) { return sol; }
+            double timeLimit = Double.parseDouble(line.split(":")[1].replace("s", "").trim());
             line = br.readLine();
+
+            if (line.contains("time limit exceeded")) {
+                return sol;
+            }
+
             double timeToSolveInSeconds = Double.parseDouble(line.split(":")[1].replace(",", ".").replace("s", "").trim());
             line = br.readLine();
             double objectiveValue = Double.parseDouble(line.split(":")[1].trim());
@@ -101,6 +102,48 @@ public class SolutionReader {
             Instance instance = InstanceReader.readInstance(instanceDirName + instanceName);
             sol = new Solution(timeToSolveInSeconds, objectiveValue, timeLimit, instance);
             fillStorageArea(storageArea, sol);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return sol;
+    }
+
+    /**
+     * Reads the solution of a stacking-problem from the specified file.
+     *
+     * @param file            - the file to read from
+     * @param instanceDirName - the name of the instance directory
+     * @param solver          - specifies the solver for which the solution is to be read
+     * @return the read solution
+     */
+    public static OptimizableSolution readSolution(File file, String instanceDirName, String solver) {
+        Solution sol = new Solution();
+        double optimalObjectiveValue = -1;
+        double runtimeForOptimalSolution = -1;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+//            skipOtherSolutions(br, solver);
+
+            String line = br.readLine();
+
+            while (line != null) {
+
+                if (line.contains("solved with:")) {
+                    if (!line.contains(solver)) {
+                        System.out.println(line);
+                        Solution tmpSol = actuallyReadSolution(br, instanceDirName, file);
+                        if (tmpSol.getTimeToSolveAsDouble() < tmpSol.getTimeLimit()) {
+                            optimalObjectiveValue = tmpSol.computeCosts();
+                            runtimeForOptimalSolution = tmpSol.getTimeToSolveAsDouble();
+                        }
+                    } else {
+                        sol = actuallyReadSolution(br, instanceDirName, file);
+                    }
+                }
+                line = br.readLine();
+            }
 
             br.close();
 
@@ -108,7 +151,10 @@ public class SolutionReader {
             e.printStackTrace();
         }
         sol.lowerItemsThatAreStackedInTheAir();
-        return sol;
+
+        OptimizableSolution optSol = new OptimizableSolution(sol, optimalObjectiveValue, runtimeForOptimalSolution);
+
+        return optSol;
     }
 
     /**
@@ -119,9 +165,9 @@ public class SolutionReader {
      * @param solver          - specifies the solver for which the solution is to be read
      * @return a list of the read solutions
      */
-    public static ArrayList<Solution> readSolutionsFromDir(String solutionDirName, String instanceDirName, String solver) {
+    public static ArrayList<OptimizableSolution> readSolutionsFromDir(String solutionDirName, String instanceDirName, String solver) {
         File dir = new File(solutionDirName);
-        ArrayList<Solution> solutions = new ArrayList<>();
+        ArrayList<OptimizableSolution> solutions = new ArrayList<>();
         File[] directoryListing = dir.listFiles();
         Arrays.sort(directoryListing);
         for (File file : directoryListing) {
