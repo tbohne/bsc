@@ -16,7 +16,7 @@ import ilog.cplex.IloCplex;
 public class BinPackingFormulation {
 
     private Instance instance;
-    private int timeLimit;
+    private double timeLimit;
 
     /**
      * Constructor
@@ -24,7 +24,7 @@ public class BinPackingFormulation {
      * @param instance  - the instance to be solved
      * @param timeLimit - the time limit for the solving procedure
      */
-    public BinPackingFormulation(Instance instance, int timeLimit) {
+    public BinPackingFormulation(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }

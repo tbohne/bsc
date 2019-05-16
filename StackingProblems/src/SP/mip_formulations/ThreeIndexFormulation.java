@@ -17,7 +17,7 @@ import ilog.cplex.IloCplex.Param;
 public class ThreeIndexFormulation {
 
     private Instance instance;
-    private int timeLimit;
+    private double timeLimit;
 
     /**
      * Constructor
@@ -25,7 +25,7 @@ public class ThreeIndexFormulation {
      * @param instance  - the instance to be solved
      * @param timeLimit - the time limit for the solving procedure
      */
-    public ThreeIndexFormulation(Instance instance, int timeLimit) {
+    public ThreeIndexFormulation(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
     }
