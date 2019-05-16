@@ -630,7 +630,7 @@ public class ThreeCapHeuristic {
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }
-
+        bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
         return bestSol;
     }
 
