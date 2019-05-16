@@ -391,6 +391,7 @@ public class TabuSearch {
 //            System.out.println(this.tabuList.size());
 
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
+            if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
 
             this.updateCurrentSolution(TabuSearchConfig.SHORT_TERM_STRATEGY, TabuSearchConfig.FEASIBLE_ONLY, i);
         }
@@ -404,6 +405,7 @@ public class TabuSearch {
         while (this.tabuListClears < TabuSearchConfig.NUMBER_OF_TABU_LIST_CLEARS) {
 
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
+            if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
 
             this.updateCurrentSolution(TabuSearchConfig.SHORT_TERM_STRATEGY, TabuSearchConfig.FEASIBLE_ONLY, iteration++);
         }
@@ -417,6 +419,7 @@ public class TabuSearch {
         while (Math.abs(this.iterationOfLastImprovement - iteration) < TabuSearchConfig.NUMBER_OF_NON_IMPROVING_ITERATIONS) {
 
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
+            if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
 
             System.out.println(this.tabuList.size());
             System.out.println(this.bestSol.computeCosts());
