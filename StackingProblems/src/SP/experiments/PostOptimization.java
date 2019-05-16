@@ -12,31 +12,41 @@ public class PostOptimization {
     public static final String INSTANCE_PREFIX = "res/instances/";
     public static final String SOLUTION_PREFIX = "res/solutions/";
 
-    public static final String SOLVER = "ThreeCapHeuristic";
-//    public static final String SOLVER = "TwoCapHeuristic";
+//    public static final String SOLVER = "ThreeCapHeuristic";
+    public static final String SOLVER = "TwoCapHeuristic";
 
     public static void optimizeSolutions() {
 
-        ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir(SOLUTION_PREFIX, INSTANCE_PREFIX, SOLVER);
+        ArrayList<OptimizableSolution> solutions = SolutionReader.readSolutionsFromDir(SOLUTION_PREFIX, INSTANCE_PREFIX, SOLVER);
 
-        for (Solution sol : solutions) {
+        for (OptimizableSolution sol : solutions) {
 
             double startTime = System.currentTimeMillis();
+            double costsBefore = sol.getSol().computeCosts();
 
-            System.out.println("solved instance: " + sol.getNameOfSolvedInstance());
-            TabuSearch ts = new TabuSearch(sol);
-            System.out.println("COSTS BEFORE: " + sol.computeCosts());
-            sol = ts.solve();
+            TabuSearch ts = new TabuSearch(sol.getSol(), sol.getOptimalObjectiveValue());
+            Solution impSol = ts.solve();
+            impSol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
 
-            double time = (System.currentTimeMillis() - startTime) / 1000.0;
+            System.out.println("costs before: " + costsBefore);
+            System.out.println("costs after: " + impSol.computeCosts());
+            System.out.println("total difference: " + (costsBefore - impSol.computeCosts()));
+            System.out.println("runtime: " + impSol.getTimeToSolve());
 
-            sol.setTimeToSolve(time);
+            SolutionWriter.writeSolution(
+                SOLUTION_PREFIX
+                + impSol.getNameOfSolvedInstance().replace("instances/", "")
+                + "_imp.txt", impSol, SolverComparison.Solver.TABU_SEARCH
+            );
 
-            System.out.println("COSTS AFTER: " + sol.computeCosts());
-            System.out.println("TIME: " + time);
-
-            SolutionWriter.writeSolution(SOLUTION_PREFIX + sol.getNameOfSolvedInstance().replace("instances/", "") + "_imp.txt", sol, SolverComparison.Solver.TABU_SEARCH);
-            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol, SolverComparison.Solver.TABU_SEARCH);
+            SolverComparison.Solver solver;
+            if (sol.getSol().getFilledStorageArea()[0].length == 2) {
+                solver = SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP;
+            } else {
+                solver = SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP;
+            }
+            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol.getSol(), solver);
+            SolutionWriter.writeOptAndImpAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol, impSol);
         }
     }
 
