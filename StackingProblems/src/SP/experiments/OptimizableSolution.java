@@ -6,10 +6,12 @@ public class OptimizableSolution {
 
     private Solution sol;
     private double optimalObjectiveValue;
+    private double runtimeForOptimalSolution;
 
-    public OptimizableSolution(Solution sol, double optimalObjectiveValue) {
+    public OptimizableSolution(Solution sol, double optimalObjectiveValuem, double runtimeForOptimalSolution) {
         this.sol = sol;
-        this.optimalObjectiveValue = optimalObjectiveValue;
+        this.optimalObjectiveValue = optimalObjectiveValuem;
+        this.runtimeForOptimalSolution = runtimeForOptimalSolution;
     }
 
     public Solution getSol() {
@@ -18,5 +20,9 @@ public class OptimizableSolution {
 
     public double getOptimalObjectiveValue() {
         return this.optimalObjectiveValue;
+    }
+
+    public double getRuntimeForOptimalSolution() {
+        return this.runtimeForOptimalSolution;
     }
 }
