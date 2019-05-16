@@ -1323,7 +1323,7 @@ Wie in Abschnitt \ref{sec:two_cap_heuristic} erläutert, stellt die Heuristik f�
 welche in den folgenden Experimenten zum Einsatz kommt, einen über den Parameter \textit{postProcessing} konfigurierbaren
 Postprocessing-Schritt bereit, welcher einen reinen Fokus auf Kostenminimierung ermöglicht. Dieser Schritt wird
 in den durchgeführten Experimenten stets aktiviert.
-Sämtliche Experimente wurden auf einem Rechner mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
+Sämtliche Experimente wurden auf einem System mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
 
 \textbf{Kleine Instanzen (s)}
 
@@ -3513,6 +3513,35 @@ führen, könnte die Anzahl der nichtverbessernden Iterationen bei kleineren Ins
 Da jedoch die Laufzeit weiterhin eine Rolle spielt, wird davon abgesehen, um den Laufzeitvorteil bei
 kleineren Instanzen zu erhalten, wird in jedem Fall eine Anzahl nichtverbessernder Iterationen von $50$ betrachtet,
 welche auch bei den großen Instanzen nach wenigen Minuten ohne Verbesserung zur Terminierung führt.
+
+\vfill
+\pagebreak
+
+\subsection{Anwendung der Tabu-Suche}
+
+Die Tabu-Suche wurde, wie bereits die konstruktiven Heuristiken, in der Programmiersprache Java implementiert und
+auf einem System mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM ausgeführt.
+
+Zunächst geht es um die Verbesserung der generierten Lösungen für eine Stack-Kapazität von $b = 2$.
+
+In der Kategorie der kleinen Instanzen dient lediglich die Anzahl der nichtverbessernden Iterationen
+als Abbruchkriterium, da die Laufzeiten der exakten Solver in dieser Kategorie vom Verbesserungsverfahren nicht unterboten werden können. Es geht also ausschließlich um eine Verbesserung der Zielfunktionswerte bei weiterhin akzeptablen Laufzeiten, da die Heuristik in dieser Kategorie ohnehin nur dann eine Alternative darstellt, wenn der kommerzielle Solver, welcher, wie in Abschnitt \ref{sec:solver_comp_b=2} geschildert, in dieser Kategorie in durchschnittlich unter einer Sekunde den optimalen Zielfunktionswert liefert, nicht zur Verfügung steht.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=2_s_costs.png}
+\caption{\textsc{Kosten}}
+\label{fig:imp_b=2_s_costs}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=2_s_runtimes.png}
+\caption{\textsc{Laufzeiten}}
+\label{fig:imp_b=2_s_runtimes}
+\end{subfigure}
+\caption{\textsc{Ergebnisse der Verbesserung}.}
+\end{figure}
 
 \vfill
 \pagebreak
