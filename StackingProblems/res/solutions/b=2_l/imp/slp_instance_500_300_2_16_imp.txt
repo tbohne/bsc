@@ -1,7 +1,7 @@
 solved with: SP.post_optimization_methods.TabuSearch
-time limit: 1200 s
-time to solve: 238,75 s
-objective value: 129802.72
+time limit: 1200.0 s
+time to solve: 247,62 s
+objective value: 129791.86
 
 stacks (top to bottom):
 stack   0:    250 
@@ -32,11 +32,11 @@ stack  24:    23
 stack  25:    274 25 
 stack  26:    
 stack  27:    27 
-stack  28:    279 
+stack  28:    28 
 stack  29:    
 stack  30:    30 
 stack  31:    31 
-stack  32:    
+stack  32:    33 
 stack  33:    
 stack  34:    
 stack  35:    285 286 
@@ -46,15 +46,15 @@ stack  38:    38
 stack  39:    
 stack  40:    40 
 stack  41:    291 
-stack  42:    
+stack  42:    43 
 stack  43:    
 stack  44:    295 
 stack  45:    
-stack  46:    296 
+stack  46:    47 296 
 stack  47:    
 stack  48:    48 
 stack  49:    300 49 
-stack  50:    248 
+stack  50:    223 
 stack  51:    301 249 
 stack  52:    311 304 
 stack  53:    54 55 
@@ -144,7 +144,7 @@ stack 136:    497 494
 stack 137:    225 224 
 stack 138:    474 471 
 stack 139:    406 407 
-stack 140:    159 157 
+stack 140:    242 157 
 stack 141:    408 410 
 stack 142:    193 190 
 stack 143:    227 226 
@@ -183,10 +183,10 @@ stack 175:    275
 stack 176:    26 276 
 stack 177:    277 
 stack 178:    278 
-stack 179:    28 
+stack 179:    279 
 stack 180:    280 29 
 stack 181:    282 281 
-stack 182:    33 32 
+stack 182:    32 
 stack 183:    283 
 stack 184:    34 284 
 stack 185:    
@@ -198,9 +198,9 @@ stack 190:    290
 stack 191:    41 
 stack 192:    292 42 
 stack 193:    293 
-stack 194:    44 43 
-stack 195:    294 45 
-stack 196:    47 46 
+stack 194:    294 44 
+stack 195:    45 
+stack 196:    46 
 stack 197:    297 
 stack 198:    298 
 stack 199:    299 
@@ -243,7 +243,7 @@ stack 235:    348 347
 stack 236:    166 170 
 stack 237:    364 363 
 stack 238:    115 114 
-stack 239:    106 104 
+stack 239:    106 431 
 stack 240:    380 381 
 stack 241:    358 357 
 stack 242:    459 458 
@@ -252,7 +252,7 @@ stack 244:    232 229
 stack 245:    375 369 
 stack 246:    187 186 
 stack 247:    484 486 
-stack 248:    431 430 
+stack 248:    104 430 
 stack 249:    147 148 
 stack 250:    120 121 
 stack 251:    401 400 
@@ -264,7 +264,7 @@ stack 256:    384 382
 stack 257:    393 396 
 stack 258:    192 198 
 stack 259:    139 137 
-stack 260:    242 244 
+stack 260:    159 244 
 stack 261:    492 496 
 stack 262:    164 165 
 stack 263:    479 473 
@@ -278,7 +278,7 @@ stack 270:    415 411
 stack 271:    228 230 
 stack 272:    173 172 
 stack 273:    423 422 
-stack 274:    231 233 
+stack 274:    231 161 
 stack 275:    489 485 
 stack 276:    246 245 
 stack 277:    237 240 
@@ -293,13 +293,13 @@ stack 285:    222 221
 stack 286:    183 182 
 stack 287:    201 207 
 stack 288:    149 150 
-stack 289:    223 220 
+stack 289:    248 220 
 stack 290:    214 209 
 stack 291:    419 421 
 stack 292:    188 189 
 stack 293:    171 169 
 stack 294:    478 477 
-stack 295:    160 161 
+stack 295:    160 233 
 stack 296:    184 185 
 stack 297:    480 481 
 stack 298:    234 235 
