@@ -1,7 +1,7 @@
 solved with: SP.post_optimization_methods.TabuSearch
 time limit: 1200.0 s
-time to solve: 225,00 s
-objective value: 129779.66
+time to solve: 288,08 s
+objective value: 129791.78
 
 stacks (top to bottom):
 stack   0:    1 250 
@@ -57,7 +57,7 @@ stack  49:
 stack  50:    300 301 
 stack  51:    52 51 
 stack  52:    57 56 
-stack  53:    303 304 
+stack  53:    303 302 
 stack  54:    60 58 
 stack  55:    314 313 
 stack  56:    349 348 
@@ -106,12 +106,12 @@ stack  98:    182 183
 stack  99:    395 396 
 stack 100:    150 149 
 stack 101:    155 154 
-stack 102:    153 442 
+stack 102:    440 442 
 stack 103:    466 467 
 stack 104:    402 403 
 stack 105:    401 393 
 stack 106:    404 409 
-stack 107:    440 152 
+stack 107:    153 152 
 stack 108:    229 228 
 stack 109:    406 408 
 stack 110:    218 219 
@@ -206,7 +206,7 @@ stack 198:    48 298
 stack 199:    50 299 
 stack 200:    54 49 
 stack 201:    53 55 
-stack 202:    305 302 
+stack 202:    305 304 
 stack 203:    312 309 
 stack 204:    307 308 
 stack 205:    64 65 

@@ -1,14 +1,14 @@
 solved with: SP.post_optimization_methods.TabuSearch
 time limit: 1.0 s
-time to solve: 18,01 s (time limit exceeded)
+time to solve: 42,34 s (time limit exceeded)
 objective value: 6609.28 (not optimal)
 
 stacks (top to bottom):
 stack  0:    
 stack  1:    1 
-stack  2:    3 
+stack  2:    
 stack  3:    4 
-stack  4:    
+stack  4:    3 
 stack  5:    
 stack  6:    6 
 stack  7:    57 
