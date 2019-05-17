@@ -2931,17 +2931,13 @@ Bei Stacking-Problemen mit Stacks der Kapazität $b = 3$ besteht in der Kategori
 aufgrund der relativ geringen Laufzeit der Bin-Packing-Formulierung nicht zwingend ein Bedarf für eine
 Laufzeitverbesserung durch eine Heuristik. Nichtsdestotrotz ist die Heuristik bei einer nur geringen
 durchschnittlichen Abweichung vom Optimum noch einmal erheblich schneller als diese.
-
 In der Kategorie der mittelgroßen Instanzen ist die Bin-Packing-Formulierung der 3-Index-Formulierung sogar
-sehr deutlich vorzuziehen. Da jedoch auch die Bin-Packing-Formulierung durschnittlich $13$ Minuten zur exakten Lösung benötigt,
-ermöglicht die Heuristik hier mit einer durchschnittlichen Laufzeit von nur ca. einer Sekunde eine derart große Laufzeitersparnis,
-dass die sehr geringe Abweichung von $0.35 \%$ in Kauf genommen werden sollte.
-
+sehr deutlich vorzuziehen. Da jedoch auch die Bin-Packing-Formulierung durschnittlich fast $3$ Minuten zur exakten Lösung benötigt, ermöglicht die Heuristik hier mit einer durchschnittlichen Laufzeit von nur $1.5$ Sekunden eine derart große Laufzeitersparnis, dass die sehr geringe Abweichung von $0.03 \%$ in Kauf genommen werden sollte.
 Noch deutlicher äußert sich dieser Trend in der Kategorie der großen Instanzen, in welcher die 3-Index-Formulierung
-selbst bei einem Zeitlimit von zwei Stunden nur $20 \%$ der Instanzen löst. Die Bin-Packing-Formulierung, welche dort
-mit einer durchschnittlichen Laufzeit von etwas mehr als einer Stunde sämtliche Instanzen optimal löst,
+selbst bei einem Zeitlimit von $30$ Minuten keine Instanz optimal löst. Die Bin-Packing-Formulierung, welche dort
+mit einer durchschnittlichen Laufzeit von etwa $19$ Minuten sämtliche Instanzen optimal löst,
 ist demnach bei einer Stack-Kapazität von $b = 3$ in jeder Kategorie der 3-Index-Formulierung vorzuziehen.
-Die Heuristik benötigt hier durschnittlich $3.9s$ pro Instanz und weicht um durchschnittlich $0.17 \%$ vom Optimum ab.
+Die Heuristik benötigt hier durschnittlich $6.72s$ pro Instanz und weicht um durchschnittlich $0.02 \%$ vom Optimum ab.
 Der daraus resultierende noch gravierendere Unterschied der Laufzeiten zwischen der Bin-Packing-Formulierung und
 der Heuristik sorgt in Verbindung mit der sehr geringen Abweichung vom Optimum dafür, dass die Heuristik in der Praxis
 auch in dieser Kategorie bevorzugt werden sollte.
@@ -2952,21 +2948,7 @@ jedem Fall eine gute Alternative darstellt. Je größer die Instanzen werden, de
 verglichen mit den MIP-Formulierungen ab und sollte bereits ab der Kategorie der mittelgroßen Instanzen in der Regel
 den MIP-Formulierungen vorgezogen werden.
 
-% TODO: insert observation
-
-An jener Stelle in der Heuristik, an welcher das Rating-System zum Einsatz kommt, um unterschiedlich sortierte
-Listen der Item-Paare zu bilden, hätten zusätzlich zufällige \textquote{Shuffles} genutzt werden können,
-um weitere Permutationen zu generieren. Besonders bei einer hohen Anzahl solcher Shuffles,
-kann dabei mitunter ein besserer Zielfunktionswert erzielt werden. Dieser Ansatz wird jedoch aus zwei Gründen in
-dieser Arbeit nicht verfolgt. Zunächst ist eine verhältnismäßig große Anzahl solcher Shuffles vonnöten um in
-manchen Fällen zu bessren Ergebnissen zu gelangen, was eine erhebliche Verlängerung der Laufzeit zur Folge hätte.
-Des Weiteren führt ein solcher stochastischer Ansatz dazu, dass für eine Instanz nicht mehr stets dasselbe Ergebnis
-generiert wird. Da es sich bei den auf diese Weise erreichbaren Verbesserungen jedoch in der Regel nur um minimale
-Verbesserungen handelt, die zum Preis einer extrem erhöhten Laufzeit kommen, wird dies nicht in Kauf genommen.
-Stattdessen handelt es sich bei der präsentierten Heuristik, wie auch bei der Heuristik für $b = 2$ aus Abschnitt
-\ref{sec:two_cap_heuristic}, um ein deterministisches Verfahren, welches bei denselben Rahmenbedingungen für eine Instanz
-stets zum selben Ergebnis kommt.
-
+\vfill
 \pagebreak
 
 \section{Verbesserungsverfahren}
