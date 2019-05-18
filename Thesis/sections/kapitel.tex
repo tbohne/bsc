@@ -3619,6 +3619,32 @@ beträgt $163.94s$, während die Laufzeit von \textsc{3Cap + TS} durchschnittlic
 \label{fig:imp_res_b=3_m}
 \end{figure}
 
+In der Kategorie der großen $b = 3$ Instanzen werden die Lösungen für $12$ der $20$ Instanzen durch
+die Tabu-Suche verbessert (vgl. Abb. \ref{fig:imp_b=3_l_costs}).
+Es wird zwar keine Optimallösung gefunden, dennoch ergeben sich deutliche Verbesserungen, welche
+die durchschnittliche prozentuale Abweichung vom Optimum von $0.02 \%$ auf $0.01 \%$ reduzieren.
+Wie man der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_l_runtimes} entnehmen kann, unterbietet die
+Kombination aus Anwendung der konstruktiven Heuristik und anschließender Verbesserung durch die Tabu-Suche
+den exakten Solver in dieser Kategorie in jedem Fall. \textsc{OPT} benötigt im Durchschnitt $1139.19s$,
+während \textsc{3Cap + TS} eine durchschnittliche Laufzeit von $449.6s$ besitzt.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=3_l_costs.png}
+\caption{\textsc{Kosten}}
+\label{fig:imp_b=3_l_costs}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=3_l_runtimes.png}
+\caption{\textsc{Laufzeiten}}
+\label{fig:imp_b=3_l_runtimes}
+\end{subfigure}
+\caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (l)}.}
+\label{fig:imp_res_b=3_l}
+\end{figure}
+
 \vfill
 \pagebreak
 
