@@ -3556,12 +3556,14 @@ In der Kategorie der kleinen $b = 3$ Instanzen werden die Lösungen für $9$ der
 die Tabu-Suche verbessert (vgl. Abb. \ref{fig:imp_b=3_s_costs}).
 Mit den Instanzen $00$ und $11$ werden in zwei Fällen Optimallösungen ermittelt, wobei die Optimallösung
 für Instanz $00$ bereits durch die konstruktive Heuristik generiert wurde. Die Optimallösung für Instanz $11$
-wurde dagegen im Zuge einer erheblichen Verbessrung durch die Tabu-Suche generiert.
+wurde dagegen im Zuge einer erheblichen Verbesserung durch die Tabu-Suche generiert.
 Die durchschnittliche prozentuale Abweichung vom Optimum reduziert sich durch die Anwendung der Tabu-Suche
 von $0.20 \%$ auf $0.14 \%$.
-Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche in dieser Kategorie, wie erwartet, weit über jene der Heuristik und des
-exakten Solvers hinaus. Die durchschnittliche Laufzeit von \textsc{OPT} beträgt $1.15s$, während
-die Laufzeit von \textsc{3Cap + TS} durchschnittlich $60.9s$ beträgt.
+Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche in dieser Kategorie, wie bereits in der Kategorie der kleinen $b = 2$ Instanzen,
+weit über jene der Heuristik und des exakten Solvers hinaus.
+Die durchschnittliche Laufzeit von \textsc{OPT} beträgt $1.15s$, während die Laufzeit von \textsc{3Cap + TS} durchschnittlich $60.9s$ beträgt. Es geht allerdings in dieser Kategorie erneut nicht darum, die Laufzeit des exakten
+Solvers zu unterbieten, sondern darum, einen guten Kompromiss aus einer geringen Laufzeit und einer großen Kostenreduktion zu finden, worauf die in Abschnitt \ref{sec:tabu_search_config} vorgestellte Konfiguration
+abzielt.
 
 \begin{figure}[H]
 \centering
@@ -3589,7 +3591,7 @@ durch die Anwendung der Tabu-Suche von $0.03 \%$ auf $0.02 \%$.
 Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_m_runtimes} zu erkennen ist,
 ist der exakte Solver in dieser Kategorie in der Regel schneller als die Tabu-Suche, wobei es mit
 den Instanzen $01, 02, 13$ und $14$ einige Ausnahmen gibt, bei denen die Kombination aus konstruktiver Heuristik
-und anschließender Anwendung der Tabu-Suche schneller ist. Wobei die Lösung von Instanz $01$ nicht von der
+und anschließender Anwendung der Tabu-Suche schneller ist. Wenngleich die Lösung von Instanz $01$ nicht von der
 Tabu-Suche verarbeitet wird, da diese bereits optimal ist. Die durchschnittliche Laufzeit von \textsc{OPT}
 beträgt $163.94s$, während die Laufzeit von \textsc{3Cap + TS} durchschnittlich $391.7s$ beträgt.
 
@@ -3614,7 +3616,7 @@ In der Kategorie der großen $b = 3$ Instanzen werden die Lösungen für $12$ de
 die Tabu-Suche verbessert (vgl. Abb. \ref{fig:imp_b=3_l_costs}).
 Es wird zwar keine Optimallösung gefunden, dennoch ergeben sich deutliche Verbesserungen, welche
 die durchschnittliche prozentuale Abweichung vom Optimum von $0.02 \%$ auf $0.01 \%$ reduzieren.
-Wie man der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_l_runtimes} entnehmen kann, unterbietet die
+Wie der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_l_runtimes} zu entnehmen ist, unterbietet die
 Kombination aus Anwendung der konstruktiven Heuristik und anschließender Verbesserung durch die Tabu-Suche
 den exakten Solver in dieser Kategorie in jedem Fall. \textsc{OPT} benötigt im Durchschnitt $1139.19s$,
 während \textsc{3Cap + TS} eine durchschnittliche Laufzeit von $449.6s$ besitzt.
