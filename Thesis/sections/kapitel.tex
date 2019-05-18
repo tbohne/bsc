@@ -2665,6 +2665,11 @@ der enormen Laufzeitverbesserung um einen akzeptablen Wert, allerdings gilt, wie
 der kleinen Instanzen für eine Stack-Kapazität von $b = 2$ auch hier, dass die durchschnittlich benötigten $1.15s$
 für die exakte Lösung seitens der Bin-Packing-Formulierung aus praktischer Perspektive vermutlich vertretbar sind
 und kein wirklicher Bedarf für eine Laufzeitvebessrung durch eine Heuristik herrscht.
+Die Ergebnisse aus Abschnitt \ref{sec:solver_comp_b=2} in der Kategorie der kleinen
+Instanzen haben sich also bezüglich der MIP-Formulierungen für eine Stack-Kapazität von $b = 3$ umgekehrt, denn in diesem Fall ist die Bin-Packing-Formulierung der 3-Index-Formulierung vorzuziehen.
+
+\vfill
+\pagebreak
 
 \textbf{Mittelgroße Instanzen (m)}
 
@@ -3578,6 +3583,36 @@ die Laufzeit von \textsc{3Cap + TS} durchschnittlich $60.9s$ beträgt.
 \end{subfigure}
 \caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (s)}.}
 \label{fig:imp_res_b=3_s}
+\end{figure}
+
+Abbildung \ref{fig:imp_b=3_m_costs} ist zu entnehmen, dass in der Kategorie der mittelgroßen $b = 3$ Instanzen
+die Lösungen für $11$ der $20$ Instanzen durch die Tabu-Suche verbessert werden.
+Die einzige resultierende Optimallösung wurde bereits von der konstruktiven Heuristik generiert.
+Bei den Instanzen $08$ und $12$ wurde durch die Verbesserung der Tabu-Suche annähernd der optimale
+Zielfunktionswert erreicht. Die durchschnittliche prozentuale Abweichung vom Optimum reduziert sich
+durch die Anwendung der Tabu-Suche von $0.03 \%$ auf $0.02 \%$.
+Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=3_m_runtimes} zu erkennen ist,
+ist der exakte Solver in dieser Kategorie in der Regel schneller als die Tabu-Suche, wobei es mit
+den Instanzen $01, 02, 13$ und $14$ einige Ausnahmen gibt, bei denen die Kombination aus konstruktiver Heuristik
+und anschließender Anwendung der Tabu-Suche schneller ist. Wobei die Lösung von Instanz $01$ nicht von der
+Tabu-Suche verarbeitet wird, da diese bereits optimal ist. Die durchschnittliche Laufzeit von \textsc{OPT}
+beträgt $163.94s$, während die Laufzeit von \textsc{3Cap + TS} durchschnittlich $391.7s$ beträgt.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=3_m_costs.png}
+\caption{\textsc{Kosten}}
+\label{fig:imp_b=3_m_costs}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=3_m_runtimes.png}
+\caption{\textsc{Laufzeiten}}
+\label{fig:imp_b=3_m_runtimes}
+\end{subfigure}
+\caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (m)}.}
+\label{fig:imp_res_b=3_m}
 \end{figure}
 
 \vfill
