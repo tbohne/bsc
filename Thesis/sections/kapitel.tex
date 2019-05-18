@@ -3673,36 +3673,35 @@ Ziel dieser Arbeit war es, effiziente Lösungsverfahren für praktisch motiviert
 wie sie beispielsweise in Lagerhallen und Container-Terminals auftreten, zu entwickeln.
 
 Die vorgestellten konstruktiven Heuristiken lösen Stacking-Probleme mit Stacks der Kapazitäten $b = 2$ und $b = 3$,
-welche in Szenarien, in welchen Container gestapelt werden, häufig ausreichen, effizient mit nur geringen Abweichungen
-von den Optimallösungen. In den durchgeführten Experimenten wurde deutlich, dass diese erheblich kürzere Laufzeiten besitzen
-als die zum Vergleich genutzten MIP-Formulierungen, welche vom kommerziellen MIP-Solver \textsc{CPLEX} gelöst wurden
-und bei ausreichend Laufzeit und Speicher optimale Zielfunktionswerte liefern.
-Des Weiteren wurde demonstriert, dass die Heuristiken vor allem für große Instanzen, bei welchen die Einlagerung
-von $500$ und mehr Items betrachtet wird, gute Alternativen darstellen, da ein praktischer Einsatz exaktver
-Solver aufgrund des enormen Laufzeit- und Speicherbedarfs nicht sinnvoll oder sogar ausgeschlossen ist.
+welche in Szenarien aus der Praxis, in welchen Container gestapelt werden, häufig ausreichen, effizient mit sehr geringen Abweichungen von den Optimallösungen. In den durchgeführten Experimenten wurde deutlich, dass diese erheblich kürzere Laufzeiten besitzen als die zum Vergleich genutzten MIP-Formulierungen, welche vom kommerziellen MIP-Solver \textsc{CPLEX} gelöst wurden und bei ausreichend Laufzeit und Speicher optimale Zielfunktionswerte liefern.
+Des Weiteren wurde demonstriert, dass die Heuristiken vor allem bei großen Instanzen, bei welchen die Einlagerung
+von $500$ Items betrachtet wird, ihren Effizienzvorteil zeigen.
+Grundsätzlich gewinnt dieser Vorteil der Heuristiken gegenüber \textsc{CPLEX} mit wachsenden Instanzgrößen
+an Bedeutung, denn auch Instanzen, welche weit mehr als $500$ Items enthalten, können von den vorgestellten
+konstruktiven Heuristiken effizient gelöst werden, während die von \textsc{CPLEX} gelösten MIP-Formulierungen
+zunehmend an ihre Grenzen stoßen. Da ein praktischer Einsatz exakter Solver aufgrund des enormen Laufzeit- und Speicherbedarfs bei großen Instanzen nicht sinnvoll oder sogar ausgeschlossen ist, stellen die vorgestellten Heuristiken gute Alternativen dar.
 
-Zusätzlich zu den konstruktiven Verfahren wurde mit der Tabu-Suche ein Verbesserungsverfahren entwickelt,
+Zusätzlich zu den konstruktiven Verfahren, wurde mit der Tabu-Suche ein Verbesserungsverfahren entwickelt,
 welches von den konstruktiven Heuristiken generierte Lösungen als Eingabe bekommt, um diese
-im Laufe des Verfahrens zu verbessern. Dabei war weiterhin das Ziel, bei geringen Laufzeiten zu guten Ergebnissen
-zu gelangen, um auch in Kombination mit den konstruktiven Heuristiken eine effiziente Alternative zu exakten Solvern bereitzustellen.
-% TODO: Auf Ergebnisse der TS eingehen (Laufzeit, Verbesserungen, Optimale Lsg, ...)
-
-Im Rahmen dieser Arbeit haben sich an vielen Stellen, vor allem durch unterschiedliche
-praktisch motivierte Szenarien Konfigurationsmöglichkeiten ergeben, welche weitere, zukünftige
-Betrachtungen sinnvoll erscheinen lassen. So könnten beispielsweise Experimente mit der ersten Variante der Stacking-Constraint-Generierung von Interesse sein. Auch der Einfluss der Dichte der Stacking-Constraint-Matrix wurde bisher nicht untersucht. Weitere relevante Möglichkeiten für zukünftige Konfigurationen bieten z.B. die Metrik zur Kostenberechnung,
-die Anordnung der Stacks und Originalpositionen der Items und der Spielraum in der Storage-Area.
-Darüber hinaus kann das vorgestellte Verbesserungsverfahren in Zukunft weiter entwickelt werden.
+im Laufe des Verfahrens zu verbessern. Dabei war das Ziel, einen guten Kompromiss aus geringen Laufzeiten
+und großen Kostenreduktionen zu finden. Dieses Ziel wurde für die gegenwärtige Implementation der Tabu-Suche durch die geschilderte Konfiguration erreicht. In der Anwendung der Tabu-Suche wurde deutlich, dass in sämtlichen Kategorien zahlreiche signifikante Verbesserungen zu verzeichnen sind und sich die Laufzeiten in einem als akzeptabel empfundenen Rahmen, welcher eine sinnvolle Anwendung der Tabu-Suche ermöglicht, bewegen.
+Dennoch gibt es durchaus Verbesserungspotenzial, es wäre beispielsweise erstrebenswert,
+mehr Instanzen optimal zu lösen. Dazu kann die vorgestellte Tabu-Suche in Zukunft weiter entwickelt werden.
 Es können beispielsweise weitere Nachbarschaftsstrukturen definiert werden, welche unter Umständen
-zu noch besseren Ergebnissen gelangen. Erstrebenswert wäre es dabei, eine verglichen mit der gegenwärtigen
-kleinere Nachbarschaft zu definieren, welche die Zusammenhangseigenschaft erfüllt.
-Außerdem benötigt das systematische Dursuchen des Lösungsraums aus theoretischer Perspektive weniger Zeit,
+zu noch besseren Ergebnissen gelangen. Idealerweise könnte eine, verglichen mit der gegenwärtigen,
+kleinere Nachbarschaft definiert werden, welche die Zusammenhangseigenschaft erfüllt.
+Außerdem benötigt das systematische Dursuchen des Lösungsraums aus theoretischer Perspektive weniger Zeit
 als das bisher verwendete randomisierte Verfahren, weshalb sich dies auch praktisch als vorteilhaft erweisen könnte.
 Auch die Betrachtung einer weiteren Lösungsrepräsentation, in welcher Lösungen durch Partitionen kompatibler Items
-gegeben sind, sollte untersucht werden. Die Items sind in dieser Repräsentation dementsprechend initial noch
-keinem Stack zugewiesen. Die Zuweisung der Partitionen zu Stacks findet erst im Anschluss an das Verfahren statt, indem ein Minimum-Weight-Bipartite-Perfect-Matching zwischen Partitionen und Stacks ermittelt wird. Dabei handelt es sich um
-eine optimale Zuweisung. Um jedem Item einen Level innerhalb eines Stacks zuzuweisen, müssen die Partitionen
+gegeben sind, sollte untersucht werden. Die Items sind in dieser Repräsentation initial noch
+keinem Stack zugewiesen. Die Zuweisung der Partitionen zu Stacks findet erst im Anschluss an das Verfahren statt, indem ein Minimum-Weight-Bipartite-Perfect-Matching zwischen Partitionen und Stacks ermittelt wird. Dabei handelt es sich um eine optimale Zuweisung. Um jedem Item einen Level innerhalb eines Stacks zuzuweisen, müssen die Partitionen
 analog zum letzten Schritt der konstruktiven Heuristiken lediglich basierend auf den transitiven Stacking-Constraints
-sortiert werden.
+sortiert werden. Ein Umsetzen dieser Ansätze war im Rahmen der vorliegenden Arbeit nicht mehr möglich, kann sich
+jedoch in Zukunft als lohnenswert erweisen.
+
+Im Verlauf dieser Arbeit haben sich an vielen Stellen, vor allem durch unterschiedliche praktisch motivierte Szenarien Konfigurationsmöglichkeiten ergeben, welche weitere, zukünftige Betrachtungen sinnvoll erscheinen lassen.
+Die betrachteten unteren Schranken haben beispielsweise gezeigt, dass der Einfluss der Stacking-Constraints mit der ausschließlich verwendeten zweiten Variante der Stacking-Constraint-Generierung stets recht gering ausfällt. Dementsprechend könnten Experimente mit der ersten Variante der Stacking-Constraint-Generierung von Interesse sein.
+Auch der Einfluss der Dichte der Stacking-Constraint-Matrix, der Anzahl der zur Verfügung stehenden Stacks sowie der Placement-Constraints, wurde bisher nicht untersucht. Weitere relevante Möglichkeiten für zukünftige Konfigurationen bieten z.B. die Metrik zur Kostenberechnung, die Anordnung der Stacks und Originalpositionen der Items und der Spielraum in der Storage-Area.
 
 Zudem lassen sich auch für Stack-Kapazitäten von $b > 3$ praktische Szenarien finden, für die weitere
 Heuristiken entwickelt werden können. Die Matching-Ansätze der konstruktiven Heuristiken sind nicht für
