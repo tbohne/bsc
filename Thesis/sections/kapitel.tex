@@ -3527,6 +3527,35 @@ beim exakten Solver im Vergleich zu durchschnittlich $128.0s$ bei \textsc{2Cap +
 \label{fig:imp_res_b=2_m}
 \end{figure}
 
+In der Kategorie der großen $b = 2$ Instanzen werden die Lösungen für ein Viertel der Instanzen durch
+die Tabu-Suche verbessert (vgl. Abb. \ref{fig:imp_b=2_l_costs}).
+Mit Instanz $03$ wird in einem Fall eine Optimallösung ermittelt. Diese wurde jedoch bereits durch die
+konstruktive Heuristik generiert, weshalb sie von der Tabu-Suche nicht weiter verarbeitet wird
+(vgl. Abb. \ref{fig:imp_b=2_l_runtimes}). Die durchschnittliche prozentuale Abweichung vom Optimum reduziert
+sich durch die Anwendung der Tabu-Suche in dieser Kategorie nur marginal, da in vergleichsweise wenigen
+Fällen eine Verbesserung stattfindet.
+Wie man der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_l_runtimes} entnehmen kann, unterbietet die
+Kombination aus Anwendung der konstruktiven Heuristik und anschließender Verbesserung durch die Tabu-Suche
+den exakten Solver in dieser Kategorie in jedem Fall. \textsc{OPT} benötigt im Durchschnitt $687.99s$,
+während \textsc{2Cap + TS} eine durchschnittliche Laufzeit von $208.8s$ besitzt.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=2_l_costs.png}
+\caption{\textsc{Kosten}}
+\label{fig:imp_b=2_l_costs}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=2_l_runtimes.png}
+\caption{\textsc{Laufzeiten}}
+\label{fig:imp_b=2_l_runtimes}
+\end{subfigure}
+\caption{\textsc{Ergebnisse der Verbesserung $b = 2$ (l)}.}
+\label{fig:imp_res_b=2_l}
+\end{figure}
+
 
 \vfill
 \pagebreak
