@@ -3502,6 +3502,36 @@ exakten Solvers hinaus.
 \vfill
 \pagebreak
 
+In der Kategorie der mittelgroßen $b = 2$ Instanzen werden die Lösungen für $12$ der $20$ Instanzen durch
+die Tabu-Suche verbessert und erreichen daher eine weitere Annäherung an die optimalen Zielfunktionswerte,
+wobei ein solcher in dieser Kategorie in keinem Fall ermittelt wird (vgl. Abb. \ref{fig:imp_b=2_m_costs}).
+Die durchschnittliche prozentuale Abweichung vom Optimum reduziert sich dabei von $0.06 \%$ auf $0.05 \%$.
+Wie man der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_m_runtimes} entnehmen kann, unterbietet der
+exakte Solver die Kombination aus konstruktiver Heuristik und Tabu-Suche verglichen mit der Kategorie
+der kleinen Instanzen nicht mehr ganz so deutlich. Der Unterschied ist mit durchschnittlich $37.49s$
+beim exakten Solver im Vergleich zu durchschnittlich $128.0s$ bei \textsc{2Cap + TS} jedoch weiterhin signifikant.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=2_m_costs.png}
+\caption{\textsc{Kosten}}
+\label{fig:imp_b=2_m_costs}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=\textwidth]{img/imp_b=2_m_runtimes.png}
+\caption{\textsc{Laufzeiten}}
+\label{fig:imp_b=2_m_runtimes}
+\end{subfigure}
+\caption{\textsc{Ergebnisse der Verbesserung $b = 2$ (m)}.}
+\label{fig:imp_res_b=2_m}
+\end{figure}
+
+
+\vfill
+\pagebreak
+
 \section{Fazit und Ausblick}
 \label{sec:conclusion}
 
