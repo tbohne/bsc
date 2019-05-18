@@ -3411,7 +3411,7 @@ Als Abbruchkriterium dienten jeweils $50$ nichtverbessernde Iterationen.
 
 \begin{figure}[H]
 \centering
-\resizebox{0.5\textwidth}{!}{
+\resizebox{0.4\textwidth}{!}{
 \begin{tabular}{| c | c | c |}
     \hline
     \textbf{max $\boldsymbol{|TL|}$} & \textbf{\O \thinspace abs. Verringerung der Kosten} & \textbf{Laufzeit (s)} \\ \hline
@@ -3637,6 +3637,30 @@ während \textsc{3Cap + TS} eine durchschnittliche Laufzeit von $449.6s$ besitzt
 \caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (l)}.}
 \label{fig:imp_res_b=3_l}
 \end{figure}
+
+Zusammenfassend lässt sich sagen, dass das Verbesserungsverfahren sowohl für $b = 2$,
+als auch für $b = 3$ in der Kategorie der kleinen Instanzen zu lange Laufzeiten besitzt,
+um mit den exakten Verfahren konkurrieren zu können.
+Wie bereits in den Abschnitten \ref{sec:solver_comp_b=2} und \ref{sec:solver_comp_b=3} erläutert,
+herrscht in dieser Kategorie allerdings ohnehin kein Bedarf für eine heuristische Lösung,
+sofern ein exakter Solver mit derart geringen Laufzeiten zur Verfügung steht.
+Steht ein solcher nicht zur Verfügung, so ist die konstruktive Heuristik ohne Anwendung der
+Tabu-Suche bei sehr geringen Laufzeiten und Abweichungen von den Optimalwerten eine gute Alternative.
+Wird dagegen die strikte Kostenminimierung vor einer geringen Laufzeit priorisiert, so kann zusätzlich das Verbesserungsverfahren zum Einsatz kommen, welches die durchschnittlichen Kosten noch einmal in durchaus
+relevantem Maße reduziert.
+In der Kategorie der mittelgroßen Instanzen ist der exakte Solver ebenfalls bei beiden Stack-Kapazitäten
+in der Regel schneller als die kombinierte Anwendung der konstruktiven Heuristik und der Tabu-Suche.
+Dementsprechend stehen erneut die geschilderte Priorisierung der Laufzeit oder der Kostenminimierung zur
+Verfügung. Auch in dieser Kategorie gelangt die Tabu-Suche zu durchaus signifikanten Verbesserungen.
+In der Kategorie der großen Instanzen unterbietet die Kombination der beiden heuristischen Verfahren
+in Bezug auf die Laufzeit jeweils den exakten Solver, weshalb diese eine noch flexiblere Konkurrenz
+zum exakten Verfahren darstellt, weil die Tabu-Suche optional zur weiteren Kostenminimierung eingesetzt werden
+kann und in jedem Fall geringere Laufzeiten erzielt werden. Ist die Laufzeit nicht kritisch und ein weiterer
+Fokus auf Kostenminimierung erwünscht, so kann als Abbruchkriterium für die Tabu-Suche eine feste Laufzeit
+gesetzt werden, welche beispielsweise beliebig den Laufzeiten des exakten Verfahrens angenähert werden,
+oder diese bei Bedarf auch übersteigen kann. Im Wesentlichen ermöglicht die konstruktive Heuristik in
+Verbindung mit der Tabu-Suche eine recht flexible Lösung individueller Szenarien. Je nach Priorisierung
+der Laufzeit oder der Kostenminimierung, können sich unterschiedliche Konfigurationen als sinnvoll erweisen.
 
 \vfill
 \pagebreak
