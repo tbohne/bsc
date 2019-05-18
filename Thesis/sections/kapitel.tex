@@ -3118,7 +3118,8 @@ Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lamb
 \lambda = 1, ..., k - 1$, als auch die Placement-Constraints mit $t_{i_\lambda q} = 1 \thinspace \forall
 \thinspace i_\lambda$ respektiert werden.
 Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
-d.h. $i \neq j$. Ein Swap kann innerhalb eines Stacks $q \in Q$ stattfinden. In diesem Fall ist ausgehend von einer zulässigen Lösung bereits sichergestellt, dass beide Items bezüglich der Placement-Constraints mit diesem Stack kompatibel sind und es müssen lediglich im Anschluss die Stacking-Constraints überprüft werden. Im Falle eines Swaps zwischen zwei Items $i, j \in I$, welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, wobei $i \in q$ und $j \in r$, müssen beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack sein. Ist dies der Fall, so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
+d.h. $i \neq j$. Eine solche Tausch-Operation kann auch innerhalb eines Stacks $q \in Q$ stattfinden,
+in diesem Fall ist ausgehend von einer zulässigen Lösung bereits sichergestellt, dass beide Items bezüglich der Placement-Constraints mit diesem Stack kompatibel sind und es müssen lediglich im Anschluss die Stacking-Constraints überprüft werden. Im Falle eines Swaps zwischen zwei Items $i, j \in I$, welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, wobei $i \in q$ und $j \in r$, müssen beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack sein. Ist dies der Fall, so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
 
 \textbf{Forbidding-Strategy}
 
@@ -3165,30 +3166,25 @@ In der entwickelten Tabu-Suche enspricht dieses Kriterium der Generierung einer 
 Es wäre nicht sinnvoll, eine solche Lösung zu verbieten.\newline
 In der Regel wird nicht nur eine Nachbarlösung generiert, sondern entweder sämtliche Nachbarlösungen,
 sofern dies effizient möglich ist, oder, wie in diesem Fall, eine Teilmenge der Nachbarlösungen,
-welche eine definierte, feste Kardinalität besitzt. Es muss also jeweils eine Nachbarlösung aus dieser
-Teilmenge ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird. Für die Selektion der Nachbarlösungen wurden
-zwei Strategien implementiert, welche im Folgenden vorgestellt werden.
-
-\vfill
-\pagebreak
+welche eine definierte, feste Kardinalität besitzt. Zur Generierung der Nachbarlösungen werden in jeder
+Iteration zufällige Shift- und Swap-Operationen durchgeführt. Anschließend muss jeweils eine Nachbarlösung
+aus der generierten Teilmenge der Nachbarschaft ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
+Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt werden.
 
 \textbf{First-Fit}
 
 Bei der First-Fit-Strategie wird die Nachbarschaft einer Lösung lediglich solange durchsucht, bis eine bessere
-Lösung gefunden wird, also eine Lösung, welche einen besseren Zielfunktionswert besitzt, als die gegenwärtige Lösung.
-Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden,
-so wird die beste Nachbarlösung aus der Teilmenge ausgewählt.
+Lösung gefunden wird, also eine Lösung, welche einen besseren Zielfunktionswert besitzt als die gegenwärtige Lösung.
+Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden, so wird die beste Nachbarlösung aus der generierten Teilmenge ausgewählt.
 
 \textbf{Best-Fit}
 
 Die Best-Fit-Strategie generiert die gesamte Teilmenge einer konfigurierten Kardinalität und liefert schließlich die
 beste Nachbarlösung aus dieser Teilmenge.\newline
 
-Als Abbruchkriterien stehen drei verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können.
-Die simpelste Variante besteht darin, eine feste Anzahl an Iterationen zu definieren, nach welcher die Tabu-Suche terminiert.
-Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurücksetzungen der Tabu-Listen. Wenn innerhalb
-der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander allesamt tabu sind, so wird die
-entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Bei der letzten Variante handelt es sich um ein gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
+Als Abbruchkriterien stehen vier verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können. Die simpelste Variante besteht darin, eine feste Anzahl an Iterationen zu definieren, nach welcher die Tabu-Suche terminiert. Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurücksetzungen der Tabu-Liste. Wenn innerhalb der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander
+allesamt tabu sind, so wird die entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Des Weiteren besteht die Möglichkeit, ein Zeitlimit
+zu spezifizieren, nach welchem die Tabu-Suche beendet wird. Bei der letzten Variante handelt es sich um ein gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
 
 Eine wichtige Eigenschaft einer Nachbarschaft ist der sogenannte Zusammenhang. Eine Nachbarschaft wird als zusammenhängend bezeichnet, wenn von einer Lösung $s$ durch Anwendung einer endlichen Folge von Operatoren jede andere Lösung $s'$ erreicht
 werden kann \cite{Brucker2006}. Bei einer zusammenhängenden Nachbarschaft existieren Konvergenzaussagen für Tabu-Suchen.
@@ -3235,7 +3231,7 @@ Abb. \ref{fig:counter_b} transformieren lassen, wenn die Nachbarschaft zusammenh
 Da lediglich zulässige Nachbarlösungen betrachtet werden und beide Stacks vollständig gefüllt sind,
 sind Shift-Operationen nicht gestattet, weil sonst die Stack-Kapazität verletzt würde.
 Die Transformation muss daher durch Anwendung einer endliche Anzahl von Swap-Operationen auf $s$ gelingen.
-Dabei können zwei Items innerhalb eines Stacks basierend auf dem Graphen aus Abb. \ref{fig:counter_example_stacking_graph}  nicht vertauscht werden ohne die Stacking-Constraints zu verletzen.
+Dabei können zwei Items innerhalb eines Stacks basierend auf dem Graphen aus Abb. \ref{fig:counter_example_stacking_graph}  nicht vertauscht werden, ohne die Stacking-Constraints zu verletzen.
 Demzufolge können nur Items zwischen den beiden Stacks vertauscht werden. Es gibt also initial drei mögliche
 Swap-Operationen: $swap_1 = ((1, (2, 3)), (4, (1, 3))), swap_2 = ((2, (2, 2)), (5, (1, 2)))$ und $swap_3 = ((3, (2, 1)), (6, (1, 1)))$.
 Wird $swap_1$ durchgeführt, so wird Item $4$ auf Item $2$ platziert, was gegen die Stacking-Constraints vertößt.
@@ -3378,7 +3374,7 @@ welcher jede Kombination und damit jede Lösung in einer endlichen Anzahl von Op
 Mit steigendem $k$ wächst allerdings auch die Größe der Nachbarschaft und somit der Zeitaufwand, um diese zu durchsuchen.
 Bei $k = n$ wird bereits das vollständige Problem betrachtet.
 Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden lediglich $k$-Werte aus einem kleineren Intervall
-$[1, k_n]$ betrachtet, wobei $k_n < n$. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren lassen, für die ein $k_n$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz, sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit der Heuristik geopfert. Die konkrete Größe des Intervals
+$[1, k_n]$ betrachtet, wobei $k_n < n$. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren lassen, für die ein $k_n$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz, sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit des Verfahrens geopfert. Die konkrete Größe des Intervals
 wird experimentell ermittelt und ist Teil der Konfiguration der Tabu-Suche, welche im nächsten Abschnitt thematisiert wird.
 
 \vfill
@@ -3463,8 +3459,8 @@ Davon wird allerdings abgesehen, weil die Laufzeit weiterhin eine Rolle spielt. 
 kleineren Instanzen zu erhalten, wird in jedem Fall eine Anzahl nichtverbessernder Iterationen von $50$ betrachtet,
 welche auch bei großen Instanzen nach wenigen Minuten ohne Verbesserung zur Terminierung führt.
 
-\vfill
-\pagebreak
+Für die Selektion der Nachbarlösungen wird in den folgenden Experimenten stets Best-Fit verwendet,
+da dies insgesamt zu deutlich besseren Ergebnissen führt.
 
 \subsection{Anwendung der Tabu-Suche}
 \label{sec:tabu_search_experiments}
