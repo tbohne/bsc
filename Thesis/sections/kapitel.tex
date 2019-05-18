@@ -3467,16 +3467,13 @@ da dies insgesamt zu deutlich besseren Ergebnissen führt.
 
 Die Tabu-Suche wurde, wie bereits die konstruktiven Heuristiken, in der Programmiersprache Java implementiert und
 auf einem System mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM ausgeführt.
-
 Zunächst geht es um die Verbesserung der zuvor generierten Lösungen für Instanzen von Stacking-Problemen
 mit Stacks der Kapazität $b = 2$.
 
 In Abb. \ref{fig:imp_res_b=2_s} sind die Ergebnisse der Anwendung der Tabu-Suche in der Kategorie
-der kleinen Instanzen dargestellt. \textsc{OPT} entspricht der jeweils besseren MIP-Formulierung, welche die optimalen Zielfunktionswerte liefert, \textsc{2Cap} entspricht der Heuristik, welche die Initiallösungen der Tabu-Suche generiert
-und \textsc{2Cap + TS} entspricht schließlich der Kombination aus Anwendung der Heuristik und anschließender Verbesserung durch die Tabu-Suche. Die Verbesserungen der Tabu-Suche können in Abb. \ref{fig:imp_b=2_s_costs} nachvollzogen werden. Es werden bei $13$ der $20$ Instanzen Verbesserungen erzielt, wodurch die durchschnittliche Abweichung der von der konstruktiven Heursitk generierten Lösungen von $0.29 \%$ durch Anwendung der Tabu-Suche
-auf $0.14 \%$ reduziert wird. Mit den Instanzen $06$ und $07$ wird in zwei Fällen durch die Verbesserung sogar eine Optimallösung ermittelt. Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche dabei, wie erwartet, weit über jene der Heuristik und des
-exakten Solvers hinaus. Die durchschnittliche Laufzeit von \textsc{OPT} beträgt $0.72s$, während
-die Laufzeit von \textsc{2Cap + TS} durchschnittlich $44.4s$ beträgt.
+der kleinen Instanzen dargestellt. \textsc{OPT} entspricht der jeweils besseren MIP-Formulierung, welche die optimalen Zielfunktionswerte liefert, \textsc{2Cap} entspricht der Heuristik, welche die Initiallösungen der Tabu-Suche generiert und \textsc{2Cap + TS} entspricht schließlich der Kombination aus Anwendung der Heuristik und anschließender Verbesserung durch die Tabu-Suche. Die Verbesserungen der Tabu-Suche können in Abb. \ref{fig:imp_b=2_s_costs} nachvollzogen werden. Es werden bei $13$ der $20$ Instanzen Verbesserungen erzielt, wodurch die durchschnittliche Abweichung der Lösungen vom Optimum von $0.29 \%$ durch Anwendung der Tabu-Suche
+auf $0.14 \%$ reduziert wird. Mit den Instanzen $06$ und $07$ wird in zwei Fällen durch die Verbesserung sogar eine Optimallösung ermittelt. Bei den Instanzen $00, 02$ und $16$ wurde der optimale Zielfunktionswert durch die Verbesserungen nur knapp verfehlt. Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche dabei, wie erwartet, weit über jene der konstruktiven Heuristik und des exakten Solvers hinaus. Die durchschnittliche Laufzeit von \textsc{OPT} beträgt $0.72s$, während
+die Laufzeit von \textsc{2Cap + TS} durchschnittlich $44.4s$ beträgt. Da allerdings, wie bereits in Abschnitt \ref{sec:solver_comp_b=2} erwähnt, aufgrund der geringen Laufzeiten der exakten Solver in dieser Kategorie ohnehin kein Bedarf für eine Laufzeitverbesserung durch eine Heuristik besteht, ist es hier lediglich von Iteresse, einen möglichst guten Kompromiss zwischen geringer Laufzeit und großer Kostenersparnis zu finden, welcher mit der gegenwärtigen Konfiguration gefunden wurde.
 
 \begin{figure}[H]
 \centering
@@ -3499,10 +3496,11 @@ In der Kategorie der mittelgroßen $b = 2$ Instanzen werden die Lösungen für $
 die Tabu-Suche verbessert und erreichen daher eine weitere Annäherung an die optimalen Zielfunktionswerte,
 wobei ein solcher in dieser Kategorie in keinem Fall ermittelt wird (vgl. Abb. \ref{fig:imp_b=2_m_costs}).
 Die durchschnittliche prozentuale Abweichung vom Optimum reduziert sich dabei von $0.06 \%$ auf $0.05 \%$.
-Wie man der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_m_runtimes} entnehmen kann, unterbietet der
-exakte Solver die Kombination aus konstruktiver Heuristik und Tabu-Suche verglichen mit der Kategorie
-der kleinen Instanzen nicht mehr ganz so deutlich. Der Unterschied ist mit durchschnittlich $37.49s$
-beim exakten Solver im Vergleich zu durchschnittlich $128.0s$ bei \textsc{2Cap + TS} jedoch weiterhin signifikant.
+Wie man der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_m_runtimes} entnehmen kann, werden die
+Laufzeiten der Kombination aus konstruktiver Heuristik und Tabu-Suche vom exakten Solver, verglichen
+mit der Kategorie der kleinen Instanzen, etwas weniger deutlich unterboten. Der Unterschied ist mit
+durchschnittlich $37.49s$ bei \textsc{OPT} im Vergleich zu durchschnittlich $128.0s$ bei \textsc{2Cap + TS}
+jedoch weiterhin signifikant.
 
 \begin{figure}[H]
 \centering
@@ -3550,12 +3548,9 @@ während \textsc{2Cap + TS} eine durchschnittliche Laufzeit von $208.8s$ besitzt
 \label{fig:imp_res_b=2_l}
 \end{figure}
 
-\vfill
-\pagebreak
-
-Im Folgenden geht es um die Verbesserung der zuvor generierten Lösungen für Instanzen von Stacking-Problemen
-mit Stacks der Kapazität $b = 3$. In den Diagrammen wird die Kombination aus Anwendung der entsprechenden konstruktiven
-Heuristik und anschließender Anwendung der Tabu-Suche mit \textsc{3Cap + TS} abgekürzt.
+Nachdem sämtliche Kategorien für eine Stack-Kapazität von $b = 2$ betrachtet wurden,
+geht es nun um die Verbesserung der zuvor generierten Lösungen für Instanzen von Stacking-Problemen
+mit Stacks der Kapazität $b = 3$. In den Diagrammen wird die Kombination aus Anwendung der entsprechenden konstruktiven Heuristik und anschließender Anwendung der Tabu-Suche mit \textsc{3Cap + TS} abgekürzt.
 
 In der Kategorie der kleinen $b = 3$ Instanzen werden die Lösungen für $9$ der $20$ Instanzen durch
 die Tabu-Suche verbessert (vgl. Abb. \ref{fig:imp_b=3_s_costs}).
