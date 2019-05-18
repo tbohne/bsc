@@ -1292,9 +1292,10 @@ Folglich sind die Item-Längen $\{1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5
 die Item-Breiten $\{1.0, 1.5, 2.0\}$ möglich.
 
 Zuletzt wird definiert, auf welcher Metrik die Distanzen zwischen Item- und Stackpositionen
-basieren, die schließlich den Transportkosten entsprechen. In den im Zuge dieser Arbeit durchgeführten
-Experimenten basieren diese Distanzen stets auf der Manhattan-Metrik, welche die Kranbewegung
-in geeigneter Weise repräsentiert.
+basieren, die schließlich den Transportkosten entsprechen.
+In den im Zuge dieser Arbeit durchgeführten Experimenten basieren diese Distanzen in Anlehnung an das Beispiel
+aus Abschnitt \ref{sec:transport_costs} stets auf der Manhattan-Metrik, welche die Kranbewegung in geeigneter Weise repräsentiert. Die Kosten der Zuweisung eines Items zu einem Stack ergeben sich somit aus der Manhattan-Distanz zwischen Itemposition $O_i$ und zugewiesener Stack-Position $F_q$. Für die Transportkostenmatrix $C = (c_{iq})_{n \times m}$ gilt
+daher $c_{iq} \coloneqq d_{man}(O_i, F_q)$.
 
 \subsection{Vergleich der $b = 2$ Solver}
 \label{sec:solver_comp_b=2}
