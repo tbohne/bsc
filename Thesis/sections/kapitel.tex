@@ -1373,7 +1373,7 @@ Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings,
 \label{fig:instance_cov_b=2_s}
 \end{figure}
 
-In Abb. \ref{fig:b=2_s_runtimes} sind die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $1s$ dargestellt.
+In Abb. \ref{fig:b=2_s_results} sind die Laufzeiten und ermittelten Zielfunktionswerte der Solver bei einem Zeitlimit von $1s$ dargestellt. Auf der $y$-Achse sind jeweils die gelösten Instanzen aufgetragen und auf der $x$-Achse die Laufzeiten bzw. ermittelten Kosten (Zielfunktionswerte). Für die Instanzen wird in sämtlichen Darstellungen die folgende Notation verwendet: (\textsc{items, stacks, capacity, index}). Abbildung \ref{fig:b=2_s_runtimes} zeigt die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $1s$.
 Die 3-Index-Formulierung ist in der Regel deutlich schneller als die Bin-Packing-Formulierung und die Heuristik unterbietet beide MIP-Formulierungen noch einmal deutlich. Da in der Abbildung die absoluten Laufzeitdifferenzen zu sehen sind, ist es wichtig, zu erwähnen, dass die Laufzeiten der Heuristik durchschnittlich um den Faktor $24$ kleiner sind als jene der 3-Index-Formulierung. Zwischen der 3-Index- und der Bin-Packing-Formulierung besteht dagegen nur ein Faktor von $1.5$.
 
 Aufgrund der Tatsache, dass \textsc{CPLEX} lediglich vor dem Zeitlimit terminiert, wenn die entsprechende Instanz optimal gelöst wird, ist klar ersichtlich, dass die 3-Index-Formulierung sämtliche Instanzen optimal löst (vgl. Abb. \ref{fig:b=2_s_runtimes}).
@@ -1405,6 +1405,7 @@ $06$ und $17$ zeigt sich dagegen ein deutlich größerer Einfluss.
 \label{fig:b=2_s_costs}
 \end{subfigure}
 \caption{\textsc{Ergebnisse bei $1s$ Zeitlimit}.}
+\label{fig:b=2_s_results}
 \end{figure}
 
 Die exakten Ergebnisse der MIP-Formulierungen sind den Tabellen in Abb. \ref{fig:table} zu entnehmen.
