@@ -1,10 +1,10 @@
 solved with: SP.post_optimization_methods.TabuSearch
 time limit: 2700.0 s
-time to solve: 564.17 s
-objective value: 211746.28
+time to solve: 402,34 s
+objective value: 211748.72
 
 stacks (top to bottom):
-stack   0:    250 
+stack   0:    0 250 
 stack   1:    1 
 stack   2:    2 
 stack   3:    3 
@@ -20,15 +20,15 @@ stack  12:
 stack  13:    13 
 stack  14:    264 14 
 stack  15:    
-stack  16:    266 
-stack  17:    267 
+stack  16:    
+stack  17:    
 stack  18:    17 
 stack  19:    
 stack  20:    
 stack  21:    21 
 stack  22:    272 
-stack  23:    23 
-stack  24:    275 
+stack  23:    24 23 
+stack  24:    495 275 
 stack  25:    25 
 stack  26:    27 441 
 stack  27:    231 38 277 
@@ -105,7 +105,7 @@ stack  97:    395 398 458
 stack  98:    210 363 362 
 stack  99:    176 404 403 
 stack 100:    207 218 209 
-stack 101:    0 
+stack 101:    
 stack 102:    251 
 stack 103:    252 
 stack 104:    253 
@@ -113,24 +113,24 @@ stack 105:    4
 stack 106:    6 5 
 stack 107:    255 
 stack 108:    
-stack 109:    258 8 
+stack 109:    8 258 
 stack 110:    259 
 stack 111:    260 
 stack 112:    261 
 stack 113:    12 262 
 stack 114:    263 
-stack 115:    
+stack 115:    15 
 stack 116:    
-stack 117:    15 265 16 
-stack 118:    
+stack 117:    266 265 16 
+stack 118:    267 
 stack 119:    18 268 
 stack 120:    269 19 
 stack 121:    20 270 
 stack 122:    271 
 stack 123:    22 
 stack 124:    273 
-stack 125:    274 495 
-stack 126:    24 276 
+stack 125:    274 
+stack 126:    276 
 stack 127:    247 26 29 
 stack 128:    278 279 213 
 stack 129:    30 189 28 
@@ -167,7 +167,7 @@ stack 159:    234 393 391
 stack 160:    84 425 82 
 stack 161:    419 330 331 
 stack 162:    90 462 86 
-stack 163:    232 397 399 
+stack 163:    232 80 399 
 stack 164:    151 148 414 
 stack 165:    453 110 111 
 stack 166:    173 170 201 
@@ -175,7 +175,7 @@ stack 167:    175 407 406
 stack 168:    338 337 224 
 stack 169:    488 237 238 
 stack 170:    97 96 435 
-stack 171:    77 80 431 
+stack 171:    77 397 431 
 stack 172:    229 236 240 
 stack 173:    121 456 120 
 stack 174:    382 384 184 
