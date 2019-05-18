@@ -2837,7 +2837,8 @@ Instanzen, welche von der 3-Index-Formulierung nicht gelöst werden, erfordern o
 Wie der Darstellung der Laufzeiten bei einem Zeitlimit von $30$ Minuten in Abb. \ref{fig:b=3_l_runtimes} zu
 entnehmen ist, terminiert die Bin-Packing-Formulierung mit Ausnahme von Instanz $06$ stets vor dem Zeitlimit.
 Demgegenüber wird die 3-Index-Formulierung ausnahmslos durch das Zeitlimit gestoppt.
-Des Weiteren ist klar zu erkennen, dass die Heuristik auch in dieser Kategorie in Bezug auf die Laufzeit konkurrenzlos ist. Da die Bin-Packing-Formulierung bei Instanz $06$ durch das Zeitlimit terminiert, ist in diesem Fall nicht garantiert, dass diese zu einer optimalen Lösung gelangt. In einem weiteren Test mit einem größeren Zeitlimit hat sich allerdings herausgestellt, dass auch dort der Optimalwert ermittelt wurde.
+Des Weiteren ist klar zu erkennen, dass die Heuristik auch in dieser Kategorie in Bezug auf die Laufzeit konkurrenzlos ist. Da die Bin-Packing-Formulierung bei Instanz $06$ durch das Zeitlimit terminiert, ist in diesem Fall nicht garantiert, dass diese zu einer optimalen Lösung gelangt. In einem weiteren Test mit einem größeren Zeitlimit hat sich allerdings herausgestellt, dass auch dort der Optimalwert ermittelt wurde, was bedeutet, dass
+\textsc{CPLEX} lediglich noch nicht bewiesen hat, dass es sich um das Optimum handelt, der entsprechende Wert wurde jedoch bereits ermittelt.
 
 In der abermals skalierten Darstellung der Kosten bei einem Zeitlimit von $30$ Minuten in Abb. \ref{fig:b=3_l_costs}
 ist zu erkennen, dass die 3-Index-Formulierung in keinem Fall eine optimale Lösung liefert,
@@ -3476,9 +3477,10 @@ In Abb. \ref{fig:imp_res_b=2_s} sind die Ergebnisse nach Anwendung der Tabu-Such
 \textsc{2Cap} entspricht der Heuristik, welche die Initiallösungen der Tabu-Suche generiert
 und \textsc{2Cap + TS} entspricht schließlich der Kombination aus Anwendung der Heuristik und anschließender Verbesserung durch die Tabu-Suche.
 
-Die Verbesserungen der Tabu-Suche sind in Abb. \ref{fig:imp_b=2_s_costs} nachzuvollziehen,
-wobei \textsc{2Cap} dem Stand vor Anwendung der Tabu-Suche, \textsc{2Cap + TS} dem finalen Ergebnis
-und \textsc{OPT} dem jeweils optimalen Zielfunktionswert entspricht.
+Die Verbesserungen der Tabu-Suche können in Abb. \ref{fig:imp_b=2_s_costs} nachvollzogen werden.
+Es werden bei $13$ der $20$ Instanzen Verbesserungen erzielt und die Abweichungen der konstruktiven Heursitk
+damit weiter reduziert. Mit den Instanzen $06$ und $07$ konnte in zwei Fällen durch die Verbesserung sogar eine Optimallösung ermittelt werden. Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche dabei, wie erwartet, weit über jene der Heuristik und des
+exakten Solvers hinaus.
 
 \begin{figure}[H]
 \centering
@@ -3493,7 +3495,7 @@ und \textsc{OPT} dem jeweils optimalen Zielfunktionswert entspricht.
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=2_s_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung}.}
+\caption{\textsc{Ergebnisse der Verbesserung $b = 2$ (s)}.}
 \label{fig:imp_res_b=2_s}
 \end{figure}
 
