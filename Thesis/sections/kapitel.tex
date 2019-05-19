@@ -790,8 +790,8 @@ also $|S| = |T|$. Bei der Rückgabe des Algorithmus handelt es sich um ein Perfe
 \textbf{Maximum-Cardinality-Matching (MCM)}
 
 Ein Maximum-Cardinality-Matching ist ein Matching, welches eine maximale Anzahl von Kanten enthält \cite{Gibbons1985}.
-Es kann mehrere unterschiedliche MCMs in einem Graphen geben.
-In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
+Es kann mehrere unterschiedliche \textsc{MCM}s in einem Graphen geben.
+In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei \textsc{MCM}s dargestellt.
 
 \begin{figure}[H]
   \begin{subfigure}[b]{0.4\textwidth}
@@ -843,7 +843,7 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
 Der Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, welcher in den im Folgenden
 vorgestellten Heuristiken Anwendung findet, stammt ebenfalls aus der Java-Bibliothek \textsc{JGraphT} \cite{JGraphT} und trägt
 den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um eine Implementation von Edmonds' Blossom-Algorithmus,
-welcher MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
+welcher \textsc{MCM}s in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
 Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$, wobei $n$ der Anzahl der Knoten
 und $m$ der Anzahl der Kanten im Graphen entspricht.
@@ -1682,10 +1682,9 @@ an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic
 Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden überdies
 erweiternde Ansätze präsentiert.
 
-Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden.
+Zunächst geht es, wie auch in der Heuristik für $b = 2$, darum, kompatible Item-Paare zu bilden.
 Dazu wird analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} ein Stacking-Graph $G = (V, E)$ generiert.
-Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
-$i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stapelbar sind.
+Berechnet man ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare kompatibler Items $i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stapelbar sind.
 In der Regel ist anschließend basierend auf den Stacking-Constraints die Mehrheit oder sogar die Gesamtheit der Items einer Instanz Teil eines Paares, weshalb sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
 um erste Tripel zu bilden, welche in einer früheren Version der Heuristik an dieser Stelle stattfand, als nicht zielführend
 erwies.
@@ -1749,7 +1748,7 @@ welche wie folgt definiert sind:
 \]
 D.h. die Kosten der Zuweisung entsprechen nur dann der Summe der beiden Einzelzuweisungen, wenn beide Items des Paares basierend
 auf den Placement-Constraints kompatibel zum Stack sind. Ist dies nicht der Fall, so wird die Inkompatibilität durch
-einen Kostenwert von $za$ mit $z \in \mathbb{R}$, also dem $z$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$ für das Item-Paar $(i, j)$ ergibt sich folgendermaßen:
+einen Kostenwert von $za$ mit $z \in \mathbb{R}$, also dem $z$-fachen der Kosten einer durchschnittlichen Item-Stack-Zuweisung, bestraft. Der durchschnittliche Kostenwert $avgC_{ij}$, für das Item-Paar $(i, j)$, ergibt sich folgendermaßen:
 \[ avgC_{ij} = \frac{\sum_{q \in Q} c_{(i, j)q}}{|Q|}  \]
 
 Anschließend wird über sämtliche Paare, die sich aus den Kanten $\{i, j\} \in M$ ergeben, hinweg eine durchschnittliche \textquote{Worst-Compatibility} $w$, also eine durchschnittliche Kompatibilität des jeweils weniger kompatiblen Items, sowie ein durchschnittlicher Kostenwert $avgC$ für Stackzuweisungen berechnet. Wenn ein Paar $(i, j)$ nun sowohl eine über dem Durchschnitt liegende \textquote{Worst-Compatibility} $w_{ij} > w$ als auch einen über dem Durchschnitt liegenden durchschnittlichen Kostenwert $avgC_{ij} > avgC$ besitzt, scheint es gut geeignet für eine Separation,
@@ -1789,8 +1788,7 @@ kann diese jenem durch Verwendung des Rating-Systems noch einmal näher kommen.
 
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
-prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden
-$|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden könnten, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking-Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen.
+prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden $|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden können, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking-Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen.
 
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
 Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E_1)$ bestehend aus den Paaren und separierten Items generiert.
@@ -1798,59 +1796,52 @@ Dieser Graph enthält die Paare in der Partition $V_1$ und die separierten Items
 Es existiert eine Kante zwischen einem Paar $(i, j) \in V_1$ und einem Item $k \in V_2$, wenn das Item $k$ kompatibel zum Paar
 $(i, j)$ ist. Die Überprüfung dieser Kompatibilität findet erneut in geschilderter Weise basierend auf den möglichen Permutationen
 aus Abb. \ref{fig:triple_permutations} statt.
-
-Anschließend wird in $G_1$ ein \textsc{MCM} berechnet, dessen Kanten einer größtmöglichen Menge an kompatiblen Item-Tripeln entspricht.
-Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den unterschiedlichen Sortierungen.
-Daraufhin liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert.
-Für jede dieser Listen wird nun der folgende Prozess durchgeführt.
+Anschließend wird in $G_1$ ein \textsc{MCM} berechnet, dessen Kanten einer größtmöglichen Menge an kompatiblen Item-Tripeln entspricht. Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den unterschiedlichen Sortierungen.
+Daraufhin liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert. Für jede dieser Listen wird nun der folgende Prozess durchgeführt.
 
 Zunächst werden abermals durch ein \textsc{MCM} in dem für alle verbleibenden Items generierten Stacking-Graphen
 Paare gebildet, da im Zuge des Merge-Prozesses Unmatched-Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
 sämtliche Items zuvor Teil eines Paares waren. Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level eines eigenen Stacks platziert.
-
 Wie bereits in der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} werden auch hier auf diese Weise insgesamt möglichst wenige der zur Verfügung stehenden Stacks verwendet, denn wie zuvor ist das primäre Ziel, zu einer zulässigen Lösung zu gelangen, wofür sich die initiale Maximierung der Anzahl der möglichst weit gefüllten Stacks anbietet. Erst nachdem möglichst viele Tripel und Paare von Items generiert wurden, geht es darum, diese zusammen mit den verbleibenden Unmatched-Items möglichst günstig den vorhandenen Stacks zuzuweisen.
 
 An dieser Stelle liegt also eine Menge an Item-Tripeln, eine Menge an Item-Paaren und eine Menge an Unmatched-Items vor. Diese müssen nun
 noch in einer die Placement-Constraints respektierenden Weise den Stacks zugewiesen werden.
 Dies ist nur dann möglich, wenn die Anzahl der Tripel, Paare und Unmatched-Items in der Summe kleiner oder gleich der Anzahl
 der zur Verfügung stehenden Stacks ist.
-
 Ist dies der Fall, so wird zu diesem Zweck ein bipartiter Graph $G_2 = (V_3 \cup V_4, E_2)$ eingeführt,
-dessen erste Partition $V_3$ die Items bestehend aus Item-Tripeln, Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_4$
-die zur Verfügung stehenden Stacks beinhaltet. Da diese Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textit{JGrpahT} bereitgestellte Algorithmus, welcher zur Berechnung eines \textsc{MWPM} in $G_2$ verwendet wird, dies jedoch fordert, werden Dummy-Items
-eingeführt, die die Item-Partition $V_3$ gegebenenfalls auffüllen.
+dessen erste Partition $V_3$ die Items bestehend aus Item-Tripeln, Item-Paaren und Unmatched-Items enthält,
+während die zweite Partition $V_4$ die zur Verfügung stehenden Stacks beinhaltet. Da diese Partitionen nicht notwendigerweise dieselbe Kardinalität besitzen, der von \textsc{JGraphT} bereitgestellte Algorithmus, welcher zur Berechnung eines
+\textsc{MWPM} in $G_2$ verwendet wird, dies jedoch fordert, werden Dummy-Items eingeführt, welche die
+Item-Partition $V_3$ gegebenenfalls auffüllen.
 
-
-Eine Kante $\{i, q\} \in E_2$ zwischen einem Knoten $i \in V_3$ und einem Knoten $q \in V_4$ gibt an, dass das entsprechende Item, Item-Paar oder Item-Tripel $i$ dem jeweiligen Stack $q$ zugeordnet werden kann. Wie zuvor gilt dabei
-aus genannten Gründen, dass die Placement-Constraints indirekt durch ein hohes Gewicht einer solchen Kante und nicht durch ein Fehlen dieser
-umgesetzt werden. Es existieren daher Kanten zwischen sämtlichen Knoten aus $V_3$ und denen aus $V_4$, d.h. $\forall i \in V_3, q \in V_4
-\thinspace \exists \thinspace \{i, q\} \in E_2$, was dafür sorgt, dass es sich bei $G_2$ um einen vollständig bipartiten Graphen handelt.
-Das Gewicht einer solchen Kante $\{i, q\} \in E_2$, die ein Tripel, Paar oder Unmatched-Item mit einem Stack verbindet, ist definiert
-als die Summe der Kosten des Transports aller an der Zuweisung beteiligten Items zum jeweiligen Stack. Somit ergeben sich drei Fälle.
-Der erste Fall behandelt Kanten $\{i, q\} \in E_2$, die ein Unmatched-Item $i \in V_3$ mit einem Stack $q \in V_4$ verbinden.
+Eine Kante $\{p, q\} \in E_2$ zwischen einem Knoten $p \in V_3$ und einem Knoten $q \in V_4$ gibt an, dass das entsprechende Item, Item-Paar oder Item-Tripel $p$ dem jeweiligen Stack $q$ zugeordnet werden kann. Wie zuvor gilt dabei
+aus genannten Gründen, dass die Placement-Constraints indirekt durch ein hohes Gewicht einer solchen Kante und
+nicht durch ein Fehlen dieser umgesetzt werden. Es existieren daher Kanten zwischen sämtlichen Knoten aus $V_3$ und
+jenen aus $V_4$, d.h. $\forall \thinspace p \in V_3, q \in V_4 \thinspace \exists \thinspace \{p, q\} \in E_2$, was dafür sorgt,
+dass es sich bei $G_2$ um einen vollständig bipartiten Graphen handelt.
+Das Gewicht einer solchen Kante $\{p, q\} \in E_2$, welche ein Tripel, Paar oder Unmatched-Item mit einem Stack
+verbindet, ist definiert als die Summe der Kosten des Transports aller an der Zuweisung beteiligten Items zum
+jeweiligen Stack. Somit ergeben sich drei Fälle.
+Der erste Fall behandelt Kanten $\{i, q\} \in E_2$, welche ein Unmatched-Item $i \in V_3$ mit einem Stack $q \in V_4$ verbinden.
 Das Gewicht einer solchen Kante entspricht den Kosten des Transports $c_{iq}$ des Items $i$ in den Stack $q$.
-Fall zwei behandelt Kanten $\{(i, j), q\} \in E_2$, welche ein Item-Paar $(i, j) \in V_3$ mit einem Stack $q \in V_4$
+Der zweite Fall behandelt Kanten $\{(i, j), q\} \in E_2$, welche ein Item-Paar $(i, j) \in V_3$ mit einem Stack $q \in V_4$
 verbinden. Die Kosten einer solchen Kante ergeben sich aus der Summe der Kosten des Transports beider Items,
 also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 Der dritte und letzte Fall behandelt Kanten $\{(i, j, k), q\} \in E_2$, welche ein Item-Tripel $(i, j, k) \in V_3$
 mit einem Stack $q \in V_4$ verbinden. Die Kosten einer solchen Kante ergeben sich aus der Summe der Kosten des Transports
 der drei Items, also $c_{(i, j, k)q} = c_{iq} + c_{jq} + c_{kq}$.
 
-Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack verbinden,
-das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items, Item-Paars oder Item-Tripels durch ein Dummy-Item
-verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem Stack zu den Kosten $0$ zugewiesen werden können,
-während eine Zuweisung echter Items, Item-Paare und Item-Tripel stets Kosten verursacht. Dementsprechend werden echte Items bei der
-Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
-
-Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_2$ berechnet, dessen Kanten
+Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, welche ein Dummy-Item mit einem Stack verbinden,
+das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items, Item-Paares oder Item-Tripels durch ein Dummy-Item verhindert wird, da diese im Gegensatz zu echten Items, ohne Kosten zu verursachen, in jedem Stack platziert
+werden können. Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_2$ berechnet, dessen Kanten
 als Stack-Zuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items, Item-Paare
 und Item-Tripel einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich
 jeweils um eine günstigste Zuweisung handelt, da die Kantenkosten jeweils den Transportkosten entsprechen.
 Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung
 der generierten Tripel, Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
 
-Auf diese Weise entsteht eine Menge von Lösungen, von denen schließlich die günstigste ausgewählt wird.
-Zuletzt muss dann wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
+Auf diese Weise entsteht eine Menge von Lösungen, von denen schließlich eine günstigste ausgewählt wird.
+Zuletzt muss wiederum ggf. die Reihenfolge der Items innerhalb der Stacks so angepasst werden,
 dass sie die Stacking-Constraints respektiert. Dazu werden sämtliche Stacks, denen mehr als
 ein Item zugewiesen wurde, betrachtet. Für jeden dieser Stacks wird geprüft, ob die aufeinander
 gestapelten Items jeweils paarweise aufeinander gestapelt sein dürfen.
@@ -1885,8 +1876,7 @@ Je nach Anzahl der freien Positionen pro Stack, können einem Stack null bis dre
 Angesichts der Tatsache, dass nicht gewährleistet ist, dass diese Items bezüglich der Stacking-Constraints miteinander kompatibel sind, darf jedem Stack allerdings nur ein neues Item zugewiesen werden.
 Es wird im Falle mehrerer Zuordnungen jenes Item mit der größten Kostenersparnis verschoben.
 Nachdem die Items an die ihnen zugeordneten Positionen verschoben wurden, wird die Reihenfolge der Items
-innerhalb der Stacks, welchen mindestens ein zusätzliches Item zugewiesen wurde ggf. basierend auf den Stacking-Constraints angepasst. Befand sich ein verschobenes Item zuvor unterhalb anderer Items innerhalb eines Stacks, so werden die darüber platzierten Items heruntergezogen, sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
-
+innerhalb der Stacks, welchen mindestens ein zusätzliches Item zugewiesen wurde, ggf. basierend auf den Stacking-Constraints angepasst. Befand sich ein verschobenes Item zuvor unterhalb anderer Items innerhalb eines Stacks, so werden die darüber platzierten Items heruntergezogen, sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
 Wie bereits in der Heuristik für eine Stack-Kapazität von $b = 2$, wird dieser Postprocessing-Prozess
 iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
 
@@ -1984,9 +1974,6 @@ Außerdem handelt es sich dabei um Durchschnittswerte, welche im Einzelfall durc
 Eine sinnvolle Einschätzung dieser Ergebnisse ist im Wesentlichen nur in Verbindung mit den Ergebnissen der exakten Solver
 möglich, welche in Abschnitt \ref{sec:solver_comp_b=3} ausführlich präsentiert werden.
 
-\vfill
-\pagebreak
-
 \textbf{Beispiel}
 
 Gegeben sei die Item-Menge $I = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\}$ sowie eine Stack-Kapazität von $b = 3$.
@@ -2028,15 +2015,11 @@ ergeben sich die Abb. \ref{fig:lists_of_pairs} zu entnehmenden unterschiedlich s
 \caption{\textsc{Unterschiedlich sortierte Listen der Item-Paare}.}
 \label{fig:lists_of_pairs}
 \end{figure}
-Es ergeben sich dabei in zuvor beschriebenr Weise $13$ potenziell unterschiedlich sortierte Listen von Item-Paaren.
+Es ergeben sich dabei, in zuvor beschriebenr Weise, $13$ potenziell unterschiedlich sortierte Listen von Item-Paaren.
 In diesem Fall entstehen u.a. aufgrund der geringen Anzahl an Paaren jedoch lediglich drei voneinander unterschiedliche
 Sortierungen (vgl. Abb. \ref{fig:lists_of_pairs}).
-
-Anschließend geht es darum, die ersten $\floor{\frac{7}{3.4}} = 2$ Paare zu separieren und möglichst sämtliche der dabei entstehenden
-Items den verbleibenden Paaren zuzuweisen. Für die erste der drei unterschiedlichen Sortierungen aus Abb. \ref{fig:lists_of_pairs}
-ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung in Paare, welche separiert werden
-(vgl. Abb. \ref{fig:split_pairs}) und jene, denen die daraus resultierenden Items zugewiesen werden sollen um Item-Tripel zu bilden
-(vgl. Abb. \ref{fig:assign_pairs}).
+Anschließend geht es darum, die ersten $\floor{\frac{7}{3.4}} = 2$ Paare zu separieren und möglichst sämtliche der dabei entstehenden Items den verbleibenden Paaren zuzuweisen. Für die erste der drei unterschiedlichen Sortierungen aus Abb. \ref{fig:lists_of_pairs} ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung in Paare, welche separiert werden (vgl. Abb. \ref{fig:split_pairs}) und jene, denen die daraus resultierenden Items zugewiesen werden sollen,
+um Item-Tripel zu bilden (vgl. Abb. \ref{fig:assign_pairs}).
 
 \begin{figure}[H]
 \centering
@@ -2073,7 +2056,7 @@ Items $2, 3, 4$ und $13$ zu den verbleibenden Paaren aus Abb. \ref{fig:assign_pa
 und die einzelnen Items in der anderen Partition enthält. Eine Kante zwischen einem einzelnen Item und einem Paar bedeutet,
 dass dieses Item dem Paar zugeordnet werden kann, sodass ein kompatibles Tripel entsteht.
 In Abb. \ref{fig:item_triple_mcm} ist das auf diesem Graphen berechnete \textsc{MCM} in grün dargestellt, in welchem
-sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(5, 6)$ wird dabei als einziges Paar nicht verwendet
+sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(5, 6)$ wird dabei als einziges Paar nicht verwendet,
 um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 
 \begin{figure}[H]
@@ -2146,7 +2129,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
 \end{figure}
 
 Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welchem durch das
-\textsc{MCM} zusätzlich zum verbleibenden Item-Paar vier Item-Tripel generiert wurden.
+\textsc{MCM}, zusätzlich zum verbleibenden Item-Paar, vier Item-Tripel generiert wurden.
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
@@ -2161,7 +2144,7 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
 \label{fig:merge_result}
 \end{figure}
 
-Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel, sowie das Item-Paar, werden im Folgenden
+Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel sowie das Item-Paar, werden im Folgenden
 möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
 Dazu wird zunächst der vollständig bipartite Graph, welcher in Abb. \ref{fig:complete_bipartite} dargestellt ist,
 generiert. Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
@@ -2290,7 +2273,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
 
 Da keine Kante im \textsc{MWPM} das Gewicht $\infty$ besitzt, handelt es sich um eine günstigste, zulässige Zuweisung
 sämtlicher Item-Tupel zu Stacks, welche insgesamt die Kosten $550.38$ verursacht.
-Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} abgebildet, wobei die Reihenfolge
+Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} dargestellt, wobei die Reihenfolge
 innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
 \begin{figure}[H]
   \centering
@@ -2310,16 +2293,15 @@ innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
 
 Diese Lösung basiert auf der ersten der drei unterschiedlichen Sortierungen der Item-Paare aus Abb. \ref{fig:lists_of_pairs}.
 Um die bestmögliche Lösung zu finden, wird der geschilderte Prozess für die beiden übrigen Sortierungen
-ebenfalls durchgeführt und schließlich die beste Lösung in Bezug auf die Kosten ausgewählt.
+ebenfalls durchgeführt und schließlich eine beste Lösung in Bezug auf die Kosten ausgewählt.
 
 Ist der Postprocessing-Schritt aktiviert, so wird zuletzt die beste generierte Lösung erneut betrachtet
 und es werden ausgewählte Items an freie Positionen in anderen Stacks verschoben, sofern sich dadurch eine
 Kostenersparnis ergibt.
 Dazu wird der bipartite Postprocessing-Graph generiert, welcher in Abb. \ref{fig:post_processing_graph_b=3} dargestellt ist.
 Dieser enthält die Items in der einen Partition und die freien Positionen innerhalb der Stacks in der anderen Partition.
-
 Die Positionen sind erneut jeweils in der Notation $pos(stackIdx, level)$ gegeben. In diesem Beispiel gibt es,
-wie man Abb. \ref{fig:valid_solution} entnehmen kann, mit $pos(2, 1), pos(2, 2), pos(2, 3)$ und $pos(5, 3)$
+wie man Abb. \ref{fig:valid_solution} entnehmen kann, mit $pos(2, 1)$, $pos(2, 2)$, $pos(2, 3)$ und $pos(5, 3)$
 vier verbleibende freie Positionen in den Stacks. Die Kantengewichte des Postprocessing-Graphen sind der Übersichtlichkeit halber nicht an den Kanten notiert, sondern in der Tabelle in Abb. \ref{fig:post_processing_costs} aufgeführt.
 
 \begin{figure}[H]
@@ -2388,9 +2370,6 @@ Wie man der Tabelle in Abb. \ref{fig:post_processing_costs} entnehmen kann, sind
 der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} in diesem Fall positive Kantengewichte vorhanden,
 was bedeutet, dass sich durch Verschieben ausgewählter Items an freie Positionen Kosten einsparen lassen.
 
-\vfill
-\pagebreak
-
 \begin{figure}[H]
 \centering
 \resizebox{0.5\textwidth}{!}{
@@ -2412,7 +2391,7 @@ was bedeutet, dass sich durch Verschieben ausgewählter Items an freie Positione
 \label{fig:post_processing_costs}
 \end{figure}
 
-Jene Zurordnungen von Items zu freien Positionen, welche zur insgesamt größten Kostenreduktion führen, werden durch
+Jene Zuordnungen von Items zu freien Positionen, welche zur insgesamt größten Kostenreduktion führen, werden durch
 das Maximum-Weight-Bipartite-Matching auf dem Graphen aus Abb. \ref{fig:post_processing_graph_b=3} ermittelt,
 welches in Abb. \ref{fig:mwbm} dargestellt ist.
 Diese Zuordnungen sorgen für eine Gesamtersparnis von $36.36$, welche sich wie folgt ergibt.
@@ -2474,9 +2453,6 @@ In diesem Beispiel wird bereits nach der ersten Iteration das beste Ergebnis erz
     \caption{\textsc{Postprocessing-Ergebnis.}}
     \label{fig:valid_solution_post_processing}
 \end{figure}
-
-\vfill
-\pagebreak
 
 \subsection{Vergleich der $b = 3$ Solver}
 \label{sec:solver_comp_b=3}
