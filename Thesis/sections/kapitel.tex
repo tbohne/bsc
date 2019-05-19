@@ -285,7 +285,7 @@ in denen keine Lösung existiert, welche sämtliche Placement-Constraints respek
 Schließlich kann entschieden werden, ob solche Lösungen als zulässig gelten,
 oder, ob die Placement-Constraints dessen ungeachtet als harte Nebenbedingungen und solche
 Lösungen dementsprechend als unzulässig betrachtet werden.
-Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Bei diesem Graphen handelt es sich um einen Kompatibilitätsgraphen, welcher Item-Tupel durch Kanten mit kompatiblen Stacks verbindet. Insofern muss jedes Item zunächst mit jedem Stack kompatibel sein muss. Da die Placement-Constraints genau dies jedoch verhindern, können diese nicht direkt durch ein Fehlen der entsprechenden Kanten umgesetzt werden.
+Der wesentliche Grund der Entscheidung für diese Art der Implementation ist allerdings eher pragmatischer Natur, denn der in den konstruktiven Heuristiken, welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, verwendete Algorithmus zur Berechnung eines Minimum-Weight-Perfect-Matchings, erwartet einen vollständig bipartiten Graphen als Eingabe. Bei diesem Graphen handelt es sich um einen Kompatibilitätsgraphen, welcher Item-Tupel durch Kanten mit kompatiblen Stacks verbindet. Insofern muss jedes Item zunächst mit jedem Stack kompatibel sein. Da die Placement-Constraints genau dies jedoch verhindern, können diese nicht direkt durch ein Fehlen der entsprechenden Kanten umgesetzt werden.
 
 \vfill
 \pagebreak
@@ -299,7 +299,7 @@ Zunächst werden die Placement-Constraints in einer Binärmatrix $T = (t_{iq})_{
 \end{cases}
 \]
 Diese Matrix wird jedoch nicht direkt verwendet, um die Restriktionen zu implementieren. Stattdessen wird
-die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, welche in Abschnitt \ref{sec:transport_costs} eingeführt wurde, nun wie folgt modifiziert.
+die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, welche in Abschnitt \ref{sec:transport_costs} eingeführt wurde, nun wie folgt modifiziert:
 \[
     c_{iq} =
 \begin{cases}
@@ -343,7 +343,7 @@ Zu Beginn geht es darum, den zur Verfügung stehenden Platz in der Storage-Area 
 möglichst vieler $b$-Tupel von Items, ökonomisch zu nutzen. Anschließend werden diese $b$-Tupel
 zusammen mit den verbleibenden Items möglichst günstig den zur Verfügung stehenden Stacks zugewiesen.
 
-Ein ausschließlicher Fokus auf Kostenminimierung nachdem die Zulässigkeit erreicht ist, ist durch
+Ein ausschließlicher Fokus auf Kostenminimierung, nachdem die Zulässigkeit erreicht ist, ist durch
 einen Postprocessing-Schritt umsetzbar, in welchem zuletzt ausgewählte Items von den ihnen zugewiesenen Positionen
 an andere, freie Positionen verschoben werden, sofern sich infolgedessen Kosten einsparen lassen.
 Dafür stehen auch die bisher ungenutzten Stacks zur Verfügung.
@@ -361,7 +361,7 @@ wird der Postprocessing-Schritt in den Experimenten stets durchgeführt.
 
 Um die im Zuge dieser Arbeit entwickelten Heuristiken testen, miteinander vergleichen
 und bewerten zu können, galt es zunächst, möglichst realistische Instanzen von Stacking-Problemen
-für die in dieser Arbeit betrachteten Szenarien zu generieren.
+für die betrachteten Szenarien zu generieren.
 
 \citet{Briskorn2018} haben einen Testdaten-Generator für verschiedene Szenarien entwickelt, bei denen
 es darum geht, den Prozess zu simulieren, in welchem Kräne Container in einer Lagerfläche positionieren.
@@ -370,7 +370,7 @@ Lagerhallen und Bahnterminals auftreten.
 Ein Großteil der zahlreichen Konfigurations- und Spezifikationsmöglichkeiten, welche dieser
 Generator bereitstellt, spielt für die in dieser Arbeit betrachteten Problemstellungen allerdings keine Rolle.
 Es lassen sich dort Übergabepositionen, Bewegungseigenschaften für die Container, Daten zur Freigabe und Auslieferung von
-Containern, Vorgängerlisten der Container basierend auf Ausliegerungszeiten und viele weitere, in dieser Arbeit
+Containern, Vorgängerlisten der Container basierend auf Auslieferungszeiten und viele weitere, in dieser Arbeit
 ungenutzte Eigenschaften setzen, von denen viele verpflichtend sind. Die Regeln zur Generierung der Stacking-Constraints,
 welche essenzieller Bestandteil jeder in dieser Arbeit betrachteten Instanz sind, sind dagegen nicht Teil des Generators.
 Bei Verwendung dieses Generators müssten viele Eigenschaften spezifiziert werden, die in dieser Arbeit nicht
@@ -414,7 +414,7 @@ und im \textsc{TestDataGenerator} ausgewählt werden können.
 
 \textbf{Variante 1}
 
-Die Stacking-Constraint-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt. Anschließend werden jene $1$-Einträge, welche aus Transitivität folgen, ergänzt.
+Die Stacking-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt. Anschließend werden jene $1$-Einträge, welche aus Transitivität folgen, ergänzt.
 
 \textbf{Variante 2}
 
@@ -423,7 +423,7 @@ platziert werden, wenn für dessen Länge $l_i$ und Breite $w_i$ gilt $l_i \leq 
 Zwei Items $i, j$ sind in beide Richtungen stapelbar, wenn $l_i = l_j$ und $w_i = w_j$ gilt.
 
 Die zweite Variante erscheint realitätsnäher. Aufgrund der Tatsache, dass diese jedoch bei zufälligen Längen und
-Breiten der Items stets zu einem Anteil von $1$-Einträgen in der Stacking-Constraint-Matrix $S$ von ca. $25\%$ führt
+Breiten der Items stets zu einem Anteil von $1$-Einträgen in der Stacking-Matrix $S$ von ca. $25\%$ führt
 und jener mit Variante 1 sehr gut konfigurierbar ist, kann Variante $1$ in Situationen zum Einsatz kommen,
 in welchen eine solche Konfiguration erwünscht ist.
 
@@ -434,7 +434,7 @@ Diese partiellen Ordnungen lassen sich auch als Permutationen darstellen, wobei 
 zwei Knoten im Vergleichbarkeitsgraphen existiert, wenn diese in der Permutation
 vertauscht sind. Ein solches ungeordnetes Paar von Elementen einer Permutation wird auch Inversion
 der Permutation genannt. Die erwartete Anzahl von Inversionen in zufälligen Permutationen
-beträgt $\frac{n \cdot (n - 1)}{4}$ bzw. $\frac{1}{2} \binom{n}{2}$ (vgl. \citet{Heuberger2012}).
+beträgt $\frac{n (n - 1)}{4}$ bzw. $\frac{1}{2} \binom{n}{2}$ (vgl. \citet{Heuberger2012}).
 Eine Kante im Vergleichbarkeitsgraphen bedeutet in diesem Fall, dass die verbundenen Items
 basierend auf Variante 2 der Stacking-Constraint-Generierung in mindestens einer Richtung stapelbar sind,
 d.h. die erwartete Anzahl der Inversionen entspricht der erwarteten Anzahl an $1$-Einträgen in $S$.
@@ -978,7 +978,7 @@ Gegeben sei die Item-Menge $I = \{1, 2, 3, 4, 5, 6, 7\}$ sowie eine Stack-Kapazi
 Die Anzahl der zur Verfügung stehenden Stacks wird nun, wie in Abschnitt \ref{sec:test_data} geschildert,
 durch $m = \ceil{\ceil{\frac{n}{b}} + 0.2 \cdot \ceil{\frac{n}{b}}}$ berechnet und entspricht somit
 $m = \ceil{\ceil{\frac{7}{2}} + 0.2 \cdot \ceil{\frac{7}{2}}} = 5$.
-Die Stacking-Constraint-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
+Die Stacking-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
 Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph
 für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $5$ verbleibt dabei als einziges Unmatched-Item.
 \begin{figure}[H]
@@ -3713,7 +3713,7 @@ jedoch in Zukunft als lohnenswert erweisen.
 
 Im Verlauf dieser Arbeit haben sich an vielen Stellen, vor allem durch unterschiedliche praktisch motivierte Szenarien, Konfigurationsmöglichkeiten ergeben, welche weitere, zukünftige Betrachtungen sinnvoll erscheinen lassen.
 Die betrachteten unteren Schranken haben beispielsweise gezeigt, dass der Einfluss der Stacking-Constraints mit der ausschließlich verwendeten zweiten Variante der Stacking-Constraint-Generierung stets recht gering ausfällt. Dementsprechend könnten Experimente mit der ersten Variante der Stacking-Constraint-Generierung von Interesse sein.
-Auch der Einfluss der Dichte der Stacking-Constraint-Matrix, der Anzahl der zur Verfügung stehenden Stacks sowie der Placement-Constraints wurde bisher nicht untersucht. Weitere relevante Möglichkeiten für zukünftige Konfigurationen bieten z.B. die Metrik zur Kostenberechnung, die Anordnung der Stacks und Originalpositionen der Items und der Spielraum in der Storage-Area.
+Auch der Einfluss der Dichte der Stacking-Matrix, der Anzahl der zur Verfügung stehenden Stacks sowie der Placement-Constraints wurde bisher nicht untersucht. Weitere relevante Möglichkeiten für zukünftige Konfigurationen bieten z.B. die Metrik zur Kostenberechnung, die Anordnung der Stacks und Originalpositionen der Items und der Spielraum in der Storage-Area.
 
 Zudem lassen sich auch für Stack-Kapazitäten von $b > 3$ praktische Szenarien finden, für die weitere
 Heuristiken entwickelt werden können. Die Matching-Ansätze der konstruktiven Heuristiken sind nicht für
