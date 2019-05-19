@@ -115,7 +115,7 @@ in $x$- und $y$-Koordinaten gegeben. Ebenso ist für jeden Stack $q \in Q$ desse
 Neben den in Abb. \ref{fig:parameters} aufgeführten Parametern existieren Nebenbedingungen, welche beim Lösen der Stacking-Probleme
 berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_restrictions} vorgestellten Stacking-Constraints
 $s_{ij} \in \{0, 1\}$, bei denen es sich um Restriktionen handelt, welche angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
-Zum anderen die Placement-Constraints $t_{iq} \in \{0, 1\}$, welche in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack $q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
+Zum anderen die Placement-Constraints $t_{iq} \in \{0, 1\}$, welche in Abschnitt \ref{sec:placement_restrictions} thematisiert werden und bei denen es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack $q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
 
 Items, welche in einem Stack platziert werden, sind durch ein Tupel $(i_k, \dotsc, i_1)$ definiert, wobei
 $i_\lambda$ das Item auf Level $\lambda$ beschreibt. $\lambda = 1$ entspricht dabei dem
@@ -441,8 +441,6 @@ d.h. die erwartete Anzahl der Inversionen entspricht der erwarteten Anzahl an $1
 Dies gilt im Allgemeinen für zufällige Längen und Breiten der Items und ist nicht zwingend der Fall,
 wenn diese Werte jeweils aus kleineren Intervallen gewählt werden.
 
-% sind ausreichend groß, um zumindest tendenziell ein Viertel $1$-Einträge in $S$ zu erhalten.
-
 \textbf{Placement-Constraints}
 
 Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
@@ -534,7 +532,7 @@ In den ursprünglichen Formulierungen entspricht die Zielfunktion jeweils der Mi
 
 Die Zielfunktion der Heuristiken stellt, wie in Abschnitt \ref{sec:objective} geschildert, im Grunde die Kombination
 zweier Zielfunktionen dar, welche initial die Anzahl der verwendeten Stacks minimiert, indem möglichst viele
-$b-$Tupel von Items generiert werden, bevor diese möglichst günstig den Stacks zugewiesen werden.
+$b$-Tupel von Items generiert werden, bevor diese möglichst günstig den Stacks zugewiesen werden.
 Insofern ist zu erwarten, dass die MIP-Formulierungen verglichen mit den konstruktiven Heuristiken
 aus Abschnitt \ref{sec:constructive_heuristics} prinzipiell, vorausgesetzt beide Lösungsverfahren lösen eine
 Instanz zulässig, zu etwas günstigeren Zielfunktionswerten gelangen, dafür jedoch mehr Stacks verwenden.
@@ -571,13 +569,10 @@ Probleme (vgl. \citet{Garey1979}).
 Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
 die diesen Behältern zugeordnet werden, wobei die Behälter- bzw. Stack-Kapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
 
-Es sei eine Menge von Items $I = \{1, \dotsc, n\}$ und eine Menge von Stacks $Q = \{1, \dotsc, m\}$ mit einer Kapazität von $b$ gegeben.
-Außerdem sei $G = (I, E)$ ein transitiver Stacking-Constraint-Graph, welcher eine Kante $\{i, j\} \in E$ enthält,
+Es sei eine Menge von Items $I = \{1, \dotsc, n\}$ und eine Menge von Stacks $Q = \{1, \dotsc, m\}$ mit einer Kapazität von $b$ gegeben. Außerdem sei $G = (I, E)$ ein transitiver Stacking-Graph, welcher eine Kante $\{i, j\} \in E$ enthält,
 wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints in mindestens einer Richtung stapelbar sind,
-d.h. wenn $s_{ij} + s_{ji} \geq 1$.\newline
-Bei den Variablen $x_{iq}$ handelt es sich um Binärvariablen, wobei $x_{iq} = 1$ bedeutet, dass Item $i$ Stack $q$ zugewiesen wird.
-Die Kosten werden über die Variablen $c_{iq}$ modelliert, wobei $c_{iq}$ den Kosten für den Transport des Items $i$ in den Stack $q$
-entspricht.
+d.h. wenn $s_{ij} + s_{ji} \geq 1$.
+Bei den Variablen $x_{iq}$ handelt es sich um Binärvariablen, wobei $x_{iq} = 1$ bedeutet, dass Item $i$ Stack $q$ zugewiesen wird. Die Kosten werden über die Variablen $c_{iq}$ modelliert, wobei $c_{iq}$ den Kosten für den Transport des Items $i$ in den Stack $q$ entspricht.
 
 Die Placement-Constraints werden implizit durch die Zielfunktion, welche die Transportkosten minimiert, berücksichtigt,
 da diese, wie in Abschnitt \ref{sec:placement_restrictions} beschrieben, durch hohe Kostenwerte implementiert sind.
@@ -616,7 +611,7 @@ In (\ref{bin_packing_line_one}) wird die betrachtete Zielfunktion definiert, wel
 Item-Stack-Zuweisungen minimiert, was der Minimierung der Transportkosten entspricht.
 Nebenbedingung (\ref{bin_packing_line_two}) fordert, dass jedes Item genau einem Stack zugewiesen wird, mit welchem es kompatibel ist.
 Die Ungleichung in (\ref{bin_packing_line_three}) entspricht der Forderung, dass für sämtliche Stacks die Stack-Kapazität eingehalten werden muss, d.h.
-die Anzahl der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stapelbar sind, für die also keine Kante im Stacking-Constraint-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
+die Anzahl der eines Stacks zugewiesenen Items darf dessen Kapazität nicht überschreiten. (\ref{bin_packing_line_four}) entspricht schließlich der Forderung, dass alle Items, die nicht stapelbar sind, für die also keine Kante im Stacking-Graph existiert, nicht Teil desselben Stacks sind. (\ref{bin_packing_line_five}) definiert letztendlich die Domäne der Variablen $x_{iq}$.
 
 Für diese MIP-Formulierung ist die Transitivität der Stacking-Constraints Voraussetzung, denn durch Nebenbedingung (\ref{bin_packing_line_four}) wird lediglich sichergestellt, dass die Items, welche gemeinsam in einem Stack platziert werden,
 paarweise in einer Richtung stapelbar sind. Erst in Verbindung mit der Transitivität ergibt sich, dass auch für drei oder
@@ -630,7 +625,7 @@ Im Gegensatz zur Bin-Packing-Formulierung, die Item-Stack-Zuweisungen vornimmt, 
 Item auch eine konkrete Position innerhalb eines Stacks zu, sie berücksichtigt also den Level.
 
 Gegeben sei erneut eine Item-Menge $I = \{1, \dotsc, n\}$ und eine Stack-Menge $Q = \{1, \dotsc, m\}$, die Stacks der Kapazität $b$ enthält.
-Jeder Stack enthält dementsprechend die Level $L = \{1, \dotsc, b\}$. Des Weiteren sei ein transitiver Stacking-Constraint-Graph
+Jeder Stack enthält dementsprechend die Level $L = \{1, \dotsc, b\}$. Des Weiteren sei ein transitiver Stacking-Graph
 $G = (I, A)$ gegeben, bei dem eine Kante $i \rightarrow j \in A$ bedeutet, dass das Item $i$ direkt auf das Item $j$ gestapelt werden darf.
 Die Kosten seien durch die gegebene Transportkostenmatrix $C$ definiert, in der an der Stelle $c_{iq}$ die Kosten für den
 Transport von Item $i$ in Stack $q$ stehen. Bei den Variablen $x_{iql}$ handelt es sich um Binärvariablen,
@@ -663,9 +658,9 @@ Die Bin-Packing-Formulierung nimmt dabei lediglich Item-Stack-Zuweisungen vor, w
 Items konkreten Positionen innerhalb der Stacks zuweist. Dabei ist allerdings auch bei der Bin-Packing-Formulierung
 sichergestellt, dass eine Item-Stack-Zuweisung nur dann vorgenommen wird, wenn die Items innerhalb des Stacks anschließend
 in einer Weise umsortiert werden können, dass sie den Stacking Constraints entsprechen. Diese Tatsache ergibt sich aus Nebenbedingung (\ref{bin_packing_line_four}), welche fordert, dass Items sich nur dann im selben Stack befinden, wenn sie in mindestens einer Richtung stackbar sind.
-Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert werden kann, dass eine valide Lösung, die die Stacking Constraints respektiert, dabei herauskommt.
+Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert werden kann, dass eine valide Lösung, welche die Stacking Constraints respektiert, dabei herauskommt.
 
-Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, die die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben.
+Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, welche die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben.
 Dazu werden sämtliche Stacks, denen mehr als ein Item zugewiesen wurde, betrachtet. Für jeden
 dieser Stacks wird geprüft, ob die aufeinander gestapelten Items jeweils paarweise aufeinander gestapelt sein dürfen.
 Werden zwei Items innerhalb eines Stacks gefunden, welche die Stacking-Constraints verletzen, so werden diese
@@ -908,7 +903,7 @@ und $m$ der Anzahl der Kanten im Graphen entspricht.
 Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kapazität $b=2$ erweitert den Ansatz aus dem Beweis
 zu Theorem 1 aus der einleitend erwähnten Arbeit von \citet{Bruns2015}.
 
-Zunächst wird ein Stacking-Constraint-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
+Zunächst wird ein Stacking-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
 enthält eine Kante $\{i, j\} \in E$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints
 in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für
 mindestens einen Stack $q \in Q$ gilt.
@@ -979,7 +974,7 @@ Die Anzahl der zur Verfügung stehenden Stacks wird nun, wie in Abschnitt \ref{s
 durch $m = \ceil{\ceil{\frac{n}{b}} + 0.2 \cdot \ceil{\frac{n}{b}}}$ berechnet und entspricht somit
 $m = \ceil{\ceil{\frac{7}{2}} + 0.2 \cdot \ceil{\frac{7}{2}}} = 5$.
 Die Stacking-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
-Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Constraint-Graph
+Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Graph
 für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $5$ verbleibt dabei als einziges Unmatched-Item.
 \begin{figure}[H]
   \centering
@@ -1006,7 +1001,7 @@ für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref
             (D) edge [thick] node {} (G)
             (E) edge [thick] node {} (G);
     \end{tikzpicture}
-    \caption{\textsc{Stacking-Constraint-Graph}}
+    \caption{\textsc{Stacking-Graph}}
     \label{fig:stacking_const_graph_example_b=2_a}
     \end{subfigure}
     % \hspace{0.075\textwidth}
@@ -1725,7 +1720,7 @@ Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazi
 erweiternde Ansätze präsentiert.
 
 Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden.
-Dazu wird analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} ein Stacking-Constraint-Graph $G = (V, E)$ generiert.
+Dazu wird analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} ein Stacking-Graph $G = (V, E)$ generiert.
 Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
 $i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind.
 In der Regel ist anschließend basierend auf den Stacking-Constraints die Mehrheit oder sogar die Gesamtheit der Items einer Instanz Teil eines Paares, weshalb sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
@@ -1846,7 +1841,7 @@ Dies geschieht für sämtliche Listen von Item-Paaren basierend auf den untersch
 Daraufhin liegt also eine Menge von Listen von Item-Tripeln vor, die aus den unterschiedlich sortierten Listen von Item-Paaren resultiert.
 Für jede dieser Listen wird nun der folgende Prozess durchgeführt.
 
-Zunächst werden abermals durch ein \textsc{MCM} in dem für alle verbleibenden Items generierten Stacking-Constraint-Graphen
+Zunächst werden abermals durch ein \textsc{MCM} in dem für alle verbleibenden Items generierten Stacking-Graphen
 Paare gebildet, da im Zuge des Merge-Prozesses Unmatched-Items entstehen können, die nicht Teil eines Tripels sind und auch nicht notwendigerweise
 sämtliche Items zuvor Teil eines Paares waren. Items, welche nicht inzident zu einer Kante dieses Matchings sind, werden im Folgenden als unmatched betrachtet und auf dem Ground-Level eines eigenen Stacks platziert.
 
@@ -2035,7 +2030,7 @@ Gegeben sei die Item-Menge $I = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\
 Die Anzahl der zur Verfügung stehenden Stacks ergibt sich, wie in Abschnitt \ref{sec:test_data} beschrieben,
 durch $m = \ceil{\ceil{\frac{14}{3}} + 0.2 \cdot  \ceil{\frac{14}{3}}} = 6$.
 
-Zunächst wird, ebenfalls basierend auf der Beschreibung aus Abschnitt \ref{sec:test_data}, ein Stacking-Constraint-Graph
+Zunächst wird, ebenfalls basierend auf der Beschreibung aus Abschnitt \ref{sec:test_data}, ein Stacking-Graph
 für die Item-Menge $I$ generiert, auf welchem anschließend analog zum Beispiel aus Abschnitt \ref{sec:two_cap_heuristic} ein
 \textsc{MCM} berechnet wird. Dieser Schritt kann dementsprechend in Abschnitt \ref{sec:two_cap_heuristic} nachvollzogen werden
 und wird in diesem Beispiel übersprungen. In Abb. \ref{fig:item_pairs_example_b=3} ist das Ergebnis dargestellt,
