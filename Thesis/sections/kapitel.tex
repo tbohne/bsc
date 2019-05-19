@@ -936,6 +936,10 @@ $m = \ceil{\ceil{\frac{7}{2}} + 0.2 \cdot \ceil{\frac{7}{2}}} = 5$.
 Die Stacking-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
 Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Graph
 für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $5$ verbleibt dabei als einziges Unmatched-Item.
+
+\vfill
+\pagebreak
+
 \begin{figure}[H]
   \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -1211,18 +1215,18 @@ Für die Stacking-Constraint-Generierung wird auf die zweite der beiden vorgeste
 weil diese realitätsnäher erscheint. Die in den Experimenten betrachteten Intervalle, aus welchen die zufällig generierten
 Item-Maße stammen, welche im Folgenden definiert werden, führen zu ca. $36\%$ $1$-Einträgen in $S$.
 Bei Vergrößerung der Intervalle nähert sich dieser Wert dem beschrieben Erwartungswert von ca. $25\%$ an.
-Da wie bereits erwähnt für die Placement-Constraints gilt, dass in der Praxis tendenziell mehr Item-Stack-Zuweisungen erlaubt
+Da, wie bereits erwähnt, für die Placement-Constraints gilt, dass in der Praxis tendenziell mehr Item-Stack-Zuweisungen erlaubt
 als verboten sind, beträgt die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür, dass ein Item $i \in I$ in einem
 Stack $q \in Q$ platziert werden darf, $70 \%$.
 
 Besonders viele Konfigurationsmöglichkeiten bietet die Item- und Stackpositionierung.
 Das Grid, welches die initialen Item-Positionen $O_i$ repräsentiert, besteht in den in dieser Arbeit betrachteten
 Instanzen stets aus zwei Reihen, welche beispielsweise zwei nebeneinander stehende Fahrzeuge repräsentieren,
-die simultan entladen werden. Da die Storage-Area in der Praxis häufig ebenfalls aus wenigen langen Spuren besteht,
+die simultan entladen werden. Da die Storage-Area in der Praxis häufig ebenfalls aus wenigen, langen Spuren besteht,
 werden auch die Stacks stets auf zwei Reihen verteilt.
 Der als erstes weltweit standardisierte Seecontainer ist der 20-Fuß-Container TEU, welcher bis heute
 international als Maßeinheit gebräuchlich ist. Der TEU ist $6.06 \thinspace m$ lang, $2.44 \thinspace m$ breit
-und $2.59 \thinspace m$ hoch (vgl. \citet{ContainerBasis}).
+und $2.59 \thinspace m$ hoch \cite{ContainerBasis}.
 In Orientierung am TEU betragen Länge und Breite einer Zelle in den beiden Grids $6.06 \thinspace m$ bzw.
 $2.44 \thinspace m$. Außerdem lässt sich die Distanz zwischen der Storage-Area und den Fahrzeugen konfigurieren,
 für welche jeweils das fünffache der Zellenbreite, also in diesem Fall $12.20 \thinspace m$ angenommen wird.
