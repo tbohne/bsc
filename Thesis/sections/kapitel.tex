@@ -1726,6 +1726,10 @@ Die Heuristik löst die Instanzen allerdings nach nur durchschnittlich $1.7s$ pr
 
 Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität $b = 2$ in der Kategorie der kleinen Instanzen aufgrund der geringen Laufzeit der MIP-Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht. Anders in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik bei sehr geringen Abweichungen von den Optimalwerten zu einer derart großen Laufzeitersparnis führt, dass diese eine in der Praxis relevante Alternative darstellt.
 
+In Bezug auf den Vergleich der MIP-Formulierungen untereinander gilt, dass die 3-Index-Formulierung in den Kategorien
+der kleinen und mittelgroßen Instanzen zu bevorzugen ist, während die Bin-Packing-Formulierung ab einem Zeitlimit
+von $20$ Minuten bei den großen Instanzen zu besseren Ergebnissen kommt.
+
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
 
