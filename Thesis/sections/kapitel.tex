@@ -1250,16 +1250,16 @@ daher $c_{iq} \coloneqq d_{man}(O_i, F_q)$.
 In diesem Abschnitt werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeiten, der Anteil der Instanzen, welcher pro Solver optimal gelöst wird
 sowie die jeweilige prozentuale Abweichung der ermittelten Zielfunktionswerte vom Optimum.
 
-Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von CPLEX 12.8.0 implementiert
-und gelöst. Dabei wurde CPLEX über den Parameter \textsc{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
+Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von \textsc{CPLEX} 12.8.0 implementiert
+und gelöst. Dabei wurde \textsc{CPLEX} über den Parameter \textit{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
 Priorität vor der Optimalität hat \cite{IBM_DOC}.
 
-CPLEX terminiert in der Standardkonfiguration mit einer gewissen Toleranz bezüglich des optimalen Zielfunktionswerts.
+\textsc{CPLEX} terminiert in der Standardkonfiguration mit einer gewissen Toleranz bezüglich des optimalen Zielfunktionswerts.
 Dabei werden zwei Toleranzen unterschieden, die relative Optimalitätstoleranz, welche über den Parameter
-\textsc{CPX\_PARAM\_EPGAP} konfigurierbar ist und die absolute Optimalitätstoleranz, welche über den Parameter
-\textsc{CPX\_PARAM\_EPAGAP} definiert werden kann. CPLEX terminiert, wenn eines der beiden Kriterien erfüllt ist \cite{CPLEX2015}.
+\textit{CPX\_PARAM\_EPGAP} konfigurierbar ist und die absolute Optimalitätstoleranz, welche über den Parameter
+\textit{CPX\_PARAM\_EPAGAP} definiert werden kann. \textsc{CPLEX} terminiert, wenn eines der beiden Kriterien erfüllt ist \cite{CPLEX2015}.
 Damit beide MIP-Formulierungen stets dieselben optimalen Zielfunktionswerte ermitteln, werden in den folgenden
-Experimenten beide Parameter auf $0$ gesetzt, d.h. CPLEX terminiert ausschließlich dann vor dem Zeitlimit,
+Experimenten beide Parameter auf $0$ gesetzt, d.h. \textsc{CPLEX} terminiert ausschließlich dann vor dem Zeitlimit,
 wenn die exakte Optimallösung gefunden wurde. In den betrachteten Experimenten wurden die Laufzeiten nur marginal
 von dieser Konfiguration beeinflusst.
 
@@ -1274,11 +1274,11 @@ in den durchgeführten Experimenten stets aktiviert. Sämtliche Experimente wurd
 Zunächst zum experimentellen Vergleich der Solver für in Kapitel \ref{sec:test_data} als klein definierte Instanzen,
 bei denen es darum geht, $100$ eintreffende Items in die Storage-Area zu verladen.
 Die Diagramme in Abb. \ref{fig:instance_cov_b=2_s} zeigen jeweils die Instance-Coverage der einzelnen Solver.
-In \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil der zulässig gelösten Instanzen pro Solver bei einem Zeitlimit von $0.25s$ pro Instanz, in \ref{fig:instance_cov_b=2_s_b} bei einem Zeitlimit von $0.5s$ pro Instanz und in \ref{fig:instance_cov_b=2_s_c} schließlich bei $1s$ pro Instanz.\newline
+In Abb. \ref{fig:instance_cov_b=2_s_a} handelt es sich um den prozentualen Anteil der zulässig gelösten Instanzen pro Solver bei einem Zeitlimit von $0.25s$ pro Instanz, in Abb. \ref{fig:instance_cov_b=2_s_b} bei einem Zeitlimit von $0.5s$ pro Instanz und in Abb. \ref{fig:instance_cov_b=2_s_c} schließlich bei $1s$ pro Instanz.\newline
 Auf der $y$-Achse ist jeweils der prozentuale Anteil der gelösten Instanzen aufgetragen und auf der $x$-Achse der jeweilige Solver. Bei der Bin-Packing- und der 3-Index-Formulierung handelt es sich um keine Solver im eigentlichen Sinne,
-sondern um MIP-Formulierungen, welche von CPLEX als Solver gelöst werden.
+sondern um MIP-Formulierungen, welche von \textsc{CPLEX} als Solver gelöst werden.
 Im Folgenden wird der Einfachheit halber jedoch immer von drei Solvern gesprochen, womit die von
-CPLEX gelösten MIP-Formulierungen und die Heuristik gemeint sind.
+\textsc{CPLEX} gelösten MIP-Formulierungen und die Heuristik gemeint sind.
 Die Solver werden in den Diagrammen und Abbildungen im Folgenden stets als \textsc{BinP} (Bin-Packing),
 \textsc{3Idx} (3-Index) und \textsc{2Cap} (Heuristik für $b = 2$) abgekürzt.
 Wie bereits in Kapitel \ref{sec:test_data} erläutert, werden jeweils $20$ Instanzen pro Konfiguration betrachtet,
@@ -1321,8 +1321,7 @@ Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings,
 In Abb. \ref{fig:b=2_s_results} sind die Laufzeiten und ermittelten Zielfunktionswerte der Solver bei einem Zeitlimit von $1s$ dargestellt. Auf der $y$-Achse sind jeweils die gelösten Instanzen aufgetragen und auf der $x$-Achse die Laufzeiten bzw. ermittelten Kosten (Zielfunktionswerte). Für die Instanzen wird in sämtlichen Darstellungen die folgende Notation verwendet: (\textsc{items, stacks, capacity, index}). Abbildung \ref{fig:b=2_s_runtimes} zeigt die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $1s$.
 Die 3-Index-Formulierung ist in der Regel deutlich schneller als die Bin-Packing-Formulierung und die Heuristik unterbietet beide MIP-Formulierungen noch einmal deutlich. Da in der Abbildung die absoluten Laufzeitdifferenzen zu sehen sind, ist es wichtig, zu erwähnen, dass die Laufzeiten der Heuristik durchschnittlich um den Faktor $24$ kleiner sind als jene der 3-Index-Formulierung. Zwischen der 3-Index- und der Bin-Packing-Formulierung besteht dagegen nur ein Faktor von $1.5$.
 
-Aufgrund der Tatsache, dass \textsc{CPLEX} lediglich vor dem Zeitlimit terminiert, wenn die entsprechende Instanz optimal gelöst wird, ist klar ersichtlich, dass die 3-Index\-/Formulierung sämtliche Instanzen optimal löst (vgl. Abb. \ref{fig:b=2_s_runtimes}).
-Die Bin-Packing-Formulierung terminiert dagegen mit den Instanzen $00$ und $11$ in nur zwei Fällen vor dem Zeitlimit (vgl. Abb. \ref{fig:b=2_s_runtimes}). Bei diesen handelt es sich um die einzigen Instanzen, welche optimal von der Bin-Packing-Formulierung gelöst werden, was daran erkennbar ist, dass die \textsc{BinP}-Einträge in der Darstellung der ermittelten Kosten durch die \textsc{3Idx}-Einträge verdeckt werden, weil beide Formulierungen denselben, optimalen Zielfunktionswert ermitteln (vgl. Abb. \ref{fig:b=2_s_costs}).
+Aufgrund der Tatsache, dass \textsc{CPLEX} lediglich vor dem Zeitlimit terminiert, wenn die entsprechende Instanz optimal gelöst wird, ist klar ersichtlich, dass die 3-Index\-/Formulierung sämtliche Instanzen optimal löst (vgl. Abb. \ref{fig:b=2_s_runtimes}). Die Bin-Packing-Formulierung terminiert dagegen mit den Instanzen $00$ und $11$ in nur zwei Fällen vor dem Zeitlimit. Bei diesen handelt es sich um die einzigen Instanzen, welche optimal von der Bin-Packing-Formulierung gelöst werden, was daran erkennbar ist, dass die \textsc{BinP}-Einträge in der Darstellung der ermittelten Kosten durch die \textsc{3Idx}-Einträge verdeckt werden, weil beide Formulierungen denselben, optimalen Zielfunktionswert ermitteln (vgl. Abb. \ref{fig:b=2_s_costs}).
 Sofern mehrere Solver denselben Wert ermitteln, verdecken sich die entsprechenden Einträge in der Reihenfolge, in welcher sie in der Legende aufgeführt sind. Dies gilt grundsätzlich für sämtliche Diagramme in den folgenden Experimenten.
 Die Instanzen $03$ und $14$ werden von der Bin-Packing-Formulierung nicht einmal zulässig gelöst, was an den fehlenden
 Einträgen zu erkennen ist (vgl. Abb. \ref{fig:b=2_s_runtimes}). Bei den $16$ verbleibenden Instanzen gelangt die Bin-Packing-Formulierung zu zulässigen Lösungen, die Zielfunktionswerte weichen allerdings, wie man Abb. \ref{fig:b=2_s_costs} entnehmen kann, deutlich von jenen der Heuristik und der 3-Index-Formulierung ab. Dabei ist zu beachten, dass die Darstellung in einer Weise skaliert wurde, welche es ermöglicht, sämtliche Einträge zu erkennen. Infolgedessen bildet diese nicht die tatsächlichen Abstände ab, welche anhand der Beschriftungen der $x$-Achse nachzuvollziehen sind.
@@ -1619,8 +1618,6 @@ entnehmen kann, dass die Bin-Packing-Formulierung mit einer durchschnittlichen L
 kommt die 3-Index-Formulierung bei Zeitlimits von unter $20$ Minuten zu deutlich besseren Ergebnissen als die Bin-Packing-Formulierung (vgl. Abb. \ref{fig:res_b=2_l_a}, \ref{fig:res_b=2_l_b}). Allerdings löst diese bei keinem der betrachteten Zeitlimits sämtliche Instanzen optimal, was der Bin-Packing-Formulierung beim Zeitlimit von $20$ Minuten gelingt, wenn auch bei einer im Durschschnitt deutlich längeren Laufzeit (vgl. Abb. \ref{fig:res_b=2_l_c}). Da die Ergebnisse nahelegen, dass die 3-Index-Formulierung
 bei einer geringfügigen Erhöhung des Zeitlimits ebenfalls sämtliche Instanzen optimal löst, wurde ein weiteres Experiment mit einem Zeitlimit von $30$ Minuten pro Instanz durchgeführt. Auch in diesem konnte die 3-Index-Formulierung mit $95 \%$ noch nicht sämtliche Instanzen optimal lösen. In diesem Fall ist das Ergebnis daher nicht eindeutig. Bei Zeitlimits von unter $20$ Minuten sollte die 3-Index-Formulierung bevorzugt werden. Stehen $20$ Minuten und mehr pro Instanz zur Verfügung, so sollte die Bin-Packing-Formulierung bevorzugt werden. Die 3-Index-Formulierung löst erst bei Zeitlimits von mehr als $30$ Minuten pro Instanz sämtliche Instanzen optimal, weshalb der Laufzeitvorteil gegenüber der Bin-Packing-Formulierung aufgrund der Instanzen, welche deutlich längere Laufzeiten benötigen, nicht mehr erheblich sein dürfte. Dementsprechend sollte ab einem Zeitlimit von $20$ Minuten durchaus die Bin-Packing-Formulierung bevorzugt werden.
 
-Die Heuristik löst die Instanzen allerdings nach nur durchschnittlich $1.7s$ pro Instanz und weicht auch nur um im Durchschnitt $0.02 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen, noch gravierende Laufzeitunterschied und die zu vernachlässigende Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis erneut klar bevorzugt werden sollte. Selbst in Bezug auf die Qualität der Zielfunktionswerte können die MIP-Formulierungen erst ab dem betrachteten Zeitlimit von $20$ Minuten mit denen der Heuristik konkurrieren, wobei die 3-Index-Formulierung, wie man Abb. \ref{fig:res_b=2_l_c} entnehmen kann, selbst dort mit einer durchschnittlichen Abweichung von $0.25 \%$ vom Optimum durchschnittlich noch erheblich schlechtere Zielfunktionswerte liefert als die Heuristik.
-
 \begin{figure}[H]
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
@@ -1667,13 +1664,15 @@ Die Heuristik löst die Instanzen allerdings nach nur durchschnittlich $1.7s$ pr
 \label{fig:res_b=2_l}
 \end{figure}
 
+Die Heuristik löst die Instanzen allerdings nach nur durchschnittlich $1.7s$ pro Instanz und weicht auch nur um im Durchschnitt $0.02 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen, noch gravierendere Laufzeitunterschied und die zu vernachlässigende Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis erneut klar bevorzugt werden sollte. Selbst in Bezug auf die Qualität der Zielfunktionswerte können die MIP-Formulierungen erst ab dem betrachteten Zeitlimit von $20$ Minuten mit denen der Heuristik konkurrieren, wobei die 3-Index-Formulierung, wie man Abb. \ref{fig:res_b=2_l_c} entnehmen kann, selbst dort mit einer durchschnittlichen Abweichung von $0.25 \%$ vom Optimum noch erheblich schlechtere Zielfunktionswerte liefert als die Heuristik.
+
 \textbf{Fazit}
 
 Insgesamt ist festzuhalten, dass bei Stacking-Problemen mit Stacks der Kapazität $b = 2$ in der Kategorie der kleinen Instanzen aufgrund der geringen Laufzeit der MIP-Formulierungen kein wirklicher Bedarf für eine Laufzeitverbesserung besteht. Anders in den Kategorien der mittelgroßen und großen Instanzen, bei welchen die Heuristik bei sehr geringen Abweichungen von den Optimalwerten zu einer derart großen Laufzeitersparnis führt, dass diese eine in der Praxis relevante Alternative darstellt.
 
 In Bezug auf den Vergleich der MIP-Formulierungen untereinander gilt, dass die 3-Index-Formulierung in den Kategorien
 der kleinen und mittelgroßen Instanzen zu bevorzugen ist, während die Bin-Packing-Formulierung ab einem Zeitlimit
-von $20$ Minuten bei den großen Instanzen zu besseren Ergebnissen kommt.
+von $20$ Minuten bei den großen Instanzen zu besseren Ergebnissen führt.
 
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
