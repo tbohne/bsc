@@ -657,7 +657,7 @@ Beide Formulierungen weisen jedem Item einen Stack zu und minimieren dabei die T
 Die Bin-Packing-Formulierung nimmt dabei lediglich Item-Stack-Zuweisungen vor, während die 3-Index-Formulierung die
 Items konkreten Positionen innerhalb der Stacks zuweist. Dabei ist allerdings auch bei der Bin-Packing-Formulierung
 sichergestellt, dass eine Item-Stack-Zuweisung nur dann vorgenommen wird, wenn die Items innerhalb des Stacks anschließend
-in einer Weise umsortiert werden können, dass sie den Stacking Constraints entsprechen. Diese Tatsache ergibt sich aus Nebenbedingung (\ref{bin_packing_line_four}), welche fordert, dass Items sich nur dann im selben Stack befinden, wenn sie in mindestens einer Richtung stackbar sind.
+in einer Weise umsortiert werden können, dass sie den Stacking Constraints entsprechen. Diese Tatsache ergibt sich aus Nebenbedingung (\ref{bin_packing_line_four}), welche fordert, dass Items sich nur dann im selben Stack befinden, wenn sie in mindestens einer Richtung stapelbar sind.
 Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert werden kann, dass eine valide Lösung, welche die Stacking Constraints respektiert, dabei herauskommt.
 
 Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, welche die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben.
@@ -867,7 +867,7 @@ zu Theorem 1 aus der einleitend erwähnten Arbeit von \citet{Bruns2015}.
 
 Zunächst wird ein Stacking-Graph $G = (V, E)$ generiert, welcher die Items als Knoten enthält, d.h. $V = I$. Dieser Graph
 enthält eine Kante $\{i, j\} \in E$ zwischen zwei Knoten, wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints
-in mindestens einer Richtung stackbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für
+in mindestens einer Richtung stapelbar sind, d.h. wenn $s_{ij} + s_{ji} \geq 1$ und wenn mindestens ein Stack existiert, in welchem die beiden Items gemeinsam platziert werden können ohne die Placement-Constraints zu verletzen, also wenn $c_{iq} < \infty$ und $c_{jq} < \infty$ für
 mindestens einen Stack $q \in Q$ gilt.
 
 Berechnet man nun ein \textsc{MCM} in $G$ und interpretiert dessen Kanten als Stacks, welche die beiden Knoten, die durch
@@ -876,7 +876,7 @@ Items, welche nicht inzident zu einer Kante des Matchings sind, werden auf dem G
 Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet, denn auch wenn der eigentliche Gegenstand der Optimierung die Transportkosten sind, steht zunächst stets im Vordergrund, überhaupt eine zulässige Lösung zu finden, weshalb die Maximierung der Anzahl der vollständig gefüllten Stacks initial eine gute Strategie darstellt.
 Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching und die Anzahl der nicht gematchten Knoten in der Summe nicht größer ist als $m$.
 
-Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch eine bestmögliche Zuweisung von Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
+Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch eine bestmögliche Zuweisung von Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält, während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
 Eine Kante in $A$, welche ein Item $i \in V_1$ oder ein Item-Paar $(i, j) \in V_1$ mit einem Stack $q \in V_2$ verbindet, gibt an, dass das entsprechende Item $i$ bzw. Item-Paar $(i, j)$ dem jeweiligen Stack $q$ zugeordnet werden kann. Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
 aus $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2 \thinspace \exists \thinspace \{i, q\} \in A$.
 Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird, zum Stack $q$
@@ -889,12 +889,11 @@ nicht notwendigerweise der Anzahl der verfügbaren Stacks entspricht, werden Dum
 Diese Dummy-Items füllen $V_1$ für den Fall, dass diese Partition kleiner ist, auf.
 Übersteigt die Anzahl der Items und Item-Paare die Anzahl der zur Verfügung stehenden Stacks, so existiert,
 wie bereits erwähnt, ohnehin keine zulässige Lösung.
-
 Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack verbinden,
 das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items oder Item-Paars durch ein Dummy-Item
 verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem Stack zu den Kosten $0$ zugewiesen
 werden können, während eine Zuweisung echter Items und Item-Paare stets Kosten verursacht. Dementsprechend werden
-echte Items bei der Zuweisung gewissermaßen bevorzugt während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
+echte Items bei der Zuweisung gewissermaßen bevorzugt, während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
 
 Nachdem beide Partitionen dieselbe Größe besitzen, wird ein \textsc{MWPM} in $G_1$ berechnet, dessen Kanten als
 Stackzuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handelt, werden sämtliche Items und Item-Paare einem Stack zugewiesen. Die Minimum-Weight-Variante eines Perfect-Matchings sorgt dafür, dass es sich um eine günstigste Zuweisung sämtlicher Items und Item-Paare zu Stacks handelt, da die Kantenkosten jeweils den Transportkosten der entsprechenden Items entsprechen. Sollte das \textsc{MWPM} eine Kante der Kosten $\infty$ enthalten, so existiert keine zulässige Zuweisung der generierten Item-Paare und Unmatched-Items zu den Stacks, welche die Placement-Constraints respektiert.
@@ -926,7 +925,6 @@ wurde ggf. basierend auf den Stacking-Constraints angepasst.
 Befand sich ein verschobenes Item zuvor auf dem Ground-Level eines Stacks,
 so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
 sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
-
 Dieser Postprocessing-Prozess wird iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
 
 \textbf{Beispiel}
@@ -1684,7 +1682,7 @@ erweiternde Ansätze präsentiert.
 Zunächst geht es wie auch in der Heuristik für $b = 2$ darum, kompatible Item-Paare zu bilden.
 Dazu wird analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} ein Stacking-Graph $G = (V, E)$ generiert.
 Berechnet man nun ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare von kompatiblen Items
-$i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stackbar sind.
+$i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, die in mindestens einer Richtung stapelbar sind.
 In der Regel ist anschließend basierend auf den Stacking-Constraints die Mehrheit oder sogar die Gesamtheit der Items einer Instanz Teil eines Paares, weshalb sich die weitere Berechnung eines \textsc{MCM} zwischen Item-Paaren und Unmatched-Items,
 um erste Tripel zu bilden, welche in einer früheren Version der Heuristik an dieser Stelle stattfand, als nicht zielführend
 erwies.
