@@ -2939,6 +2939,25 @@ zulässig und weicht dabei im Durchschnitt nur um $0.02 \%$ vom Optimum ab.
 \vfill
 \pagebreak
 
+Zur Verdeutlichung der Tatsache, dass die konstruktiven Heuristiken in der Lage sind, auch erheblich
+größere Instanzen effizient zu lösen, wurden $20$ Instanzen generiert, bei denen es darum geht,
+$1000$ Items in die Storage-Area zu verladen. Instanzen dieser Größe können nicht mehr effizient
+von den MIP-Formulierungen gelöst werden, weshalb sie gut geeignet sind, um die Stärke der Heuristiken
+zu demonstrieren. In Abb. \ref{fig:big_instance_example} sind die ermittelten Zielfunktionswerte dargestellt.
+Als Referenzwerte dienen jeweils die unteren Schranken, welche zeigen, dass die Heuristik auch bei Instanzen dieser
+Größe nur marginal von den Optimalwerten abweicht. Die durchschnittlich benötigte Laufzeit pro Instanz beträgt
+dabei lediglich $56.73s$.
+
+\begin{figure}[H]
+\centering
+
+\includegraphics[width=0.6\textwidth]{img/big_instance_example.png}
+\caption{\textsc{Zielfunktionswerte der 3Cap-Heuristik}.}
+\label{fig:big_instance_example}
+
+\end{figure}
+
+
 \textbf{Fazit}\newline
 
 Bei Stacking-Problemen mit Stacks der Kapazität $b = 3$ besteht in der Kategorie der kleinen Instanzen
