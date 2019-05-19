@@ -61,16 +61,16 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m,
 
 \pagebreak
 
-Obwohl die Storage-Area in der Realität häufig mehr als eine Reihe von Stacks beinhaltet und die in
-Abb. \ref{fig:topview} dargestellte Draufsicht dementsprechend dreidimensional sein kann,
+Obwohl die Storage-Area in der Realität häufig mehr als eine Reihe von Stacks beinhaltet und der in
+Abb. \ref{fig:storage_area} dargestellte Aufbau dieser dementsprechend dreidimensional sein kann,
 wird in den Folgekapiteln stets von der in Abb. \ref{fig:storage_area} dargestellten Reihe von Stacks ausgegangen.
 Lediglich für die in Abschnitt \ref{sec:transport_costs} beschriebene Ermittlung der Transportkosten ist es entscheidend,
-an welcher Stelle innerhalb der Storage-Area sich ein Stack befindet. Nachdem die Transportkosten basierend auf der
+an welcher Position innerhalb der Storage-Area sich ein Stack befindet. Nachdem die Transportkosten basierend auf der
 Stack-Position für jede Item-Stack-Kombination ermittelt wurden, kann für die eigentliche Lösung des Problems von
 der in Abb. \ref{fig:storage_area} dargestellten zweidimensionalen Reihe von Stacks ausgegangen werden.
 Es ist jedoch auch bei der Betrachtung der Transportkosten eine zweidimensionale Struktur ausreichend, denn dort sind
 die Level innerhalb der Stacks irrelevant, weil die Zuweisung eines Items zu den unterschiedlichen Leveln
-desselben Stacks stets dieselben Kosten verursacht. Daher ist dort einzig die von oben betrachtete zweidimensionale
+desselben Stacks stets dieselben Kosten verursacht. Daher ist dort einzig die von oben betrachtete, ebenfalls zweidimensionale,
 Position der Stacks von Bedeutung.
 
 Das Ziel von Stacking-Problemen ist es, jedes ankommende Item einer zulässigen Position in einem
@@ -105,7 +105,7 @@ werden in dieser Arbeit übernommen.
 \end{figure}
 In der Regel gilt $m < n$, d.h. es müssen Items gestapelt werden.
 Außerdem muss die Annahme $n \leq bm$ gelten, denn sonst ist die Instanz des Problems unzulässig,
-weil die Anzahl der zuzuweisenden Items die Anzahl der verfügbaren Positionen in der Storage-Area übersteigt.
+weil die Anzahl der zuzuweisenden Items die Anzahl der verfügbaren Positionen innerhalb der Stacks übersteigt.
 
 \pagebreak
 
