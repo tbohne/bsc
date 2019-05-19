@@ -2925,13 +2925,10 @@ Nachbarschaft $V(x_n)$ schlechter als die gegenwärtige Lösung $x_n$, obwohl we
 existiert, welches aufgrund der Tatsache, dass ausschließlich verbessernde Lösungen gewählt werden,
 nicht erreicht werden kann.
 
-\vfill
-\pagebreak
-
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{img/local_minimum.png}
-\caption{\textsc{Schwäche lokaler Suchverfahren. \cite{Pirlot1996}}}
+\includegraphics[width=0.5\textwidth]{img/local_minimum.png}
+\caption{\textsc{Schwäche lokaler Suchverfahren \cite{Pirlot1996}.}}
 \label{fig:local_search_weakness}
 \end{figure}
 
@@ -3119,8 +3116,7 @@ Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht
 Die Best-Fit-Strategie generiert die gesamte Teilmenge einer konfigurierten Kardinalität und liefert schließlich die
 beste Nachbarlösung aus dieser Teilmenge.\newline
 
-Als Abbruchkriterien stehen vier verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können. Die simpelste Variante besteht darin, eine feste Anzahl an Iterationen zu definieren, nach welcher die Tabu-Suche terminiert. Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurücksetzungen der Tabu-Liste. Wenn innerhalb der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander
-allesamt tabu sind, so wird die entsprechende Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Des Weiteren besteht die Möglichkeit, ein Zeitlimit
+Als Abbruchkriterien stehen vier verschiedene Optionen bereit, welche über entsprechende Parameter konfiguriert werden können. Die simpelste Variante besteht darin, eine feste Anzahl an Iterationen zu definieren, nach welcher die Tabu-Suche terminiert. Die zweite Variante beendet die Tabu-Suche nach einer gewissen Anzahl an Zurücksetzungen der Tabu-Liste. Wenn innerhalb der Short-Term-Strategy eine definierte Anzahl von Nachbarlösungen hintereinander allesamt tabu sind, so wird die Tabu-Liste zurückgesetzt. In dieser Variante kann die Tabu-Suche nach einer bestimmten Anzahl solcher Zurücksetzungen terminiert werden. Des Weiteren besteht die Möglichkeit, ein Zeitlimit
 zu spezifizieren, nach welchem die Tabu-Suche beendet wird. Bei der letzten Variante handelt es sich um ein gängiges Abbruchkriterium, welches häufig zu guten Ergebnissen führt und die Tabu-Suche nach einer bestimmten Anzahl nichtverbessernder Iterationen terminiert.
 
 Eine wichtige Eigenschaft einer Nachbarschaft ist der sogenannte Zusammenhang. Eine Nachbarschaft wird als zusammenhängend bezeichnet, wenn von einer Lösung $s$ durch Anwendung einer endlichen Folge von Operatoren jede andere Lösung $s'$ erreicht
@@ -3314,9 +3310,6 @@ Damit die Nachbarschaft der Tabu-Suche effizient durchsuchbar bleibt, werden led
 $[1, k_n]$ betrachtet, wobei $k_n < n$. Somit gilt zwar, dass die Nachbarschaft nicht länger zusammenhängend ist, weil sich Gegenbeispiele konstruieren lassen, für die ein $k_n$-Swap nicht ausreicht, die meisten Problemstellungen, insbesondere jene von praktischer Relevanz, sind allerdings durch die beschriebene Nachbarschaftsstruktur abgedeckt. Aus diesem Grund wird der strikte Zusammenhang der Nachbarschaft zugunsten einer erheblich kürzeren Laufzeit des Verfahrens geopfert. Die konkrete Größe des Intervals
 wird experimentell ermittelt und ist Teil der Konfiguration der Tabu-Suche, welche im nächsten Abschnitt thematisiert wird.
 
-\vfill
-\pagebreak
-
 \subsection{Konfiguration der Tabu-Suche}
 \label{sec:tabu_search_config}
 
@@ -3348,7 +3341,7 @@ Als Abbruchkriterium dienten jeweils $50$ nichtverbessernde Iterationen.
 
 \begin{figure}[H]
 \centering
-\resizebox{0.4\textwidth}{!}{
+\resizebox{0.5\textwidth}{!}{
 \begin{tabular}{| c | c | c |}
     \hline
     \textbf{max $\boldsymbol{|TL|}$} & \textbf{\O \thinspace abs. Verringerung der Kosten} & \textbf{Laufzeit (s)} \\ \hline
@@ -3367,6 +3360,9 @@ Als Abbruchkriterium dienten jeweils $50$ nichtverbessernde Iterationen.
 \caption{\textsc{Ermittlung einer geeigneten Maximallänge der $TL$}.}
 \label{fig:TL_experiments}
 \end{figure}
+
+\vfill
+\pagebreak
 
 Wie der Tabelle in Abb. \ref{fig:TL_experiments} zu entnehmen ist, kommt die Tabu-Suche bei einer Maximallänge der $TL$
 von $9|N|$ zur durschnittlich größten Verbesserung. Grundsätzlich ist zu erkennen, dass eine maximale Länge der $TL$
@@ -3397,7 +3393,10 @@ kleineren Instanzen zu erhalten, wird in jedem Fall eine Anzahl nichtverbessernd
 welche auch bei großen Instanzen nach wenigen Minuten ohne Verbesserung zur Terminierung führt.
 
 Für die Selektion der Nachbarlösungen wird in den folgenden Experimenten stets Best-Fit verwendet,
-da dies insgesamt zu deutlich besseren Ergebnissen führt.
+da dies insgesamt zu den besten Ergebnissen führt.
+
+\vfill
+\pagebreak
 
 \subsection{Anwendung der Tabu-Suche}
 \label{sec:tabu_search_experiments}
@@ -3588,7 +3587,7 @@ relevantem Maße reduziert.
 In der Kategorie der mittelgroßen Instanzen ist der exakte Solver ebenfalls bei beiden Stack-Kapazitäten
 in der Regel schneller als die kombinierte Anwendung der konstruktiven Heuristik und der Tabu-Suche.
 Dementsprechend stehen erneut die geschilderte Priorisierung der Laufzeit oder der Kostenminimierung zur
-Verfügung. Auch in dieser Kategorie gelangt die Tabu-Suche zu durchaus signifikanten Verbesserungen.
+Auswahl. Auch in dieser Kategorie gelangt die Tabu-Suche zu durchaus signifikanten Verbesserungen.
 In der Kategorie der großen Instanzen unterbietet die Kombination der beiden heuristischen Verfahren
 in Bezug auf die Laufzeit jeweils den exakten Solver, weshalb diese eine noch flexiblere Konkurrenz
 zum exakten Verfahren darstellt, weil die Tabu-Suche optional zur weiteren Kostenminimierung eingesetzt werden
