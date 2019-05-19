@@ -670,7 +670,7 @@ Strategie nach spätestens drei Tausch-Operationen korrekt sortiert.
 \section{Untere Schranken}
 \label{sec:lower_bounds}
 
-Zur Abschätzung der Güte heuristischer Lösungen, berechnet man bei Minimierungsproblemen häufig untere Schranken,
+Zur Abschätzung der Güte heuristischer Lösungen berechnet man bei Minimierungsproblemen häufig untere Schranken,
 d.h. Werte $LB$, sodass $c(S) \geq LB$ für alle Lösungen $S$ gilt, wobei $c(S)$ dem Zielfunktionswert von $S$ entspricht.
 Zur Berechnung solcher Schranken betrachtet man sogenannte Relaxationen\footnote{Einfachere Probleme, bei denen bestimmte Nebenbedingungen vernachlässigt werden.} des ursprünglichen Problems.
 Da die Lösungsmenge des ursprünglichen Problems eine Teilmenge der Lösungsmenge der Relaxation ist,
@@ -742,7 +742,7 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 \end{figure}
 
 Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen Teilmenge mit jedem Knoten
-der anderen Teilmenge durch eine Kante verbunden ist. Der in Abb. \ref{fig:digression_bipartite_graph}
+der anderen Teilmenge durch eine Kante verbunden ist \cite{Knust2019}. Der in Abb. \ref{fig:digression_bipartite_graph}
 dargestellte Graph ist dementsprechend nicht vollständig bipartit.
 
 \textbf{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
@@ -750,8 +750,7 @@ dargestellte Graph ist dementsprechend nicht vollständig bipartit.
 Gegeben sei ein ungerichteter Graph $G = (V, E)$. Eine Menge $M \subseteq E$ heißt Matching,
 wenn keine zwei Kanten aus $M$ einen Knoten gemeinsam haben \cite{Gibbons1985}. Bei einem Matching handelt es sich also
 um eine Menge unabhängiger Kanten. Ein Perfect-Matching ist wiederum ein Matching, in welchem jeder Knoten des Graphen
-Endpunkt einer Kante des Matchings ist \cite{Gibbons1985}. Jeder Knoten des Graphen ist dabei inzident zu genau einer Kante
-des Matchings (vgl. Abb. \ref{fig:perfect_matching}).
+Endpunkt einer Kante des Matchings ist \cite{Gibbons1985} (vgl. Abb. \ref{fig:perfect_matching}).
 Daher ist ein Perfect-Matching nur für Graphen mit einer geraden Anzahl an Knoten möglich.
 In einem gewichteten Graphen ist ein Minimum-Weight-Matching ein Matching, bei welchem die Summe der Kantengewichte
 minimal ist \cite{Gibbons1985}. Ein Minimum-Weight-Perfect-Matching ist dementsprechend ein günstigstes Perfect-Matching
@@ -780,7 +779,7 @@ basierend auf den Kantenkosten.
 \end{figure}
 
 Der Algorithmus zur Berechnung von Minimum-Weight-Perfect-Matchings, welcher in den im Folgenden
-vorgestellten Heuristiken zum Einsatz kommt, stammt aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT}, trägt
+vorgestellten Heuristiken zum Einsatz kommt, stammt aus der Java-Bibliothek \textsc{JGraphT} \cite{JGraphT}, trägt
 den Namen \textit{KuhnMunkresMinimalWeightBipartitePerfectMatching} und ist eine Implementation der
 sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen in bipartiten Graphen.
 Die Laufzeitkomplexität der Implementation beträgt $O(n^3)$, wobei $n$ der Anzahl der Knoten im Graphen entspricht.
@@ -842,7 +841,7 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei MCMs dargestellt.
 \end{figure}
 
 Der Algorithmus zur Berechnung von Maximum-Cardinality-Matchings, welcher in den im Folgenden
-vorgestellten Heuristiken Anwendung findet, stammt ebenfalls aus der Java-Bibliothek \textit{JGraphT} \cite{JGraphT} und trägt
+vorgestellten Heuristiken Anwendung findet, stammt ebenfalls aus der Java-Bibliothek \textsc{JGraphT} \cite{JGraphT} und trägt
 den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um eine Implementation von Edmonds' Blossom-Algorithmus,
 welcher MCMs in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
 Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
@@ -855,7 +854,7 @@ und $m$ der Anzahl der Kanten im Graphen entspricht.
 \textbf{Maximum-Weight-Bipartite-Matching (MWBM)}
 
 Bei einem Maximum-Weight-Bipartite-Matching handelt es sich um ein Matching in einem gewichteten bipartiten Graphen,
-in welchem die Summe der Kantengewichte maximal ist. Auch diesen Algorithmus stellt \textit{JGraphT} \cite{JGraphT}
+in welchem die Summe der Kantengewichte maximal ist. Auch diesen Algorithmus stellt \textsc{JGraphT} \cite{JGraphT}
 unter dem Namen \textit{MaximumWeightBipartiteMatching} bereit.
 Die Implementation besitzt eine Laufzeitkomplexität von $O(n (m + n \thinspace log \thinspace n))$, wobei $n$ der Knotenanzahl
 und $m$ der Anzahl der Kanten im Graphen entspricht.
@@ -884,7 +883,7 @@ Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transp
 in der Storage-Area. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
 Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 
-Da der von \textit{JGraphT} bereitgestellte Algorithmus, welcher zur Berechnung eines \textsc{MWPM} in $G_1$ verwendet wird,
+Da der von \textsc{JGraphT} bereitgestellte Algorithmus, welcher zur Berechnung eines \textsc{MWPM} in $G_1$ verwendet wird,
 einen vollständig bipartiten Graphen, dessen Partitionen dieselbe Größe besitzen, als Eingabe erwartet und die Summe der Items und Item-Paare
 nicht notwendigerweise der Anzahl der verfügbaren Stacks entspricht, werden Dummy-Items eingeführt.
 Diese Dummy-Items füllen $V_1$ für den Fall, dass diese Partition kleiner ist, auf.
