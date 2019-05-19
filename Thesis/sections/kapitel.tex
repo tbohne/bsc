@@ -33,7 +33,7 @@ welcher ein Item zugeordnet werden kann.
 \resizebox{0.5\textwidth}{!}{
 \begin{tabular}{|c|c|c|c|c|c|}
 \cline{1-5}
-$\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & ... & $\boldsymbol{S_m}$\\ \cline{1-5}
+$\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\dotsb$ & $\boldsymbol{S_m}$\\ \cline{1-5}
 \end{tabular}}
 \caption{\textsc{Draufsicht}}
 \label{fig:topview}
@@ -44,12 +44,12 @@ $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & ... & $\boldsymbo
 \resizebox{0.5\textwidth}{!}{
 \begin{tabular}{c|c|c|c|c|c|}
 \cline{2-6}
-$\boldsymbol{L_b}$ & $pos_{1, b}$ & $pos_{2, b}$ & $pos_{3, b}$ & ... & $pos_{m, b}$ \\ \cline{2-6}
-... & ... & ... & ... & ... & ...\\ \cline{2-6}
-$\boldsymbol{L_2}$ & $pos_{1, 2}$ & $pos_{2, 2}$ & $pos_{3, 2}$ & ... & $pos_{m, 2}$\\ \cline{2-6}
-$\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & ... & $pos_{m, 1}$\\ \cline{2-6}
+$\boldsymbol{L_b}$ & $pos_{1, b}$ & $pos_{2, b}$ & $pos_{3, b}$ & $\dotsb$ & $pos_{m, b}$ \\ \cline{2-6}
+$\dotsb$ & $\dotsb$ & $\dotsb$ & $\dotsb$ & $\dotsb$ & $\dotsb$\\ \cline{2-6}
+$\boldsymbol{L_2}$ & $pos_{1, 2}$ & $pos_{2, 2}$ & $pos_{3, 2}$ & $\dotsb$ & $pos_{m, 2}$\\ \cline{2-6}
+$\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & $\dotsb$ & $pos_{m, 1}$\\ \cline{2-6}
 \multicolumn{1}{c}{} & \multicolumn{1}{c}{$\boldsymbol{S_1}$} & \multicolumn{1}{c}{$\boldsymbol{S_2}$}
-& \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{...} & \multicolumn{1}{c}{$\boldsymbol{S_m}$} \\
+& \multicolumn{1}{c}{$\boldsymbol{S_3}$} & \multicolumn{1}{c}{$\dotsb$} & \multicolumn{1}{c}{$\boldsymbol{S_m}$} \\
 \end{tabular}}
 \caption{\textsc{Seitenansicht}}
 \label{fig:sideview}
@@ -97,8 +97,8 @@ werden in dieser Arbeit übernommen.
     $n$ & Anzahl der Items \\ \hline
     $m$ & Anzahl der Stacks \\ \hline
     $b$ & Stack-Kapazität \\ \hline
-    $I$ & Menge der Items $ I := \{1, 2, ..., n\}$ \\ \hline
-    $Q$ & Menge der Stacks $ Q := \{1, 2, ..., m\}$ \\ \hline
+    $I$ & Menge der Items $ I := \{1, 2, \dotsc, n\}$ \\ \hline
+    $Q$ & Menge der Stacks $ Q := \{1, 2, \dotsc, m\}$ \\ \hline
 \end{tabular}}
 \caption{\textsc{Zur Definition verwendete Parameter}.}
 \label{fig:parameters}
@@ -117,11 +117,11 @@ berücksichtigt werden müssen. Zum einen die in Abschnitt \ref{sec:stacking_res
 $s_{ij} \in \{0, 1\}$, bei denen es sich um Restriktionen handelt, welche angeben, ob ein Item $i \in I$ direkt auf einem anderen Item $j \in I$ platziert werden darf. Dies ist der Fall, wenn $s_{ij} = 1$ gilt.
 Zum anderen die Placement-Constraints $t_{iq} \in \{0, 1\}$, welche in Kapitel \ref{sec:placement_restrictions} thematisiert werden und bei denen es darum geht, dass manche Items Restriktionen bezüglich ihrer Positionierung besitzen. Ein Item $i \in I$ ist nur dann mit einem Stack $q \in Q$ kompatibel, wenn $t_{iq} = 1$ gilt.
 
-Items, welche in einem Stack platziert werden, sind durch ein Tupel $(i_k, ..., i_1)$ definiert, wobei
+Items, welche in einem Stack platziert werden, sind durch ein Tupel $(i_k, \dotsc, i_1)$ definiert, wobei
 $i_\lambda$ das Item auf Level $\lambda$ beschreibt. $\lambda = 1$ entspricht dabei dem
 Ground-Level\footnote{Unterste Position (Level) innerhalb eines Stacks.}.
 Ein solches Tupel ist bei \citet{Bruns2015} zulässig, wenn $k \leq b$ und $s_{i_{\lambda + 1} i_\lambda} = 1
-\thinspace \forall \thinspace \lambda = 1, ... , k - 1$ gilt.
+\thinspace \forall \thinspace \lambda = 1, \dotsc, k - 1$ gilt.
 Demzufolge ist ein Tupel dann zulässig, wenn die Stack-Kapazität eingehalten wird und sämtliche Items,
 welche aufeinander gestapelt sind, nicht den Stacking-Constraints widersprechen. Darüber hinaus müssen bei den in dieser
 Arbeit betrachteten Problemstellungen für die Zulässigkeit eines Tupels sämtliche Item-Stack-Zuweisungen
@@ -131,7 +131,7 @@ $t_{i_\lambda q} = 1$ gelten. Jedes Item muss demgemäß mit dem Stack, welchem 
 
 \textbf{Formulierung des Problems}
 
-Gegeben sei eine Menge $I = \{1, ..., n\}$ von Items und eine Menge $Q = \{1, ..., m\}$ von Stacks der Kapazität $b$.
+Gegeben sei eine Menge $I = \{1, \dotsc, n\}$ von Items und eine Menge $Q = \{1, \dotsc, m\}$ von Stacks der Kapazität $b$.
 Außerdem seien Stacking-Constraints $s_{ij}$ und Placement-Constraints $t_{iq}$ gegeben.
 Das Ziel ist nun, jedes Item $i \in I$ genau einem Stack $q \in Q$ zuzuweisen, wobei die Stacking-Constraints $s_{ij}$,
 die Placement-Constraints $t_{iq}$ und die Stack-Kapazität $b$ respektiert werden und gegebenenfalls eine Zielfunktion
@@ -170,7 +170,7 @@ Storage-Area und können dabei in horizontaler und vertikaler Richtung bewegt we
 Die Transportkosten werden in einer Matrix $C = (c_{iq})_{n \times m}$ kodiert,
 wobei $c_{iq} \coloneqq d(O_i, F_q)$. D.h. der Eintrag an der Stelle $c_{iq}$ entspricht
 den Kosten für den Transport eines Items $i \in I$ in einen Stack $q \in Q$.
-Die Zuweisung des Items $i$ zu den unterschiedlichen Leveln $l \in \{1, ..., b\}$ innerhalb des Stacks $q$
+Die Zuweisung des Items $i$ zu den unterschiedlichen Leveln $l \in \{1, \dotsc, b\}$ innerhalb des Stacks $q$
 verursacht stets dieselben Kosten.
 
 \subsection{Nebenbedingungen}
@@ -571,7 +571,7 @@ Probleme (vgl. \citet{Garey1979}).
 Dies beschreibt auch direkt den Ansatz der Bin-Packing-Formulierung. Die Stacks werden als Behälter betrachtet und die Items als Objekte,
 die diesen Behältern zugeordnet werden, wobei die Behälter- bzw. Stack-Kapazität jeweils eingehalten wird. Im Unterschied zum klassischen \textsc{Bin-Packing} müssen zusätzlich die Stacking- und Placement-Constraints berücksichtigt werden.
 
-Es sei eine Menge von Items $I = \{1, ..., n\}$ und eine Menge von Stacks $Q = \{1, ..., m\}$ mit einer Kapazität von $b$ gegeben.
+Es sei eine Menge von Items $I = \{1, \dotsc, n\}$ und eine Menge von Stacks $Q = \{1, \dotsc, m\}$ mit einer Kapazität von $b$ gegeben.
 Außerdem sei $G = (I, E)$ ein transitiver Stacking-Constraint-Graph, welcher eine Kante $\{i, j\} \in E$ enthält,
 wenn die entsprechenden Items $i, j \in I$ basierend auf den Stacking-Constraints in mindestens einer Richtung stapelbar sind,
 d.h. wenn $s_{ij} + s_{ji} \geq 1$.\newline
@@ -629,8 +629,8 @@ Die 3-Index-Formulierung enthält drei Indizes - Item, Stack und Level.
 Im Gegensatz zur Bin-Packing-Formulierung, die Item-Stack-Zuweisungen vornimmt, weist die 3-Index-Formulierung einem
 Item auch eine konkrete Position innerhalb eines Stacks zu, sie berücksichtigt also den Level.
 
-Gegeben sei erneut eine Item-Menge $I = \{1, ..., n\}$ und eine Stack-Menge $Q = \{1, ..., m\}$, die Stacks der Kapazität $b$ enthält.
-Jeder Stack enthält dementsprechend die Level $L = \{1, ..., b\}$. Des Weiteren sei ein transitiver Stacking-Constraint-Graph
+Gegeben sei erneut eine Item-Menge $I = \{1, \dotsc, n\}$ und eine Stack-Menge $Q = \{1, \dotsc, m\}$, die Stacks der Kapazität $b$ enthält.
+Jeder Stack enthält dementsprechend die Level $L = \{1, \dotsc, b\}$. Des Weiteren sei ein transitiver Stacking-Constraint-Graph
 $G = (I, A)$ gegeben, bei dem eine Kante $i \rightarrow j \in A$ bedeutet, dass das Item $i$ direkt auf das Item $j$ gestapelt werden darf.
 Die Kosten seien durch die gegebene Transportkostenmatrix $C$ definiert, in der an der Stelle $c_{iq}$ die Kosten für den
 Transport von Item $i$ in Stack $q$ stehen. Bei den Variablen $x_{iql}$ handelt es sich um Binärvariablen,
@@ -954,7 +954,7 @@ von Relevanz sind.
 
 \textbf{Postprocessing-Schritt}
 
-Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die zuvor bereits platzierten Items $i \in I$ in der Partition $V_{p1}$ und die verbleibenden freien Positionen in den Stacks innerhalb der Storage-Area in der Partition $V_{p2}$ enthält. Eine solche Position entspricht einem Level $l \in \{1, ..., b\}$ innerhalb eines Stacks $q \in Q$. Es existiert eine Kante $\{i, l\} \in E_p$ zwischen einem Item $i \in V_{p1}$ und einer freien Position $l \in V_{p2}$ innerhalb eines Stacks $q \in Q$, wenn das Item $i$ basierend auf den Placement-Constraints zu diesem Stack kompatibel ist, also wenn $t_{iq} = 1$ gilt. Zusätzlich muss das Item $i$ für den Fall, dass sich bereits ein Item $j \in I$ im Stack $q$ befindet, basierend auf den Stacking-Constraints mit diesem Item kompatibel sein, d.h. $s_{ij} = 1$ oder $s_{ji} = 1$.
+Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert, welcher die zuvor bereits platzierten Items $i \in I$ in der Partition $V_{p1}$ und die verbleibenden freien Positionen in den Stacks innerhalb der Storage-Area in der Partition $V_{p2}$ enthält. Eine solche Position entspricht einem Level $l \in \{1, \dotsc, b\}$ innerhalb eines Stacks $q \in Q$. Es existiert eine Kante $\{i, l\} \in E_p$ zwischen einem Item $i \in V_{p1}$ und einer freien Position $l \in V_{p2}$ innerhalb eines Stacks $q \in Q$, wenn das Item $i$ basierend auf den Placement-Constraints zu diesem Stack kompatibel ist, also wenn $t_{iq} = 1$ gilt. Zusätzlich muss das Item $i$ für den Fall, dass sich bereits ein Item $j \in I$ im Stack $q$ befindet, basierend auf den Stacking-Constraints mit diesem Item kompatibel sein, d.h. $s_{ij} = 1$ oder $s_{ji} = 1$.
 Auf diese Weise kann nach der Zuweisung eines Items stets erneut eine den Stacking-Constraints entsprechende Anordnung innerhalb der Stacks erreicht werden. Die Kosten einer solchen Kante entsprechen der Kostenersparnis der Zuweisung des Items zum neuen Stack verglichen mit den Kosten der gegenwärtigen Zuweisung dieses Items. Die Kostenersparnis $r_i$, welche sich bei der Zuweisung des Items $i \in I$, welches sich gegenwärtig im Stack $q_1 \in Q$ befindet, zum Stack $q$ ergibt, ist durch $r_i = c_{iq_1} - c_{iq}$ definiert. Eine Erhöhung der Kosten entspricht demnach einer negativen Ersparnis.
 
 Daraufhin wird in $G_p$ ein Maximum-Weight-Bipartite-Matching berechnet, dessen Kanten jene Items mit freien
@@ -1910,7 +1910,7 @@ auf die Transportkostenminimierung ermöglicht. Wird dieser Wert auf \textit{tru
 Zunächst wird ein bipartiter Postprocessing-Graph $G_p = (V_{p1} \cup V_{p2}, E_p)$ generiert,
 welcher die zuvor bereits platzierten Items $i \in I$ in der Partition $V_{p1}$ und die verbleibenden
 freien Positionen in den Stacks innerhalb der Storage-Area in der Partition $V_{p2}$ enthält.
-Eine solche Position entspricht einem Level $l \in \{1, ..., b\}$ innerhalb eines Stacks $q \in Q$.
+Eine solche Position entspricht einem Level $l \in \{1, \dotsc, b\}$ innerhalb eines Stacks $q \in Q$.
 Es existiert eine Kante $\{i, l\} \in E_p$ zwischen einem Item $i \in V_{p1}$ und einer freien
 Position $l \in V_{p2}$ innerhalb eines Stacks $q \in Q$, wenn das Item $i$ basierend auf den Placement-Constraints
 zu diesem Stack kompatibel ist, also wenn $t_{iq} = 1$ gilt.
@@ -3126,11 +3126,11 @@ Freeing-Strategy und Short-Term-Strategy bezeichnet werden. Diese werden im Folg
 
 Zunächst zur betrachteten Nachbarschaftsstruktur. Um Nachbarlösungen einer gegebenen Lösung zu generieren,
 wird eine kombinierte \textquote{Shift}- und \textquote{Swap}-Nachbarschaft verwendet.
-Jedes Item $i \in I$ einer gegebenen Lösung befindet sich in einem Stack $q \in Q$ auf einem Level $l \in \{1, ..., b\}$.
-Eine \textquote{Shift}-Operation verschiebt das Item $i$ auf einen Level $l \in \{1, ..., b\}$ in einem
-Stack $r \in Q$ mit $r \neq q$. Das Item-Tupel $(i_k, ..., i_1)$, welches sich in Stack $r$ befindet, muss nach der Zuweisung des Items $i$ weiterhin zulässig sein. Dementsprechend muss die Stack-Kapazität durch $k \leq b$ eingehalten werden.
+Jedes Item $i \in I$ einer gegebenen Lösung befindet sich in einem Stack $q \in Q$ auf einem Level $l \in \{1, \dotsc, b\}$.
+Eine \textquote{Shift}-Operation verschiebt das Item $i$ auf einen Level $l \in \{1, \dotsc, b\}$ in einem
+Stack $r \in Q$ mit $r \neq q$. Das Item-Tupel $(i_k, \dotsc, i_1)$, welches sich in Stack $r$ befindet, muss nach der Zuweisung des Items $i$ weiterhin zulässig sein. Dementsprechend muss die Stack-Kapazität durch $k \leq b$ eingehalten werden.
 Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lambda} = 1 \thinspace \forall \thinspace
-\lambda = 1, ..., k - 1$, als auch die Placement-Constraints mit $t_{i_\lambda q} = 1 \thinspace \forall
+\lambda = 1, \dotsc, k - 1$, als auch die Placement-Constraints mit $t_{i_\lambda q} = 1 \thinspace \forall
 \thinspace i_\lambda$ respektiert werden.
 Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
 d.h. $i \neq j$. Eine solche Tausch-Operation kann auch innerhalb eines Stacks $q \in Q$ stattfinden,
@@ -3150,13 +3150,13 @@ um zu verhindern, dass weitere Lösungen mit ähnlichen Eigenschaften ausgeschlo
 Die entwickelte Tabu-Suche stellt eine Tabu-Liste bereit, welche aufgrund der kombinierten Shift- und Swap-Nachbarschaft
 sowohl Shift- als auch Swap-Operationen speichert. Bei einer Shift-Operationen handelt es sich um eine Kombination aus einem Item
 $i \in I$ und einer Position $p$ innerhalb eines Stacks $q \in Q$ in der Storage-Area, an welche dieses verschoben wird. Eine Shift-Operation ist dementsprechend durch das $2$-Tupel $shift := (i, p)$ definiert.
-Eine Position $p$ zeichnet sich wiederum durch ein $2$-Tupel bestehend aus einem Stack $q \in Q$ und einem Level $l \in \{1, ..., b\}$ innerhalb dieses Stacks aus, also $p := (q, l)$.
+Eine Position $p$ zeichnet sich wiederum durch ein $2$-Tupel bestehend aus einem Stack $q \in Q$ und einem Level $l \in \{1, \dotsc, b\}$ innerhalb dieses Stacks aus, also $p := (q, l)$.
 Anschließend kann ein Item nicht erneut an dieselbe Position verschoben werden, sehr wohl jedoch an eine andere.
 
 Bei einer Swap-Operation handelt es sich hingegen um eine Kombination aus zwei Positionen innerhalb der Stacks in der Storage-Area verknüpft mit den Items, welche sie beinhalten. D.h. je zwei Positionen tauschen lediglich einmal ihren Inhalt,
 solange sich dieser nicht verändert. Ein Swap lässt sich durch zwei Shift-Operationen repräsentieren, weshalb für jede Swap-Operation
 zwei Shift-Operationen in der Tabu-Liste gespeichert werden. Befindet sich ein Item $i \in I$ in Stack $q_1 \in Q$ auf Level
-$l_1 \in \{1, ..., b\}$ und ein weiteres Item $j \in I$ in Stack $q_2 \in Q$ auf Level $l_2 \in \{1, ..., b\}$,
+$l_1 \in \{1, \dotsc, b\}$ und ein weiteres Item $j \in I$ in Stack $q_2 \in Q$ auf Level $l_2 \in \{1, \dotsc, b\}$,
 so wird die Swap-Operation zwischen diesen beiden Items in Form von $shift_1 = (i, (q_2, l_2))$ und $shift_2 = (j, (q_1, l_1))$
 in der Tabu-Liste gespeichert. Die Notation, welche im Folgenden stets für Swap-Operationen verwendet wird,
 entspricht daher $swap := (shift_1, shift_2)$.
