@@ -15,7 +15,7 @@ annähernd verdreifacht (vgl. \citet{Port_of_Hamburg}).
 Folglich stellt das sinnvolle Ein- und Auslagern der Container eine immer größere Herausforderung dar und
 es herrscht ein großer Bedarf, diese Prozesse zu optimieren.
 
-Bisher existieren kaum Veröffentlichungen, welche effiziente Lösungsverfahren für Stack\-/ing-Probleme thematisieren.
+Bisher existieren kaum Veröffentlichungen, welche effiziente Lösungsverfahren für Einlagerungsprobleme in Stacks thematisieren.
 Insbesondere die effiziente Minimierung der Transportkosten, die beim Verladen der Items von den Fahrzeugen,
 mit welchen sie geliefert werden, in die Lagerfläche, entstehen, hat in der Literatur noch keine Beachtung gefunden,
 obwohl diese auch aus praktischer Perspektive von Relevanz ist. Ziel dieser Arbeit ist es dementsprechend,
@@ -23,15 +23,13 @@ ebensolche heuristische Verfahren für verschiedene Varianten von Stacking-Probl
 Zulässigkeit und geringer Laufzeit liegt.\newline
 Es gibt deutlich mehr Veröffentlichungen zu Unloading-, also Auslagerungs-Szenarien und Szenarien, bei denen simultan Items
 ein- und ausgelagert werden, als zu reinen Loading-Problemen, welche Gegenstand dieser Arbeit sind.
-Der folgende Literaturüberblick beschränkt sich auf diese wenigen Veröffentlichungen, welche zusätzlich bestimmte Konzepte,
-die im Verlauf der Arbeit verwendet oder erweitert werden, etablieren, oder themennahe Problemstellungen behandeln.
 
 Zunächst werden, im Anschluss an den in Kapitel \ref{sec:literature_review} folgenden Literaturüberblick,
 in Kapitel \ref{sec:stacking_problems} Stacking-Probleme im Allgemeinen eingeführt und anschließend formal definiert.
 Da­r­auf­fol­gend geht es in Kapitel \ref{sec:test_data} um die Testinstanzen, welche generiert werden,
 um die entwickelten Heuristiken testen und miteinander vergleichen zu können.
-Ebenfalls dem experimentellen Vergleich dienen die in Kapitel \ref{sec:mip_formulations} eingeführten MIP-Formulierungen, welche durch Ermittlung der optimalen Zielfunktionswerte eine Beurteilung der Lösungsqualität der Heuristiken ermöglichen.
-Nachdem Kapitel \ref{sec:lower_bounds} untere Schranken für Stacking-Probleme thematisiert,
+Ebenfalls dem experimentellen Vergleich dienen die in Kapitel \ref{sec:mip_formulations} eingeführten MIP-Formulierungen, welche durch Ermittlung der optimalen Zielfunktionswerte für kleinere Instanzen eine Beurteilung der Lösungsqualität der
+Heuristiken ermöglichen. Nachdem Kapitel \ref{sec:lower_bounds} untere Schranken für Stacking-Probleme thematisiert,
 werden in Kapitel \ref{sec:constructive_heuristics} schließlich die entwickelten konstruktiven Heuristiken vorgestellt und die Ergebnisse der experimentellen Vergleiche präsentiert. Anschließend wird in Kapitel \ref{sec:post_optimization} ein Verbesserungsverfahren beschrieben, welches von den Heuristiken aus Kapitel \ref{sec:constructive_heuristics} generierte Lösungen als Eingabe erhält. Dieses Verfahren hat zum Ziel, die Initiallösungen basierend auf einer
 lokalen Suche zu verbessern. Abschließend wird in Kapitel \ref{sec:conclusion} ein Fazit formuliert.
 
@@ -40,6 +38,10 @@ lokalen Suche zu verbessern. Abschließend wird in Kapitel \ref{sec:conclusion} 
 
 \section{Literaturüberblick}
 \label{sec:literature_review}
+
+Der folgende Literaturüberblick beschränkt sich auf die wenigen Veröffentlichungen zu reinen Loading-Problemen,
+welche zusätzlich bestimmte Konzepte, die im Verlauf der Arbeit verwendet oder erweitert werden, etablieren,
+oder themennahe Problemstellungen behandeln.
 
 \citet{Kim2000} betrachten ein Loading-Problem, bei welchem es darum geht, die Positionierung eintreffender
 Container basierend auf ihrem Gewicht vorzunehmen. Es wird ein Ansatz mit dynamischer Programmierung beschrieben,
