@@ -1637,16 +1637,16 @@ Die Darstellung der Kosten wurde erneut in einer Weise skaliert, welche eine Bet
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.4\textwidth}
+\begin{subfigure}[b]{0.47\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=2_l_1200s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_time_b=2_l_1200s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=2_l_runtimes}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.4\textwidth}
+\begin{subfigure}[b]{0.47\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=2_l_1200s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_cost_b=2_l_1200s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=2_l_costs}
 \end{subfigure}
@@ -1660,6 +1660,7 @@ kommt die 3-Index-Formulierung bei Zeitlimits von unter $20$ Minuten zu deutlich
 bei einer geringfügigen Erhöhung des Zeitlimits ebenfalls sämtliche Instanzen optimal löst, wurde ein weiteres Experiment mit einem Zeitlimit von $30$ Minuten pro Instanz durchgeführt. Auch in diesem konnte die 3-Index-Formulierung mit $95 \%$ noch nicht sämtliche Instanzen optimal lösen. In diesem Fall ist das Ergebnis daher nicht eindeutig. Bei Zeitlimits von unter $20$ Minuten sollte die 3-Index-Formulierung bevorzugt werden. Stehen $20$ Minuten und mehr pro Instanz zur Verfügung, so sollte die Bin-Packing-Formulierung bevorzugt werden. Die 3-Index-Formulierung löst erst bei Zeitlimits von mehr als $30$ Minuten pro Instanz sämtliche Instanzen optimal, weshalb der Laufzeitvorteil gegenüber der Bin-Packing-Formulierung aufgrund der Instanzen, welche deutlich längere Laufzeiten benötigen, nicht mehr erheblich sein dürfte. Dementsprechend sollte ab einem Zeitlimit von $20$ Minuten durchaus die Bin-Packing-Formulierung bevorzugt werden.
 
 \begin{figure}[H]
+\centering
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
@@ -1701,11 +1702,11 @@ bei einer geringfügigen Erhöhung des Zeitlimits ebenfalls sämtliche Instanzen
 \label{fig:res_b=2_l_c}
 \end{subfigure}
 
-\caption{\textsc{MIP-Ergebnisse}}
+\caption{\textsc{MIP-Ergebnisse}.}
 \label{fig:res_b=2_l}
 \end{figure}
 
-Die Heuristik löst die Instanzen allerdings nach nur durchschnittlich $1.7s$ pro Instanz und weicht auch nur um im Durchschnitt $0.02 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen, noch gravierendere Laufzeitunterschied und die zu vernachlässigende Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis erneut klar bevorzugt werden sollte. Selbst in Bezug auf die Qualität der Zielfunktionswerte können die MIP-Formulierungen erst ab dem betrachteten Zeitlimit von $20$ Minuten mit denen der Heuristik konkurrieren, wobei die 3-Index-Formulierung, wie man Abb. \ref{fig:res_b=2_l_c} entnehmen kann, selbst dort mit einer durchschnittlichen Abweichung von $0.25 \%$ vom Optimum noch erheblich schlechtere Zielfunktionswerte liefert als die Heuristik.
+Die Heuristik löst die Instanzen allerdings nach nur durchschnittlich $1.7s$ pro Instanz und weicht auch nur um im Durchschnitt $0.02 \%$ vom Optimalwert ab. Dieser, verglichen mit der Kategorie der mittelgroßen Instanzen, noch gravierendere Laufzeitunterschied und die zu vernachlässigende Abweichung vom Optimum sorgen dafür, dass die Heuristik in der Praxis erneut klar bevorzugt werden sollte. Selbst in Bezug auf die Qualität der Zielfunktionswerte können die MIP-Formulierungen erst ab dem betrachteten Zeitlimit von $20$ Minuten mit denen der Heuristik konkurrieren, wobei die 3-Index-Formulierung, wie man Abb. \ref{fig:res_b=2_l_c} entnehmen kann, selbst dort mit einer durchschnittlichen Abweichung von $0.25 \%$ vom Optimum noch erheblich schlechtere Zielfunktionswerte liefert als die Heuristik.\newline
 
 \textbf{Fazit}
 
@@ -1715,6 +1716,9 @@ In Bezug auf den Vergleich der MIP-Formulierungen untereinander gilt, dass die 3
 der kleinen und mittelgroßen Instanzen zu bevorzugen ist, während die Bin-Packing-Formulierung ab einem Zeitlimit
 von $20$ Minuten bei den großen Instanzen zu besseren Ergebnissen führt.
 
+\vfill
+\pagebreak
+
 \subsection{Konstruktive Heuristik ($b = 3$)}
 \label{sec:three_cap_heuristic}
 
@@ -1722,9 +1726,6 @@ Die konstruktive Heuristik zur Lösung von Stacking-Problemen mit Stacks der Kap
 an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} für eine Stack-Kapazität von $b = 2$.
 Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden überdies
 erweiternde Ansätze präsentiert.
-
-\vfill
-\pagebreak
 
 Zunächst geht es, wie auch in der Heuristik für $b = 2$, darum, kompatible Item-Paare zu bilden.
 Dazu wird, analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic}, ein Stacking-Graph $G = (V, E)$ generiert.
@@ -1737,7 +1738,7 @@ Da die Stacks nun nicht nur Paare, sondern Tripel von Items beinhalten können, 
 ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die zuvor gebildeten Item-Paare zu Item-Tripeln zusammengeführt.
 Zunächst muss allerdings entschieden werden, welche dieser Paare sinnvollerweise wieder separiert werden sollten,
 um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis
-und möglichst vollständig gefüllte Stacks getrennt werden sollten.
+und möglichst vollständig gefüllte Stacks getrennt werden sollten.\newline
 
 \textbf{Rating-System}
 
@@ -1749,6 +1750,10 @@ Reihenfolge gestapelt werden kann.
 
 Geht es beispielsweise darum, zu überprüfen, ob ein Item $i \in I$ einem Paar $(s, t)$, welches aus einer Kante $\{s, t\} \in M$ resultiert,
 zugewiesen werden kann, so ergeben sich die in Abb. \ref{fig:triple_permutations} dargestellten $3!$ möglichen Permutationen eines Tripels. Stellt sich eine dieser Permutationen als konform mit den Stacking-Constraints heraus, so kann das Item $i$ zusammen mit dem Paar $(s, t)$ ein zulässiges Tripel bilden.
+
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \[
 \begin{bmatrix}
@@ -1889,7 +1894,7 @@ Kompatibilität ist sichergestellt, dass eine solche Reihenfolge existiert.
 
 Wie bereits die Heuristik aus Abschnitt \ref{sec:two_cap_heuristic}, bietet auch diese Heuristik über den Parameter
 \textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
-auf die Transportkostenminimierung ermöglicht. Wird dieser Parameter auf \textit{true} gesetzt, so werden ausgewählte Items aus der zuvor generierten Lösung an andere, freie Positionen verschoben, sofern sich dadurch eine Kostenersparnis ergibt.
+auf die Transportkostenminimierung ermöglicht. Wird dieser Parameter auf \textit{true} gesetzt, so werden ausgewählte Items aus der zuvor generierten Lösung an andere, freie Positionen verschoben, sofern sich dadurch eine Kostenersparnis ergibt.\newline
 
 \textbf{Postprocessing-Schritt}
 
@@ -1915,12 +1920,15 @@ Es wird im Falle mehrerer Zuordnungen jenes Item mit der größten Kostenersparn
 Nachdem die Items an die ihnen zugeordneten Positionen verschoben wurden, wird die Reihenfolge der Items
 innerhalb der Stacks, welchen mindestens ein zusätzliches Item zugewiesen wurde, ggf. basierend auf den Stacking-Constraints angepasst. Befand sich ein verschobenes Item zuvor unterhalb anderer Items innerhalb eines Stacks, so werden die darüber platzierten Items heruntergezogen, sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
 Wie bereits in der Heuristik für eine Stack-Kapazität von $b = 2$, wird dieser Postprocessing-Prozess
-iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
+iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.\newline
 
 \textbf{Konfiguration der Heuristik}
 
 Neben den vorgestellten Parametern \textit{prioritizeRuntime} und \textit{postProcessing} bietet
 die präsentierte Heuristik weitere Möglichkeiten der Konfiguration, welche im Folgenden erörtert werden.
+
+\vfill
+\pagebreak
 
 Im Zuge des Rating-Systems werden für Item-Paare $(i, j)$ die durchschnittlichen Kosten einer gemeinsamen
 Stack-Zuweisung berechnet. Dabei wird die Inkompatibilität eines Paares zu einem Stack mit dem $z$-fachen
@@ -1941,7 +1949,7 @@ Es entstehen demnach $12$ unterschiedlich bewertete Itemlisten zusätzlich zum u
 welches unbewertet und unsortiert betrachtet wird.
 
 Eine weitere wichtige Konfigurationsmöglichkeit besteht in der Anzahl der Paare $x$, welche im Merge-Prozess wieder
-separiert werden. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.
+separiert werden. Experimentell hat sich $3.4$ als guter Divisor herausgestellt, indem die Lösungen für unterschiedliche $x$ Werte verglichen wurden. Folglich werden die ersten $x = \floor{\frac{|M|}{3.4}}$ Paare separiert.\newline
 
 \textbf{Einfluss des Rating-Systems}
 
@@ -1964,7 +1972,7 @@ bei einer Verringerung der durchschnittlichen Kosten um $0.03 \%$ (vgl. Abb. \re
 \begin{subfigure}[b]{0.325\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ | c | c | c |}
+\begin{tabular}{ | m{3cm} | m{1.75cm} | m{1.75cm} |}
     \hline
      & \textbf{RS ($+$)} & \textbf{RS ($-$)} \\ \hline
     \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $0.06$ & $0.01$ \\ \hline
@@ -1976,7 +1984,7 @@ bei einer Verringerung der durchschnittlichen Kosten um $0.03 \%$ (vgl. Abb. \re
 \begin{subfigure}[b]{0.325\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ | c | c | c |}
+\begin{tabular}{ | m{3cm} | m{1.75cm} | m{1.75cm} |}
     \hline
      & \textbf{RS ($+$)} & \textbf{RS ($-$)} \\ \hline
     \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $1.28$ & $0.18$ \\ \hline
@@ -1988,7 +1996,7 @@ bei einer Verringerung der durchschnittlichen Kosten um $0.03 \%$ (vgl. Abb. \re
 \begin{subfigure}[b]{0.325\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ | c | c | c |}
+\begin{tabular}{ | m{3cm} | m{1.75cm} | m{1.75cm} |}
     \hline
      & \textbf{RS ($+$)} & \textbf{RS ($-$)} \\ \hline
     \textbf{\O \thinspace Laufzeit ($\boldsymbol{s}$)} & $5.51$ & $0.87$ \\ \hline
@@ -2009,7 +2017,7 @@ Weiterhin sollten die vergleichsweise geringen Verringerungen der durchschnittli
 da die Ergebnisse der Heuristik ohnehin nur geringfügig von den optimalen Zielfunktionswerten abweichen.
 Außerdem handelt es sich dabei um Durchschnittswerte, welche im Einzelfall durchaus relevant sein können.
 Eine sinnvolle Einschätzung dieser Ergebnisse ist im Wesentlichen nur in Verbindung mit den Ergebnissen der exakten Solver
-möglich, welche in Abschnitt \ref{sec:solver_comp_b=3} ausführlich präsentiert werden.
+möglich, welche in Abschnitt \ref{sec:solver_comp_b=3} ausführlich präsentiert werden.\newline
 
 \textbf{Beispiel}
 
@@ -2040,8 +2048,11 @@ welches die Kanten dieses \textsc{MCM} interpretiert als kompatible Item-Paare z
 \end{figure}
 
 Nachdem die in Abb. \ref{fig:item_pairs_example_b=3} dargestellten Paare von Items generiert wurden, geht es darum,
-möglichst viele dieser Paare zu Tripeln von Items zu \textquote{mergen}. Zunächst muss allerdings basierend auf dem entwickelten Rating-System entschieden werden, welche der Paare dazu wieder separiert werden. Durch die Bewertung und anschließende Sortierung der Paare ergeben sich die Abb. \ref{fig:lists_of_pairs} zu entnehmenden unterschiedlich
-sortierten Listen.
+möglichst viele dieser Paare zu Tripeln von Items zu \textquote{mergen}. Zunächst muss allerdings basierend auf dem entwickelten Rating-System entschieden werden, welche der Paare dazu wieder separiert werden. Durch die Bewertung und anschließende Sortierung der Paare ergeben sich die Abb. \ref{fig:lists_of_pairs} zu entnehmenden unterschiedlich sortierten Listen.
+
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \begin{gather*}
   [(2, 3), (4, 13), (10, 11), (9, 14), (7, 8), (5, 6), (1, 12)] \\
@@ -2057,9 +2068,6 @@ Sortierungen (vgl. Abb. \ref{fig:lists_of_pairs}).
 Anschließend geht es darum, die ersten $\floor{\frac{7}{3.4}} = 2$ Paare zu separieren und möglichst sämtliche der dabei entstehenden Items den verbleibenden Paaren zuzuweisen. Für die erste der drei unterschiedlichen Sortierungen aus Abb. \ref{fig:lists_of_pairs} ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung in Paare, welche separiert werden (vgl. Abb. \ref{fig:split_pairs}) und jene, denen die daraus resultierenden Items zugewiesen werden sollen,
 um Item-Tripel zu bilden (vgl. Abb. \ref{fig:assign_pairs}).
 
-\vfill
-\pagebreak
-
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{\textwidth}
@@ -2069,7 +2077,7 @@ um Item-Tripel zu bilden (vgl. Abb. \ref{fig:assign_pairs}).
         \node[state] (B) [thick, right of=A] {$\boldsymbol{4, 13}$};
         \path;
 \end{tikzpicture}
-\caption{\textsc{Split-Pairs}.}
+\caption{\textsc{Split-Pairs}}
 \label{fig:split_pairs}
 \end{subfigure}
 \begin{subfigure}[b]{\textwidth}
@@ -2082,7 +2090,7 @@ um Item-Tripel zu bilden (vgl. Abb. \ref{fig:assign_pairs}).
         \node[state] (E) [thick, right of=D] {$\boldsymbol{1, 12}$};
         \path;
 \end{tikzpicture}
-\caption{\textsc{Assign-Pairs}.}
+\caption{\textsc{Assign-Pairs}}
 \label{fig:assign_pairs}
 \end{subfigure}
 \caption{\textsc{Merge Vorbereitung}.}
@@ -2097,6 +2105,9 @@ dass dieses Item dem Paar zugeordnet werden kann, sodass ein kompatibles Tripel 
 In Abb. \ref{fig:item_triple_mcm} ist das auf diesem Graphen berechnete \textsc{MCM} in grün dargestellt, in welchem
 sämtliche einzelnen Items einem Paar zugewiesen werden. Das Paar $(5, 6)$ wird dabei als einziges Paar nicht verwendet,
 um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
+
+\vfill
+\pagebreak
 
 \begin{figure}[H]
 \centering
