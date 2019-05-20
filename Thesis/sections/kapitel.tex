@@ -58,6 +58,7 @@ $\boldsymbol{L_1}$ & $pos_{1, 1}$ & $pos_{2, 1}$ & $pos_{3, 1}$ & $\dotsb$ & $po
 \label{fig:storage_area}
 \end{figure}
 
+\vfill
 \pagebreak
 
 Obwohl die Storage-Area in der Realität häufig mehr als eine Reihe von Stacks beinhaltet und der in
@@ -106,6 +107,7 @@ In der Regel gilt $m < n$, d.h. es müssen Items gestapelt werden.
 Außerdem muss die Annahme $n \leq bm$ gelten, denn sonst ist die Instanz des Problems unzulässig,
 weil die Anzahl der zuzuweisenden Items die Anzahl der verfügbaren Positionen innerhalb der Stacks übersteigt.
 
+\vfill
 \pagebreak
 
 Für jedes Item $i \in I$ ist dessen Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird,
@@ -336,6 +338,9 @@ Dabei haben Zulässigkeit und geringe Laufzeit Priorität. Eine Lösung wird als
 wenn sämtliche Items unter Berücksichtigung der Stacking- und Placement-Constraints sowie der Stack-Kapazität,
 eingelagert werden.
 
+\vfill
+\pagebreak
+
 Der Fokus auf Zulässigkeit äußert sich darin, dass zunächst stets versucht wird, möglichst wenige der zur Verfügung stehenden Stacks zu verwenden, weshalb die Zielfunktion im Grunde zunächst darin besteht, die Anzahl der verwendeten Stacks zu minimieren bzw. die Anzahl der vollständig gefüllten Stacks zu maximieren, damit idealerweise jede Instanz zumindest zulässig gelöst wird.
 Erst im Anschluss daran werden die Transportkosten minimiert.
 Im Wesentlichen handelt es sich daher um eine Kombination zweier Zielfunktionen,
@@ -356,6 +361,9 @@ entsprechende Szenarien aus der Praxis finden, stellen die konstruktiven Heurist
 welche in Kapitel \ref{sec:constructive_heuristics} vorgestellt werden, beide Varianten bereit.
 Angesichts der primären Betrachtung der Transportkostenminimierung in dieser Arbeit,
 wird der Postprocessing-Schritt in den Experimenten stets durchgeführt.
+
+\vfill
+\pagebreak
 
 \section{Testdaten-Generierung}
 \label{sec:test_data}
@@ -394,6 +402,9 @@ in drei Kategorien unterteilt:
 \end{itemize}
 Dabei handelt es sich um einen groben Rahmen, in welchem sich praktisch motivierte Container-Stacking-Probleme
 typischerweise bewegen. Dieser findet sich auch in der Literatur wieder (vgl. \citet{Le2016}).
+
+\vfill
+\pagebreak
 
 Der \textsc{TestDataGenerator} stellt zur Generierung der Test-Instanzen eine Reihe von Konfigurationsmöglichkeiten
 bereit, welche im Folgenden vorgestellt werden. Um den Vergleichen eine gewisse Aussagekraft zu verleihen,
@@ -552,13 +563,15 @@ Viele kombinatorische Optimierungsprobleme lassen sich als lineare Programme for
 auszeichnen, dass die Zielfunktion eine lineare Funktion in Abhängigkeit von den Entscheidungsvariablen ist
 und alle Nebenbedingungen in Form von linearen Gleichungen und Ungleichungen vorliegen. Für diese Probleme gibt es mit dem Simplexverfahren ein sehr effizientes Lösungsverfahren \cite{Knust2017}.
 
+\vfill
+\pagebreak
+
 Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm, welches kontinuierliche und ganzzahligen Variablen
 enthält. Im Gegensatz zur kontinuierlichen Variante, ist die Lösung von ganzzahligen linearen Programmen NP-schwer.
 Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle Solver in wenigen Minuten gelöst werden können, gilt dies nicht für ganzzahlige lineare Programme. Diese können nur mit deutlich zeitaufwändigeren Algorithmen wie Branch \& Bound gelöst werden \cite{Brucker2006}.
 
 In dieser Arbeit wird das Java-Interface von CPLEX, einem Solver für lineare Optimierungsprobleme verwendet,
-um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden,
-zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM \cite{CPLEX2015}.
+um die MIP-Formulierungen, die in Abschnitt \ref{sec:bin_packing_formulation} und Abschnitt \ref{sec:three_idx_formulation} vorgestellt werden, zu lösen. Es handelt sich dabei um eine unter anderem auf dem Simplexverfahren basierende Implementation von IBM \cite{CPLEX2015}.
 
 \subsection{Bin-Packing-Formulierung}
 \label{sec:bin_packing_formulation}
@@ -581,6 +594,9 @@ Es ist allerdings von Vorteil, diese in den MIP-Formulierungen explizit umzusetz
 Laufzeiten erzielen lassen. Zu diesem Zweck seien die Placement-Constraints im Folgenden für jedes Item $i \in I$
 durch die Menge $Q^i$ gegeben, wobei $Q^i$ der Menge an Stacks entspricht, denen Item $i$ basierend auf den Placement-Constraints zugewiesen werden darf, also sämtliche $q \in Q$, für die $t_{iq} = 1$ gilt.
 
+\vfill
+\pagebreak
+
 % \begin{equation}
 % \begin{aligned}
 % & \text{min} & & \displaystyle\sum\limits_{i \in I}^{}\sum\limits_{q \in Q}^{} c_{iq} x_{iq} \\
@@ -596,9 +612,6 @@ durch die Menge $Q^i$ gegeben, wobei $Q^i$ der Menge an Stacks entspricht, denen
 %                   & \displaystyle\sum\limits_{i \in I} x_{iq} \leq b & & \forall q \in Q\\
 % \end{array}
 % \end{equation}
-
-\vfill
-\pagebreak
 
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
@@ -631,6 +644,9 @@ hingegen ein effizienteres Verfahren verwendet werden.
 Die 3-Index-Formulierung enthält drei Indizes - Item, Stack und Level.
 Im Gegensatz zur Bin-Packing-Formulierung, die Item-Stack-Zuweisungen vornimmt, weist die 3-Index-Formulierung einem
 Item auch eine konkrete Position innerhalb eines Stacks zu, sie berücksichtigt also den Level.
+
+\vfill
+\pagebreak
 
 Gegeben sei erneut eine Item-Menge $I = \{1, \dotsc, n\}$ und eine Stack-Menge $Q = \{1, \dotsc, m\}$, die Stacks der Kapazität $b$ enthält.
 Jeder Stack enthält dementsprechend die Level $L = \{1, \dotsc, b\}$. Des Weiteren sei ein transitiver Stacking-Graph
@@ -669,6 +685,9 @@ in einer Weise umsortiert werden können, dass sie den Stacking Constraints ents
 Da die Stacking Constraints außerdem transitiv sind, ist sichergestellt, dass die Reihenfolge innerhalb der Stacks stets so korrigiert werden kann, dass eine valide Lösung, welche die Stacking Constraints respektiert, dabei herauskommt.
 Die 3-Index-Formulierung liefert folglich direkt eine zulässige Lösung, während die Item-Stack-Zuweisungen, welche die Bin-Packing-Formulierung liefert, zunächst noch sortiert werden müssen, damit sie eine zulässige Lösung ergeben.
 
+\vfill
+\pagebreak
+
 \section{Untere Schranken}
 \label{sec:lower_bounds}
 
@@ -689,6 +708,9 @@ Sei $P$ die Menge aller $mb$ Positionen innerhalb der Stacks und $q(p)$ jener St
 Ferner sei $G = (I \cup P, E)$ ein bipartiter Graph (siehe Abschnitt \ref{sec:digressions}), in welchem eine Kante $\{i, p\} \in E$ existiert, wenn $t_{iq(p)} = 1$, d.h. wenn ein Item $i \in I$ kompatibel zum Stack $q \in Q$ ist, zu welchem die Position $p$ gehört. Das Gewicht der Kante $\{i, p\}$ entspricht den Kosten $c_{iq(p)}$. Berechnet man nun ein
 Minimum-Weight-Perfect-Matching (siehe Abschnitt \ref{sec:digressions}) in $G$, so entspricht das Gewicht des Matchings einer unteren Schranke für die Gesamtkosten.
 
+\vfill
+\pagebreak
+
 \section{Konstruktive Heuristiken}
 \label{sec:constructive_heuristics}
 
@@ -697,9 +719,6 @@ Anschließend geht es in Abschnitt \ref{sec:two_cap_heuristic} um eine konstrukt
 von $b = 2$ und darauffolgend, nach einem kurzen Abschnitt zur Konfiguration der Experimente in Abschnitt \ref{sec:experiments_config}, um einen experimentellen Vergleich der Solver für eben diese Stack-Kapazität in Bezug
 auf die benötigten Laufzeiten und die Qualität der generierten Lösungen in Abschnitt \ref{sec:solver_comp_b=2}.
 Abschnitt \ref{sec:three_cap_heuristic} behandelt eine konstruktive Heuristik für eine Stack-Kapazität von $b=3$, worauf erneut ein Vergleich der entsprechenden Solver in Abschnitt \ref{sec:solver_comp_b=3} folgt.
-
-\vfill
-\pagebreak
 
 \subsection{Hintergrund}
 \label{sec:digressions}
@@ -722,7 +741,7 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.6, transform shape, node distance=3cm]
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=3cm]
   \node[state] [mygreen] (A) {};
   \node[state] [red] (B) [above right of=A] {};
   \node[state] [mygreen] (C) [below right of=B] {};
@@ -743,6 +762,9 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 \label{fig:digression_bipartite_graph}
 \end{figure}
 
+\vfill
+\pagebreak
+
 Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen Teilmenge mit jedem Knoten
 der anderen Teilmenge durch eine Kante verbunden ist \cite{Knust2019}. Der in Abb. \ref{fig:digression_bipartite_graph}
 dargestellte Graph ist dementsprechend nicht vollständig bipartit.
@@ -760,7 +782,7 @@ basierend auf den Kantenkosten.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[-, scale=0.6, transform shape, node distance=3cm]
+\begin{tikzpicture}[-, scale=0.65, transform shape, node distance=3cm]
     \node[state] (A) {};
     \node[state] (B) [above right of=A] {};
     \node[state] (C) [below right of=A] {};
@@ -795,10 +817,13 @@ Ein Maximum-Cardinality-Matching ist ein Matching, welches eine maximale Anzahl 
 Es kann mehrere unterschiedliche \textsc{MCM}s in einem Graphen geben.
 In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei \textsc{MCM}s dargestellt.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.55, transform shape, node distance=2cm]
+    \begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
     \node[state] (A) {};
     \node[state] (B) [above right of=A] {};
     \node[state] (C) [below left of=A] {};
@@ -819,7 +844,7 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei \textsc{MCM}s dargestellt.
   \hfill
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.55, transform shape, node distance=2cm]
+    \begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
     \node[state] (A) {};
     \node[state] (B) [right of=A] {};
     \node[state] (C) [right of=B] {};
@@ -849,9 +874,6 @@ welcher \textsc{MCM}s in ungerichteten Graphen berechnet. Der Algorithmus liefer
 Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$, wobei $n$ der Anzahl der Knoten
 und $m$ der Anzahl der Kanten im Graphen entspricht.
-
-\vfill
-\pagebreak
 
 \textbf{Maximum-Weight-Bipartite-Matching (MWBM)}
 
@@ -938,9 +960,6 @@ $m = \ceil{\ceil{\frac{7}{2}} + 0.2 \cdot \ceil{\frac{7}{2}}} = 5$.
 Die Stacking-Matrix $S$ wird ebenfalls, wie in Abschnitt \ref{sec:test_data} beschrieben, generiert.
 Basierend auf dieser wird der in Abb. \ref{fig:stacking_const_graph_example_b=2_a} dargestellte Stacking-Graph
 für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref{fig:stacking_const_graph_example_b=2_b} in grün dargestellte \textsc{MCM} berechnet wird. Das in rot dargestellte Item $5$ verbleibt dabei als einziges Unmatched-Item.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
   \centering
@@ -1252,6 +1271,9 @@ daher $c_{iq} \coloneqq d_{man}(O_i, F_q)$.
 In diesem Abschnitt werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeiten, der Anteil der Instanzen, welcher pro Solver optimal gelöst wird
 sowie die jeweilige prozentuale Abweichung der ermittelten Zielfunktionswerte vom Optimum.
 
+\vfill
+\pagebreak
+
 Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von \textsc{CPLEX} 12.8.0 implementiert
 und gelöst. Dabei wurde \textsc{CPLEX} über den Parameter \textit{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
 Priorität vor der Optimalität hat \cite{IBM_DOC}.
@@ -1288,9 +1310,6 @@ d.h. die im Folgenden betrachteten Ergebnisse basieren auf der Lösung von in di
 
 Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, findet die Heuristik bei allen betrachteten Zeitlimits für sämtliche Instanzen eine zulässige Lösung, während die Bin-Packing-Formulierung bei einem Zeitlimit von $0.25s$ noch überhaupt keine Instanz zulässig löst und die 3-Index-Formulierung bei diesem Zeitlimit auf eine Instance-Coverage von $80 \%$ kommt (vgl. Abb. \ref{fig:instance_cov_b=2_s_a}). Bei einem Zeitlimit von $0.5s$ löst neben der Heuristik auch die 3-Index-Formulierung sämtliche Instanzen zulässig, während die Bin-Packing-Formulierung dort lediglich eine Instanz zulässig löst (vgl. Abb. \ref{fig:instance_cov_b=2_s_b}). Beim letzten betrachteten Zeitlimit von $1s$ nähert sich schließlich auch die Bin-Packing-Formulierung einer vollständigen Instance-Coverage und löst $90 \%$ der Instanzen zulässig.\newline
 Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings, dass sämtliche Instanzen bereits bei einem Zeitlimit von $0.5s$ zulässig von einer MIP-Formulierung gelöst werden, was darauf hindeutet, dass der Bedarf für eine Laufzeitverbesserung durch eine Heuristik in dieser Kategorie aus praktischer Perspektive eher gering sein dürfte.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -1358,6 +1377,9 @@ Die exakten Ergebnisse der MIP-Formulierungen sind den Tabellen in Abb. \ref{fig
 \textquote{Optimal} bezeichnet den prozentualen Anteil der Instanzen, welcher optimal gelöst wurde.
 Bei der Laufzeit handelt es sich um die durchschnittliche Laufzeit pro Instanz in Sekunden und die
 Abweichung gibt die durchschnittliche prozentuale Abweichung vom optimalen Zielfunktionswert pro Instanz an.
+
+\vfill
+\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -1431,6 +1453,9 @@ Selbiges gilt für das verdoppelte Zeitlimit von einer Minute (vgl. Abb. \ref{fi
 Verdopplung des Zeitlimits auf zwei Minuten, erreicht schließlich auch die Bin-Packing-Formulierung eine vollständige Instance-Coverage (vgl. Abb. \ref{fig:instance_cov_b=2_m_c}). Die Heuristik ist, wie zuvor, aufgrund ihrer geringen Laufzeiten
 in keinem Fall vom Zeitlimit betroffen und löst daher in jedem Fall sämtliche Instanzen zulässig.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
 
@@ -1467,6 +1492,9 @@ Die Stacking-Constraints haben, wie man an den ebenfalls in Abb. \ref{fig:b=2_m_
 wenngleich dieser erneut i.d.R. sehr gering ausfällt.
 Die Darstellung der Kosten in Abb. \ref{fig:b=2_m_costs} wurde erneut in einer Weise skaliert, welche
 es ermöglicht, sämtliche Einträge zu erkennen. Die tatsächlichen Abstände sind den Beschriftungen der $x$-Achse zu entnehmen.
+
+\vfill
+\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -1540,6 +1568,9 @@ Die Heuristik löst sämtliche Instanzen zulässig, benötigt dafür durchschnit
 \label{fig:res_b=2_m}
 \end{figure}
 
+\vfill
+\pagebreak
+
 Zusammenfassend ist die 3-Index-Formulierung in der Kategorie der mittelgroßen Instanzen der Bin-Packing-Formulierung vorzuziehen, da diese bei allen betrachteten Zeitlimits die besseren Ergebnisse erzielt.
 Der Laufzeitunterschied zwischen der Heuristik und der zu bevorzugenden MIP-Formulierung ist so erheblich,
 dass die sehr geringe Abweichung vom Optimum in der Praxis in Kauf genommen werden sollte.
@@ -1592,9 +1623,6 @@ Die Heuristik kommt den optimalen Zielfunktionswerten auch in dieser Kategorie m
 und die Einträge der unteren Schranken zeigen, dass die Stacking-Constraints bei jeder
 betrachteten Instanz einen deutlichen Einfluss auf die optimalen Zielfunktionswerte haben.
 Die Darstellung der Kosten wurde erneut in einer Weise skaliert, welche eine Betrachtung sämtlicher Einträge ermöglicht.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -1684,6 +1712,9 @@ an einigen Stellen analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic
 Um den zusätzlichen Möglichkeiten und Anforderungen der erhöhten Stack-Kapazität gerecht zu werden, werden überdies
 erweiternde Ansätze präsentiert.
 
+\vfill
+\pagebreak
+
 Zunächst geht es, wie auch in der Heuristik für $b = 2$, darum, kompatible Item-Paare zu bilden.
 Dazu wird, analog zur Heuristik aus Abschnitt \ref{sec:two_cap_heuristic}, ein Stacking-Graph $G = (V, E)$ generiert.
 Berechnet man ein \textsc{MCM} $M \subseteq E$ in $G$ und interpretiert dessen Kanten $\{i, j\} \in M$ als Paare kompatibler Items $i, j \in I$, so erhält man eine größtmögliche Anzahl von Item-Paaren, welche in mindestens einer Richtung stapelbar sind.
@@ -1696,9 +1727,6 @@ ebensolche Tripel von kompatiblen Items zu generieren. Dazu werden die zuvor geb
 Zunächst muss allerdings entschieden werden, welche dieser Paare sinnvollerweise wieder separiert werden sollten,
 um beide Items einem jeweils anderen Paar zuzuweisen und zwei Tripel zu bilden. Dies geschieht mithilfe eines Rating-Systems, welches die Item-Paare mit dem Ziel bewertet, jene Paare zu ermitteln, die im Hinblick auf ein günstiges Ergebnis
 und möglichst vollständig gefüllte Stacks getrennt werden sollten.
-
-\vfill
-\pagebreak
 
 \textbf{Rating-System}
 
@@ -1775,9 +1803,6 @@ vom Durchschnitt entspricht, sofern diese den Schwellenwert $d_t$ überschreitet
 einen Einfluss auf die Bewertung der Paare hat. Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen. Dazu wird experimentell ein Wertebereich bestimmt, in welchem $d_t$ in jeder Iteration inkrementiert wird.
 Es entstehen demnach mehrere unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM},
 welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
-
-\vfill
-\pagebreak
 
 Da die Verwendung des beschriebenen Rating-Systems zu einer durchaus signifikanten Laufzeitverlängerung führt,
 wird in der Implementation der Heuristik ein Parameter \textit{prioritizeRuntime} eingeführt, welcher ein Deaktivieren des
@@ -2021,6 +2046,9 @@ Sortierungen (vgl. Abb. \ref{fig:lists_of_pairs}).
 Anschließend geht es darum, die ersten $\floor{\frac{7}{3.4}} = 2$ Paare zu separieren und möglichst sämtliche der dabei entstehenden Items den verbleibenden Paaren zuzuweisen. Für die erste der drei unterschiedlichen Sortierungen aus Abb. \ref{fig:lists_of_pairs} ergibt sich dabei die in Abb. \ref{fig:pre_merge_step} dargestellte Aufteilung in Paare, welche separiert werden (vgl. Abb. \ref{fig:split_pairs}) und jene, denen die daraus resultierenden Items zugewiesen werden sollen,
 um Item-Tripel zu bilden (vgl. Abb. \ref{fig:assign_pairs}).
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{\textwidth}
@@ -2143,6 +2171,9 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
 \caption{\textsc{Merge-Ergebnis.}}
 \label{fig:merge_result}
 \end{figure}
+
+\vfill
+\pagebreak
 
 Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel sowie das Item-Paar, werden im Folgenden
 möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
@@ -2275,6 +2306,10 @@ Da keine Kante im \textsc{MWPM} das Gewicht $\infty$ besitzt, handelt es sich um
 sämtlicher Item-Tupel zu Stacks, welche insgesamt die Kosten $550.38$ verursacht.
 Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} dargestellt, wobei die Reihenfolge
 innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
+
+\vfill
+\pagebreak
+
 \begin{figure}[H]
   \centering
   \resizebox{0.4\textwidth}{!}{
@@ -2370,6 +2405,9 @@ Wie man der Tabelle in Abb. \ref{fig:post_processing_costs} entnehmen kann, sind
 der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} in diesem Fall positive Kantengewichte vorhanden,
 was bedeutet, dass sich durch Verschieben ausgewählter Items an freie Positionen Kosten einsparen lassen.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
 \resizebox{0.5\textwidth}{!}{
@@ -2454,6 +2492,9 @@ In diesem Beispiel wird bereits nach der ersten Iteration das beste Ergebnis erz
     \label{fig:valid_solution_post_processing}
 \end{figure}
 
+\vfill
+\pagebreak
+
 \subsection{Vergleich der Solver für $b = 3$}
 \label{sec:solver_comp_b=3}
 
@@ -2508,6 +2549,9 @@ von $0.1s$ sämtliche Instanzen zulässig löst.
 \caption{\textsc{Instance-Coverage der $b = 3$ Solver (s)}.}
 \label{fig:instance_coverage_b=3_s}
 \end{figure}
+
+\vfill
+\pagebreak
 
 In der Darstellung der Laufzeiten bei einem Zeitlimit von $2s$ in Abb. \ref{fig:b=3_s_runtimes} ist zu erkennen,
 dass die Bin-Packing-Formulierung in jedem Fall deutlich schneller ist als die 3-Index-Formulierung, welche bei sämtlichen Instanzen durch das Zeitlimit terminiert. Die Bin-Packing-Formulierung wird wiederum in jedem Fall
@@ -2634,6 +2678,9 @@ in keinem Fall vom Zeitlimit betroffen.
 \label{fig:instance_coverage_b=3_m}
 \end{figure}
 
+\vfill
+\pagebreak
+
 In der Darstellung der Laufzeiten bei einem Zeitlimit von $5$ Minuten in Abb. \ref{fig:b=3_m_runtimes} ist zu sehen, dass die Bin-Packing-Formulierung stets kürzere Laufzeiten besitzt als die 3-Index-Formulierung, welche in $13$ Fällen durch das Zeitlimit gestoppt wird. Ferner ist der Abb. zu entnehmen, dass die Heuristik in Bezug auf die Laufzeit erneut konkurrenzlos ist. Nach durchschnittlich $1.49s$ löst diese sämtliche Instanzen zulässig und unterbietet die MIP-Formulierungen damit erneut sehr deutlich. Aufgrund der Tatsache, dass die Bin-Packing-Formulierung in jedem Fall
 vor dem Zeitlimit terminiert, ist außerdem bereits sicher, dass diese sämtliche Instanzen optimal löst.
 
@@ -2735,6 +2782,9 @@ $85 \%$ der Instanzen zulässig löst. Beim nächsten betrachteten Zeitlimit von
 von $15$ Minuten eine höhere Instance-Coverage als die 3-Index-Formulierung erreicht. Die verbleibenden $15 \%$ der
 Instanzen, welche von der 3-Index-Formulierung nicht gelöst werden, erfordern offensichtlich erheblich längere Laufzeiten als die übrigen. In Abb. \ref{fig:instance_coverage_b=3_l_c} ist die Instance-Coverage bei einem Zeitlimit von $30$ Minuten dargestellt, bei welchem schließlich sämtliche Solver alle betrachteten Instanzen zulässig lösen. Die Heuristik ist mit einer durchschnittlichen Laufzeit von $6.72s$ pro Instanz erneut in keinem Fall vom Zeitlimit betroffen.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
 
@@ -2774,6 +2824,9 @@ stattdessen kann diese aufgrund der erheblichen Abweichungen vom Optimum in kein
 oder der Bin-Packing-Formulierung konkurrieren. Außerdem ist zu sehen, dass die Abweichungen der Zielfunktionswerte der Heuristik von jenen der Bin-Packing-Formulierung auch in dieser Kategorie nur sehr gering sind.
 Insbesondere bei den Instanzen $06, 10$ und $11$ wurde annähernd der optimale Zielfunktionswert ermittelt.
 Die Einträge der unteren Schranken zeigen, dass die Stacking-Constraints erneut bei jeder Instanz einen geringen Einfluss auf den optimalen Zielfunktionswert haben.
+
+\vfill
+\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -2851,9 +2904,6 @@ zulässig und weicht dabei im Durchschnitt nur um $0.02 \%$ vom Optimum ab.
 \label{}
 \end{figure}
 
-\vfill
-\pagebreak
-
 Zur Verdeutlichung der Tatsache, dass die konstruktiven Heuristiken in der Lage sind, auch erheblich
 größere Instanzen effizient zu lösen, wurden $20$ Instanzen generiert, bei denen es darum geht,
 $1000$ Items in die Storage-Area zu verladen. Instanzen dieser Größe können nicht mehr effizient
@@ -2863,6 +2913,9 @@ Als Referenzwerte dienen jeweils die unteren Schranken, welche zeigen, dass die 
 Größe nur marginal von den Optimalwerten abweicht. Die durchschnittlich benötigte Laufzeit pro Instanz beträgt
 dabei lediglich $56.73s$.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
 
@@ -2871,7 +2924,6 @@ dabei lediglich $56.73s$.
 \label{fig:big_instance_example}
 
 \end{figure}
-
 
 \textbf{Fazit}\newline
 
@@ -2895,6 +2947,9 @@ vom Optimum deutlich kürzere Laufzeiten als die von \textsc{CPLEX} gelösten MI
 jedem Fall eine gute Alternative darstellt. Je größer die Instanzen werden, desto besser schneidet die Heuristik
 verglichen mit den MIP-Formulierungen ab und sollte bereits ab der Kategorie der mittelgroßen Instanzen in der Regel
 den MIP-Formulierungen vorgezogen werden.
+
+\vfill
+\pagebreak
 
 \section{Verbesserungsverfahren}
 \label{sec:post_optimization}
@@ -2926,6 +2981,9 @@ anschaulich in Abb. \ref{fig:local_search_weakness} visualisiert. Darin sind sä
 Nachbarschaft $V(x_n)$ schlechter als die gegenwärtige Lösung $x_n$, obwohl weiter entfernt ein globales Minimum
 existiert, welches aufgrund der Tatsache, dass ausschließlich verbessernde Lösungen gewählt werden,
 nicht erreicht werden kann.
+
+\vfill
+\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -2970,6 +3028,7 @@ V(x) =
   \end{bmatrix}
 \]
 
+\vfill
 \pagebreak
 
 \subsection{Tabu-Suche}
@@ -3210,6 +3269,9 @@ weshalb anschließend die Swap-Operation $swap_1$ oder $swap_2$ durchgeführt we
 
 Da sämtliche Lösungen, welche analog zum Beispiel aus Abb. \ref{fig:counter_example_stacks} aufgebaut sind und einen oder mehrere unzulässige Zwischenschritte erfordern, um zur zulässigen Ziellösung zu gelangen, nicht ineinander überführbar sind, muss die Nachbarschaft dahingehend erweitert werden, dass solche Situationen aufgelöst werden können.
 
+\vfill
+\pagebreak
+
 Dieses Problem ließe sich durch einen weiteren Operator $sim_b$-Swap beheben, welcher $1$ bis $b$ simultane Swap-Operationen
 zwischen zwei Stacks ermöglicht, sodass keine Zwischenlösung entsteht.
 Dabei müssten maximal $b$ Swaps durchgeführt werden, um den gesamten Stackinhalt zu vertauschen.
@@ -3343,7 +3405,7 @@ Als Abbruchkriterium dienten jeweils $50$ nichtverbessernde Iterationen.
 
 \begin{figure}[H]
 \centering
-\resizebox{0.5\textwidth}{!}{
+\resizebox{0.6\textwidth}{!}{
 \begin{tabular}{| c | c | c |}
     \hline
     \textbf{max $\boldsymbol{|TL|}$} & \textbf{\O \thinspace abs. Verringerung der Kosten} & \textbf{Laufzeit (s)} \\ \hline
