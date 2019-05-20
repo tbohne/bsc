@@ -6,9 +6,9 @@ formal definiert. Diese formale Definition stellt die Grundlage der in den Folge
 
 Eintreffende Items müssen sogenannten Stacks in einer Weise zugeordnet werden, welche bestimmte Nebenbedingungen respektiert.
 Diese Nebenbedingungen sorgen zum Beispiel dafür, dass nicht jedes Item auf jedem anderen Item platziert werden
-darf. Außerdem existieren Items, welche auf bestimmte Positionen beschränkt sind, weil sie zum Beispiel eine Energiequelle benötigen. Es wird dabei angenommen, dass die im Folgenden als Storage-Area bezeichnete Lagerfläche in fixierten
+darf. Außerdem existieren Items, die auf bestimmte Positionen beschränkt sind, weil sie zum Beispiel eine Energiequelle benötigen. Es wird dabei angenommen, dass die im Folgenden als Storage-Area bezeichnete Lagerfläche in fixierten
 Stacks organisiert ist, welche eine limitierte gemeinsame Höhe besitzen, die im Folgenden als Stack-Kapazität bezeichnet wird
-und der Maximalanzahl an Items, welche pro Stack aufeinander gestapelt werden dürfen, entspricht.
+und der Maximalanzahl an Items, die pro Stack aufeinander gestapelt werden dürfen, entspricht.
 Die Items werden dementsprechend in eine Storage-Area verladen, welche aus Stacks mit einer festen Position besteht,
 d.h. es ist nicht möglich, die Stacks zu positionieren, sondern lediglich den Items eine Position innerhalb eines solchen
 Stacks zuweisen. In dieser Arbeit wird dabei ausschließlich der Loading-Prozess betrachtet, währenddem keine
@@ -16,14 +16,13 @@ Item-Entnahme stattfindet. Dies entspricht im Wesentlichen der von \citet{Bruns2
 
 In der Literatur existieren diverse Ansätze für das Konzept der Storage-Area.
 \citet{Jaehn2013} betrachtet beispielsweise eine Lagerfläche, welche nicht aus fixierten Stacks besteht,
-sondern sich in parallele \textquote{Lanes}
-aufteilt, in welchen ein Stack prinzipiell an jeder Position eröffnet werden kann, sofern bestimmte Sicherheitsabstände eingehalten werden.
+sondern sich in parallele \textquote{Lanes} aufteilt, in denen ein Stack prinzipiell an jeder Position eröffnet werden kann, sofern bestimmte Sicherheitsabstände eingehalten werden.
 Das im Folgenden verwendete Konzept der Storage-Area mit fixierten Stacks, welches auf viele praktische
 Szenarien anwendbar ist, basiert auf der Beschreibung von \citet{Lehnfeld2014}.
 
 Abbildung \ref{fig:storage_area} zeigt den Aufbau der Storage-Area bestehend aus $m$ fixierten
 Stacks, welche jeweils $b$ Level enthalten. Jedes Level innerhalb eines Stacks entspricht dabei einer Position,
-welcher ein Item zugeordnet werden kann.
+der ein Item zugeordnet werden kann.
 
 \begin{figure}[H]
 \centering
@@ -308,7 +307,8 @@ die Transportkosten-Matrix $C = (c_{iq})_{n \times m}$, welche in Abschnitt \ref
 \end{cases}
 \]
 Der Eintrag an der Stelle $c_{iq}$ enthält also nur noch die tatsächlichen Transportkosten, wenn die
-entsprechende Item-Stack-Zuweisung basierend auf den Placement-Constraints zulässig ist und sonst $\infty$.
+entsprechende Item-Stack-Zuweisung basierend auf den Placement-Constraints zulässig ist.
+Ist dies nicht der Fall, so gilt $c_{iq} = \infty$.
 Die Placement-Constraints gelten als verletzt, wenn eine Lösung eine Item-Stack-Zuweisung
 der Kosten $\infty$ enthält.
 
@@ -325,17 +325,18 @@ Stacking-Constraints $s_{ij}$ und Placement-Constraints $t_{iq}$, NP-vollständi
 Somit sind die in dieser Arbeit betrachteten Stacking-Probleme, bei welchen zusätzlich die Transportkosten minimiert
 und jeweils Stacking- sowie Placement-Constraints berücksichtigt werden, ebenfalls NP-vollständig.
 Deshalb werden im Folgenden effiziente heuristische Lösungsverfahren für diese Probleme präsentiert,
-welche zum Ziel haben, bei möglichst geringer Laufzeit zu möglichst günstigen Ergebnissen zu gelangen.
+welche zum Ziel haben, bei möglichst geringer Laufzeit zu günstigen Ergebnissen zu gelangen.
 
 \subsection{Zielfunktion}
 \label{sec:objective}
 
-Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine möglichst günstige
+Das Ziel, welches im Folgenden für sämtliche Problemstellungen angestrebt wird, ist eine günstige
 Einlagerung sämtlicher Items, d.h. die Zielfunktion entspricht der Minimierung der Transportkosten.
 Dabei haben Zulässigkeit und geringe Laufzeit Priorität. Eine Lösung wird als zulässig betrachtet,
-wenn sämtliche Items unter Berücksichtigung der Stacking- und Placement-Constraints sowie der Stack-Kapazität, eingelagert werden.
+wenn sämtliche Items unter Berücksichtigung der Stacking- und Placement-Constraints sowie der Stack-Kapazität,
+eingelagert werden.
 
-Der Fokus auf Zulässigkeit äußert sich darin, dass zunächst stets versucht wird, möglichst wenige der zur Verfügung stehenden Stacks zu verwenden, weshalb die Zielfunktion im Grunde zunächst darin besteht, die Anzahl der verwendeten Stacks zu minimieren bzw. die Anzahl der vollständig gefüllten Stacks zu maximieren, damit möglichst jede Instanz zumindest zulässig gelöst wird.
+Der Fokus auf Zulässigkeit äußert sich darin, dass zunächst stets versucht wird, möglichst wenige der zur Verfügung stehenden Stacks zu verwenden, weshalb die Zielfunktion im Grunde zunächst darin besteht, die Anzahl der verwendeten Stacks zu minimieren bzw. die Anzahl der vollständig gefüllten Stacks zu maximieren, damit idealerweise jede Instanz zumindest zulässig gelöst wird.
 Erst im Anschluss daran werden die Transportkosten minimiert.
 Im Wesentlichen handelt es sich daher um eine Kombination zweier Zielfunktionen,
 welche im Sinne der lexikographischen Optimierung mit eine Präferenzordnung ausgestattet sind.
@@ -348,7 +349,7 @@ einen Postprocessing-Schritt umsetzbar, in welchem zuletzt ausgewählte Items vo
 an andere, freie Positionen verschoben werden, sofern sich infolgedessen Kosten einsparen lassen.
 Dafür stehen auch die bisher ungenutzten Stacks zur Verfügung.
 
-Es kann in der Praxis durchaus sinnvoll sein, den zur Verfügung stehenden Platz möglichst ökonomisch zu nutzen
+Es kann in der Praxis durchaus sinnvoll sein, den zur Verfügung stehenden Platz ökonomisch zu nutzen
 und nicht bedingungslos Kosten zu minimieren und dabei viele lediglich partiell gefüllte Stacks zu generieren.
 Ebenso kann allerdings auch ein reiner Fokus auf Kostenminimierung erwünscht sein. Da sich für beide Varianten
 entsprechende Szenarien aus der Praxis finden, stellen die konstruktiven Heuristiken,
