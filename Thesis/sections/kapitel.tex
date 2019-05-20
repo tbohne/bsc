@@ -2139,7 +2139,7 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
           (E) edge [thick] node {} (H)
           (E) edge [thick] node {} (I);
 \end{tikzpicture}
-\caption{\textsc{Bipartiter Graph}.}
+\caption{\textsc{Bipartiter Graph}}
 \label{fig:bipartite_graph_pairs_and_unmatched}
 \end{subfigure}
 \hspace{10pt}
@@ -2170,19 +2170,19 @@ um ein Tripel zu bilden und verbleibt dementsprechend als Item-Paar.
           (E) edge [thick] node {} (H)
           (E) edge [thick, mygreen] node {} (I);
 \end{tikzpicture}
-\caption{\textsc{MCM}.}
+\caption{\textsc{MCM}}
 \label{fig:item_triple_mcm}
 \end{subfigure}
 
-\caption{\textsc{Item-Tripel Generierung.}}
+\caption{\textsc{Item-Tripel Generierung}.}
 \label{fig:item_triple_generation}
 \end{figure}
 
 Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welchem durch das
-\textsc{MCM}, zusätzlich zum verbleibenden Item-Paar, vier Item-Tripel generiert wurden.
+\textsc{MCM}, zusätzlich zum verbleibenden Item-Paar, vier Item-Tripel generiert wurden.\newline
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.75, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=3cm, state/.style={circle, draw, minimum size=2.25cm}]
         \node[state] (A) [thick] {$\boldsymbol{10, 11, 13}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{2, 9, 14}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{3, 7, 8}$};
@@ -2190,12 +2190,9 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
         \node[state] (E) [thick, right of=D] {$\boldsymbol{5, 6}$};
         \path;
 \end{tikzpicture}
-\caption{\textsc{Merge-Ergebnis.}}
+\caption{\textsc{Merge-Ergebnis}.}
 \label{fig:merge_result}
 \end{figure}
-
-\vfill
-\pagebreak
 
 Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel sowie das Item-Paar, werden im Folgenden
 möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
@@ -2223,14 +2220,17 @@ der Tabelle in Abb. \ref{fig:item_tuple_costs_three_cap} zu entnehmen.
 \label{fig:item_tuple_costs_three_cap}
 \end{figure}
 
+\vfill
+\pagebreak
+
 Anschließend wird im bipartiten Graphen aus Abb. \ref{fig:complete_bipartite} das \textsc{MWPM} berechnet, welches
 in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvor generierten Item-Tupel zu den Stacks entspricht.
 
 \begin{figure}[H]
 % \begin{figure}[H]
-\begin{subfigure}[b]{0.4\textwidth}
+\begin{subfigure}[b]{0.47\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.45, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2.25cm}]
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2.25cm}]
         \node[state] (A) [thick] {$\boldsymbol{1, 12, 4}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{7, 8, 3}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{9, 14, 2}$};
@@ -2288,13 +2288,13 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
           (F) edge [thick] node {} (K)
           (F) edge [thick] node {} (L);
 \end{tikzpicture}
-\caption{\textsc{Vollständig Bipartit}.}
+\caption{\textsc{Vollständig Bipartit}}
 \label{fig:complete_bipartite}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.4\textwidth}
+\begin{subfigure}[b]{0.47\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.45, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2.25cm}]
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2.25cm}]
         \node[state] (A) [thick] {$\boldsymbol{1, 12, 4}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{7, 8, 3}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{9, 14, 2}$};
@@ -2317,7 +2317,7 @@ in Abb. \ref{fig:mwpm} dargestellt ist und einer günstigsten Zuweisung der zuvo
           (E) edge [thick, near end, above] node {$35.34$} (K)
           (F) edge [thick, below right] node {$0.0$} (H);
 \end{tikzpicture}
-\caption{\textsc{MWPM}.}
+\caption{\textsc{MWPM}}
 \label{fig:mwpm}
 \end{subfigure}
 \caption{\textsc{Stack-Zuweisung}.}
@@ -2328,9 +2328,6 @@ Da keine Kante im \textsc{MWPM} das Gewicht $\infty$ besitzt, handelt es sich um
 sämtlicher Item-Tupel zu Stacks, welche insgesamt die Kosten $550.38$ verursacht.
 Die daraus resultierende Stacking-Lösung ist in Abb. \ref{fig:valid_solution} dargestellt, wobei die Reihenfolge
 innerhalb der Stacks ggf. in zuvor beschriebener Weise angepasst werden muss.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
   \centering
@@ -2427,9 +2424,6 @@ Wie man der Tabelle in Abb. \ref{fig:post_processing_costs} entnehmen kann, sind
 der Heuristik aus Abschnitt \ref{sec:two_cap_heuristic} in diesem Fall positive Kantengewichte vorhanden,
 was bedeutet, dass sich durch Verschieben ausgewählter Items an freie Positionen Kosten einsparen lassen.
 
-\vfill
-\pagebreak
-
 \begin{figure}[H]
 \centering
 \resizebox{0.5\textwidth}{!}{
@@ -2459,9 +2453,12 @@ Item $12$ wird mit einer Ersparnis von $24.24$ in $S_5$ platziert. Da die Items 
 wird lediglich das Item mit der größeren Ersparnis verschoben. Somit wird Item $2$ mit einer Ersparnis von $12.12$
 in $S_2$ platziert. Insgesamt verringern sich die Kosten der Lösung von $550.38$ auf $514.02$.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.5, transform shape, node distance=1.5cm, state/.style={circle, draw, minimum size=1.25cm}]
+\begin{tikzpicture}[scale=0.65, transform shape, node distance=1.5cm, state/.style={circle, draw, minimum size=1.25cm}]
         \node[state] (A) [thick] {$\boldsymbol{1}$};
         \node[state] (B) [thick, right of=A] {$\boldsymbol{2}$};
         \node[state] (C) [thick, right of=B] {$\boldsymbol{3}$};
@@ -2514,9 +2511,6 @@ In diesem Beispiel wird bereits nach der ersten Iteration das beste Ergebnis erz
     \label{fig:valid_solution_post_processing}
 \end{figure}
 
-\vfill
-\pagebreak
-
 \subsection{Vergleich der Solver für $b = 3$}
 \label{sec:solver_comp_b=3}
 
@@ -2532,6 +2526,9 @@ Des Weiteren wird der ebenfalls in Abschnitt \ref{sec:three_cap_heuristic} einge
 stets auf \textit{true} gesetzt, damit, wie bereits bei der Heuristik zur Lösung von Instanzen mit Stacks der Kapazität $b = 2$,
 ein reiner Fokus auf Kostenminimierung besteht, welcher eine Vergleichbarkeit mit den MIP-Formulierungen erlaubt, die ebenfalls
 ausschließlich Kosten minimieren.
+
+\vfill
+\pagebreak
 
 \textbf{Kleine Instanzen (s)}
 
