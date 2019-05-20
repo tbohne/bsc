@@ -29,7 +29,7 @@ der ein Item zugeordnet werden kann.
 
 \begin{subfigure}[b]{\textwidth}
 \centering
-\resizebox{0.5\textwidth}{!}{
+\resizebox{0.55\textwidth}{!}{
 \begin{tabular}{|c|c|c|c|c|c|}
 \cline{1-5}
 $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\dotsb$ & $\boldsymbol{S_m}$\\ \cline{1-5}
@@ -40,7 +40,7 @@ $\boldsymbol{S_1}$ & $\boldsymbol{S_2}$ & $\boldsymbol{S_3}$ & $\dotsb$ & $\bold
 \par\bigskip
 \begin{subfigure}[b]{\textwidth}
 \centering
-\resizebox{0.5\textwidth}{!}{
+\resizebox{0.55\textwidth}{!}{
 \begin{tabular}{c|c|c|c|c|c|}
 \cline{2-6}
 $\boldsymbol{L_b}$ & $pos_{1, b}$ & $pos_{2, b}$ & $pos_{3, b}$ & $\dotsb$ & $pos_{m, b}$ \\ \cline{2-6}
@@ -161,7 +161,7 @@ Storage-Area und können dabei in horizontaler und vertikaler Richtung bewegt we
 
 \begin{figure}[H]
 \includegraphics[width=0.9\textwidth]{img/costs.png}
-\caption{Schematische Darstellung eines Bahn-Terminals \cite{Briskorn2018}.}
+\caption{\textsc{Schematische Darstellung eines Bahn-Terminals} \cite{Briskorn2018}.}
 \label{fig:costs}
 \end{figure}
 
@@ -399,6 +399,7 @@ in drei Kategorien unterteilt:
   \item klein (\textbf{s}) ($\leq 100$ Items)
   \item mittelgroß (\textbf{m}) ($\approx 300$ Items)
   \item groß (\textbf{l}) ($\approx 500$ Items)\newline
+  \vspace{-1\baselineskip}
 \end{itemize}
 Dabei handelt es sich um einen groben Rahmen, in welchem sich praktisch motivierte Container-Stacking-Probleme
 typischerweise bewegen. Dieser findet sich auch in der Literatur wieder (vgl. \citet{Le2016}).
@@ -408,7 +409,7 @@ typischerweise bewegen. Dieser findet sich auch in der Literatur wieder (vgl. \c
 
 Der \textsc{TestDataGenerator} stellt zur Generierung der Test-Instanzen eine Reihe von Konfigurationsmöglichkeiten
 bereit, welche im Folgenden vorgestellt werden. Um den Vergleichen eine gewisse Aussagekraft zu verleihen,
-werden in den Experimenten pro Konfiguration $20$ Instanzen generiert.
+werden in den Experimenten pro Konfiguration $20$ Instanzen generiert.\newline
 
 \textbf{Anzahl zur Verfügung stehender Stacks}
 
@@ -416,17 +417,17 @@ Die erste vom \textsc{TestDataGenerator} bereitgestellte Konfigurationsmöglichk
 Die Anzahl der Items $n$ sowie die Stack-Kapazität $b$ wird stets spezifiziert und in der Berechnung der Anzahl zur Verfügung stehender Stacks $m$ verwendet. Es werden mindestens $\ceil{\frac{n}{b}}$ Stacks benötigt, um sämtliche $n$ Items zuzuweisen.
 Aufgrund der in Abschnitt \ref{sec:constraints} geschilderten Nebenbedingungen wären die meisten Instanzen bei dieser
 Anzahl an Stacks jedoch unlösbar. Daher wird die Minimalanzahl der Stacks um $a$ erhöht und es gilt
-$m = \ceil{\ceil{\frac{n}{b}} + a}$.
+$m = \ceil{\ceil{\frac{n}{b}} + a}$.\newline
 
 \textbf{Stacking-Constraints}
 
 Die zweite Möglichkeit der Konfiguration besteht in der Generierung der Stacking-Constraints,
 von welcher zwei Varianten implementiert wurden, die jeweils spezifische Vor- und Nachteile aufweisen
-und im \textsc{TestDataGenerator} ausgewählt werden können.
+und im \textsc{TestDataGenerator} ausgewählt werden können.\newline
 
 \textbf{Variante 1}
 
-Die Stacking-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt. Anschließend werden jene $1$-Einträge, welche aus Transitivität folgen, ergänzt.
+Die Stacking-Matrix $S$ wird anhand einer definierten Wahrscheinlichkeit mit $1$- bzw. $0$-Einträgen gefüllt. Anschließend werden jene $1$-Einträge, welche aus Transitivität folgen, ergänzt.\newline
 
 \textbf{Variante 2}
 
@@ -451,13 +452,13 @@ Eine Kante im Vergleichbarkeitsgraphen bedeutet in diesem Fall, dass die verbund
 basierend auf Variante 2 der Stacking-Constraint-Generierung in mindestens einer Richtung stapelbar sind,
 d.h. die erwartete Anzahl der Inversionen entspricht der erwarteten Anzahl an $1$-Einträgen in $S$.
 Dies gilt im Allgemeinen für zufällige Längen und Breiten der Items und ist nicht zwingend der Fall,
-wenn diese Werte jeweils aus kleineren Intervallen gewählt werden.
+wenn diese Werte jeweils aus kleineren Intervallen gewählt werden.\newline
 
 \textbf{Placement-Constraints}
 
 Die Placement-Constraints werden zufällig generiert, wobei die Wahrscheinlichkeit für $t_{iq} = 1$, also dafür,
 dass ein Item $i \in I$ in einem Stack $q \in Q$ platziert werden darf, im \textsc{TestDataGenerator} konfiguriert werden kann.
-In der Praxis sind tendenziell mehr Zuweisungen erlaubt als verboten.
+In der Praxis sind tendenziell mehr Zuweisungen erlaubt als verboten.\newline
 
 \textbf{Item- und Stackpositionierung}
 
@@ -483,6 +484,9 @@ die zweite Variante der Stacking-Constraint-Generierung von Bedeutung.
 Die Itemdimensionen haben dort direkten Einfluss auf die Stacking-Constraints,
 weil beispielsweise die Wahrscheinlichkeit für Item-Paarungen, welche in beide Richtungen stapelbar sind,
 mit steigenden Intervallgrößen, aus welchen die zufälligen Dimensionen gewählt werden, abnimmt.
+
+\vfill
+\pagebreak
 
 Für eine Instanz mit $40$ Items und $17$ Stacks der Kapazität $b = 3$ ergibt sich bei
 Zellendimensionen, welche sich am TEU\footnote{Twenty Foot Equivalent Unit (Standardcontainer).} orientieren,
@@ -723,7 +727,7 @@ Abschnitt \ref{sec:three_cap_heuristic} behandelt eine konstruktive Heuristik f�
 \subsection{Hintergrund}
 \label{sec:digressions}
 
-Zunächst werden mit bipartiten Graphen, Minimum-Weight-Perfect-Matchings, Maximum-Cardinality-Matchings und Maximum-Weight-Bipartite-Matchings vier wichtige Konzepte eingeführt, welche in den Heuristiken zum Einsatz kommen.
+Zunächst werden mit bipartiten Graphen, Minimum-Weight-Perfect-Matchings, Maxi\-/mum-Cardinality-Matchings und Maximum-Weight-Bipartite-Matchings vier wichtige Konzepte eingeführt, welche in den Heuristiken zum Einsatz kommen.\newline
 
 \textbf{Bipartiter Graph}
 
@@ -741,7 +745,7 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.65, transform shape, node distance=3cm]
+\begin{tikzpicture}[scale=0.75, transform shape, node distance=3cm]
   \node[state] [mygreen] (A) {};
   \node[state] [red] (B) [above right of=A] {};
   \node[state] [mygreen] (C) [below right of=B] {};
@@ -767,7 +771,7 @@ jedoch keine Kanten zwischen Knoten derselben Farbe bzw. Teilmenge.
 
 Ein Graph wird als vollständig bipartit bezeichnet, wenn jeder Knoten der einen Teilmenge mit jedem Knoten
 der anderen Teilmenge durch eine Kante verbunden ist \cite{Knust2019}. Der in Abb. \ref{fig:digression_bipartite_graph}
-dargestellte Graph ist dementsprechend nicht vollständig bipartit.
+dargestellte Graph ist dementsprechend nicht vollständig bipartit.\newline
 
 \textbf{Minimum-Weight-Perfect-Matching (\textsc{MWPM})}
 
@@ -782,7 +786,7 @@ basierend auf den Kantenkosten.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[-, scale=0.65, transform shape, node distance=3cm]
+\begin{tikzpicture}[-, scale=0.6, transform shape, node distance=3cm]
     \node[state] (A) {};
     \node[state] (B) [above right of=A] {};
     \node[state] (C) [below right of=A] {};
@@ -809,7 +813,7 @@ sogenannten Ungarischen Methode zum Lösen von Zuordnungsproblemen in bipartiten
 Die Laufzeitkomplexität der Implementation beträgt $O(n^3)$, wobei $n$ der Anzahl der Knoten im Graphen entspricht.
 Als Eingabe wird ein vollständig bipartiter Graph $G$ erwartet, d.h. $G= (S \cup T, E)$, wobei $S \cap T = \emptyset$ und
 $\forall s \in S, t \in T \thinspace \exists \thinspace \{s, t\} \in E$. Außerdem wird erwartet, dass beide Partitionen gleich groß sind,
-also $|S| = |T|$. Bei der Rückgabe des Algorithmus handelt es sich um ein Perfect-Matching der geringsten Kosten.
+also $|S| = |T|$. Bei der Rückgabe des Algorithmus handelt es sich um ein Perfect-Matching der geringsten Kosten.\newline
 
 \textbf{Maximum-Cardinality-Matching (MCM)}
 
@@ -823,7 +827,7 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei \textsc{MCM}s dargestellt.
 \begin{figure}[H]
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+    \begin{tikzpicture}[scale=0.6, transform shape, node distance=2cm]
     \node[state] (A) {};
     \node[state] (B) [above right of=A] {};
     \node[state] (C) [below left of=A] {};
@@ -844,7 +848,7 @@ In Abb. \ref{fig:mcm_examples} sind beispielhaft zwei \textsc{MCM}s dargestellt.
   \hfill
   \begin{subfigure}[b]{0.4\textwidth}
   \centering
-    \begin{tikzpicture}[scale=0.65, transform shape, node distance=2cm]
+    \begin{tikzpicture}[scale=0.6, transform shape, node distance=2cm]
     \node[state] (A) {};
     \node[state] (B) [right of=A] {};
     \node[state] (C) [right of=B] {};
@@ -873,7 +877,7 @@ den Namen \textit{EdmondsMaximumCardinalityMatching}. Es handelt sich dabei um e
 welcher \textsc{MCM}s in ungerichteten Graphen berechnet. Der Algorithmus liefert ein Perfect-Matching, sofern eines existiert.
 Andernfalls wird das größte Non-Perfect-Matching zurückgegeben.
 Der Algorithmus besitzt eine Laufzeitkomplexität von $O(nm \thinspace \alpha(m, n))$, wobei $n$ der Anzahl der Knoten
-und $m$ der Anzahl der Kanten im Graphen entspricht.
+und $m$ der Anzahl der Kanten im Graphen entspricht.\newline
 
 \textbf{Maximum-Weight-Bipartite-Matching (MWBM)}
 
@@ -930,7 +934,7 @@ auf die Transportkostenminimierung ermöglicht. Wird dieser Parameter auf \texti
 ausgewählte Items von den ihnen zugewiesenen Positionen an andere, freie Positionen verschoben,
 sofern sich dadurch eine Kostenersparnis ergibt. Diese Option sollte in Betracht gezogen werden,
 wenn die Anzahl der verwendeten Stacks keine Rolle spielt und lediglich die entstehenden Transportkosten
-von Relevanz sind.
+von Relevanz sind.\newline
 
 \textbf{Postprocessing-Schritt}
 
@@ -949,7 +953,7 @@ wurde ggf. basierend auf den Stacking-Constraints angepasst.
 Befand sich ein verschobenes Item zuvor auf dem Ground-Level eines Stacks,
 so wird das darüber platzierte Item auf den Ground-Level heruntergezogen,
 sodass sich anschließend erneut eine zulässige Stacking-Lösung ergibt.
-Dieser Postprocessing-Prozess wird iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.
+Dieser Postprocessing-Prozess wird iterativ durchgeführt, bis keine weitere Verringerung des Kostenwerts erzielt wird.\newline
 
 \textbf{Beispiel}
 
@@ -963,7 +967,7 @@ für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref
 
 \begin{figure}[H]
   \centering
-    \begin{subfigure}[b]{0.4\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
     \centering
     \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
         \node[state] (A) [thick] {$\boldsymbol{1}$};
@@ -989,9 +993,9 @@ für die gegebenen Items eingeführt, auf welchem anschließend das in Abb. \ref
     \caption{\textsc{Stacking-Graph}}
     \label{fig:stacking_const_graph_example_b=2_a}
     \end{subfigure}
-    % \hspace{0.075\textwidth}
+    % \hspace{em}
     \hfill
-    \begin{subfigure}[b]{0.4\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
     \centering
     \begin{tikzpicture}[scale=0.7, transform shape, node distance=3cm]
         \node[state] (A) [thick] {$\boldsymbol{\textcolor{mygreen}{1}}$};
@@ -1169,6 +1173,9 @@ Die entsprechende Interpretation des \textsc{MWPM} als zulässige Stack-Zuweisun
     \caption{\textsc{Zulässige Stack-Zuweisungen.}}
     \label{fig:stacking_solution}
 \end{figure}
+
+\vfill
+\pagebreak
 
 Zuletzt muss ggf. noch die Reihenfolge innerhalb der Stacks angepasst werden, da es sich bisher nur um zulässige Zuweisungen,
 nicht aber um eine zulässige Ordnung der Items innerhalb der Stacks handelt.
