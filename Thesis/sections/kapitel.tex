@@ -11,7 +11,7 @@ Stacks organisiert ist, welche eine limitierte gemeinsame Höhe besitzen, die im
 und der Maximalanzahl an Items, die pro Stack aufeinander gestapelt werden dürfen, entspricht.
 Die Items werden dementsprechend in eine Storage-Area verladen, welche aus Stacks mit einer festen Position besteht,
 d.h. es ist nicht möglich, die Stacks zu positionieren, sondern lediglich den Items eine Position innerhalb eines solchen
-Stacks zuweisen. In dieser Arbeit wird dabei ausschließlich der Loading-Prozess betrachtet, währenddem keine
+Stacks zuzuweisen. In dieser Arbeit wird dabei ausschließlich der Loading-Prozess betrachtet, währenddem keine
 Item-Entnahme stattfindet. Dies entspricht im Wesentlichen der von \citet{Bruns2015} betrachteten Problemstellung.
 
 In der Literatur existieren diverse Ansätze für das Konzept der Storage-Area.
@@ -169,7 +169,7 @@ Storage-Area und können dabei in horizontaler und vertikaler Richtung bewegt we
 \pagebreak
 
 Die Transportkosten werden in einer Matrix $C = (c_{iq})_{n \times m}$ kodiert,
-wobei $c_{iq} \coloneqq d(O_i, F_q)$. D.h. der Eintrag an der Stelle $c_{iq}$ entspricht
+wobei $c_{iq} \coloneqq d(O_i, F_q)$, d.h. der Eintrag an der Stelle $c_{iq}$ entspricht
 den Kosten für den Transport eines Items $i \in I$ in einen Stack $q \in Q$.
 Die Zuweisung des Items $i$ zu den unterschiedlichen Leveln $l \in \{1, \dotsc, b\}$ innerhalb des Stacks $q$
 verursacht stets dieselben Kosten.
@@ -566,7 +566,7 @@ und alle Nebenbedingungen in Form von linearen Gleichungen und Ungleichungen vor
 \vfill
 \pagebreak
 
-Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm, welches kontinuierliche und ganzzahligen Variablen
+Ein gemischt-ganzzahliges lineares Programm (MIP) ist ein lineares Programm, welches kontinuierliche und ganzzahlige Variablen
 enthält. Im Gegensatz zur kontinuierlichen Variante, ist die Lösung von ganzzahligen linearen Programmen NP-schwer.
 Während sogar sehr große kontinuierliche lineare Programme durch kommerzielle Solver in wenigen Minuten gelöst werden können, gilt dies nicht für ganzzahlige lineare Programme. Diese können nur mit deutlich zeitaufwändigeren Algorithmen wie Branch \& Bound gelöst werden \cite{Brucker2006}.
 
@@ -1802,7 +1802,7 @@ Die Tatsache, dass das Rating $r_{ij}$ eines Paares $(i, j)$ direkt der Summe se
 vom Durchschnitt entspricht, sofern diese den Schwellenwert $d_t$ überschreitet, hat zur Folge, dass die Höhe der Abweichungen
 einen Einfluss auf die Bewertung der Paare hat. Der \textquote{Deviation-Threshold} $d_t$ wird dabei in einem bestimmten Wertebereich variiert, d.h. der Prozess wird mit unterschiedlichen Schwellenwerten durchgeführt, die zu unterschiedlich bewerteten Listen der Item-Paare führen. Dazu wird experimentell ein Wertebereich bestimmt, in welchem $d_t$ in jeder Iteration inkrementiert wird.
 Es entstehen demnach mehrere unterschiedlich bewertete Itemlisten zusätzlich zum ursprünglichen Ergebnis des \textsc{MCM},
-welches unbeweret und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
+welches unbewertet und unsortiert betrachtet wird. Diese Listen werden absteigend basierend auf ihrer Bewertung sortiert.
 
 Da die Verwendung des beschriebenen Rating-Systems zu einer durchaus signifikanten Laufzeitverlängerung führt,
 wird in der Implementation der Heuristik ein Parameter \textit{prioritizeRuntime} eingeführt, welcher ein Deaktivieren des
@@ -1815,7 +1815,7 @@ kann diese jenem durch Verwendung des Rating-Systems noch einmal näher kommen.
 
 Nachdem die unterschiedlich sortierten Listen generiert wurden, geht es um den tatsächlichen Merge-Prozess.
 Die ersten $x$ Paare einer Liste werden separiert, was den ersten $x$ Paaren mit dem höchsten Rating, also der größten
-prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden $|M| - x$ Paaren zugewiesen um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden können, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking-Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen.
+prozentualen Abweichung vom Durchschnitt in der Summe $d_{ij}$ entspricht. Die daraus resultierenden einzelnen Items werden den verbleibenden $|M| - x$ Paaren zugewiesen, um kompatible Tripel zu bilden. Die größte Anzahl an Item-Paaren, die separiert und dessen Items theoretisch den verbleibenden Paaren zugewiesen werden können, beträgt $\floor{\frac{|M|}{3}}$. Aufgrund der Stacking-Constraints ist es jedoch nicht sinnvoll, die Minimalanzahl verbleibender Paare zu wählen. Dementsprechend sollte $|M|$ durch einen Wert $> 3$ dividiert werden. Gleichzeitig sollte der Wert nicht zu groß gewählt werden, damit möglichst viele Tripel entstehen.
 
 Nun sollen aus den dabei entstehenden Items zusammen mit den verbleibenden Paaren zulässige Tripel entstehen.
 Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, E_1)$ bestehend aus den Paaren und separierten Items generiert.
@@ -2178,7 +2178,7 @@ Abbildung \ref{fig:merge_result} zeigt das Ergebnis des Merge-Prozesses, in welc
 Die in Abb. \ref{fig:merge_result} dargestellten Item-Tripel sowie das Item-Paar, werden im Folgenden
 möglichst günstig und in einer Weise, welche die Placement-Constraints respektiert, einem Stack zugewiesen.
 Dazu wird zunächst der vollständig bipartite Graph, welcher in Abb. \ref{fig:complete_bipartite} dargestellt ist,
-generiert. Dieser Graph enthält die Items bestehend aus vier Tripeln und einem Paar in der einen Partition
+generiert. Dieser Graph enthält die Items, bestehend aus vier Tripeln und einem Paar, in der einen Partition
 und die Stacks in der anderen Partition.
 Da es lediglich $5$ Item-Tupel bei $6$ zur Verfügung stehenden Stacks gibt und somit die Partitionen nicht dieselbe
 Größe besitzen, wird ein Dummy-Item $D_1$ eingeführt.
@@ -2634,8 +2634,8 @@ Die Bin-Packing-Formulierung ist der 3-Index-Formulierung somit in dieser Katego
 \label{fig:mip_results_b=3_s}
 \end{figure}
 
-Bei der durchschnittlichen Abweichung der Heuristik von $0.2 \%$ handelt es sich sicher in Anbetracht
-der enormen Laufzeitverbesserung um einen akzeptablen Wert, allerdings gilt, wie schon in der Kategorie
+Bei der durchschnittlichen Abweichung der Heuristik von $0.2 \%$ handelt es sich sicher, in Anbetracht
+der enormen Laufzeitverbesserung, um einen akzeptablen Wert, allerdings gilt, wie schon in der Kategorie
 der kleinen Instanzen für eine Stack-Kapazität von $b = 2$ auch hier, dass die durchschnittlich benötigten $1.15s$
 für die exakte Lösung seitens der Bin-Packing-Formulierung aus praktischer Perspektive vermutlich vertretbar sind
 und kein wirklicher Bedarf für eine Laufzeitvebessrung durch eine Heuristik herrscht.
@@ -3072,7 +3072,7 @@ handelt, wobei eine zu $s$ benachbarte Lösung nur dann akzeptiert wird, wenn di
 oder diese ein Aspirationskriterium\footnote{Kriterium, welches bei Erfüllung zur Missachtung des Tabu-Status führt.} erfüllt. Aus dieser wird anhand einer Selektionsstrategie eine Nachbarlösung $s'$ gewählt und die Tabu-Liste wird aktualisiert, sodass sämtliche Lösungen, welche besucht werden, als zukünftig \textquote{tabu} gespeichert werden. In jeder Iteration wird die gegenwärtige Lösung $s$ entsprechend durch eine benachbarte Lösung $s'$ aktualisiert.
 Sollte $s'$ einen besseren Zielfunktionswert besitzen als $s^*$, so wird die beste Lösung $s^*$
 sowie der beste Zielfunktionswert $c^*$ aktualisiert. Dieser Prozess terminiert, sobald ein definiertes
-Abbruckriterium erfüllt ist.
+Abbruchkriterium erfüllt ist.
 
 \begin{figure}[H]
 \centering
@@ -3350,7 +3350,7 @@ um die Zusammenhangseigenschaft zu garantieren.
 \pagebreak
 
 Um letztendlich eine zusammenhängende Nachbarschaft zu erhalten, wird daher statt des $sim_b$-Swap Operators,
-welcher $1$ bis $b$ simulatene Swaps ermöglicht, ein Operator $k$-Swap eingeführt. Dieser erlaubt es, $k \in \mathbb{N}$
+welcher $1$ bis $b$ simultane Swaps ermöglicht, ein Operator $k$-Swap eingeführt. Dieser erlaubt es, $k \in \mathbb{N}$
 Swap-Operationen nacheinander auszuführen. Dabei sind unzulässige Zwischenlösungen gestattet, denn die Zulässigkeit
 wird erst nach Anwendung des Operators überprüft. Die Transformation des ersten Gegenbeispiels aus Abb. \ref{fig:counter_example_stacks}
 lässt sich mit $k = 2$ analog zum $sim_b$-Swap Operator mit $b = 2$ lösen.
@@ -3473,7 +3473,7 @@ mit Stacks der Kapazität $b = 2$.
 In Abb. \ref{fig:imp_res_b=2_s} sind die Ergebnisse der Anwendung der Tabu-Suche in der Kategorie
 der kleinen Instanzen dargestellt. \textsc{OPT} entspricht der jeweils besseren MIP-Formulierung, welche die optimalen Zielfunktionswerte liefert, \textsc{2Cap} entspricht der Heuristik, welche die Initiallösungen der Tabu-Suche generiert und \textsc{2Cap + TS} entspricht schließlich der Kombination aus Anwendung der Heuristik und anschließender Verbesserung durch die Tabu-Suche. Die Verbesserungen der Tabu-Suche können in Abb. \ref{fig:imp_b=2_s_costs} nachvollzogen werden. Es werden bei $13$ der $20$ Instanzen Verbesserungen erzielt, wodurch die durchschnittliche Abweichung der Lösungen vom Optimum von $0.29 \%$ durch Anwendung der Tabu-Suche
 auf $0.14 \%$ reduziert wird. Mit den Instanzen $06$ und $07$ wird in zwei Fällen durch die Verbesserung sogar eine Optimallösung ermittelt. Bei den Instanzen $00, 02$ und $16$ wurde der optimale Zielfunktionswert durch die Verbesserungen nur knapp verfehlt. Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche dabei, wie erwartet, weit über jene der konstruktiven Heuristik und des exakten Solvers hinaus. Die durchschnittliche Laufzeit von \textsc{OPT} beträgt $0.72s$, während
-die Laufzeit von \textsc{2Cap + TS} durchschnittlich $44.4s$ beträgt. Da allerdings, wie bereits in Abschnitt \ref{sec:solver_comp_b=2} erwähnt, aufgrund der geringen Laufzeiten der exakten Solver in dieser Kategorie ohnehin kein Bedarf für eine Laufzeitverbesserung durch eine Heuristik besteht, ist es hier lediglich von Iteresse, einen möglichst guten Kompromiss zwischen geringer Laufzeit und großer Kostenersparnis zu finden, welcher mit der gegenwärtigen Konfiguration gefunden wurde.
+die Laufzeit von \textsc{2Cap + TS} durchschnittlich $44.4s$ beträgt. Da allerdings, wie bereits in Abschnitt \ref{sec:solver_comp_b=2} erwähnt, aufgrund der geringen Laufzeiten der exakten Solver in dieser Kategorie ohnehin kein Bedarf für eine Laufzeitverbesserung durch eine Heuristik besteht, ist es hier lediglich von Interesse, einen möglichst guten Kompromiss zwischen geringer Laufzeit und großer Kostenersparnis zu finden, welcher mit der gegenwärtigen Konfiguration gefunden wurde.
 
 \begin{figure}[H]
 \centering
@@ -3680,7 +3680,7 @@ an Bedeutung, denn auch Instanzen, welche weit mehr als $500$ Items enthalten, k
 konstruktiven Heuristiken effizient gelöst werden, während die von \textsc{CPLEX} gelösten MIP-Formulierungen
 zunehmend an ihre Grenzen stoßen. Da ein praktischer Einsatz exakter Solver aufgrund des enormen Laufzeit- und Speicherbedarfs bei großen Instanzen nicht sinnvoll oder sogar ausgeschlossen ist, stellen die vorgestellten Heuristiken gute Alternativen dar.
 
-Zusätzlich zu den konstruktiven Verfahren, wurde mit der Tabu-Suche ein Verbesserungsverfahren entwickelt,
+Zusätzlich zu den konstruktiven Verfahren wurde mit der Tabu-Suche ein Verbesserungsverfahren entwickelt,
 welches von den konstruktiven Heuristiken generierte Lösungen als Eingabe bekommt, um diese
 im Laufe des Verfahrens zu verbessern. Dabei war das Ziel, einen guten Kompromiss aus geringen Laufzeiten
 und großen Kostenreduktionen zu finden. Dieses Ziel wurde für die gegenwärtige Implementation der Tabu-Suche durch die geschilderte Konfiguration erreicht. In der Anwendung der Tabu-Suche wurde deutlich, dass in sämtlichen Kategorien zahlreiche signifikante Verbesserungen zu verzeichnen sind und sich die Laufzeiten in einem als akzeptabel empfundenen Rahmen, welcher eine sinnvolle Anwendung der Tabu-Suche ermöglicht, bewegen.
