@@ -1188,13 +1188,13 @@ Abb. \ref{fig:post_processing_graph_two_cap} dargestellt ist. Dieser enthält di
 und die verbleibenden freien Positionen in der anderen Partition. Die Positionen sind jeweils in der Notation
 $pos(stackIdx, level)$ gegeben.
 In diesem Beispiel gibt es mit $pos(1, 1), pos(1, 2)$ und $pos(3, 2)$ drei verbleibende freie Positionen.
-Da sämtliche Kantengewichte im Postprocessing-Graphen negativ oder neutral sind, kommt durch keine Item-Verschiebung
-eine Kostenersparnis zustande und es ist nicht möglich, die zuvor generierte Lösung im Postprocessing-Schritt zu
+Da sämtliche Kantengewichte im Postprocessing-Graphen negativ oder neutral sind, kommt durch keine Verschiebung
+eines Items eine Kostenersparnis zustande und es ist nicht möglich, die zuvor generierte Lösung im Postprocessing-Schritt zu
 verbessern, weshalb die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverändert bestehen bleiben.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.45, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
+\begin{tikzpicture}[scale=0.5, transform shape, node distance=2.5cm, state/.style={circle, draw, minimum size=2cm}]
         \node[state] (A) [thick] {$\boldsymbol{1}$};
         \node[state] (B) [thick, below of=A] {$\boldsymbol{2}$};
         \node[state] (C) [thick, below of=B] {$\boldsymbol{3}$};
@@ -1214,7 +1214,7 @@ verbessern, weshalb die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverä
             (B) edge [thick, very near end, above right] node {$-6.06$} (I)
             (B) edge [thick, very near end, below left] node {$-6.06$} (J)
             (C) edge [thick, above] node {$-6.06$} (H)
-            (C) edge [thick, very near start, below left] node {$-6.06$} (I)
+            (C) edge [thick, near end, below] node {$-6.06$} (I)
             (D) edge [thick, very near start, above left] node {$-12.12$} (H)
             (D) edge [thick, very near start, above] node {$-12.12$} (I)
             (E) edge [thick, very near start, above left] node {$-12.12$} (H)
@@ -1272,14 +1272,14 @@ In den im Zuge dieser Arbeit durchgeführten Experimenten basieren diese Distanz
 aus Abschnitt \ref{sec:transport_costs} stets auf der Manhattan-Metrik, welche die Kranbewegung in geeigneter Weise repräsentiert. Die Kosten der Zuweisung eines Items zu einem Stack ergeben sich somit aus der Manhattan-Distanz zwischen Itemposition $O_i$ und zugewiesener Stack-Position $F_q$. Für die Transportkostenmatrix $C = (c_{iq})_{n \times m}$ gilt
 daher $c_{iq} \coloneqq d_{man}(O_i, F_q)$.
 
+\vfill
+\pagebreak
+
 \subsection{Vergleich der Solver für $b = 2$}
 \label{sec:solver_comp_b=2}
 
 In diesem Abschnitt werden die verschiedenen Solver für Instanzen von Stacking-Problemen mit einer Stack-Kapazität von $b=2$ miteinander verglichen. Die relevanten Kategorien sind dabei der im Folgenden als Instance-Coverage bezeichnete prozentuale Anteil an gelösten Instanzen pro Solver und Test-Instanz-Konfiguration, die Laufzeiten, der Anteil der Instanzen, welcher pro Solver optimal gelöst wird
 sowie die jeweilige prozentuale Abweichung der ermittelten Zielfunktionswerte vom Optimum.
-
-\vfill
-\pagebreak
 
 Die in Kapitel \ref{sec:mip_formulations} vorgestellten MIP-Formulierungen wurden mit dem Java-Interface von \textsc{CPLEX} 12.8.0 implementiert
 und gelöst. Dabei wurde \textsc{CPLEX} über den Parameter \textit{CPX\_MIPEMPHASIS\_FEASIBILITY} so konfiguriert, dass die Zulässigkeit
@@ -1298,7 +1298,7 @@ Die in dieser Arbeit entwickelten Heuristiken wurden ebenfalls in der Programmie
 Wie in Abschnitt \ref{sec:two_cap_heuristic} erläutert, stellt die Heuristik für eine Stack-Kapazität von $b = 2$,
 welche in den folgenden Experimenten zum Einsatz kommt, einen über den Parameter \textit{postProcessing} konfigurierbaren
 Postprocessing-Schritt bereit, welcher einen reinen Fokus auf die Kostenminimierung ermöglicht. Dieser Schritt wird
-in den durchgeführten Experimenten stets aktiviert. Sämtliche Experimente wurden auf einem System mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.
+in den durchgeführten Experimenten stets aktiviert. Sämtliche Experimente wurden auf einem System mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM durchgeführt.\newline
 
 \textbf{Kleine Instanzen (s)}
 
@@ -1315,7 +1315,7 @@ Die Solver werden in den Diagrammen und Abbildungen im Folgenden stets als \text
 Wie bereits in Kapitel \ref{sec:test_data} erläutert, werden jeweils $20$ Instanzen pro Konfiguration betrachtet,
 d.h. die im Folgenden betrachteten Ergebnisse basieren auf der Lösung von in diesem Fall $20$ kleinen Instanzen.
 
-Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, findet die Heuristik bei allen betrachteten Zeitlimits für sämtliche Instanzen eine zulässige Lösung, während die Bin-Packing-Formulierung bei einem Zeitlimit von $0.25s$ noch überhaupt keine Instanz zulässig löst und die 3-Index-Formulierung bei diesem Zeitlimit auf eine Instance-Coverage von $80 \%$ kommt (vgl. Abb. \ref{fig:instance_cov_b=2_s_a}). Bei einem Zeitlimit von $0.5s$ löst neben der Heuristik auch die 3-Index-Formulierung sämtliche Instanzen zulässig, während die Bin-Packing-Formulierung dort lediglich eine Instanz zulässig löst (vgl. Abb. \ref{fig:instance_cov_b=2_s_b}). Beim letzten betrachteten Zeitlimit von $1s$ nähert sich schließlich auch die Bin-Packing-Formulierung einer vollständigen Instance-Coverage und löst $90 \%$ der Instanzen zulässig.\newline
+Wie man Abb. \ref{fig:instance_cov_b=2_s} entnehmen kann, findet die Heuristik bei allen betrachteten Zeitlimits für sämtliche Instanzen eine zulässige Lösung, während die Bin-Packing-Formulie\-/rung bei einem Zeitlimit von $0.25s$ noch überhaupt keine Instanz zulässig löst und die 3-Index-Formulierung bei diesem Zeitlimit auf eine Instance-Coverage von $80 \%$ kommt (vgl. Abb. \ref{fig:instance_cov_b=2_s_a}). Bei einem Zeitlimit von $0.5s$ löst neben der Heuristik auch die 3-Index-Formulierung sämtliche Instanzen zulässig, während die Bin-Packing-Formulierung dort lediglich eine Instanz zulässig löst (vgl. Abb. \ref{fig:instance_cov_b=2_s_b}). Beim letzten betrachteten Zeitlimit von $1s$ nähert sich schließlich auch die Bin-Packing-Formulierung einer vollständigen Instance-Coverage und löst $90 \%$ der Instanzen zulässig.\newline
 Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings, dass sämtliche Instanzen bereits bei einem Zeitlimit von $0.5s$ zulässig von einer MIP-Formulierung gelöst werden, was darauf hindeutet, dass der Bedarf für eine Laufzeitverbesserung durch eine Heuristik in dieser Kategorie aus praktischer Perspektive eher gering sein dürfte.
 
 \begin{figure}[H]
@@ -1323,31 +1323,34 @@ Die wesentliche Erkenntnis aus Abb. \ref{fig:instance_cov_b=2_s} ist allerdings,
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_s_0_25s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_coverage_b=2_s_0_25s.png}
 \caption{\textsc{Zeitlimit $0.25s$}}
 \label{fig:instance_cov_b=2_s_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_s_0_5s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_coverage_b=2_s_0_5s.png}
 \caption{\textsc{Zeitlimit $0.5s$}}
 \label{fig:instance_cov_b=2_s_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=2_s_1s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_coverage_b=2_s_1s.png}
 \caption{\textsc{Zeitlimit $1s$}}
 \label{fig:instance_cov_b=2_s_c}
 \end{subfigure}
 
-\caption{\textsc{Instance-Coverage der $b=2$ Solver (s)}}
+\caption{\textsc{Instance-Coverage der $b=2$ Solver (s)}.}
 \label{fig:instance_cov_b=2_s}
 \end{figure}
 
 In Abb. \ref{fig:b=2_s_results} sind die Laufzeiten und ermittelten Zielfunktionswerte der Solver bei einem Zeitlimit von $1s$ dargestellt. Auf der $y$-Achse sind jeweils die gelösten Instanzen aufgetragen und auf der $x$-Achse die Laufzeiten bzw. ermittelten Kosten (Zielfunktionswerte). Für die Instanzen wird in sämtlichen Darstellungen die folgende Notation verwendet: (\textsc{items, stacks, capacity, index}). Abbildung \ref{fig:b=2_s_runtimes} zeigt die Laufzeiten der Solver pro Instanz in Sekunden bei einem Zeitlimit von $1s$.
 Die 3-Index-Formulierung ist in der Regel deutlich schneller als die Bin-Packing-Formulierung und die Heuristik unterbietet beide MIP-Formulierungen noch einmal deutlich. Da in der Abbildung die absoluten Laufzeitdifferenzen zu sehen sind, ist es wichtig, zu erwähnen, dass die Laufzeiten der Heuristik durchschnittlich um den Faktor $24$ kleiner sind als jene der 3-Index-Formulierung. Zwischen der 3-Index- und der Bin-Packing-Formulierung besteht dagegen nur ein Faktor von $1.5$.
+
+\vfill
+\pagebreak
 
 Aufgrund der Tatsache, dass \textsc{CPLEX} lediglich vor dem Zeitlimit terminiert, wenn die entsprechende Instanz optimal gelöst wird, ist klar ersichtlich, dass die 3-Index-Formulierung sämtliche Instanzen optimal löst (vgl. Abb. \ref{fig:b=2_s_runtimes}). Die Bin-Packing-Formulierung terminiert dagegen mit den Instanzen $00$ und $11$ in nur zwei Fällen vor dem Zeitlimit. Bei diesen handelt es sich um die einzigen Instanzen, welche optimal von der Bin-Packing-Formulierung gelöst werden, was daran erkennbar ist, dass die \textsc{BinP}-Einträge in der Darstellung der ermittelten Kosten durch die \textsc{3Idx}-Einträge verdeckt werden, weil beide Formulierungen denselben, optimalen Zielfunktionswert ermitteln (vgl. Abb. \ref{fig:b=2_s_costs}).
 Sofern mehrere Solver denselben Wert ermitteln, verdecken sich die entsprechenden Einträge in der Reihenfolge, in welcher sie in der Legende aufgeführt sind. Dies gilt grundsätzlich für sämtliche Diagramme in den folgenden Experimenten.
