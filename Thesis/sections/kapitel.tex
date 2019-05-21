@@ -647,11 +647,10 @@ alle Items $i \in I$ gegeben.
 
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} \sum_{l \in L} c_{iq} x_{iql} \label{three_idx_line_one} \\
-\boldsymbol{s.t.} \quad \sum_{q \in Q^i} \sum_{l \in L} x_{iql} = 1 \quad\thinspace\thinspace\quad\quad\quad\quad \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \label{three_idx_line_two} \\
-\sum_{i \in I} x_{iql} \leq 1 \thinspace\quad\quad\quad\quad\quad\quad\quad \forall q \in Q, l \in L \thinspace\thinspace\thinspace\thinspace\quad\quad\quad\thinspace \label{three_idx_line_three} \\
-\sum_{j \in I | i \rightarrow j \in A} x_{jq(l-1)} - x_{iql} \geq 0 \thinspace\quad\quad \forall i \in I, q \in Q, l \in L \textbackslash \{1\}
-\label{three_idx_line_four} \\
-\quad\quad x_{iql} \in \{0, 1\} \quad\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q, l \in L \quad\thinspace\thinspace\thinspace\thinspace\thinspace \label{three_idx_line_five}
+\boldsymbol{s.t.} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\thinspace \sum_{q \in Q^i} \sum_{l \in L} x_{iql} = 1 \thinspace\thinspace\thinspace\quad\thinspace\thinspace\quad\quad\quad\quad\thinspace \forall i \in I \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \label{three_idx_line_two} \\
+\thinspace\thinspace\thinspace\thinspace\quad\sum_{i \in I} x_{iql} \leq 1 \quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace\thinspace \forall q \in Q, l \in L \thinspace\thinspace\thinspace\thinspace\quad\quad\quad\thinspace \label{three_idx_line_three} \\
+\thinspace\quad \sum_{j \in I | i \rightarrow j \in A} x_{jq(l-1)} - x_{iql} \geq 0 \thinspace\quad\quad \forall i \in I, q \in Q, l \in L \textbackslash \{1\} \label{three_idx_line_four} \\
+\quad\quad x_{iql} \in \{0, 1\} \quad\quad\quad\quad\quad\quad\quad\thinspace\thinspace \forall i \in I, q \in Q, l \in L \quad\thinspace\thinspace\thinspace\thinspace\thinspace \label{three_idx_line_five}
 \end{gather}
 
 In (\ref{three_idx_line_one}) wird die Zielfunktion definiert, die erneut die Summe der Kosten sämtlicher Item-Zuweisungen
