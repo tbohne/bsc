@@ -887,7 +887,7 @@ Items, welche nicht inzident zu einer Kante des Matchings sind, werden auf dem G
 Insgesamt werden auf diese Weise so wenig Stacks wie möglich verwendet, denn auch wenn der eigentliche Gegenstand der Optimierung die Transportkosten sind, steht zunächst stets im Vordergrund, überhaupt eine zulässige Lösung zu finden, weshalb die Maximierung der Anzahl der vollständig gefüllten Stacks initial eine gute Strategie darstellt.
 Eine zulässige Lösung mit maximal $m$ Stacks kann nur dann existieren, wenn die Anzahl der Kanten im Matching und die Anzahl der nicht gematchten Knoten in der Summe nicht größer ist als $m$.
 
-Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch eine bestmögliche Zuweisung von Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items enthält, während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
+Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Stack platziert werden, weshalb noch eine bestmögliche Zuweisung von Items und Item-Paaren zu Stacks gefunden werden muss. Diese entspricht einer Zuweisung, in welcher sämtliche Items möglichst günstig einem kompatiblen Stack zugeordnet werden. Dazu wird ein bipartiter Graph $G_1 = (V_1 \cup V_2, A)$ eingeführt, dessen erste Partition $V_1$ die Items bestehend aus Item-Paaren und Unmatched-Items\footnote{Items, die nicht mit anderen Items gruppiert sind.} enthält, während die zweite Partition $V_2$ die zur Verfügung stehenden Stacks beinhaltet.
 Eine Kante in $A$, welche ein Item $i \in V_1$ oder ein Item-Paar $(i, j) \in V_1$ mit einem Stack $q \in V_2$ verbindet, gibt an, dass das entsprechende Item $i$ bzw. Item-Paar $(i, j)$ dem jeweiligen Stack $q$ zugeordnet werden kann. Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
 aus $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2 \thinspace \exists \thinspace \{i, q\} \in A$.
 Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird, zum Stack $q$
@@ -1023,6 +1023,9 @@ Item $5$ wird im Folgenden dem Ground-Level eines eigenen Stacks zugewiesen.
   \label{fig:item_pairs_b=2}
 \end{figure}
 
+\vfill
+\pagebreak
+
 Nun geht es darum, eine möglichst günstige Zuweisung der Item-Paare und Unmatched-Items zu Stacks zu finden,
 welche die Placement-Constraints respektiert. Dazu wird zunächst der vollständig bipartite Graph, welcher in
 Abb. \ref{fig:bipartite_graph} dargestellt ist, generiert. Dieser enthält die Items bestehend aus Item-Paaren
@@ -1143,6 +1146,9 @@ Im betrachteten Beispiel wurde demnach eine zulässige Lösung der Kosten $157.0
 Die entsprechende Interpretation des \textsc{MWPM} als zulässige Stack-Zuweisungen ist in Abb.
 \ref{fig:stacking_solution} visualisiert.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
   \centering
   \resizebox{0.35\textwidth}{!}{
@@ -1156,9 +1162,6 @@ Die entsprechende Interpretation des \textsc{MWPM} als zulässige Stack-Zuweisun
     \caption{\textsc{Zulässige Stack-Zuweisungen.}}
     \label{fig:stacking_solution}
 \end{figure}
-
-\vfill
-\pagebreak
 
 Zuletzt muss ggf. noch die Reihenfolge innerhalb der Stacks angepasst werden, da es sich bisher nur um zulässige Zuweisungen,
 nicht aber um eine zulässige Ordnung der Items innerhalb der Stacks handelt.
@@ -1212,6 +1215,8 @@ verbessern, weshalb die Zuweisungen aus Abb. \ref{fig:stacking_solution} unverä
 \label{fig:post_processing_graph_two_cap}
 \end{figure}
 
+\vfill
+\pagebreak
 
 \subsection{Konfiguration der Experimente}
 \label{sec:experiments_config}
@@ -1241,7 +1246,6 @@ und $2.59 \thinspace m$ hoch \cite{ContainerBasis}.
 In Orientierung am TEU betragen Länge und Breite einer Zelle in den beiden Grids $6.06 \thinspace m$ bzw.
 $2.44 \thinspace m$. Außerdem lässt sich die Distanz zwischen der Storage-Area und den Fahrzeugen konfigurieren,
 für welche jeweils das fünffache der Zellenbreite, also in diesem Fall $12.20 \thinspace m$ angenommen wird.
-
 Bei den Längen und Breiten der Items selbst handelt es sich um zufällige Werte, welche nicht die Zellengröße überschreiten.
 Die Länge eines Items wird dementsprechend zufällig aus dem Intervall $[1.0, 6.0]$ generiert während die Breite aus dem
 Intervall $[1.0, 2.4]$ stammt. Da es typischerweise nur eine begrenzte Anzahl unterschiedlicher Item-Typen im selben Lager
