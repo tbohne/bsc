@@ -603,8 +603,8 @@ durch die Menge $Q^i$ gegeben, wobei $Q^i$ der Menge an Stacks entspricht, denen
 
 \begin{gather}
 \boldsymbol{min} \quad \sum_{i \in I} \sum_{q \in Q} c_{iq} x_{iq} \label{bin_packing_line_one} \\
-\thinspace\thinspace \boldsymbol{s.t.} \quad \quad \sum_{q \in Q^i} x_{iq} = 1 \quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
-\thinspace \sum_{i \in I} x_{iq} \leq b \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \label{bin_packing_line_three} \\
+\thinspace\thinspace \boldsymbol{s.t.} \thinspace\quad \quad \sum_{q \in Q^i} x_{iq} = 1 \thinspace\thinspace\quad\quad\quad\quad\quad\quad\quad \forall i \in I \quad\quad\quad\quad\thinspace\thinspace \label{bin_packing_line_two} \\
+\thinspace\thinspace\thinspace\thinspace\thinspace \sum_{i \in I} x_{iq} \leq b \thinspace\thinspace\thinspace \quad\quad\quad\quad\quad\quad\quad \forall q \in Q \thinspace\thinspace \label{bin_packing_line_three} \\
 \thinspace\thinspace\quad\quad x_{iq} + x_{jq} \leq 1 \quad\quad\thinspace\thinspace\quad\quad\quad\quad \forall \{i, j\} \notin E \label{bin_packing_line_four} \\
 \thinspace\thinspace\quad\quad\quad x_{iq} \in \{0, 1\} \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace\quad\quad\quad\quad\quad\quad \forall i \in I, q \in Q \thinspace \label{bin_packing_line_five}
 \end{gather}
