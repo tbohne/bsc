@@ -2796,34 +2796,31 @@ bei denen es darum geht, $500$ eintreffende Items in die Storage-Area zu verlade
 In dieser Kategorie werden Zeitlimits von $5, 15$ und $30$ Minuten pro Instanz betrachtet.
 
 Die Bin-Packing-Formulierung findet, wie Abb. \ref{fig:instance_coverage_b=3_l_a} zu entnehmen ist,
-bei einem Zeitlimit von $5$ Minuten pro Instanz keine zulässige Lösung, während die 3-Index-Formulierung
+bei einem Zeitlimit von $5$ Minuten pro Instanz keine zulässige Lösung, während die 3-Index-Formulie\-/rung
 $85 \%$ der Instanzen zulässig löst. Beim nächsten betrachteten Zeitlimit von $15$ Minuten pro Instanz löst die Bin-Packing-Formulierung dagegen sämtliche Instanzen zulässig, während die 3-Index-Formulierung weiterhin eine Instance-Coverage von $85 \%$ besitzt (vgl. Abb. \ref{fig:instance_coverage_b=3_l_b}). Es ist bemerkenswert, dass die Bin-Packing-Formulierung bei einem Zeitlimit von $5$ Minuten noch keine Instanz zulässig löst und beim Zeitlimit
 von $15$ Minuten eine höhere Instance-Coverage als die 3-Index-Formulierung erreicht. Die verbleibenden $15 \%$ der
 Instanzen, welche von der 3-Index-Formulierung nicht gelöst werden, erfordern offensichtlich erheblich längere Laufzeiten als die übrigen. In Abb. \ref{fig:instance_coverage_b=3_l_c} ist die Instance-Coverage bei einem Zeitlimit von $30$ Minuten dargestellt, bei welchem schließlich sämtliche Solver alle betrachteten Instanzen zulässig lösen. Die Heuristik ist mit einer durchschnittlichen Laufzeit von $6.72s$ pro Instanz erneut in keinem Fall vom Zeitlimit betroffen.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
 \centering
 
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_300s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_coverage_b=3_l_300s.png}
 \caption{\textsc{Zeitlimit} $5min$}
 \label{fig:instance_coverage_b=3_l_a}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_900s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_coverage_b=3_l_900s.png}
 \caption{\textsc{Zeitlimit} $15min$}
 \label{fig:instance_coverage_b=3_l_b}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
-\includegraphics[width=1.2\textwidth]{img/solver_instance_coverage_b=3_l_1800s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_coverage_b=3_l_1800s.png}
 \caption{\textsc{Zeitlimit} $30min$}
 \label{fig:instance_coverage_b=3_l_c}
 \end{subfigure}
@@ -2837,6 +2834,9 @@ Demgegenüber wird die 3-Index-Formulierung ausnahmslos durch das Zeitlimit gest
 Des Weiteren ist klar zu erkennen, dass die Heuristik auch in dieser Kategorie in Bezug auf die Laufzeit konkurrenzlos ist. Da die Bin-Packing-Formulierung bei Instanz $06$ durch das Zeitlimit terminiert, ist in diesem Fall nicht garantiert, dass diese zu einer optimalen Lösung gelangt. In einem weiteren Test mit einem größeren Zeitlimit hat sich allerdings herausgestellt, dass auch dort der Optimalwert ermittelt wurde, was bedeutet, dass
 \textsc{CPLEX} lediglich noch nicht bewiesen hat, dass es sich um das Optimum handelt, der entsprechende Wert wurde jedoch bereits ermittelt.
 
+\vfill
+\pagebreak
+
 In der abermals skalierten Darstellung der Kosten bei einem Zeitlimit von $30$ Minuten in Abb. \ref{fig:b=3_l_costs}
 ist zu erkennen, dass die 3-Index-Formulierung in keinem Fall eine optimale Lösung liefert,
 stattdessen kann diese aufgrund der erheblichen Abweichungen vom Optimum in keinem Fall mit den Ergebnissen der Heuristik
@@ -2844,21 +2844,18 @@ oder der Bin-Packing-Formulierung konkurrieren. Außerdem ist zu sehen, dass die
 Insbesondere bei den Instanzen $06, 10$ und $11$ wurde annähernd der optimale Zielfunktionswert ermittelt.
 Die Einträge der unteren Schranken zeigen, dass die Stacking-Constraints erneut bei jeder Instanz einen geringen Einfluss auf den optimalen Zielfunktionswert haben.
 
-\vfill
-\pagebreak
-
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.4\textwidth}
+\begin{subfigure}[b]{0.47\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_time_b=3_l_1800s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_time_b=3_l_1800s.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:b=3_l_runtimes}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.4\textwidth}
+\begin{subfigure}[b]{0.47\textwidth}
 \centering
-\includegraphics[width=1.3\textwidth]{img/solver_instance_cost_b=3_l_1800s.png}
+\includegraphics[width=1.1\textwidth]{img/solver_instance_cost_b=3_l_1800s.png}
 \caption{\textsc{Kosten}}
 \label{fig:b=3_l_costs}
 \end{subfigure}
@@ -2877,10 +2874,11 @@ Die Heuristik löst mit einer durchschnittlichen Laufzeit von $6.72s$ pro Instan
 zulässig und weicht dabei im Durchschnitt nur um $0.02 \%$ vom Optimum ab.
 
 \begin{figure}[H]
+\centering
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ | c | c | c |}
+\begin{tabular}{ | m{3.85cm} | C{1.25cm} | C{1.25cm} |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
     \textbf{Optimal ($\boldsymbol{\%}$)} & $0$ & $0$ \\ \hline
@@ -2894,7 +2892,7 @@ zulässig und weicht dabei im Durchschnitt nur um $0.02 \%$ vom Optimum ab.
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ | c | c | c |}
+\begin{tabular}{ | m{3.85cm} | C{1.25cm} | C{1.25cm} |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
     \textbf{Optimal ($\boldsymbol{\%}$)} & $ \textcolor{mygreen}{20}$ & $ \textcolor{red}{0}$ \\ \hline
@@ -2909,7 +2907,7 @@ zulässig und weicht dabei im Durchschnitt nur um $0.02 \%$ vom Optimum ab.
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \resizebox{\textwidth}{!}{
-\begin{tabular}{ | c | c | c |}
+\begin{tabular}{ | m{3.85cm} | C{1.25cm} | C{1.25cm} |}
     \hline
      & \textbf{BinP} & \textbf{3Idx} \\ \hline
     \textbf{Optimal ($\boldsymbol{\%}$)} & $ \textcolor{mygreen}{100}$ & $ \textcolor{red}{0}$ \\ \hline
@@ -2923,6 +2921,9 @@ zulässig und weicht dabei im Durchschnitt nur um $0.02 \%$ vom Optimum ab.
 \label{}
 \end{figure}
 
+\vfill
+\pagebreak
+
 Zur Verdeutlichung der Tatsache, dass die konstruktiven Heuristiken in der Lage sind, auch erheblich
 größere Instanzen effizient zu lösen, wurden $20$ Instanzen generiert, bei denen es darum geht,
 $1000$ Items in die Storage-Area zu verladen. Instanzen dieser Größe können nicht mehr effizient
@@ -2931,9 +2932,6 @@ zu demonstrieren. In Abb. \ref{fig:big_instance_example} sind die ermittelten Zi
 Als Referenzwerte dienen jeweils die unteren Schranken, welche zeigen, dass die Heuristik auch bei Instanzen dieser
 Größe nur marginal von den Optimalwerten abweicht. Die durchschnittlich benötigte Laufzeit pro Instanz beträgt
 dabei lediglich $56.73s$.
-
-\vfill
-\pagebreak
 
 \begin{figure}[H]
 \centering
@@ -2944,7 +2942,7 @@ dabei lediglich $56.73s$.
 
 \end{figure}
 
-\textbf{Fazit}\newline
+\textbf{Fazit}
 
 Bei Stacking-Problemen mit Stacks der Kapazität $b = 3$ besteht in der Kategorie der kleinen Instanzen
 aufgrund der relativ geringen Laufzeit der Bin-Packing-Formulierung nicht zwingend ein Bedarf für eine
@@ -2960,6 +2958,9 @@ Die Heuristik benötigt hier durschnittlich $6.72s$ pro Instanz und weicht um du
 Der daraus resultierende noch gravierendere Unterschied der Laufzeiten zwischen der Bin-Packing-Formulierung und
 der Heuristik sorgt in Verbindung mit der sehr geringen Abweichung vom Optimum dafür, dass die Heuristik in der Praxis
 auch in dieser Kategorie bevorzugt werden sollte.
+
+\vfill
+\pagebreak
 
 Insgesamt ist festzuhalten, dass die Heuristik in jeder betrachteten Kategorie bei sehr geringen Abweichungen
 vom Optimum deutlich kürzere Laufzeiten als die von \textsc{CPLEX} gelösten MIP-Formulierungen bietet und somit in
@@ -3025,7 +3026,7 @@ Sollte keine verbessernde Lösung in der Nachbarschaft gefunden werden, so termi
 Diese Strategie wird \textquote{Steepest Descent} genannt, also Strategie des steilsten Abstiegs.
 Dieser Name ergibt sich daraus, dass bei einem Minimierungsproblem in der Richtung des steilsten Abstiegs
 von der Initiallösung vorangeschritten wird, bis keine Verbesserung mehr erzielt wird,
-was zum bereits erwähnten Problem aus Abb. \ref{fig:local_search_weakness} führt.
+was zum bereits erwähnten Problem aus Abb. \ref{fig:local_search_weakness} führt.\newline
 
 \textbf{Beispiel}
 
@@ -3133,7 +3134,7 @@ Außerdem müssen sowohl die Stacking-Constraints mit $s_{i_{\lambda + 1}i_\lamb
 \thinspace i_\lambda$ respektiert werden.
 Ein \textquote{Swap} entspricht einer Tausch-Operation zwischen zwei unterschiedlichen Items $i, j \in I$,
 d.h. $i \neq j$. Eine solche Tausch-Operation kann auch innerhalb eines Stacks $q \in Q$ stattfinden,
-in diesem Fall ist ausgehend von einer zulässigen Lösung bereits sichergestellt, dass beide Items bezüglich der Placement-Constraints mit diesem Stack kompatibel sind und es müssen lediglich im Anschluss die Stacking-Constraints überprüft werden. Im Falle eines Swaps zwischen zwei Items $i, j \in I$, welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, wobei $i \in q$ und $j \in r$, müssen beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack sein. Ist dies der Fall, so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.
+in diesem Fall ist ausgehend von einer zulässigen Lösung bereits sichergestellt, dass beide Items bezüglich der Placement-Constraints mit diesem Stack kompatibel sind und es müssen lediglich im Anschluss die Stacking-Constraints überprüft werden. Im Falle eines Swaps zwischen zwei Items $i, j \in I$, welche sich in unterschiedlichen Stacks $q, r \in Q$ befinden, wobei $i \in q$ und $j \in r$, müssen beide Items in Bezug auf die Placement- und Stacking-Constraints kompatibel zum jeweils anderen Stack sein. Ist dies der Fall, so wird Item $i$ an der Stelle von Item $j$ in Stack $r$ platziert und umgekehrt.\newline
 
 \textbf{Forbidding-Strategy}
 
@@ -3158,7 +3159,7 @@ zwei Shift-Operationen in der Tabu-Liste gespeichert werden. Befindet sich ein I
 $l_1 \in \{1, \dotsc, b\}$ und ein weiteres Item $j \in I$ in Stack $q_2 \in Q$ auf Level $l_2 \in \{1, \dotsc, b\}$,
 so wird die Swap-Operation zwischen diesen beiden Items in Form von $shift_1 = (i, (q_2, l_2))$ und $shift_2 = (j, (q_1, l_1))$
 in der Tabu-Liste gespeichert. Die Notation, welche im Folgenden stets für Swap-Operationen verwendet wird,
-entspricht daher $swap := (shift_1, shift_2)$.
+entspricht daher $swap := (shift_1, shift_2)$.\newline
 
 \textbf{Freeing-Strategy}
 
@@ -3168,7 +3169,7 @@ welche dafür sorgt, dass diese nicht beliebig lang wird und effizient durchsuch
 Somit werden die Einträge der Tabu-Liste nur für eine gewisse Zeit verboten, denn bei Erreichen der Maximallänge
 wird der jeweils älteste Eintrag gelöscht, um den aktuellen Eintrag aufzunehmen.
 Daher sind lediglich Zyklen, welche kleiner oder gleich der Maximallänge der Tabu-Liste sind,
-ausgeschlossen, was bei der Definition dieser Länge berücksichtigt werden sollte.
+ausgeschlossen, was bei der Definition dieser Länge berücksichtigt werden sollte.\newline
 
 \textbf{Short-Term-Strategy}
 
@@ -3183,13 +3184,13 @@ sofern dies effizient möglich ist, oder, wie in diesem Fall, eine Teilmenge der
 welche eine definierte, feste Kardinalität besitzt. Zur Generierung der Nachbarlösungen werden in jeder
 Iteration zufällige Shift- und Swap-Operationen durchgeführt. Anschließend muss jeweils eine Nachbarlösung
 aus der generierten Teilmenge der Nachbarschaft ausgewählt werden, mit welcher die Tabu-Suche fortgesetzt wird.
-Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt werden.
+Für die Selektion der Nachbarlösungen wurden zwei Strategien implementiert, welche im Folgenden vorgestellt werden.\newline
 
 \textbf{First-Fit}
 
 Bei der First-Fit-Strategie wird die Nachbarschaft einer Lösung lediglich solange durchsucht, bis eine bessere
 Lösung gefunden wird, also eine Lösung, welche einen besseren Zielfunktionswert besitzt als die gegenwärtige Lösung.
-Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden, so wird die beste Nachbarlösung aus der generierten Teilmenge ausgewählt.
+Diese wird direkt ausgewählt und die Nachbarschaft wird nicht weiter durchsucht. Sollte keine bessere Lösung gefunden werden, so wird die beste Nachbarlösung aus der generierten Teilmenge ausgewählt.\newline
 
 \textbf{Best-Fit}
 
@@ -3478,9 +3479,6 @@ welche auch bei großen Instanzen nach wenigen Minuten ohne Verbesserung zur Ter
 Für die Selektion der Nachbarlösungen wird in den folgenden Experimenten stets Best-Fit verwendet,
 da dies insgesamt zu den besten Ergebnissen führt.
 
-\vfill
-\pagebreak
-
 \subsection{Anwendung der Tabu-Suche}
 \label{sec:tabu_search_experiments}
 
@@ -3489,6 +3487,9 @@ auf einem System mit Intel Core i5-8500 (6x 3.00GHz) Prozessor und 32 GB RAM aus
 Zunächst geht es um die Verbesserung der zuvor generierten Lösungen für Instanzen von Stacking-Problemen
 mit Stacks der Kapazität $b = 2$.
 
+\vfill
+\pagebreak
+
 In Abb. \ref{fig:imp_res_b=2_s} sind die Ergebnisse der Anwendung der Tabu-Suche in der Kategorie
 der kleinen Instanzen dargestellt. \textsc{OPT} entspricht der jeweils besseren MIP-Formulierung, welche die optimalen Zielfunktionswerte liefert, \textsc{2Cap} entspricht der Heuristik, welche die Initiallösungen der Tabu-Suche generiert und \textsc{2Cap + TS} entspricht schließlich der Kombination aus Anwendung der Heuristik und anschließender Verbesserung durch die Tabu-Suche. Die Verbesserungen der Tabu-Suche können in Abb. \ref{fig:imp_b=2_s_costs} nachvollzogen werden. Es werden bei $13$ der $20$ Instanzen Verbesserungen erzielt, wodurch die durchschnittliche Abweichung der Lösungen vom Optimum von $0.29 \%$ durch Anwendung der Tabu-Suche
 auf $0.14 \%$ reduziert wird. Mit den Instanzen $06$ und $07$ wird in zwei Fällen durch die Verbesserung sogar eine Optimallösung ermittelt. Bei den Instanzen $00, 02$ und $16$ wurde der optimale Zielfunktionswert durch die Verbesserungen nur knapp verfehlt. Wie in der Darstellung der Laufzeiten in Abb. \ref{fig:imp_b=2_s_runtimes} zu erkennen ist, gehen die benötigten Laufzeiten der Tabu-Suche dabei, wie erwartet, weit über jene der konstruktiven Heuristik und des exakten Solvers hinaus. Die durchschnittliche Laufzeit von \textsc{OPT} beträgt $0.72s$, während
@@ -3496,18 +3497,18 @@ die Laufzeit von \textsc{2Cap + TS} durchschnittlich $44.4s$ beträgt. Da allerd
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=2_s_costs.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=2_s_costs.png}
 \caption{\textsc{Kosten}}
 \label{fig:imp_b=2_s_costs}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=2_s_runtimes.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=2_s_runtimes.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=2_s_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung $b = 2$ (s)}.}
+\caption{\textsc{Ergebnisse der Verbesserung für $b = 2$ (s)}.}
 \label{fig:imp_res_b=2_s}
 \end{figure}
 
@@ -3521,20 +3522,23 @@ mit der Kategorie der kleinen Instanzen, etwas weniger deutlich unterboten. Der 
 durchschnittlich $37.49s$ bei \textsc{OPT} im Vergleich zu durchschnittlich $128.0s$ bei \textsc{2Cap + TS}
 jedoch weiterhin signifikant.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=2_m_costs.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=2_m_costs.png}
 \caption{\textsc{Kosten}}
 \label{fig:imp_b=2_m_costs}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=2_m_runtimes.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=2_m_runtimes.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=2_m_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung $b = 2$ (m)}.}
+\caption{\textsc{Ergebnisse der Verbesserung für $b = 2$ (m)}.}
 \label{fig:imp_res_b=2_m}
 \end{figure}
 
@@ -3552,24 +3556,27 @@ während \textsc{2Cap + TS} eine durchschnittliche Laufzeit von $208.8s$ besitzt
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=2_l_costs.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=2_l_costs.png}
 \caption{\textsc{Kosten}}
 \label{fig:imp_b=2_l_costs}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=2_l_runtimes.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=2_l_runtimes.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=2_l_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung $b = 2$ (l)}.}
+\caption{\textsc{Ergebnisse der Verbesserung für $b = 2$ (l)}.}
 \label{fig:imp_res_b=2_l}
 \end{figure}
 
 Nachdem sämtliche Kategorien für eine Stack-Kapazität von $b = 2$ betrachtet wurden,
 geht es nun um die Verbesserung der zuvor generierten Lösungen für Instanzen von Stacking-Problemen
 mit Stacks der Kapazität $b = 3$. In den Diagrammen wird die Kombination aus Anwendung der entsprechenden konstruktiven Heuristik und anschließender Anwendung der Tabu-Suche mit \textsc{3Cap + TS} abgekürzt.
+
+\vfill
+\pagebreak
 
 In der Kategorie der kleinen $b = 3$ Instanzen werden die Lösungen für $9$ der $20$ Instanzen durch
 die Tabu-Suche verbessert (vgl. Abb. \ref{fig:imp_b=3_s_costs}).
@@ -3586,18 +3593,18 @@ abzielt.
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=3_s_costs.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=3_s_costs.png}
 \caption{\textsc{Kosten}}
 \label{fig:imp_b=3_s_costs}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=3_s_runtimes.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=3_s_runtimes.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=3_s_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (s)}.}
+\caption{\textsc{Ergebnisse der Verbesserung für $b = 3$ (s)}.}
 \label{fig:imp_res_b=3_s}
 \end{figure}
 
@@ -3614,20 +3621,23 @@ und anschließender Anwendung der Tabu-Suche schneller ist. Wenngleich die Lösu
 Tabu-Suche verarbeitet wird, da diese bereits optimal ist. Die durchschnittliche Laufzeit von \textsc{OPT}
 beträgt $163.94s$, während die Laufzeit von \textsc{3Cap + TS} durchschnittlich $391.7s$ beträgt.
 
+\vfill
+\pagebreak
+
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=3_m_costs.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=3_m_costs.png}
 \caption{\textsc{Kosten}}
 \label{fig:imp_b=3_m_costs}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=3_m_runtimes.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=3_m_runtimes.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=3_m_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (m)}.}
+\caption{\textsc{Ergebnisse der Verbesserung für $b = 3$ (m)}.}
 \label{fig:imp_res_b=3_m}
 \end{figure}
 
@@ -3642,18 +3652,18 @@ während \textsc{3Cap + TS} eine durchschnittliche Laufzeit von $449.6s$ besitzt
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=3_l_costs.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=3_l_costs.png}
 \caption{\textsc{Kosten}}
 \label{fig:imp_b=3_l_costs}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{img/imp_b=3_l_runtimes.png}
+\begin{subfigure}[b]{0.47\textwidth}
+\includegraphics[width=1.1\textwidth]{img/imp_b=3_l_runtimes.png}
 \caption{\textsc{Laufzeiten}}
 \label{fig:imp_b=3_l_runtimes}
 \end{subfigure}
-\caption{\textsc{Ergebnisse der Verbesserung $b = 3$ (l)}.}
+\caption{\textsc{Ergebnisse der Verbesserung für $b = 3$ (l)}.}
 \label{fig:imp_res_b=3_l}
 \end{figure}
 
