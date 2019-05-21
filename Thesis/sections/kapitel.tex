@@ -891,7 +891,7 @@ Aufgrund der Placement-Constraints kann allerdings nicht jedes Item in jedem Sta
 Eine Kante in $A$, welche ein Item $i \in V_1$ oder ein Item-Paar $(i, j) \in V_1$ mit einem Stack $q \in V_2$ verbindet, gibt an, dass das entsprechende Item $i$ bzw. Item-Paar $(i, j)$ dem jeweiligen Stack $q$ zugeordnet werden kann. Da die Placement-Constraints nicht direkt durch ein Fehlen der entsprechenden Kante in $G_1$, sondern indirekt durch ein hohes Gewicht ebendieser Kante umgesetzt werden, existieren Kanten zwischen sämtlichen Knoten
 aus $V_1$ und denen aus $V_2$, also $\forall i \in V_1, q \in V_2 \thinspace \exists \thinspace \{i, q\} \in A$.
 Das Gewicht einer solchen Kante ist definiert als die Kosten $c_{iq}$ des Transports des Items $i$ von seiner Originalposition $O_i$ auf dem Fahrzeug, mit welchem es geliefert wird, zum Stack $q$
-in der Storage-Area. Im Fall eines Item-Paars $(i, j) \in V_1$ entspricht das
+in der Storage-Area. Im Fall eines Item-Paares $(i, j) \in V_1$ entspricht das
 Gewicht der Kante $\{(i, j), q\} \in A$ der Summe der Kosten des Transports beider Items, also $c_{(i, j)q} = c_{iq} + c_{jq}$.
 
 Da der von \textsc{JGraphT} bereitgestellte Algorithmus, welcher zur Berechnung eines \textsc{MWPM} in $G_1$ verwendet wird,
@@ -901,7 +901,7 @@ Diese Dummy-Items füllen $V_1$ für den Fall, dass diese Partition kleiner ist,
 Übersteigt die Anzahl der Items und Item-Paare die Anzahl der zur Verfügung stehenden Stacks, so existiert,
 wie bereits erwähnt, ohnehin keine zulässige Lösung.
 Die Dummy-Items haben keinen Einfluss auf die Lösung, da sämtliche Kanten, die ein Dummy-Item mit einem Stack verbinden,
-das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items oder Item-Paars durch ein Dummy-Item
+das Gewicht $0$ besitzen und somit keine günstigere Zuweisung eines echten Items oder Item-Paares durch ein Dummy-Item
 verhindert wird. Diese Tatsache ergibt sich daraus, dass die Dummy-Items jedem Stack zu den Kosten $0$ zugewiesen
 werden können, während eine Zuweisung echter Items und Item-Paare stets Kosten verursacht. Dementsprechend werden
 echte Items bei der Zuweisung gewissermaßen bevorzugt, während Dummy-Items schlicht den verbleibenden Stacks zugewiesen werden.
@@ -911,7 +911,7 @@ Stackzuweisungen interpretiert werden. Da es sich um ein Perfect-Matching handel
 
 Abschließend muss ggf. die Reihenfolge der Items innerhalb der Stacks angepasst werden, da für die Item-Paare bisher nur sichergestellt ist, dass sie kompatibel und somit in mindestens einer Richtung stapelbar sind. Die Richtung, in welcher sie stapelbar sind, wurde bei der Zuweisung jedoch noch nicht berücksichtigt. Dies ist trivial möglich, indem für jene Stacks, welche ein Item-Paar beinhalten, überprüft wird, ob die Stacking-Constraints respektiert werden. Ist dies nicht der Fall, so werden die Items vertauscht. Anschließend ist garantiert, dass sämtliche Paare den Stacking-Constraints genügen.
 
-Wie bereits in Abschnitt \ref{sec:objective} erwähnt, bietet die Heuristik über den Parameter
+Wie bereits in Abschnitt \ref{sec:objective} angekündigt, bietet die Heuristik über den Parameter
 \textit{postProcessing} die Möglichkeit, einen Postprocessing-Schritt zu aktivieren, welcher einen reinen Fokus
 auf die Transportkostenminimierung ermöglicht. Wird dieser Parameter auf \textit{true} gesetzt, so werden
 ausgewählte Items von den ihnen zugewiesenen Positionen an andere, freie Positionen verschoben,
@@ -1049,7 +1049,7 @@ sondern stattdessen der Tabelle in Abb. \ref{fig:item_tuple_costs} zu entnehmen.
 \end{figure}
 
 Anschließend wird im bipartiten Graphen aus Abb. \ref{fig:bipartite_graph} das \textsc{MWPM} berechnet,
-welches in Abb. \ref{fig:mwpm_b=2} dargestellt ist. Jede Kante entspricht dabei der Zuweisung eines Item-Paars, Unmatched-Items
+welches in Abb. \ref{fig:mwpm_b=2} dargestellt ist. Jede Kante entspricht dabei der Zuweisung eines Item-Paares, Unmatched-Items
 oder Dummy-Items zu einem Stack.
 
 \begin{figure}[H]
