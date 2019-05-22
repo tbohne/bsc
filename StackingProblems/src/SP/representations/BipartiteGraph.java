@@ -5,8 +5,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.Set;
 
-// TODO: should only be creatable if the requirements of a bipartite graph are given
-
 /**
  * Represents a bipartite graph consisting of two partitions.
  *
