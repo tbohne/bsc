@@ -18,19 +18,20 @@ public interface SolverComparison {
         CONSTRUCTIVE_TWO_CAP,
         CONSTRUCTIVE_THREE_CAP,
         CONSTRUCTIVE_THREE_CAP_PERMUTATION,
-        CONSTRUCTIVE_THREE_CAP_RECURSION
+        CONSTRUCTIVE_THREE_CAP_RECURSION,
+        TABU_SEARCH
     }
 
     String INSTANCE_PREFIX = "res/instances/";
     String SOLUTION_PREFIX = "res/solutions/";
 
     // Specifies the time limit for the solving process in seconds.
-    int TIME_LIMIT = 7200;
+    double TIME_LIMIT = 300;
 
     // The 3Cap heuristic has an option to prioritize the runtime which can be set here.
     boolean PRIORITIZE_RUNTIME = false;
     // 2Cap and 3Cap provide post processing procedures that can be enabled here.
-    boolean POST_PROCESSING = false;
+    boolean POST_PROCESSING = true;
 
     /**
      * Compares the specified solvers (runtime, solution quality, ...).
