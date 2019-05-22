@@ -20,18 +20,17 @@ public class TestDataGenerator {
     public static final String INSTANCE_PREFIX = "res/instances/";
 
     /******************************* CONFIGURATION *************************************/
-    public static final int NUMBER_OF_INSTANCES = 1;
-    public static final int NUMBER_OF_ITEMS = 500;
+    public static final int NUMBER_OF_INSTANCES = 20;
+    public static final int NUMBER_OF_ITEMS = 1000;
     public static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.
     public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0055F;
+    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0159F;
     public static final float CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS = 0.7F;
 
-    // Configuration of 2nd approach to stacking constraint generation:
     public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
 
     public static final float ITEM_LENGTH_LB = 1.0F;
@@ -39,15 +38,12 @@ public class TestDataGenerator {
     public static final float ITEM_WIDTH_LB = 1.0F;
     public static final float ITEM_WIDTH_UB = 2.4F;
 
-    public static final float STORAGE_AREA_SLOT_LENGTH = 2.0F;
-    public static final float STORAGE_AREA_SLOT_WIDTH = 1.0F;
+    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
+    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
 
-//    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
-//    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
     public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
 
     public static final int NUMBER_OF_ROWS_IN_STORAGE_AREA = 2;
-
     /***********************************************************************************/
 
     /**
@@ -307,6 +303,23 @@ public class TestDataGenerator {
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             for (int j = 0; j < numOfStacks; j++) {
                 costs[i][j] = computeManhattanDist(i, j, items, stackPositions);
+            }
+        }
+        // Implements the placement constraints via high cost entries.
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < numOfStacks; j++) {
+                if (Math.random() >= CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS) {
+                    costs[i][j] = Integer.MAX_VALUE / NUMBER_OF_ITEMS;
+                }
+            }
+        }
+    }
+
+    public static void generateRandomCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<Position> stackPositions) {
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < numOfStacks; j++) {
+                Random r = new Random();
+                costs[i][j] = r.nextInt((85 - 22) + 1) + 22;
             }
         }
         // Implements the placement constraints via high cost entries.
