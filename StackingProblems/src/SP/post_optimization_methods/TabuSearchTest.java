@@ -1,5 +1,6 @@
 package SP.post_optimization_methods;
 
+import SP.experiments.OptimizableSolution;
 import SP.representations.Solution;
 import SP.io.SolutionReader;
 
@@ -8,15 +9,16 @@ import java.util.ArrayList;
 public class TabuSearchTest {
 
     public static void main(String[] args) {
-        ArrayList<Solution> solutions = SolutionReader.readSolutionsFromDir(
-            "res/solutions/", "res/instances/", "TwoCapHeuristic"
+        ArrayList<OptimizableSolution> solutions = SolutionReader.readSolutionsFromDir(
+            "res/solutions/", "res/instances/", "ThreeCapHeuristic"
         );
-        Solution sol = solutions.get(0);
+        Solution sol = solutions.get(0).getSol();
         System.out.println("solved instance: " + sol.getNameOfSolvedInstance());
 
-        TabuSearch ts = new TabuSearch(sol);
+        TabuSearch ts = new TabuSearch(sol, solutions.get(0).getOptimalObjectiveValue());
         System.out.println("COSTS BEFORE: " + sol.computeCosts());
         sol = ts.solve();
-        System.out.println("FINAL COSTS: " + sol.computeCosts());
+        System.out.println("FINAL COSTS: " + sol.computeCosts() + " --> " + sol.isFeasible() + " --> " + sol.getNumberOfAssignedItems());
+        System.out.println("CONTAINS GAPS ? " + sol.containsGaps());
     }
 }

@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: SP.experiments.CompareSolvers
+Main-Class: SP.experiments.PostOptimization
