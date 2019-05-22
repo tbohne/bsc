@@ -4,15 +4,16 @@ input <- read.csv(file = "../../../../res/solutions/solutions.csv", header = TRU
 solverEntries <- subset(input, solver == "BinP" | solver == "3Idx" | solver == "2Cap" | solver == "LB")
 
 # LOG SCALING
-# breaks <- c(6550, 6600, 6750, 7000, 7500)
-# baseline = 6530
-# plotPointsPre <- ggplot(data = solverEntries, aes(x = val - baseline, y = instance, color = solver, group = solver))
-# scaledPlot <- plotPointsPre + geom_point() + xlab("costs") + ylab("instance") + scale_x_log10(breaks = breaks - baseline, labels = breaks)
+breaks <- c(129700, 129850, 130500, 132000, 135000)
+baseline = 129650
+plotPointsPre <- ggplot(data = solverEntries, aes(x = val - baseline, y = instance, color = solver, group = solver))
+scaledPlot <- plotPointsPre + geom_point() + xlab("costs") + ylab("instance") + scale_x_log10(breaks = breaks - baseline, labels = breaks)
 
-plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver))
-scaledPlot <- plotPointsPre + geom_point() + xlab("costs") + ylab("instance") #+ scale_x_continuous(limits = c(6500, 6750))
+# # DEFAULT
+# plotPointsPre <- ggplot(data = solverEntries, aes(x = val, y = instance, color = solver, group = solver))
+# scaledPlot <- plotPointsPre + geom_point() + xlab("costs") + ylab("instance") #+ scale_x_continuous(limits = c(6500, 6750))
+
 finalPlot <- scaledPlot + scale_color_manual(values=c("#fa9f27", "#5428ff", "#f5503b", "#28bd5a"))
-
 ggsave(finalPlot, file = "solver_instance_cost.png", width=6, height=4)
 
 ##############################################################################
