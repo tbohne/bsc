@@ -10,7 +10,7 @@ def get_time_limit():
     lines = instance_file.readlines()
     for line in lines:
         if "time limit:" in line:
-            time_limit = int(line.split(" ")[2].strip())
+            time_limit = float(line.split(" ")[2].strip())
             break
     instance_file.close()
     return time_limit
