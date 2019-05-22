@@ -154,10 +154,10 @@ public class TabuSearch {
      */
     public void neighborGenerationFailure() {
         this.failCnt++;
-        if (this.failCnt == TabuSearchConfig.UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS) {
-            this.clearTabuList();
-            this.failCnt = 0;
-        }
+//        if (this.failCnt == TabuSearchConfig.UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS) {
+////            this.clearTabuList();
+//            this.failCnt = 0;
+//        }
     }
 
     /**
@@ -205,6 +205,14 @@ public class TabuSearch {
                 this.forbidShift(shift);
             } else {
                 this.neighborGenerationFailure();
+                if (this.failCnt == TabuSearchConfig.UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS) {
+                    this.failCnt = 0;
+                    if (nbrs.size() == 0) {
+                        this.clearTabuList();
+                    } else {
+                        return HeuristicUtil.getBestSolution(nbrs);
+                    }
+                }
             }
 
             // ASPIRATION CRITERION
@@ -308,6 +316,14 @@ public class TabuSearch {
                 }
             } else {
                 this.neighborGenerationFailure();
+                if (this.failCnt == TabuSearchConfig.UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS) {
+                    this.failCnt = 0;
+                    if (nbrs.size() == 0) {
+                        this.clearTabuList();
+                    } else {
+                        return HeuristicUtil.getBestSolution(nbrs);
+                    }
+                }
             }
 
             // ASPIRATION CRITERION
