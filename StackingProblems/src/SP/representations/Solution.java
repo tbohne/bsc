@@ -87,12 +87,86 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
+     * Returns the solution's number of items that are assigned to stacks.
+     *
+     * @return number of assigned items
+     */
+    public int getNumberOfAssignedItems() {
+        return this.getAssignedItems().size();
+    }
+
+    /**
+     * Returns the items of the solution that are assigned to stacks.
+     *
+     * @return list of assigned items
+     */
+    public List<Integer> getAssignedItems() {
+        if (this.empty) {
+            return new ArrayList<>();
+        }
+        ArrayList<Integer> assignedItems = new ArrayList<>();
+        for (int[] filledStack : this.filledStacks) {
+            for (int item : filledStack) {
+                if (item != -1) {
+                    assignedItems.add(item);
+                }
+            }
+        }
+        return assignedItems;
+    }
+
+    /**
+     * Returns a string representation of the solutions time to solve the instance.
+     *
+     * @return time to solve the instance
+     */
+    public String getTimeToSolve() {
+        return String.format("%.02f", this.timeToSolve).replace(",", ".");
+    }
+
+    /**
+     * Returns the solution's time to solve the instance.
+     *
+     * @return time to solve the instance
+     */
+    public double getTimeToSolveAsDouble() {
+        return this.timeToSolve;
+    }
+
+    /**
+     * Returns the string representation of the solution's objective value (transport costs).
+     *
+     * @return objective value of the solution
+     */
+    public String getObjectiveValue() {
+        return String.format("%.02f", this.computeCosts()).replace(",", ".");
+    }
+
+    /**
+     * Returns the name of the solved instance.
+     *
+     * @return name of the solved instance
+     */
+    public String getNameOfSolvedInstance() {
+        return this.solvedInstance.getName();
+    }
+
+    /**
      * Returns whether the solution is empty which means that the items are not yet assigned to stacks.
      *
      * @return whether the solution is empty
      */
     public boolean isEmpty() {
         return this.empty;
+    }
+
+    /**
+     * Sets the solution's time to solve the instance.
+     *
+     * @param duration - the duration it took to solve the instance
+     */
+    public void setTimeToSolve(double duration) {
+        this.timeToSolve = duration;
     }
 
     /**
@@ -139,15 +213,6 @@ public class Solution implements Comparable<Solution> {
                 }
             }
         }
-    }
-
-    /**
-     * Sets the solution's time to solve the instance.
-     *
-     * @param duration - the duration it took to solve the instance
-     */
-    public void setTimeToSolve(double duration) {
-        this.timeToSolve = duration;
     }
 
     /**
@@ -212,35 +277,6 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Returns the solution's number of items that are assigned to stacks.
-     *
-     * @return number of assigned items
-     */
-    public int getNumberOfAssignedItems() {
-        return this.getAssignedItems().size();
-    }
-
-    /**
-     * Returns the items of the solution that are assigned to stacks.
-     *
-     * @return list of assigned items
-     */
-    public List<Integer> getAssignedItems() {
-        if (this.empty) {
-            return new ArrayList<>();
-        }
-        ArrayList<Integer> assignedItems = new ArrayList<>();
-        for (int[] filledStack : this.filledStacks) {
-            for (int item : filledStack) {
-                if (item != -1) {
-                    assignedItems.add(item);
-                }
-            }
-        }
-        return assignedItems;
-    }
-
-    /**
      * Computes the solution's transport costs which result from the item-stack-assignments.
      *
      * @return transport costs of the solution
@@ -259,42 +295,6 @@ public class Solution implements Comparable<Solution> {
             }
         }
         return Math.round(costs * 100.0) / 100.0;
-    }
-
-    /**
-     * Returns a string representation of the solutions time to solve the instance.
-     *
-     * @return time to solve the instance
-     */
-    public String getTimeToSolve() {
-        return String.format("%.02f", this.timeToSolve).replace(",", ".");
-    }
-
-    /**
-     * Returns the solution's time to solve the instance.
-     *
-     * @return time to solve the instance
-     */
-    public double getTimeToSolveAsDouble() {
-        return this.timeToSolve;
-    }
-
-    /**
-     * Returns the string representation of the solution's objective value (transport costs).
-     *
-     * @return objective value of the solution
-     */
-    public String getObjectiveValue() {
-        return String.format("%.02f", this.computeCosts()).replace(",", ".");
-    }
-
-    /**
-     * Returns the name of the solved instance.
-     *
-     * @return name of the solved instance
-     */
-    public String getNameOfSolvedInstance() {
-        return this.solvedInstance.getName();
     }
 
     /**
