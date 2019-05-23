@@ -5,17 +5,15 @@ import SP.util.RepresentationUtil;
 import java.util.ArrayList;
 
 /**
- * Represents a solution to a stacking problem.
+ * Represents a solution of a stacking problem.
  *
  * @author Tim Bohne
  */
 public class Solution implements Comparable<Solution> {
 
-    private String nameOfSolvedInstance;
     private Instance solvedInstance;
     private double timeToSolve;
     private double timeLimit;
-    private double objectiveValue;
     private int[][] filledStorageArea;
     private boolean empty;
 
@@ -28,24 +26,6 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Constructor receiving the objective value.
-     *
-     * @param timeToSolve    - the time it took to create the solution
-     * @param objectiveValue - the solution's objective value
-     * @param timeLimit      - the considered time limit
-     * @param solvedInstance - the solved instance
-     */
-    public Solution(double timeToSolve, double objectiveValue, double timeLimit, Instance solvedInstance) {
-        this.timeToSolve = timeToSolve;
-        this.objectiveValue = objectiveValue;
-        this.empty = false;
-        this.nameOfSolvedInstance = solvedInstance.getName();
-        this.timeLimit = timeLimit;
-        this.solvedInstance = solvedInstance;
-        this.createFilledStorageAreaFromInstance();
-    }
-
-    /**
      * Constructor not receiving the objective value.
      *
      * @param timeToSolve    - the time it took to create the solution
@@ -55,11 +35,9 @@ public class Solution implements Comparable<Solution> {
     public Solution(double timeToSolve, double timeLimit, Instance solvedInstance) {
         this.timeToSolve = timeToSolve;
         this.empty = false;
-        this.nameOfSolvedInstance = solvedInstance.getName();
         this.timeLimit = timeLimit;
         this.solvedInstance = solvedInstance;
         this.createFilledStorageAreaFromInstance();
-        this.objectiveValue = this.computeCosts();
     }
 
     /**
@@ -69,10 +47,8 @@ public class Solution implements Comparable<Solution> {
      */
     public Solution(Solution sol) {
         this.timeToSolve = sol.getTimeToSolveAsDouble();
-        this.objectiveValue = sol.getObjectiveValueAsDouble();
         this.empty = sol.isEmpty();
         this.solvedInstance = new Instance(sol.solvedInstance);
-        this.nameOfSolvedInstance = sol.getNameOfSolvedInstance();
         this.timeLimit = sol.getTimeLimit();
 
         this.filledStorageArea = new int[sol.solvedInstance.getStacks().length][];
@@ -373,7 +349,7 @@ public class Solution implements Comparable<Solution> {
      * @return the solution's objective value
      */
     public String getObjectiveValue() {
-        return String.format("%.02f", this.objectiveValue).replace(",", ".");
+        return String.format("%.02f", this.computeCosts()).replace(",", ".");
     }
 
     /**
@@ -382,7 +358,7 @@ public class Solution implements Comparable<Solution> {
      * @return the solution's objective value
      */
     public double getObjectiveValueAsDouble() {
-        return this.objectiveValue;
+        return this.computeCosts();
     }
 
     /**
@@ -391,7 +367,7 @@ public class Solution implements Comparable<Solution> {
      * @return the name of the solved instance
      */
     public String getNameOfSolvedInstance() {
-        return this.nameOfSolvedInstance;
+        return this.solvedInstance.getName();
     }
 
     /**

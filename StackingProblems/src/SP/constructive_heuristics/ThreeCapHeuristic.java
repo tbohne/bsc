@@ -542,7 +542,7 @@ public class ThreeCapHeuristic {
      * @return the result of the post-processing procedure
      */
     public Solution postProcessing(Solution sol) {
-        System.out.println("costs before post processing: " + sol.getObjectiveValue());
+//        System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
@@ -552,12 +552,12 @@ public class ThreeCapHeuristic {
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
 
-        System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
+//        System.out.println("moved items: " + maxSavingsMatching.getMatching().getEdges().size());
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         sol.lowerItemsThatAreStackedInTheAir();
         sol.transformStackAssignmentsIntoValidSolutionIfPossible();
-        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
+//        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
     }
 
@@ -626,6 +626,7 @@ public class ThreeCapHeuristic {
                     bestSol = this.postProcessing(bestSol);
                 }
             }
+            System.out.println("final costs: " + bestSol.computeCosts() + " still feasible? " + bestSol.isFeasible());
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }

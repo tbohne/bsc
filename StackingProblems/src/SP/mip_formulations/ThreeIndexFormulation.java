@@ -114,7 +114,7 @@ public class ThreeIndexFormulation {
             }
 
             System.out.println();
-//            cplex.setOut(null);
+            cplex.setOut(null);
 
             // sets the time limit
             cplex.setParam(Param.TimeLimit, timeLimit);
@@ -129,7 +129,7 @@ public class ThreeIndexFormulation {
             if (cplex.solve()) {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
-                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, timeLimit, this.instance);
+                sol = new Solution(timeToSolve, timeLimit, this.instance);
                 sol.lowerItemsThatAreStackedInTheAir();
             }
             cplex.end();

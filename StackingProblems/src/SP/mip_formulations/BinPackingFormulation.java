@@ -101,7 +101,7 @@ public class BinPackingFormulation {
             }
 
             System.out.println();
-//            cplex.setOut(null);
+            cplex.setOut(null);
 
             // sets the time limit
             cplex.setParam(IloCplex.Param.TimeLimit, timeLimit);
@@ -117,7 +117,7 @@ public class BinPackingFormulation {
                 double timeToSolve = cplex.getCplexTime() - startTime;
                 this.setStacks(cplex, x);
                 this.getSolutionFromStackAssignment();
-                sol = new Solution(timeToSolve, Math.round(cplex.getObjValue() * 100.0) / 100.0, timeLimit, this.instance);
+                sol = new Solution(timeToSolve, timeLimit, this.instance);
                 sol.lowerItemsThatAreStackedInTheAir();
             }
             cplex.end();

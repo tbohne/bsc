@@ -100,7 +100,7 @@ public class SolutionReader {
             readStorageArea(br, storageArea);
             String instanceName = file.getName().replace("sol", "instance");
             Instance instance = InstanceReader.readInstance(instanceDirName + instanceName);
-            sol = new Solution(timeToSolveInSeconds, objectiveValue, timeLimit, instance);
+            sol = new Solution(timeToSolveInSeconds, timeLimit, instance);
             fillStorageArea(storageArea, sol);
         } catch (Exception e) {
             e.printStackTrace();

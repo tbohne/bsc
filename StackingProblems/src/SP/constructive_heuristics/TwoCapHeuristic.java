@@ -289,7 +289,7 @@ public class TwoCapHeuristic {
             sol.lowerItemsThatAreStackedInTheAir();
 
             if (postProcessing) {
-                System.out.println("costs before post processing: " + sol.getObjectiveValue());
+//                System.out.println("costs before post processing: " + sol.getObjectiveValue());
                 double bestSolutionCost = sol.computeCosts();
                 sol = this.postProcessing(sol);
                 while (sol.computeCosts() < bestSolutionCost) {
