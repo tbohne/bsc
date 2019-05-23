@@ -37,7 +37,7 @@ public class Solution implements Comparable<Solution> {
         this.empty = false;
         this.timeLimit = timeLimit;
         this.solvedInstance = solvedInstance;
-        this.createFilledStorageAreaFromInstance();
+        this.createFilledStacksFromInstance();
     }
 
     /**
@@ -48,7 +48,7 @@ public class Solution implements Comparable<Solution> {
     public Solution(Solution sol) {
         this.timeToSolve = sol.getTimeToSolveAsDouble();
         this.empty = sol.isEmpty();
-        this.solvedInstance = new Instance(sol.solvedInstance);
+        this.solvedInstance = new Instance(sol.getSolvedInstance());
         this.timeLimit = sol.getTimeLimit();
 
         this.filledStacks = new int[sol.solvedInstance.getStacks().length][];
@@ -58,9 +58,9 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Creates the filled storage area from the solved instance's stack assignments.
+     * Creates the filled stacks from the solved instance's stack assignments.
      */
-    public void createFilledStorageAreaFromInstance() {
+    public void createFilledStacksFromInstance() {
         this.filledStacks = new int[this.solvedInstance.getStacks().length][];
         for (int i = 0; i < this.solvedInstance.getStacks().length; i++) {
             this.filledStacks[i] = this.solvedInstance.getStacks()[i].clone();
@@ -68,25 +68,34 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Returns the filled storage area.
+     * Returns the solution's stacks filled with the assigned items.
      *
-     * @return the filled storage area
+     * @return filled stacks of the solution
      */
     public int[][] getFilledStacks() {
         return this.filledStacks;
     }
 
     /**
-     * Returns the considered time limit.
+     * Returns the instance the solution was generated for.
      *
-     * @return the considered time limit
+     * @return solved instance
+     */
+    public Instance getSolvedInstance() {
+        return this.solvedInstance;
+    }
+
+    /**
+     * Returns the considered time limit for the solution generation.
+     *
+     * @return considered time limit
      */
     public double getTimeLimit() {
         return this.timeLimit;
     }
 
     /**
-     * Returns whether the solution is empty.
+     * Returns whether the solution is empty which means that the items are not yet assigned to stacks.
      *
      * @return whether the solution is empty
      */
@@ -103,6 +112,7 @@ public class Solution implements Comparable<Solution> {
         // TODO: revise
 
         for (int stack = 0; stack < this.filledStacks.length; stack++) {
+
             boolean somethingChanged = true;
 
             while (somethingChanged) {
