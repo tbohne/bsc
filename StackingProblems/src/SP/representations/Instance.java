@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class Instance {
 
-    private String name;
+    private final String name;
     private Item[] items;
     private int[][] stacks;
-    private int stackCapacity;
+    private final int stackCapacity;
     private List<GridPosition> stackPositions;
     private int[][] stackingConstraints;
     private double[][] costs;
