@@ -281,6 +281,26 @@ public class Instance {
     }
 
     /**
+     * Lowers all items that are stacked 'in the air'.
+     */
+    public void lowerItemsThatAreStackedInTheAir() {
+        for (int stack = 0; stack < this.stacks.length; stack++) {
+            boolean loweredItem = true;
+            while (loweredItem) {
+                loweredItem = false;
+                for (int level = this.stacks[stack].length - 1; level > 0; level--) {
+                    if (this.stacks[stack][level] == -1 && this.stacks[stack][level - 1] != -1) {
+                        this.stacks[stack][level] = this.stacks[stack][level - 1];
+                        this.stacks[stack][level - 1] = -1;
+                        loweredItem = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Copies the given instance's stack positions.
      *
      * @param instance - instance the stack positions get copied from
