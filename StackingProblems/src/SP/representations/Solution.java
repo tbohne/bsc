@@ -143,7 +143,7 @@ public class Solution implements Comparable<Solution> {
             int offset = this.solvedInstance.getStackCapacity() - items.size();
 
             int idx = 0;
-            for (int level = 0 + offset; level < this.solvedInstance.getStackCapacity(); level++) {
+            for (int level = offset; level < this.solvedInstance.getStackCapacity(); level++) {
                 if (idx < items.size()) {
                     this.filledStacks[stack][level] = items.get(idx++).getIdx();
                 }
@@ -412,32 +412,32 @@ public class Solution implements Comparable<Solution> {
     @Override
     public String toString() {
 
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         if (this.isFeasible()) {
-            str += "time limit: " + this.timeLimit + " s\n";
-            str += "time to solve: " + String.format("%.2f", this.timeToSolve) + " s";
-            str += this.timeToSolve > this.timeLimit ? " (time limit exceeded)\n" : "\n";
-            str += "objective value: " + this.computeCosts();
-            str += this.timeToSolve > this.timeLimit ? " (not optimal)\n\n" : "\n\n";
-            str += "stacks (top to bottom):\n";
+            str.append("time limit: ").append(this.timeLimit).append(" s\n");
+            str.append("time to solve: ").append(String.format("%.2f", this.timeToSolve)).append(" s");
+            str.append(this.timeToSolve > this.timeLimit ? " (time limit exceeded)\n" : "\n");
+            str.append("objective value: ").append(this.computeCosts());
+            str.append(this.timeToSolve > this.timeLimit ? " (not optimal)\n\n" : "\n\n");
+            str.append("stacks (top to bottom):\n");
 
             int maxStringOffset = RepresentationUtil.getMaximumStringOffset(this.filledStacks.length);
 
             for (int i = 0; i < this.filledStacks.length; i++) {
                 String space = RepresentationUtil.getCurrentSpace(i, maxStringOffset);
-                str += "stack " + space + i + ":    ";
+                str.append("stack ").append(space).append(i).append(":    ");
                 for (int j = 0; j < this.filledStacks[i].length; j++) {
                     if (this.filledStacks[i][j] != -1) {
-                        str += this.filledStacks[i][j] + " ";
+                        str.append(this.filledStacks[i][j]).append(" ");
                     }
                 }
-                str += "\n";
+                str.append("\n");
             }
         } else {
-            str += "Problem not solved.\n";
+            str.append("Problem not solved.\n");
         }
-        return str;
+        return str.toString();
     }
 
     /**
