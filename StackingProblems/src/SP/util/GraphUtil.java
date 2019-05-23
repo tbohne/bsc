@@ -11,6 +11,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -353,7 +354,7 @@ public class GraphUtil {
      * @param bipartiteGraph - the bipartite graph to be extended
      * @param partitionOne   - the partition the vertices are added to
      */
-    public static void addVerticesForUnmatchedItems(ArrayList<Integer> unmatchedItems,
+    public static void addVerticesForUnmatchedItems(List<Integer> unmatchedItems,
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
 
             for (int item : unmatchedItems) {

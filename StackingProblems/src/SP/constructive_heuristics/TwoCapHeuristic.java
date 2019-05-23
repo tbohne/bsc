@@ -11,10 +11,7 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Constructive heuristic to efficiently generate feasible solutions to stacking
@@ -156,7 +153,7 @@ public class TwoCapHeuristic {
      */
     public void findCompatibleEmptyPositionsForItems(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
-        ArrayList<Integer> items,
+        List<Integer> items,
         ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
         Solution sol
@@ -199,7 +196,7 @@ public class TwoCapHeuristic {
      * @return the generated bipartite graph
      */
     public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<Integer> items,
+        List<Integer> items,
         ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> costsBefore,
         Solution sol
@@ -233,7 +230,7 @@ public class TwoCapHeuristic {
     public Solution postProcessing(Solution sol) {
 
         ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
-        ArrayList<Integer> items = sol.getAssignedItems();
+        List<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol);

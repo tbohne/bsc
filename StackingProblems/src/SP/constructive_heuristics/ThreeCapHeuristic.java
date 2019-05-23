@@ -416,7 +416,7 @@ public class ThreeCapHeuristic {
      */
     public void findCompatibleEmptyPositionsForItemsAndAddEdges(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
-        ArrayList<Integer> items,
+        List<Integer> items,
         ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
         Solution sol
@@ -465,7 +465,7 @@ public class ThreeCapHeuristic {
      * @return the generated bipartite graph
      */
     public BipartiteGraph generatePostProcessingGraph(
-        ArrayList<Integer> items,
+        List<Integer> items,
         ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
         Solution sol
@@ -545,7 +545,7 @@ public class ThreeCapHeuristic {
 //        System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
         ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
-        ArrayList<Integer> items = sol.getAssignedItems();
+        List<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, originalCosts, sol);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
