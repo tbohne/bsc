@@ -5,7 +5,7 @@ package SP.representations;
  *
  * @author Tim Bohne
  */
-public class Item {
+public class Item implements Comparable<Item> {
 
     private final int idx;
     private final float length;
@@ -73,5 +73,33 @@ public class Item {
      */
     public GridPosition getPosition() {
         return this.pos;
+    }
+
+    /**
+     * Compares two items in terms of their dimensions.
+     * This method is basically enabling the sorting of the items w.r.t. the stacking constraints.
+     *
+     * @param item - item to be compared to
+     * @return whether this item is smaller, equally sized, or taller compared to the other item
+     */
+    @Override
+    public int compareTo(Item item) {
+        if (this.getWidth() <= item.getWidth() && this.getLength() <= item.getLength()) {
+            return -1;
+        } else if (this.getWidth() == item.getWidth() && this.getLength() == item.getLength()) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * Returns a string representing the item object.
+     *
+     * @return string representing the item
+     */
+    @Override
+    public String toString() {
+        return "idx: " + this.getIdx() + ", width: " + this.getWidth() + ", length: " + this.getLength();
     }
 }
