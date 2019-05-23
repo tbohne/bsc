@@ -19,6 +19,5 @@ public class TabuSearchTest {
         System.out.println("COSTS BEFORE: " + sol.computeCosts());
         sol = ts.solve();
         System.out.println("FINAL COSTS: " + sol.computeCosts() + " --> " + sol.isFeasible() + " --> " + sol.getNumberOfAssignedItems());
-        System.out.println("CONTAINS GAPS ? " + sol.containsGaps());
     }
 }

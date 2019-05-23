@@ -60,16 +60,6 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Creates the filled stacks from the solved instance's stack assignments.
-     */
-    private void createFilledStacksFromInstance() {
-        this.filledStacks = new int[this.solvedInstance.getStacks().length][];
-        for (int i = 0; i < this.solvedInstance.getStacks().length; i++) {
-            this.filledStacks[i] = this.solvedInstance.getStacks()[i].clone();
-        }
-    }
-
-    /**
      * Returns the solution's stacks filled with the assigned items.
      *
      * @return filled stacks of the solution
@@ -83,7 +73,7 @@ public class Solution implements Comparable<Solution> {
      *
      * @return solved instance
      */
-    private Instance getSolvedInstance() {
+    public Instance getSolvedInstance() {
         return this.solvedInstance;
     }
 
@@ -149,103 +139,6 @@ public class Solution implements Comparable<Solution> {
                 }
             }
         }
-    }
-
-    /**
-     * Returns whether all of the instance's items have been assigned to a stack.
-     *
-     * @return whether all items have been assigned to a stack
-     */
-    private boolean allItemsAssigned() {
-        boolean[] allItemsAssigned = new boolean[this.solvedInstance.getItems().length];
-        for (int[] filledStack : this.filledStacks) {
-            for (int item : filledStack) {
-                if (item != -1) {
-                    allItemsAssigned[item] = true;
-                }
-            }
-        }
-        for (boolean itemAssigned : allItemsAssigned) {
-            if (!itemAssigned) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns whether the stacking constraints are respected by the solution's stack assignments.
-     *
-     * @return whether the solution is respecting the stacking constraints
-     */
-    private boolean stackingConstraintsRespected() {
-        for (int[] filledStack : this.filledStacks) {
-            for (int level = 1; level < filledStack.length; level++) {
-                int itemBelow = filledStack[level];
-                int itemAbove = filledStack[level - 1];
-                if (itemAbove != -1 && itemBelow != -1) {
-                    if (this.solvedInstance.getStackingConstraints()[itemAbove][itemBelow] != 1) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns whether the placement constraints are respected by the solution's stack assignments.
-     *
-     * @return whether the solution is respecting the placement constraints
-     */
-    private boolean placementConstraintsRespected() {
-        for (int stack = 0; stack < this.filledStacks.length; stack++) {
-            for (int level = 0; level < this.filledStacks[stack].length; level++) {
-                int item = this.filledStacks[stack][level];
-                if (item != -1) {
-                    if (this.solvedInstance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.solvedInstance.getItems().length) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns whether the solution contains duplicates (items occurring more than once).
-     *
-     * @return whether the solution contains duplicate items
-     */
-    private boolean containsDuplicates() {
-        ArrayList<Integer> assignedItems = new ArrayList<>();
-        for (int[] filledStack : this.filledStacks) {
-            for (int item : filledStack) {
-                if (item != -1) {
-                    if (assignedItems.contains(item)) {
-                        return true;
-                    }
-                    assignedItems.add(item);
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether the solution's filled stacks contain gaps.
-     *
-     * @return whether the filled stacks contain gaps
-     */
-    public boolean containsGaps() {
-        for (int[] filledStack : this.filledStacks) {
-            for (int level = filledStack.length - 1; level > 0; level--) {
-                if (filledStack[level] == -1 && filledStack[level - 1] != -1) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -454,5 +347,112 @@ public class Solution implements Comparable<Solution> {
             return 1;
         }
         return 0;
+    }
+
+    /**
+     * Returns whether all of the instance's items have been assigned to a stack.
+     *
+     * @return whether all items have been assigned to a stack
+     */
+    private boolean allItemsAssigned() {
+        boolean[] allItemsAssigned = new boolean[this.solvedInstance.getItems().length];
+        for (int[] filledStack : this.filledStacks) {
+            for (int item : filledStack) {
+                if (item != -1) {
+                    allItemsAssigned[item] = true;
+                }
+            }
+        }
+        for (boolean itemAssigned : allItemsAssigned) {
+            if (!itemAssigned) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns whether the stacking constraints are respected by the solution's stack assignments.
+     *
+     * @return whether the solution is respecting the stacking constraints
+     */
+    private boolean stackingConstraintsRespected() {
+        for (int[] filledStack : this.filledStacks) {
+            for (int level = 1; level < filledStack.length; level++) {
+                int itemBelow = filledStack[level];
+                int itemAbove = filledStack[level - 1];
+                if (itemAbove != -1 && itemBelow != -1) {
+                    if (this.solvedInstance.getStackingConstraints()[itemAbove][itemBelow] != 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns whether the placement constraints are respected by the solution's stack assignments.
+     *
+     * @return whether the solution is respecting the placement constraints
+     */
+    private boolean placementConstraintsRespected() {
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
+            for (int level = 0; level < this.filledStacks[stack].length; level++) {
+                int item = this.filledStacks[stack][level];
+                if (item != -1) {
+                    if (this.solvedInstance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.solvedInstance.getItems().length) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns whether the solution contains duplicates (items occurring more than once).
+     *
+     * @return whether the solution contains duplicate items
+     */
+    private boolean containsDuplicates() {
+        ArrayList<Integer> assignedItems = new ArrayList<>();
+        for (int[] filledStack : this.filledStacks) {
+            for (int item : filledStack) {
+                if (item != -1) {
+                    if (assignedItems.contains(item)) {
+                        return true;
+                    }
+                    assignedItems.add(item);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the solution's filled stacks contain gaps.
+     *
+     * @return whether the filled stacks contain gaps
+     */
+    private boolean containsGaps() {
+        for (int[] filledStack : this.filledStacks) {
+            for (int level = filledStack.length - 1; level > 0; level--) {
+                if (filledStack[level] == -1 && filledStack[level - 1] != -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Creates the filled stacks from the solved instance's stack assignments.
+     */
+    private void createFilledStacksFromInstance() {
+        this.filledStacks = new int[this.solvedInstance.getStacks().length][];
+        for (int i = 0; i < this.solvedInstance.getStacks().length; i++) {
+            this.filledStacks[i] = this.solvedInstance.getStacks()[i].clone();
+        }
     }
 }
