@@ -7,18 +7,18 @@ package SP.representations;
  */
 public class Item {
 
-    private int idx;
-    private float length;
-    private float width;
-    private Position pos;
+    private final int idx;
+    private final float length;
+    private final float width;
+    private final Position pos;
 
     /**
      * Constructor
      *
-     * @param idx    - the index that identifies the item
-     * @param length - the length of the item
-     * @param width  - the width of the item
-     * @param pos    - the position of the item on the vehicle
+     * @param idx    - index that identifies the item
+     * @param length - length of the item
+     * @param width  - width of the item
+     * @param pos    - position of the item on the vehicle with which it is delivered
      */
     public Item(int idx, float length, float width, Position pos) {
         this.idx = idx;
@@ -30,7 +30,7 @@ public class Item {
     /**
      * Copy-Constructor
      *
-     * @param item - the item to be copied
+     * @param item - item to be copied
      */
     public Item(Item item) {
         this.idx = item.getIdx();
@@ -42,7 +42,7 @@ public class Item {
     /**
      * Returns the item's index.
      *
-     * @return the item's index
+     * @return index of the item
      */
     public int getIdx() {
         return this.idx;
@@ -51,7 +51,7 @@ public class Item {
     /**
      * Returns the item's length.
      *
-     * @return the item's length
+     * @return length of the item
      */
     public float getLength() {
         return  this.length;
@@ -60,16 +60,16 @@ public class Item {
     /**
      * Returns the item's width
      *
-     * @return the item's width
+     * @return width of the item
      */
     public float getWidth() {
         return this.width;
     }
 
     /**
-     * Returns the item's position on the vehicle.
+     * Returns the item's position on the vehicle with which it is delivered.
      *
-     * @return the item's position
+     * @return position of the item
      */
     public Position getPosition() {
         return this.pos;
