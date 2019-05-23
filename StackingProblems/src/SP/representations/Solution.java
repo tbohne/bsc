@@ -233,6 +233,22 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
+     * Returns whether the solution's filled stacks contain gaps.
+     *
+     * @return whether the filled stacks contain gaps
+     */
+    public boolean containsGaps() {
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
+            for (int level = this.filledStacks[stack].length - 1; level > 0; level--) {
+                if (this.filledStacks[stack][level] == -1 && this.filledStacks[stack][level - 1] != -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Sets the solution's time to solve the instance.
      *
      * @param duration - the duration it took to solve the instance
@@ -241,6 +257,9 @@ public class Solution implements Comparable<Solution> {
         this.timeToSolve = duration;
     }
 
+    /**
+     * Lowers all items that are stacked 'in the air'.
+     */
     public void lowerItemsThatAreStackedInTheAir() {
         for (int stack = 0; stack < this.filledStacks.length; stack++) {
             boolean loweredItem = true;
@@ -258,35 +277,33 @@ public class Solution implements Comparable<Solution> {
         }
     }
 
-    public boolean containsGaps() {
-        for (int stack = 0; stack < this.filledStacks.length; stack++) {
-            for (int level = this.filledStacks[stack].length - 1; level > 0; level--) {
-                if (this.filledStacks[stack][level] == -1 && this.filledStacks[stack][level - 1] != -1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /**
      * Returns whether the solution is feasible which means that all items have been
      * assigned to a position in a stack in a way that respects the stacking- and
-     * placement-constraints. Additionally no item have been assigned to more than one position.
+     * placement-constraints and the stack capacity. Additionally no item has been assigned
+     * to more than one position and no stack contains gaps.
      *
      * @return whether the solution is feasible
      */
     public boolean isFeasible() {
-        if (!this.empty) {
-//            System.out.println("all items assigned: " + this.allItemsAssigned());
-//            System.out.println("stacking constraints resp.: " + this.stackingConstraintsRespected());
-//            System.out.println("placement constraints resp.: " + this.placementConstraintsRespected());
-//            System.out.println("items assigned: " + this.getNumberOfAssignedItems());
-//            System.out.println("contains duplicates: " + this.containsDuplicates());
-//            System.out.println("contains gaps: " + this.containsGaps());
+        if (!this.allItemsAssigned()) {
+            System.out.println("infeasible solution - not all items have been assigned");
+            System.out.println("number: " + this.getNumberOfAssignedItems());
+            return false;
+        } else if (!this.stackingConstraintsRespected()) {
+            System.out.println("infeasible solution - the stacking constraints are violated");
+            return false;
+        } else if (!this.placementConstraintsRespected()) {
+            System.out.println("infeasible solution - the placement constraints are violated");
+            return false;
+        } else if (this.containsDuplicates()) {
+            System.out.println("infeasible solution - there are items that are assigned more than once");
+            return false;
+        } else if (this.containsGaps()) {
+            System.out.println("infeasible solution - there are gaps in the filled stacks");
+            return false;
         }
-        return !this.empty && this.allItemsAssigned() && this.stackingConstraintsRespected()
-            && this.placementConstraintsRespected() && !this.containsDuplicates() && !this.containsGaps();
+        return true;
     }
 
     /**
