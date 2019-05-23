@@ -14,7 +14,7 @@ public class Instance {
     private Item[] items;
     private int[][] stacks;
     private int stackCapacity;
-    private List<Position> stackPositions;
+    private List<GridPosition> stackPositions;
     private int[][] stackingConstraints;
     private double[][] costs;
 
@@ -29,7 +29,7 @@ public class Instance {
      * @param costs               - matrix containing the costs of item-stack-assignments
      * @param name                - name of the instance
      */
-    public Instance(Item[] items, int numberOfStacks, List<Position> stackPositions, int stackCapacity,
+    public Instance(Item[] items, int numberOfStacks, List<GridPosition> stackPositions, int stackCapacity,
         int[][] stackingConstraints, double[][] costs, String name) {
 
             this.items = items;
@@ -130,7 +130,7 @@ public class Instance {
      *
      * @return stack positions of the instance
      */
-    public List<Position> getStackPositions() {
+    public List<GridPosition> getStackPositions() {
         return this.stackPositions;
     }
 
@@ -213,7 +213,7 @@ public class Instance {
             str.append(item.getPosition()).append(" ");
         }
         str.append("\nstack position:\n");
-        for (Position pos : this.getStackPositions()) {
+        for (GridPosition pos : this.getStackPositions()) {
             str.append(pos).append(" ");
         }
         str.append("\n\n");
@@ -259,10 +259,10 @@ public class Instance {
      *
      * @param stackPositions - list of stack positions
      */
-    private void initStackPositions(List<Position> stackPositions) {
+    private void initStackPositions(List<GridPosition> stackPositions) {
         this.stackPositions = new ArrayList<>();
-        for (Position pos : stackPositions) {
-            this.stackPositions.add(new Position(pos));
+        for (GridPosition pos : stackPositions) {
+            this.stackPositions.add(new GridPosition(pos));
         }
     }
 
@@ -287,8 +287,8 @@ public class Instance {
      */
     private void copyStackPositions(Instance instance) {
         this.stackPositions = new ArrayList<>();
-        for (Position pos : instance.getStackPositions()) {
-            stackPositions.add(new Position(pos));
+        for (GridPosition pos : instance.getStackPositions()) {
+            stackPositions.add(new GridPosition(pos));
         }
     }
 

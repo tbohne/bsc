@@ -2,7 +2,7 @@ package SP.io;
 
 import SP.representations.Instance;
 import SP.representations.Item;
-import SP.representations.Position;
+import SP.representations.GridPosition;
 
 import java.io.*;
 
@@ -69,7 +69,7 @@ public class InstanceWriter {
      * @throws IOException
      */
     private static void writeStackPositions(Instance instance, BufferedWriter bw) throws IOException {
-        for (Position stackPos : instance.getStackPositions()) {
+        for (GridPosition stackPos : instance.getStackPositions()) {
             bw.write(stackPos + " ");
         }
         bw.newLine();

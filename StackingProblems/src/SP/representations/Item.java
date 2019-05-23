@@ -10,7 +10,7 @@ public class Item {
     private final int idx;
     private final float length;
     private final float width;
-    private final Position pos;
+    private final GridPosition pos;
 
     /**
      * Constructor
@@ -20,7 +20,7 @@ public class Item {
      * @param width  - width of the item
      * @param pos    - position of the item on the vehicle with which it is delivered
      */
-    public Item(int idx, float length, float width, Position pos) {
+    public Item(int idx, float length, float width, GridPosition pos) {
         this.idx = idx;
         this.length = length;
         this.width = width;
@@ -36,7 +36,7 @@ public class Item {
         this.idx = item.getIdx();
         this.length = item.getLength();
         this.width = item.getWidth();
-        this.pos = new Position(item.getPosition());
+        this.pos = new GridPosition(item.getPosition());
     }
 
     /**
@@ -71,7 +71,7 @@ public class Item {
      *
      * @return position of the item
      */
-    public Position getPosition() {
+    public GridPosition getPosition() {
         return this.pos;
     }
 }

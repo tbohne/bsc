@@ -1,6 +1,6 @@
 package SP.experiments;
 
-import SP.representations.Position;
+import SP.representations.GridPosition;
 import SP.representations.Instance;
 import SP.io.InstanceWriter;
 import SP.representations.Item;
@@ -54,9 +54,9 @@ public class TestDataGenerator {
      * @param stackPositions - list of stack positions
      * @return manhattan distance between original item position and stack
      */
-    public static double computeManhattanDist(int item, int stack, Item[] items, ArrayList<Position> stackPositions) {
-        Position itemPosition = items[item].getPosition();
-        Position stackPosition = stackPositions.get(stack);
+    public static double computeManhattanDist(int item, int stack, Item[] items, ArrayList<GridPosition> stackPositions) {
+        GridPosition itemPosition = items[item].getPosition();
+        GridPosition stackPosition = stackPositions.get(stack);
         return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
     }
 
@@ -66,8 +66,8 @@ public class TestDataGenerator {
      * @param numOfStacks - the number of stacks available in the instances
      * @return list of stack positions
      */
-    public static ArrayList<Position> generateStackPositionsSquare(int numOfStacks) {
-        ArrayList<Position> stackPositions = new ArrayList<>();
+    public static ArrayList<GridPosition> generateStackPositionsSquare(int numOfStacks) {
+        ArrayList<GridPosition> stackPositions = new ArrayList<>();
         int stacksPerRow = (int)Math.ceil(Math.sqrt(numOfStacks));
         float xCoord = 0;
         float yCoord = 0;
@@ -77,7 +77,7 @@ public class TestDataGenerator {
                 yCoord += STORAGE_AREA_SLOT_WIDTH;
                 xCoord = 0;
             }
-            stackPositions.add(new Position(xCoord, yCoord));
+            stackPositions.add(new GridPosition(xCoord, yCoord));
             xCoord += STORAGE_AREA_SLOT_LENGTH;
         }
         return stackPositions;
@@ -90,8 +90,8 @@ public class TestDataGenerator {
      * @param numOfStacks - the number of stacks available in the instances
      * @return list of stack positions
      */
-    public static ArrayList<Position> generateStackPositionsOnSpecifiedRows(int numOfStacks) {
-        ArrayList<Position> stackPositions = new ArrayList<>();
+    public static ArrayList<GridPosition> generateStackPositionsOnSpecifiedRows(int numOfStacks) {
+        ArrayList<GridPosition> stackPositions = new ArrayList<>();
 
         float xCoord = 0;
         float yCoord = 0;
@@ -112,7 +112,7 @@ public class TestDataGenerator {
                     rowCnt = 0;
                 }
             }
-            stackPositions.add(new Position(xCoord, yCoord));
+            stackPositions.add(new GridPosition(xCoord, yCoord));
             xCoord += STORAGE_AREA_SLOT_LENGTH;
             rowCnt++;
         }
@@ -126,8 +126,8 @@ public class TestDataGenerator {
      *
      * @return list of item positions
      */
-    public static ArrayList<Position> generateItemPositions(ArrayList<Position> stackPositions) {
-        ArrayList<Position> itemPositions = new ArrayList<>();
+    public static ArrayList<GridPosition> generateItemPositions(ArrayList<GridPosition> stackPositions) {
+        ArrayList<GridPosition> itemPositions = new ArrayList<>();
 
         float xCoord = 0;
         float yCoord = (float)stackPositions.get(stackPositions.size() - 1).getYCoord()
@@ -138,7 +138,7 @@ public class TestDataGenerator {
                 xCoord = 0;
                 yCoord += STORAGE_AREA_SLOT_WIDTH;
             }
-            itemPositions.add(new Position(xCoord, yCoord));
+            itemPositions.add(new GridPosition(xCoord, yCoord));
             xCoord += STORAGE_AREA_SLOT_LENGTH;
         }
         return itemPositions;
@@ -166,8 +166,8 @@ public class TestDataGenerator {
      *
      * @return the generated items
      */
-    public static Item[] generateItems(ArrayList<Position> stackPositions) {
-        ArrayList<Position> itemPositions = generateItemPositions(stackPositions);
+    public static Item[] generateItems(ArrayList<GridPosition> stackPositions) {
+        ArrayList<GridPosition> itemPositions = generateItemPositions(stackPositions);
         Item[] items = new Item[NUMBER_OF_ITEMS];
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             float length = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
@@ -299,7 +299,7 @@ public class TestDataGenerator {
      * @param numOfStacks    - the number of available stacks
      * @param stackPositions - the positions of the stacks in the storage area
      */
-    public static void generateCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<Position> stackPositions) {
+    public static void generateCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<GridPosition> stackPositions) {
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             for (int j = 0; j < numOfStacks; j++) {
                 costs[i][j] = computeManhattanDist(i, j, items, stackPositions);
@@ -315,7 +315,7 @@ public class TestDataGenerator {
         }
     }
 
-    public static void generateRandomCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<Position> stackPositions) {
+    public static void generateRandomCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<GridPosition> stackPositions) {
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             for (int j = 0; j < numOfStacks; j++) {
                 Random r = new Random();
@@ -338,7 +338,7 @@ public class TestDataGenerator {
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
 
-            ArrayList<Position> stackPositions = generateStackPositionsOnSpecifiedRows(numOfStacks);
+            ArrayList<GridPosition> stackPositions = generateStackPositionsOnSpecifiedRows(numOfStacks);
             Item[] items = generateItems(stackPositions);
 
             int[][] stackingConstraintMatrix;

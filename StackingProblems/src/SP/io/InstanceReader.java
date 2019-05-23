@@ -2,7 +2,7 @@ package SP.io;
 
 import SP.representations.Instance;
 import SP.representations.Item;
-import SP.representations.Position;
+import SP.representations.GridPosition;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,14 +55,14 @@ public class InstanceReader {
      * @param positions - the list of positions to be filled
      * @param reader    - the reader pointing to the part of the file containing the positions
      */
-    private static void readPositions(ArrayList<Position> positions, BufferedReader reader) {
+    private static void readPositions(ArrayList<GridPosition> positions, BufferedReader reader) {
         try {
             String line = reader.readLine().trim();
             String[] stringOfPositions = line.split(" ");
             for (String position : stringOfPositions) {
                 double xCoord = Double.parseDouble(position.split(",")[0].replace("(", "").trim());
                 double yCoord = Double.parseDouble(position.split(",")[1].replace(")", "").trim());
-                positions.add(new Position(xCoord, yCoord));
+                positions.add(new GridPosition(xCoord, yCoord));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,8 +116,8 @@ public class InstanceReader {
         int numberOfItems = 0;
         int numberOfStacks = 0;
         int stackCapacity = 0;
-        ArrayList<Position> itemPositions = new ArrayList<>();
-        ArrayList<Position> stackPositions = new ArrayList<>();
+        ArrayList<GridPosition> itemPositions = new ArrayList<>();
+        ArrayList<GridPosition> stackPositions = new ArrayList<>();
         ArrayList<ArrayList<Float>> itemDimensions = new ArrayList<>();
         int[][] stackingConstraints = new int[numberOfItems][];
         double[][] costs = new double[numberOfItems][];

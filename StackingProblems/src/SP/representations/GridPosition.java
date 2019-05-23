@@ -2,10 +2,12 @@ package SP.representations;
 
 /**
  * Represents positions for stacks and items in a grid layout.
+ * The stacks are positioned in the storage area, while the items
+ * are positioned on the vehicles they are delivered with.
  *
  * @author Tim Bohne
  */
-public class Position {
+public class GridPosition {
 
     private final double xCoord;
     private final double yCoord;
@@ -16,7 +18,7 @@ public class Position {
      * @param xCoord - x coordinate of position
      * @param yCoord - y coordinate of position
      */
-    public Position(double xCoord, double yCoord) {
+    public GridPosition(double xCoord, double yCoord) {
         this.xCoord = xCoord;
         this.yCoord = yCoord;
     }
@@ -26,7 +28,7 @@ public class Position {
      *
      * @param pos - position to be copied
      */
-    public Position(Position pos) {
+    public GridPosition(GridPosition pos) {
         this.xCoord = pos.getXCoord();
         this.yCoord = pos.getYCoord();
     }
