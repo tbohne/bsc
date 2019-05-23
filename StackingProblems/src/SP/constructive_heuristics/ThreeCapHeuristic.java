@@ -556,7 +556,7 @@ public class ThreeCapHeuristic {
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         sol.lowerItemsThatAreStackedInTheAir();
-        sol.transformStackAssignmentsIntoValidSolutionIfPossible();
+        sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
 //        System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
         return sol;
     }
@@ -607,11 +607,12 @@ public class ThreeCapHeuristic {
             ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
             bestSol = HeuristicUtil.getBestSolution(solutions);
 
-            bestSol.transformStackAssignmentsIntoValidSolutionIfPossible();
+            bestSol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
             bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
             bestSol.lowerItemsThatAreStackedInTheAir();
 
             if (postProcessing) {
+                System.out.println("costs before post processing: " + bestSol.getObjectiveValue());
                 // Since the last generated solution is not necessarily the best one,
                 // the stack assignments for the best solution have to be restored before post-processing.
                 this.instance.resetStacks();

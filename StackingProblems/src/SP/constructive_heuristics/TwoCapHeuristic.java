@@ -231,6 +231,7 @@ public class TwoCapHeuristic {
      * @return the result of the post-processing procedure
      */
     public Solution postProcessing(Solution sol) {
+
         ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
@@ -239,9 +240,12 @@ public class TwoCapHeuristic {
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
+
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
+        this.instance.lowerItemsThatAreStackedInTheAir();
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-        sol.transformStackAssignmentsIntoValidSolutionIfPossible();
+
+        sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
         return sol;
     }
 
@@ -285,18 +289,17 @@ public class TwoCapHeuristic {
             ;
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
             this.fixOrderInStacks();
+            this.instance.lowerItemsThatAreStackedInTheAir();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
-            sol.lowerItemsThatAreStackedInTheAir();
 
             if (postProcessing) {
-//                System.out.println("costs before post processing: " + sol.getObjectiveValue());
+                System.out.println("costs before post processing: " + sol.getObjectiveValue());
                 double bestSolutionCost = sol.computeCosts();
                 sol = this.postProcessing(sol);
                 while (sol.computeCosts() < bestSolutionCost) {
                     bestSolutionCost = sol.computeCosts();
                     sol = this.postProcessing(sol);
                 }
-                sol.lowerItemsThatAreStackedInTheAir();
                 System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
             }
         } else {

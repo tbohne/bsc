@@ -547,7 +547,7 @@ public class ThreeCapRecursiveMCMHeuristic {
             this.completeStackAssignments();
 
             sol = new Solution(0, this.timeLimit, this.instance);
-            sol.transformStackAssignmentsIntoValidSolutionIfPossible();
+            sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
             System.out.println("sol feasible: " + sol.isFeasible());
             sol.setTimeToSolve((System.currentTimeMillis() - startTime) / 1000.0);
         } else {

@@ -5,13 +5,12 @@ import SP.representations.Instance;
 import SP.io.InstanceWriter;
 import SP.representations.Item;
 import SP.util.HeuristicUtil;
-import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Provides functionalites to configure and generate test instances for stacking problems.
+ * Provides functionalities to configure and generate test instances for stacking problems.
  *
  * @author Tim Bohne
  */
