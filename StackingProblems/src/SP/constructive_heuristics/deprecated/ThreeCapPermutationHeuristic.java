@@ -374,14 +374,14 @@ public class ThreeCapPermutationHeuristic {
         ArrayList<MCMEdge> prioritizedEdges = new ArrayList<>();
 
         this.prioritizeInflexibleEdges(matchedItems, prioritizedEdges);
-        if (!this.prioritizeInflexibleItems(unmatchedItems)) { return false; }
+        if (!this.prioritizeInflexibleItems(unmatchedItems)) { return true; }
         this.processMatchedItems(matchedItems, prioritizedEdges);
 
         ArrayList<Integer> stillUnmatchedItems = new ArrayList<>(unmatchedItems);
         this.updateUnmatchedItems(stillUnmatchedItems);
 
         this.assignFinallyUnmatchedItemsInDifferentOrders(stillUnmatchedItems);
-        return true;
+        return false;
     }
 
     /**
@@ -741,7 +741,7 @@ public class ThreeCapPermutationHeuristic {
                 System.out.println("itemPairs: " + itemPairPermutation);
                 System.out.println("unmatched: " + unmatchedItems);
 
-                if (!this.fillStorageArea(itemPairPermutation, unmatchedItems)) {
+                if (this.fillStorageArea(itemPairPermutation, unmatchedItems)) {
                     this.instance.resetStacks();
                     continue;
                 }
@@ -772,7 +772,7 @@ public class ThreeCapPermutationHeuristic {
             e.flipVertices();
         }
 
-        if (!this.fillStorageArea(copyMatchedItems, unmatchedItems)) {
+        if (this.fillStorageArea(copyMatchedItems, unmatchedItems)) {
             this.instance.resetStacks();
             return false;
         }
