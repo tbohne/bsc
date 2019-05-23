@@ -14,9 +14,9 @@ public class MCMEdge implements Comparable<MCMEdge> {
     /**
      * Constructor
      *
-     * @param vertexOne - the edge's first vertex
-     * @param vertexTwo - the edge's second vertex
-     * @param rating    - the edge's rating
+     * @param vertexOne - first vertex of the edge
+     * @param vertexTwo - second vertex of the edge
+     * @param rating    - rating of the edge (used in rating system of heuristic)
      */
     public MCMEdge(int vertexOne, int vertexTwo, int rating) {
         this.vertexOne = vertexOne;
@@ -27,18 +27,18 @@ public class MCMEdge implements Comparable<MCMEdge> {
     /**
      * Copy-Constructor
      *
-     * @param edge - the edge to be copied
+     * @param edge - edge to be copied
      */
     public MCMEdge(MCMEdge edge) {
         this.vertexOne = edge.getVertexOne();
         this.vertexTwo = edge.getVertexTwo();
-        this.rating = edge.rating;
+        this.rating = edge.getRating();
     }
 
     /**
      * Returns the index of the edge's first vertex.
      *
-     * @return the edge's first vertex
+     * @return first vertex of the edge
      */
     public int getVertexOne() {
         return vertexOne;
@@ -47,25 +47,25 @@ public class MCMEdge implements Comparable<MCMEdge> {
     /**
      * Returns the index of the edge's second vertex.
      *
-     * @return the edge's second vertex
+     * @return second vertex of the edge
      */
     public int getVertexTwo() {
         return vertexTwo;
     }
 
     /**
-     * Returns the edge's rating.
+     * Returns the edge's rating which is used and determined in the heuristics.
      *
-     * @return the edge's rating
+     * @return rating of the edge
      */
     public int getRating() {
         return rating;
     }
 
     /**
-     * Sets the edge's rating.
+     * Sets the edge's rating (determined in the heuristics).
      *
-     * @param rating - the rating to be set
+     * @param rating - rating to be set
      */
     public void setRating(int rating) {
         this.rating = rating;
@@ -81,21 +81,22 @@ public class MCMEdge implements Comparable<MCMEdge> {
     }
 
     /**
-     * Compares two edges in terms of their rating.
+     * Compares two edges in terms of their ratings.
      *
-     * @param e - the edge to be compared to
+     * @param edge - edge to be compared to
      * @return whether this edge's rating is less than, equal to, or greater than the other edge's rating
      */
     @Override
-    public int compareTo(MCMEdge e) {
-        return this.rating - e.rating;
+    public int compareTo(MCMEdge edge) {
+        return this.rating - edge.rating;
     }
 
     /**
      * Returns a string visualizing the edge.
      *
-     * @return a string visualizing the edge
+     * @return string visualizing the edge
      */
+    @Override
     public String toString() {
         return "(" + this.vertexOne + ", " + this.vertexTwo + ")";
     }
