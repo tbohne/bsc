@@ -340,12 +340,12 @@ public class ThreeCapHeuristic {
     ) {
 
         int levelOfOtherSlot;
-        if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1) {
+        if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1) {
             levelOfOtherSlot = levelsOfOtherSlots.get(0);
         } else {
             levelOfOtherSlot = levelsOfOtherSlots.get(1);
         }
-        int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
+        int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
 
         // check pair for compatibility
         if (this.instance.getStackingConstraints()[item][otherItem] == 1
@@ -377,11 +377,11 @@ public class ThreeCapHeuristic {
         int upperItemOfPair;
 
         if (levelsOfOtherSlots.get(0) < levelsOfOtherSlots.get(1)) {
-            upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
-            lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
+            upperItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
+            lowerItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
         } else {
-            upperItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
-            lowerItemOfPair = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
+            upperItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
+            lowerItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
         }
 
         // pair stackable in both directions
@@ -432,14 +432,14 @@ public class ThreeCapHeuristic {
                     ArrayList<Integer> levelsOfOtherSlots = this.getLevelsOfOtherSlots(emptyPos.getLevel());
 
                     // two other items in stack
-                    if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
-                        && sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
+                    if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
+                        && sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
                             this.addEdgesForStacksFilledWithPairs(
                                 levelsOfOtherSlots, sol, emptyPos, postProcessingGraph, item, originalCosts
                             );
                     // one other item in stack
-                    } else if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
-                        || sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
+                    } else if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1
+                        || sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)] != -1) {
                             this.addEdgesForStacksWithSingleItem(
                                 sol, emptyPos, levelsOfOtherSlots, item, postProcessingGraph, originalCosts
                             );
@@ -493,9 +493,9 @@ public class ThreeCapHeuristic {
      */
     public ArrayList<ArrayList<Integer>> retrieveItemTuples(Solution sol, int tupleSize) {
         ArrayList<ArrayList<Integer>> itemTuples = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+        for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
             ArrayList<Integer> stackEntries = new ArrayList<>();
-            for (int entry : sol.getFilledStorageArea()[stack]) {
+            for (int entry : sol.getFilledStacks()[stack]) {
                 stackEntries.add(entry);
             }
             ArrayList<Integer> itemTuple = new ArrayList<>();
@@ -521,8 +521,8 @@ public class ThreeCapHeuristic {
      * @param sol - the solution to restore the storage area from
      */
     public void restoreStorageAreaForBestOriginalSolution(Solution sol) {
-        for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
-            this.instance.getStacks()[i] = sol.getFilledStorageArea()[i].clone();
+        for (int i = 0; i < sol.getFilledStacks().length; i++) {
+            this.instance.getStacks()[i] = sol.getFilledStacks()[i].clone();
         }
     }
 

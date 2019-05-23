@@ -67,8 +67,8 @@ public class TabuSearch {
      * @return random position in the storage area
      */
     public StackPosition getRandomPositionInStorageArea(Solution sol) {
-        int stackIdx = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStorageArea().length - 1);
-        int level = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStorageArea()[stackIdx].length - 1);
+        int stackIdx = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStacks().length - 1);
+        int level = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStacks()[stackIdx].length - 1);
         return new StackPosition(stackIdx, level);
     }
 
@@ -80,9 +80,9 @@ public class TabuSearch {
      */
     public ArrayList<StackPosition> getFreeSlots(Solution sol) {
         ArrayList<StackPosition> freeSlots = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
-                if (sol.getFilledStorageArea()[stack][level] == -1) {
+        for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
+            for (int level = 0; level < sol.getFilledStacks()[stack].length; level++) {
+                if (sol.getFilledStacks()[stack][level] == -1) {
                     freeSlots.add(new StackPosition(stack, level));
                 }
             }
@@ -110,11 +110,11 @@ public class TabuSearch {
      * @param posTwo - the second position of the exchange
      */
     public Swap swapItems(Solution sol, StackPosition posOne, StackPosition posTwo) {
-        int itemOne = sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
-        int itemTwo = sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+        int itemOne = sol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
+        int itemTwo = sol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
 
-        sol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
-        sol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
+        sol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
+        sol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
 
         // the swap operations consists of two shift operations
         return new Swap(new Shift(itemOne, posTwo), new Shift(itemTwo, posOne));
@@ -129,9 +129,9 @@ public class TabuSearch {
      * @param pos         - the item's original position
      */
     public Shift shiftItem(Solution sol, int item, StackPosition pos, StackPosition shiftTarget) {
-        sol.getFilledStorageArea()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
-            sol.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
-        sol.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()] = -1;
+        sol.getFilledStacks()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
+            sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
+        sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()] = -1;
         return new Shift(item, shiftTarget);
     }
 
@@ -175,11 +175,11 @@ public class TabuSearch {
 
             Solution neighbor = new Solution(this.currSol);
             StackPosition pos = this.getRandomPositionInStorageArea(neighbor);
-            int item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
+            int item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
 
             while (item == -1) {
                 pos = this.getRandomPositionInStorageArea(neighbor);
-                item = neighbor.getFilledStorageArea()[pos.getStackIdx()][pos.getLevel()];
+                item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
             }
 
             StackPosition shiftTarget = this.getRandomFreeSlot(neighbor);
@@ -264,17 +264,17 @@ public class TabuSearch {
                 StackPosition posOne = this.getRandomPositionInStorageArea(neighbor);
                 StackPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
 
-                int swapItemOne = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
-                int swapItemTwo = this.currSol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+                int swapItemOne = this.currSol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
+                int swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
 
                 while (swapItemOne == -1) {
                     posOne = this.getRandomPositionInStorageArea(neighbor);
-                    swapItemOne = this.currSol.getFilledStorageArea()[posOne.getStackIdx()][posOne.getLevel()];
+                    swapItemOne = this.currSol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
                 }
                 // the swapped items should differ
                 while (swapItemTwo == -1 || swapItemTwo == swapItemOne) {
                     posTwo = this.getRandomPositionInStorageArea(neighbor);
-                    swapItemTwo = this.currSol.getFilledStorageArea()[posTwo.getStackIdx()][posTwo.getLevel()];
+                    swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
                 }
 
                 Solution tmpSol = new Solution(neighbor);
@@ -348,7 +348,7 @@ public class TabuSearch {
         if (rand < 0.05) {
             sol = this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, TabuSearchConfig.XSWAP_INTERVAL_UB));
         // shift is only possible if there are free slots
-        } else if (rand < 0.5 && this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
+        } else if (rand < 0.5 && this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
             sol = this.getNeighborShift(shortTermStrategy);
         } else {
             sol =  this.getNeighborXSwap(shortTermStrategy, 1);
@@ -373,7 +373,7 @@ public class TabuSearch {
         List<Solution> nbrs = new ArrayList<>();
 
         // shift is only possible if there are free slots
-        if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStorageArea().length * this.currSol.getFilledStorageArea()[0].length) {
+        if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
             nbrs.add(this.getNeighborShift(shortTermStrategy));
         }
         nbrs.add(this.getNeighborXSwap(shortTermStrategy, 1));

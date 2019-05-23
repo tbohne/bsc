@@ -14,7 +14,7 @@ public class Solution implements Comparable<Solution> {
     private Instance solvedInstance;
     private double timeToSolve;
     private double timeLimit;
-    private int[][] filledStorageArea;
+    private int[][] filledStacks;
     private boolean empty;
 
     /**
@@ -22,15 +22,15 @@ public class Solution implements Comparable<Solution> {
      */
     public Solution() {
         this.empty = true;
-        this.filledStorageArea = new int[0][];
+        this.filledStacks = new int[0][];
     }
 
     /**
-     * Constructor not receiving the objective value.
+     * Constructor
      *
-     * @param timeToSolve    - the time it took to create the solution
-     * @param timeLimit      - the considered time limit
-     * @param solvedInstance - the solved instance
+     * @param timeToSolve    - time it took to create the solution
+     * @param timeLimit      - considered time limit
+     * @param solvedInstance - solved instance
      */
     public Solution(double timeToSolve, double timeLimit, Instance solvedInstance) {
         this.timeToSolve = timeToSolve;
@@ -43,7 +43,7 @@ public class Solution implements Comparable<Solution> {
     /**
      * Copy-Constructor
      *
-     * @param sol - the solution to be copied
+     * @param sol - solution to be copied
      */
     public Solution(Solution sol) {
         this.timeToSolve = sol.getTimeToSolveAsDouble();
@@ -51,19 +51,19 @@ public class Solution implements Comparable<Solution> {
         this.solvedInstance = new Instance(sol.solvedInstance);
         this.timeLimit = sol.getTimeLimit();
 
-        this.filledStorageArea = new int[sol.solvedInstance.getStacks().length][];
-        for (int i = 0; i < sol.getFilledStorageArea().length; i++) {
-            this.filledStorageArea[i] = sol.getFilledStorageArea()[i].clone();
+        this.filledStacks = new int[sol.solvedInstance.getStacks().length][];
+        for (int i = 0; i < sol.getFilledStacks().length; i++) {
+            this.filledStacks[i] = sol.getFilledStacks()[i].clone();
         }
     }
 
     /**
-     * Creates the filled storage area from the instance's stack assignments.
+     * Creates the filled storage area from the solved instance's stack assignments.
      */
     public void createFilledStorageAreaFromInstance() {
-        this.filledStorageArea = new int[this.solvedInstance.getStacks().length][];
+        this.filledStacks = new int[this.solvedInstance.getStacks().length][];
         for (int i = 0; i < this.solvedInstance.getStacks().length; i++) {
-            this.filledStorageArea[i] = this.solvedInstance.getStacks()[i].clone();
+            this.filledStacks[i] = this.solvedInstance.getStacks()[i].clone();
         }
     }
 
@@ -72,8 +72,8 @@ public class Solution implements Comparable<Solution> {
      *
      * @return the filled storage area
      */
-    public int[][] getFilledStorageArea() {
-        return this.filledStorageArea;
+    public int[][] getFilledStacks() {
+        return this.filledStacks;
     }
 
     /**
@@ -102,7 +102,7 @@ public class Solution implements Comparable<Solution> {
 
         // TODO: revise
 
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
             boolean somethingChanged = true;
 
             while (somethingChanged) {
@@ -110,11 +110,11 @@ public class Solution implements Comparable<Solution> {
                 somethingChanged = false;
 
                 for (int item = 0; item < this.solvedInstance.getStackCapacity() - 1; item++) {
-                    if (this.filledStorageArea[stack][item] != -1 && this.filledStorageArea[stack][item + 1] != -1) {
-                        if (this.solvedInstance.getStackingConstraints()[this.filledStorageArea[stack][item]][this.filledStorageArea[stack][item + 1]] == 0) {
-                            int tmp = this.filledStorageArea[stack][item];
-                            this.filledStorageArea[stack][item] = this.filledStorageArea[stack][item + 1];
-                            this.filledStorageArea[stack][item + 1] = tmp;
+                    if (this.filledStacks[stack][item] != -1 && this.filledStacks[stack][item + 1] != -1) {
+                        if (this.solvedInstance.getStackingConstraints()[this.filledStacks[stack][item]][this.filledStacks[stack][item + 1]] == 0) {
+                            int tmp = this.filledStacks[stack][item];
+                            this.filledStacks[stack][item] = this.filledStacks[stack][item + 1];
+                            this.filledStacks[stack][item + 1] = tmp;
                             somethingChanged = true;
 
                             break;
@@ -132,10 +132,10 @@ public class Solution implements Comparable<Solution> {
      */
     public boolean allItemsAssigned() {
         boolean[] allItemsAssigned = new boolean[this.solvedInstance.getItems().length];
-        for (int i = 0; i < this.filledStorageArea.length; i++) {
-            for (int j = 0; j < this.filledStorageArea[i].length; j++) {
-                if (this.filledStorageArea[i][j] != -1) {
-                    allItemsAssigned[this.filledStorageArea[i][j]] = true;
+        for (int i = 0; i < this.filledStacks.length; i++) {
+            for (int j = 0; j < this.filledStacks[i].length; j++) {
+                if (this.filledStacks[i][j] != -1) {
+                    allItemsAssigned[this.filledStacks[i][j]] = true;
                 }
             }
         }
@@ -153,10 +153,10 @@ public class Solution implements Comparable<Solution> {
      * @return whether the solution is respecting the stacking constraints
      */
     public boolean stackingConstraintsRespected() {
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
-            for (int level = 1; level < this.filledStorageArea[stack].length; level++) {
-                int itemBelow = this.filledStorageArea[stack][level];
-                int itemAbove = this.filledStorageArea[stack][level - 1];
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
+            for (int level = 1; level < this.filledStacks[stack].length; level++) {
+                int itemBelow = this.filledStacks[stack][level];
+                int itemAbove = this.filledStacks[stack][level - 1];
                 if (itemAbove != -1 && itemBelow != -1) {
                     if (this.solvedInstance.getStackingConstraints()[itemAbove][itemBelow] != 1) {
                         return false;
@@ -173,9 +173,9 @@ public class Solution implements Comparable<Solution> {
      * @return whether the solution is respecting the placement constraints
      */
     public boolean placementConstraintsRespected() {
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
-            for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
-                int item = this.filledStorageArea[stack][level];
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
+            for (int level = 0; level < this.filledStacks[stack].length; level++) {
+                int item = this.filledStacks[stack][level];
                 if (item != -1) {
                     if (this.solvedInstance.getCosts()[item][stack] >= Integer.MAX_VALUE / this.solvedInstance.getItems().length) {
                         return false;
@@ -193,13 +193,13 @@ public class Solution implements Comparable<Solution> {
      */
     public boolean containsDuplicates() {
         ArrayList<Integer> assignedItems = new ArrayList<>();
-        for (int i = 0; i < this.filledStorageArea.length; i++) {
-            for (int j = 0; j < this.filledStorageArea[i].length; j++) {
-                if (this.filledStorageArea[i][j] != -1) {
-                    if (assignedItems.contains(this.filledStorageArea[i][j])) {
+        for (int i = 0; i < this.filledStacks.length; i++) {
+            for (int j = 0; j < this.filledStacks[i].length; j++) {
+                if (this.filledStacks[i][j] != -1) {
+                    if (assignedItems.contains(this.filledStacks[i][j])) {
                         return true;
                     }
-                    assignedItems.add(this.filledStorageArea[i][j]);
+                    assignedItems.add(this.filledStacks[i][j]);
                 }
             }
         }
@@ -216,14 +216,14 @@ public class Solution implements Comparable<Solution> {
     }
 
     public void lowerItemsThatAreStackedInTheAir() {
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
             boolean loweredItem = true;
             while (loweredItem) {
                 loweredItem = false;
-                for (int level = this.filledStorageArea[stack].length - 1; level > 0; level--) {
-                    if (this.filledStorageArea[stack][level] == -1 && this.filledStorageArea[stack][level - 1] != -1) {
-                        this.filledStorageArea[stack][level] = this.filledStorageArea[stack][level - 1];
-                        this.filledStorageArea[stack][level - 1] = -1;
+                for (int level = this.filledStacks[stack].length - 1; level > 0; level--) {
+                    if (this.filledStacks[stack][level] == -1 && this.filledStacks[stack][level - 1] != -1) {
+                        this.filledStacks[stack][level] = this.filledStacks[stack][level - 1];
+                        this.filledStacks[stack][level - 1] = -1;
                         loweredItem = true;
                         break;
                     }
@@ -233,9 +233,9 @@ public class Solution implements Comparable<Solution> {
     }
 
     public boolean containsGaps() {
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
-            for (int level = this.filledStorageArea[stack].length - 1; level > 0; level--) {
-                if (this.filledStorageArea[stack][level] == -1 && this.filledStorageArea[stack][level - 1] != -1) {
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
+            for (int level = this.filledStacks[stack].length - 1; level > 0; level--) {
+                if (this.filledStacks[stack][level] == -1 && this.filledStacks[stack][level - 1] != -1) {
                     return true;
                 }
             }
@@ -267,9 +267,9 @@ public class Solution implements Comparable<Solution> {
      * Prints the solution's storage area.
      */
     public void printStorageArea() {
-        for (int i = 0; i < this.getFilledStorageArea().length; i++) {
-            for (int j = 0; j < this.getFilledStorageArea()[i].length; j++) {
-                System.out.print(this.getFilledStorageArea()[i][j] + " ");
+        for (int i = 0; i < this.getFilledStacks().length; i++) {
+            for (int j = 0; j < this.getFilledStacks()[i].length; j++) {
+                System.out.print(this.getFilledStacks()[i][j] + " ");
             }
             System.out.println();
         }
@@ -294,10 +294,10 @@ public class Solution implements Comparable<Solution> {
             return new ArrayList<>();
         }
         ArrayList<Integer> assignedItems = new ArrayList<>();
-        for (int i = 0; i < this.filledStorageArea.length; i++) {
-            for (int j = 0; j < this.filledStorageArea[i].length; j++) {
-                if (this.filledStorageArea[i][j] != -1) {
-                    assignedItems.add(this.filledStorageArea[i][j]);
+        for (int i = 0; i < this.filledStacks.length; i++) {
+            for (int j = 0; j < this.filledStacks[i].length; j++) {
+                if (this.filledStacks[i][j] != -1) {
+                    assignedItems.add(this.filledStacks[i][j]);
                 }
             }
         }
@@ -314,9 +314,9 @@ public class Solution implements Comparable<Solution> {
             return Double.MAX_VALUE;
         }
         double costs = 0.0;
-        for (int stack = 0; stack < this.filledStorageArea.length; stack++) {
-            for (int level = 0; level < this.filledStorageArea[stack].length; level++) {
-                int item = this.filledStorageArea[stack][level];
+        for (int stack = 0; stack < this.filledStacks.length; stack++) {
+            for (int level = 0; level < this.filledStacks[stack].length; level++) {
+                int item = this.filledStacks[stack][level];
                 if (item != -1) {
                     costs += this.solvedInstance.getCosts()[item][stack];
                 }
@@ -388,14 +388,14 @@ public class Solution implements Comparable<Solution> {
             str += this.timeToSolve > this.timeLimit ? " (not optimal)\n\n" : "\n\n";
             str += "stacks (top to bottom):\n";
 
-            int maxStringOffset = RepresentationUtil.getMaximumStringOffset(this.filledStorageArea.length);
+            int maxStringOffset = RepresentationUtil.getMaximumStringOffset(this.filledStacks.length);
 
-            for (int i = 0; i < this.filledStorageArea.length; i++) {
+            for (int i = 0; i < this.filledStacks.length; i++) {
                 String space = RepresentationUtil.getCurrentSpace(i, maxStringOffset);
                 str += "stack " + space + i + ":    ";
-                for (int j = 0; j < this.filledStorageArea[i].length; j++) {
-                    if (this.filledStorageArea[i][j] != -1) {
-                        str += this.filledStorageArea[i][j] + " ";
+                for (int j = 0; j < this.filledStacks[i].length; j++) {
+                    if (this.filledStacks[i][j] != -1) {
+                        str += this.filledStacks[i][j] + " ";
                     }
                 }
                 str += "\n";

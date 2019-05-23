@@ -3,7 +3,6 @@ package SP.io;
 import SP.experiments.OptimizableSolution;
 import SP.representations.Instance;
 import SP.representations.Solution;
-import SP.io.InstanceReader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,8 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Provides functionalities to read solutions for stacking problems from the file system.
@@ -57,7 +54,7 @@ public class SolutionReader {
     public static void fillStorageArea(ArrayList<ArrayList<Integer>> storageArea, Solution sol) {
         for (int i = 0; i < storageArea.size(); i++) {
             for (int j = 0; j < storageArea.get(i).size(); j++) {
-                sol.getFilledStorageArea()[i][j] = storageArea.get(i).get(j);
+                sol.getFilledStacks()[i][j] = storageArea.get(i).get(j);
             }
         }
     }

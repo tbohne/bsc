@@ -127,7 +127,7 @@ public class SolutionWriter {
             bw.write(impSol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
                 + "," + "OPT" + "," + sol.getRuntimeForOptimalSolution() + "," + sol.getOptimalObjectiveValue() + "\n");
 
-            String solver = sol.getSol().getFilledStorageArea()[0].length == 2 ? "2Cap + TS" : "3Cap + TS";
+            String solver = sol.getSol().getFilledStacks()[0].length == 2 ? "2Cap + TS" : "3Cap + TS";
             double totalRuntime = (double)Math.round((sol.getSol().getTimeToSolveAsDouble() + impSol.getTimeToSolveAsDouble()) * 100) / 100;
 
             bw.write(impSol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")

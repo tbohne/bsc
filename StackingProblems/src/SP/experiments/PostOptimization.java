@@ -40,7 +40,7 @@ public class PostOptimization {
             );
 
             SolverComparison.Solver solver;
-            if (sol.getSol().getFilledStorageArea()[0].length == 2) {
+            if (sol.getSol().getFilledStacks()[0].length == 2) {
                 solver = SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP;
             } else {
                 solver = SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP;

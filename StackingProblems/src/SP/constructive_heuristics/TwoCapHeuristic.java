@@ -169,8 +169,8 @@ public class TwoCapHeuristic {
 
                     int levelOfOtherSlot = emptyPos.getLevel() == 0 ? 1 : 0;
 
-                    if (sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
-                        int otherItem = sol.getFilledStorageArea()[emptyPos.getStackIdx()][levelOfOtherSlot];
+                    if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
+                        int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
                         // item compatible with other item
                         if (this.instance.getStackingConstraints()[item][otherItem] == 1
                             || this.instance.getStackingConstraints()[otherItem][item] == 1) {

@@ -441,12 +441,12 @@ public class HeuristicUtil {
      */
     public static ArrayList<String> retrieveEmptyStacks(Solution sol) {
 
-        int stackCapacity = sol.getFilledStorageArea()[0].length;
+        int stackCapacity = sol.getFilledStacks()[0].length;
 
         ArrayList<String> emptyStacks = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
+        for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
             int sumOfEntries = 0;
-            for (int entry : sol.getFilledStorageArea()[stack]) {
+            for (int entry : sol.getFilledStacks()[stack]) {
                 sumOfEntries += entry;
             }
             if (sumOfEntries == -stackCapacity) {
@@ -464,9 +464,9 @@ public class HeuristicUtil {
      */
     public static ArrayList<StackPosition> retrieveEmptyPositions(Solution sol) {
         ArrayList<StackPosition> emptyPositions = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
-                if (sol.getFilledStorageArea()[stack][level] == -1) {
+        for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
+            for (int level = 0; level < sol.getFilledStacks()[stack].length; level++) {
+                if (sol.getFilledStacks()[stack][level] == -1) {
                     emptyPositions.add(new StackPosition(stack, level));
                 }
             }
@@ -482,8 +482,8 @@ public class HeuristicUtil {
      */
     public static HashMap<Integer, Double> getOriginalCosts(Solution sol, double[][] costMatrix) {
         HashMap<Integer, Double> originalCosts = new HashMap<>();
-        for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
-            for (int entry : sol.getFilledStorageArea()[stack]) {
+        for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
+            for (int entry : sol.getFilledStacks()[stack]) {
                 if (entry != -1) {
                     originalCosts.put(entry, costMatrix[entry][stack]);
                 }
