@@ -1,20 +1,20 @@
 package SP.representations;
 
 /**
- * Represents a position in the storage area.
+ * Represents a position inside a stack in the storage area an item can be assigned to.
  *
  * @author Tim Bohne
  */
 public class StackPosition {
 
-    private int stackIdx;
-    private int level;
+    private final int stackIdx;
+    private final int level;
 
     /**
      * Constructor
      *
-     * @param stackIdx - the index of the stack
-     * @param level    - the level inside the stack
+     * @param stackIdx - index of the stack
+     * @param level    - level inside the stack
      */
     public StackPosition(int stackIdx, int level) {
         this.stackIdx = stackIdx;
@@ -22,9 +22,9 @@ public class StackPosition {
     }
 
     /**
-     * Returns the position's stack index.
+     * Returns the position's stack index which identifies the stack the position is contained in.
      *
-     * @return the position's stack index
+     * @return stack the position is contained in
      */
     public int getStackIdx() {
         return this.stackIdx;
@@ -33,26 +33,32 @@ public class StackPosition {
     /**
      * Returns the position's level inside the stack.
      *
-     * @return the position's level inside the stack
+     * @return level of the position inside the stack
      */
     public int getLevel() {
         return this.level;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
+    /**
+     * Provides a string representation of the stack position.
+     *
+     * @return string representation of the stack position
+     */
     @Override
     public String toString() {
         return "(stack: " + this.stackIdx + ", level: " + this.level + ")";
     }
 
+    /**
+     * Determines whether two stack positions are equal which is the case
+     * when they have the same index and level.
+     *
+     * @param object - stack position to be checked for equality
+     * @return whether or not the two stack positions are equal
+     */
     @Override
     public boolean equals(Object object) {
-        if (object != null && object instanceof StackPosition) {
-            return this.level == ((StackPosition)object).level && this.stackIdx == ((StackPosition)object).stackIdx;
-        }
-        return false;
+        return object != null && object instanceof StackPosition && this.getLevel() == ((StackPosition) object).getLevel()
+            && this.getStackIdx() == ((StackPosition) object).getStackIdx();
     }
 }
