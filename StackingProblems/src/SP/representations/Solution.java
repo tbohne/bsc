@@ -307,9 +307,9 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Prints the solution's storage area.
+     * Prints the solution's filled stacks.
      */
-    public void printStorageArea() {
+    public void printFilledStacks() {
         for (int i = 0; i < this.getFilledStacks().length; i++) {
             for (int j = 0; j < this.getFilledStacks()[i].length; j++) {
                 System.out.print(this.getFilledStacks()[i][j] + " ");
@@ -319,20 +319,20 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Returns the solution's number of assigned items.
+     * Returns the solution's number of items that are assigned to stacks.
      *
-     * @return the solution's number of assigned items
+     * @return number of assigned items
      */
     public int getNumberOfAssignedItems() {
         return this.getAssignedItems().size();
     }
 
     /**
-     * Returns the solution's list of assigned items.
+     * Returns the items of the solution that are assigned to stacks.
      *
-     * @return the solution's list of assigned items
+     * @return list of assigned items
      */
-    public ArrayList<Integer> getAssignedItems() {
+    public List<Integer> getAssignedItems() {
         if (this.empty) {
             return new ArrayList<>();
         }
@@ -348,9 +348,9 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Computes the solution's costs.
+     * Computes the solution's transport costs which result from the item-stack-assignments.
      *
-     * @return the solution's costs
+     * @return transport costs of the solution
      */
     public double computeCosts() {
         if (this.empty) {
@@ -371,7 +371,7 @@ public class Solution implements Comparable<Solution> {
     /**
      * Returns a string representation of the solutions time to solve the instance.
      *
-     * @return the solution's time to solve the instance
+     * @return time to solve the instance
      */
     public String getTimeToSolve() {
         return String.format("%.02f", this.timeToSolve).replace(",", ".");
@@ -380,43 +380,34 @@ public class Solution implements Comparable<Solution> {
     /**
      * Returns the solution's time to solve the instance.
      *
-     * @return the solution's time to solve the instance
+     * @return time to solve the instance
      */
     public double getTimeToSolveAsDouble() {
         return this.timeToSolve;
     }
 
     /**
-     * Returns the string representation of the solution's objective value.
+     * Returns the string representation of the solution's objective value (transport costs).
      *
-     * @return the solution's objective value
+     * @return objective value of the solution
      */
     public String getObjectiveValue() {
         return String.format("%.02f", this.computeCosts()).replace(",", ".");
     }
 
     /**
-     * Returns the solution's objective value.
-     *
-     * @return the solution's objective value
-     */
-    public double getObjectiveValueAsDouble() {
-        return this.computeCosts();
-    }
-
-    /**
      * Returns the name of the solved instance.
      *
-     * @return the name of the solved instance
+     * @return name of the solved instance
      */
     public String getNameOfSolvedInstance() {
         return this.solvedInstance.getName();
     }
 
     /**
-     * Returns a string visualizing the solution.
+     * Returns a string representation of the solution's data.
      *
-     * @return a string visualizing the solution
+     * @return string representation of the solution
      */
     @Override
     public String toString() {
@@ -449,10 +440,17 @@ public class Solution implements Comparable<Solution> {
         return str;
     }
 
-    public int compareTo(Solution other) {
-        if (this.computeCosts() < other.computeCosts()) {
+    /**
+     * Compares two solutions with regard to their costs.
+     *
+     * @param sol - the solution to be compared to
+     * @return whether this solution's costs are smaller, equal to, or greater than the other solution's costs
+     */
+    @Override
+    public int compareTo(Solution sol) {
+        if (this.computeCosts() < sol.computeCosts()) {
             return -1;
-        } else if (other.computeCosts() < this.computeCosts()) {
+        } else if (sol.computeCosts() < this.computeCosts()) {
             return 1;
         }
         return 0;
