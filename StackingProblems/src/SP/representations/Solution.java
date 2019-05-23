@@ -3,6 +3,8 @@ package SP.representations;
 import SP.util.RepresentationUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents a solution of a stacking problem.
@@ -104,32 +106,46 @@ public class Solution implements Comparable<Solution> {
     }
 
     /**
-     * Transforms the given stack assignments into a feasible solution by reorganizing
-     * the items in a way that respects the stacking constraints.
+     * Transforms the given, possibly unordered stack assignments into feasible ones by sorting the items
+     * with regard to the transitive stacking constraints.
      */
-    public void transformStackAssignmentsIntoValidSolutionIfPossible() {
-
-        // TODO: revise
+    public void sortItemsInStacksBasedOnTransitiveStackingConstraints() {
 
         for (int stack = 0; stack < this.filledStacks.length; stack++) {
 
-            boolean somethingChanged = true;
-
-            while (somethingChanged) {
-
-                somethingChanged = false;
-
-                for (int item = 0; item < this.solvedInstance.getStackCapacity() - 1; item++) {
-                    if (this.filledStacks[stack][item] != -1 && this.filledStacks[stack][item + 1] != -1) {
-                        if (this.solvedInstance.getStackingConstraints()[this.filledStacks[stack][item]][this.filledStacks[stack][item + 1]] == 0) {
-                            int tmp = this.filledStacks[stack][item];
-                            this.filledStacks[stack][item] = this.filledStacks[stack][item + 1];
-                            this.filledStacks[stack][item + 1] = tmp;
-                            somethingChanged = true;
-
-                            break;
+            // retrieve indices of items that are assigned to the stack and clear stack positions
+            List<Integer> itemIndices = new ArrayList<>();
+            for (int level = 0; level < this.solvedInstance.getStackCapacity(); level++) {
+                if (this.filledStacks[stack][level] != -1) {
+                    itemIndices.add(this.filledStacks[stack][level]);
+                    this.filledStacks[stack][level] = -1;
+                }
+            }
+            // retrieve item objects by indices
+            List<Item> items = new ArrayList<>();
+            for (int itemIdx : itemIndices) {
+                // an item's idx should be the same as its position in the array
+                if (itemIdx == this.solvedInstance.getItemObjects()[itemIdx].getIdx()) {
+                    items.add(this.solvedInstance.getItemObjects()[itemIdx]);
+                // if it's not, the item has to be retrieved manually
+                } else {
+                    for (Item item : this.solvedInstance.getItemObjects()) {
+                        if (item.getIdx() == itemIdx) {
+                            items.add(item);
                         }
                     }
+                }
+            }
+            // sort items with regard to the transitive stacking constraints
+            Collections.sort(items);
+
+            // if the stack isn't completely filled, the offset is used to start at the correct top level
+            int offset = this.solvedInstance.getStackCapacity() - items.size();
+
+            int idx = 0;
+            for (int level = 0 + offset; level < this.solvedInstance.getStackCapacity(); level++) {
+                if (idx < items.size()) {
+                    this.filledStacks[stack][level] = items.get(idx++).getIdx();
                 }
             }
         }
