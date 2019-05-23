@@ -7,14 +7,14 @@ package SP.representations;
  */
 public class Position {
 
-    private double xCoord;
-    private double yCoord;
+    private final double xCoord;
+    private final double yCoord;
 
     /**
      * Constructor
      *
-     * @param xCoord - the position's x coordinate
-     * @param yCoord - the position's y corrdinate
+     * @param xCoord - x coordinate of position
+     * @param yCoord - y coordinate of position
      */
     public Position(double xCoord, double yCoord) {
         this.xCoord = xCoord;
@@ -24,17 +24,17 @@ public class Position {
     /**
      * Copy-Constructor
      *
-     * @param pos - the position to be copied
+     * @param pos - position to be copied
      */
     public Position(Position pos) {
-        this.xCoord = pos.xCoord;
-        this.yCoord = pos.yCoord;
+        this.xCoord = pos.getXCoord();
+        this.yCoord = pos.getYCoord();
     }
 
     /**
      * Returns the position's x coordinate.
      *
-     * @return the position's x coordinate
+     * @return x coordinate of position
      */
     public double getXCoord() {
         return this.xCoord;
@@ -43,7 +43,7 @@ public class Position {
     /**
      * Returns the position's y coordinate
      *
-     * @return the position's y coordinate
+     * @return y coordinate of position
      */
     public double getYCoord() {
         return this.yCoord;
@@ -52,7 +52,7 @@ public class Position {
     /**
      * Provides an appropriate visualization for a position.
      *
-     * @return the string visualizing the position
+     * @return string visualizing the position
      */
     @Override
     public String toString() {
