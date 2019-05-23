@@ -21,13 +21,13 @@ public class Instance {
     /**
      * Constructor
      *
-     * @param items               - the items to be stored in the stacks
-     * @param numberOfStacks      - the number of available stacks
-     * @param stackPositions      - the positions of the stacks in the storage area
-     * @param stackCapacity       - the maximum number of items per stack
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @param costs               - the matrix containing the costs of item-stack-assignments
-     * @param name                - the name of the instance
+     * @param items               - items to be stored in the stacks
+     * @param numberOfStacks      - number of available stacks
+     * @param stackPositions      - positions of the stacks in the storage area
+     * @param stackCapacity       - maximum number of items per stack
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param costs               - matrix containing the costs of item-stack-assignments
+     * @param name                - name of the instance
      */
     public Instance(Item[] items, int numberOfStacks, List<Position> stackPositions, int stackCapacity,
         int[][] stackingConstraints, double[][] costs, String name) {
@@ -44,7 +44,7 @@ public class Instance {
     /**
      * Copy-Constructor
      *
-     * @param instance - the instance to be copied
+     * @param instance - instance to be copied
      */
     public Instance(Instance instance) {
         this.stackCapacity = instance.getStackCapacity();
@@ -61,9 +61,9 @@ public class Instance {
      * which means that it's free (has no item assigned to it).
      *
      * @param numberOfStacks - specifies the instance's number of stacks
-     * @param stackCapacity  - specifies the capacity the stacks have
+     * @param stackCapacity  - specifies the capacity of the stacks
      */
-    public void initStacks(int numberOfStacks,int stackCapacity) {
+    private void initStacks(int numberOfStacks, int stackCapacity) {
         this.stacks = new int[numberOfStacks][stackCapacity];
         for (int stack = 0; stack < numberOfStacks; stack++) {
             for (int level = 0; level < stackCapacity; level++) {
@@ -75,9 +75,9 @@ public class Instance {
     /**
      * Initializes the stack positions inside the storage area.
      *
-     * @param stackPositions - the list of stack positions
+     * @param stackPositions - list of stack positions
      */
-    public void initStackPositions(List<Position> stackPositions) {
+    private void initStackPositions(List<Position> stackPositions) {
         this.stackPositions = new ArrayList<>();
         for (Position pos : stackPositions) {
             this.stackPositions.add(new Position(pos));
@@ -87,9 +87,9 @@ public class Instance {
     /**
      * Copies the given instance's stacks.
      *
-     * @param instance - the instance the stacks get copied from
+     * @param instance - instance the stacks get copied from
      */
-    public void copyStacks(Instance instance) {
+    private void copyStacks(Instance instance) {
         this.stacks = new int[instance.getStacks().length][instance.getStackCapacity()];
         for (int stack = 0; stack < instance.getStacks().length; stack++) {
             for (int level = 0; level < instance.getStackCapacity(); level++) {
@@ -101,9 +101,9 @@ public class Instance {
     /**
      * Copies the given instance's stack positions.
      *
-     * @param instance - the instance the stack positions get copied from
+     * @param instance - instance the stack positions get copied from
      */
-    public void copyStackPositions(Instance instance) {
+    private void copyStackPositions(Instance instance) {
         this.stackPositions = new ArrayList<>();
         for (Position pos : instance.getStackPositions()) {
             stackPositions.add(new Position(pos));
@@ -113,9 +113,9 @@ public class Instance {
     /**
      * Copies the given instance's items.
      *
-     * @param instance - the instance the items get copied from
+     * @param instance - instance the items get copied from
      */
-    public void copyItems(Instance instance) {
+    private void copyItems(Instance instance) {
         this.items = new Item[instance.getItems().length];
         for (int i = 0; i < instance.getItems().length; i++) {
             this.items[i] = new Item(instance.getItemObjects()[i]);
@@ -125,9 +125,9 @@ public class Instance {
     /**
      * Copies the given instance's stacking constraints.
      *
-     * @param instance - the instance the stacking constraints get copied from
+     * @param instance - instance the stacking constraints get copied from
      */
-    public void copyStackingConstraints(Instance instance) {
+    private void copyStackingConstraints(Instance instance) {
         this.stackingConstraints = new int[instance.getStackingConstraints().length][];
         for (int i = 0; i < instance.getStackingConstraints().length; i++) {
             this.stackingConstraints[i] = instance.getStackingConstraints()[i].clone();
@@ -137,9 +137,9 @@ public class Instance {
     /**
      * Copies the given instance's costs.
      *
-     * @param instance - the instance the costs get copied from
+     * @param instance - instance the costs get copied from
      */
-    public void copyCosts(Instance instance) {
+    private void copyCosts(Instance instance) {
         this.costs = new double[instance.getCosts().length][];
         for (int i = 0; i < instance.getCosts().length; i++) {
             this.costs[i] = instance.getCosts()[i].clone();
@@ -163,25 +163,16 @@ public class Instance {
     /**
      * Returns the ground level for the instance's stacks.
      *
-     * @return the ground level for the instance's stacks
+     * @return ground level of stacks
      */
     public int getGroundLevel() {
         return this.stackCapacity - 1;
     }
 
     /**
-     * Returns the top level for the instance's stacks.
-     *
-     * @return the top level for the instance's stacks
-     */
-    public int getTopLevel() {
-        return 0;
-    }
-
-    /**
      * Removes the specified list of items from the storage area.
      *
-     * @param items - the list of items to be removed
+     * @param items - list of items to be removed
      */
     public void removeItemListFromStorageArea(List<Integer> items) {
         for (int stack = 0; stack < this.getStacks().length; stack++) {
@@ -196,7 +187,7 @@ public class Instance {
     /**
      * Returns the instance's items.
      *
-     * @return the instance's items
+     * @return items of the instance
      */
     public int[] getItems() {
         int[] itemIndices = new int[this.items.length];
@@ -209,7 +200,7 @@ public class Instance {
     /**
      * Returns the instance's item objects.
      *
-     * @return the instance's item objects
+     * @return item objects of the instance
      */
     public Item[] getItemObjects() {
         return this.items;
@@ -218,7 +209,7 @@ public class Instance {
     /**
      * Returns the instance's stacks.
      *
-     * @return the instance's stacks
+     * @return stacks of the instance
      */
     public int[][] getStacks() {
         return this.stacks;
@@ -227,7 +218,7 @@ public class Instance {
     /**
      * Returns the instance's stack positions.
      *
-     * @return the instance's stack positions
+     * @return stack positions of the instance
      */
     public List<Position> getStackPositions() {
         return this.stackPositions;
@@ -236,7 +227,7 @@ public class Instance {
     /**
      * Returns the instance's matrix of stacking constraints.
      *
-     * @return the instance's stacking constraints
+     * @return stacking constraints of the instance
      */
     public int[][] getStackingConstraints() {
         return this.stackingConstraints;
@@ -245,7 +236,7 @@ public class Instance {
     /**
      * Returns the instance's transport costs.
      *
-     * @return the instance's transport costs
+     * @return transport costs of the instance
      */
     public double[][] getCosts() {
         return this.costs;
@@ -256,7 +247,7 @@ public class Instance {
      * Since the placement constraints are implemented via high cost entries,
      * they can be retrieved from the matrix of transport costs.
      *
-     * @return the instance's placement constraints
+     * @return placement constraints of the instance
      */
     public int[][] getPlacementConstraints() {
 
@@ -277,7 +268,7 @@ public class Instance {
     /**
      * Returns the instance's stack capacity.
      *
-     * @return the instance's stack capacity
+     * @return capacity of the instance's stacks
      */
     public int getStackCapacity() {
         return this.stackCapacity;
@@ -286,48 +277,45 @@ public class Instance {
     /**
      * Returns the instance's name.
      *
-     * @return the name of the instance
+     * @return name of the instance
      */
     public String getName() { return this.name; }
 
     /**
      * Returns a string containing the instance's data.
      *
-     * @return the string containing the instance's data
+     * @return string of instance data
      */
     public String toString() {
 
         String str = "********************************************************************\n";
         str += "instance: " + this.getName() + "\n";
         str += "items: ";
-
         for (Item item : this.getItemObjects()) {
             str += item.getIdx() + " ";
         }
-
         str += "\nnumber of stacks: " + this.getStacks().length + "\n";
         str += "stack capacity: " + this.getStackCapacity() + "\n\n";
 
         str += "item positions:\n";
-
         for (Item item : this.getItemObjects()) {
             str += item.getPosition() + " ";
         }
         str += "\nstack position:\n";
-        str += this.getStackPositions() + "\n\n";
+        for (Position pos : this.getStackPositions()) {
+            str += pos + " ";
+        }
+        str += "\n\n";
 
         str += "stacking constraints:" + "\n";
-
         for (int i = 0; i < this.getItems().length; i++) {
             for (int j = 0; j < this.getItems().length; j++) {
                 str += this.getStackingConstraints()[i][j] + " ";
             }
             str += "\n";
         }
-        str += "\n";
 
-        str += "\nstacking costs:\n";
-
+        str += "\ntransport costs:\n";
         for (int i = 0; i < this.getCosts().length; i++) {
             for (int j = 0; j < this.getCosts()[i].length; j++) {
                 str += this.getCosts()[i][j] + " ";
