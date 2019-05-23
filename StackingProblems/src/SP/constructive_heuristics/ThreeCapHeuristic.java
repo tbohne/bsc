@@ -4,7 +4,6 @@ import SP.representations.*;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
-import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
@@ -333,7 +332,7 @@ public class ThreeCapHeuristic {
      */
     public void addEdgesForStacksWithSingleItem(
         Solution sol,
-        StorageAreaPosition emptyPos,
+        StackPosition emptyPos,
         ArrayList<Integer> levelsOfOtherSlots,
         int item,
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
@@ -368,7 +367,7 @@ public class ThreeCapHeuristic {
     public void addEdgesForStacksFilledWithPairs(
         ArrayList<Integer> levelsOfOtherSlots,
         Solution sol,
-        StorageAreaPosition emptyPos,
+        StackPosition emptyPos,
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
         int item,
         HashMap<Integer, Double> originalCosts
@@ -418,13 +417,13 @@ public class ThreeCapHeuristic {
     public void findCompatibleEmptyPositionsForItemsAndAddEdges(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
         ArrayList<Integer> items,
-        ArrayList<StorageAreaPosition> emptyPositions,
+        ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
         Solution sol
     ) {
 
         for (int item : items) {
-            for (StorageAreaPosition emptyPos : emptyPositions) {
+            for (StackPosition emptyPos : emptyPositions) {
 
                 // item compatible with stack
                 if (this.instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / this.instance.getItems().length) {
@@ -467,7 +466,7 @@ public class ThreeCapHeuristic {
      */
     public BipartiteGraph generatePostProcessingGraph(
         ArrayList<Integer> items,
-        ArrayList<StorageAreaPosition> emptyPositions,
+        ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
         Solution sol
     ) {
@@ -545,7 +544,7 @@ public class ThreeCapHeuristic {
     public Solution postProcessing(Solution sol) {
         System.out.println("costs before post processing: " + sol.getObjectiveValue());
 
-        ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
+        ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> originalCosts = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, originalCosts, sol);

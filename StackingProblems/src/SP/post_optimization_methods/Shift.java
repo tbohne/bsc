@@ -1,13 +1,13 @@
 package SP.post_optimization_methods;
 
-import SP.representations.StorageAreaPosition;
+import SP.representations.StackPosition;
 
 public class Shift {
 
     private int item;
-    private StorageAreaPosition shiftPos;
+    private StackPosition shiftPos;
 
-    public Shift(int item, StorageAreaPosition shiftPos) {
+    public Shift(int item, StackPosition shiftPos) {
         this.item = item;
         this.shiftPos = shiftPos;
     }
@@ -16,7 +16,7 @@ public class Shift {
         return this.item;
     }
 
-    public StorageAreaPosition getShiftPos() {
+    public StackPosition getShiftPos() {
         return this.shiftPos;
     }
 

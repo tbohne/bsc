@@ -2,10 +2,8 @@ package SP.util;
 
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
-import SP.representations.StorageAreaPosition;
-import org.jgrapht.Graph;
+import SP.representations.StackPosition;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
-import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
@@ -252,7 +250,7 @@ public class GraphUtil {
     public static void addEdgesToPostProcessingGraph(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
         int item,
-        StorageAreaPosition emptyPos,
+        StackPosition emptyPos,
         HashMap<Integer, Double> originalCosts,
         Instance instance
     ) {
@@ -404,9 +402,9 @@ public class GraphUtil {
      * @param partitionTwo   - the partition of the bipartite graph the vertices are added to
      */
     public static void addVerticesForEmptyPositions(
-        ArrayList<StorageAreaPosition> emptyPositions, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
+            ArrayList<StackPosition> emptyPositions, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
     ) {
-        for (StorageAreaPosition pos : emptyPositions) {
+        for (StackPosition pos : emptyPositions) {
             graph.addVertex("pos" + pos);
             partitionTwo.add("pos" + pos);
         }

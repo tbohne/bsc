@@ -2,7 +2,7 @@ package SP.experiments;
 
 import SP.representations.BipartiteGraph;
 import SP.representations.Instance;
-import SP.representations.StorageAreaPosition;
+import SP.representations.StackPosition;
 import SP.util.GraphUtil;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
@@ -50,10 +50,10 @@ public class LowerBoundsCalculator {
     public void addEdges(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
         ArrayList<Integer> items,
-        ArrayList<StorageAreaPosition> positions
+        ArrayList<StackPosition> positions
     ) {
         for (int item : items) {
-            for (StorageAreaPosition pos : positions) {
+            for (StackPosition pos : positions) {
                 DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "pos" + pos);
                 double costs = this.instance.getCosts()[item][pos.getStackIdx()];
                 bipartiteGraph.setEdgeWeight(edge, costs);
@@ -71,10 +71,10 @@ public class LowerBoundsCalculator {
     public void addEdgesForDummyItems(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
         ArrayList<Integer> dummyItems,
-        ArrayList<StorageAreaPosition> positions
+        ArrayList<StackPosition> positions
     ) {
         for (int item : dummyItems) {
-            for (StorageAreaPosition pos : positions) {
+            for (StackPosition pos : positions) {
                 DefaultWeightedEdge edge = bipartiteGraph.addEdge("dummy" + item, "pos" + pos);
                 bipartiteGraph.setEdgeWeight(edge, 0);
             }
@@ -94,10 +94,10 @@ public class LowerBoundsCalculator {
         Set<String> partitionOne = new HashSet<>();
         Set<String> partitionTwo = new HashSet<>();
 
-        ArrayList<StorageAreaPosition> positions = new ArrayList<>();
+        ArrayList<StackPosition> positions = new ArrayList<>();
         for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
             for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
-                positions.add(new StorageAreaPosition(stack, level));
+                positions.add(new StackPosition(stack, level));
             }
         }
         ArrayList<Integer> itemList = new ArrayList<>();

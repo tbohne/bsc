@@ -462,12 +462,12 @@ public class HeuristicUtil {
      * @param sol - solution to retrieve the empty positions for
      * @return list of empty positions in the storage area
      */
-    public static ArrayList<StorageAreaPosition> retrieveEmptyPositions(Solution sol) {
-        ArrayList<StorageAreaPosition> emptyPositions = new ArrayList<>();
+    public static ArrayList<StackPosition> retrieveEmptyPositions(Solution sol) {
+        ArrayList<StackPosition> emptyPositions = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStorageArea().length; stack++) {
             for (int level = 0; level < sol.getFilledStorageArea()[stack].length; level++) {
                 if (sol.getFilledStorageArea()[stack][level] == -1) {
-                    emptyPositions.add(new StorageAreaPosition(stack, level));
+                    emptyPositions.add(new StackPosition(stack, level));
                 }
             }
         }

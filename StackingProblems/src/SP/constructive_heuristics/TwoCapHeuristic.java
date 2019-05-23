@@ -135,7 +135,7 @@ public class TwoCapHeuristic {
     public void addEdgesForCompatibleItems(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
         int item,
-        StorageAreaPosition emptyPos,
+        StackPosition emptyPos,
         HashMap<Integer, Double> originalCosts
     ) {
         DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
@@ -157,12 +157,12 @@ public class TwoCapHeuristic {
     public void findCompatibleEmptyPositionsForItems(
         DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
         ArrayList<Integer> items,
-        ArrayList<StorageAreaPosition> emptyPositions,
+        ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> originalCosts,
         Solution sol
     ) {
         for (int item : items) {
-            for (StorageAreaPosition emptyPos : emptyPositions) {
+            for (StackPosition emptyPos : emptyPositions) {
 
                 // item compatible with stack
                 if (this.instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / this.instance.getItems().length) {
@@ -200,7 +200,7 @@ public class TwoCapHeuristic {
      */
     public BipartiteGraph generatePostProcessingGraph(
         ArrayList<Integer> items,
-        ArrayList<StorageAreaPosition> emptyPositions,
+        ArrayList<StackPosition> emptyPositions,
         HashMap<Integer, Double> costsBefore,
         Solution sol
     ) {
@@ -231,7 +231,7 @@ public class TwoCapHeuristic {
      * @return the result of the post-processing procedure
      */
     public Solution postProcessing(Solution sol) {
-        ArrayList<StorageAreaPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
+        ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         ArrayList<Integer> items = sol.getAssignedItems();
         HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
 

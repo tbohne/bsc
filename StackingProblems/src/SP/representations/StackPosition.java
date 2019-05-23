@@ -5,7 +5,7 @@ package SP.representations;
  *
  * @author Tim Bohne
  */
-public class StorageAreaPosition {
+public class StackPosition {
 
     private int stackIdx;
     private int level;
@@ -16,7 +16,7 @@ public class StorageAreaPosition {
      * @param stackIdx - the index of the stack
      * @param level    - the level inside the stack
      */
-    public StorageAreaPosition(int stackIdx, int level) {
+    public StackPosition(int stackIdx, int level) {
         this.stackIdx = stackIdx;
         this.level = level;
     }
@@ -50,8 +50,8 @@ public class StorageAreaPosition {
 
     @Override
     public boolean equals(Object object) {
-        if (object != null && object instanceof StorageAreaPosition) {
-            return this.level == ((StorageAreaPosition)object).level && this.stackIdx == ((StorageAreaPosition)object).stackIdx;
+        if (object != null && object instanceof StackPosition) {
+            return this.level == ((StackPosition)object).level && this.stackIdx == ((StackPosition)object).stackIdx;
         }
         return false;
     }
