@@ -10,10 +10,7 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A collection of graph related utility methods used in the heuristics.
@@ -210,7 +207,7 @@ public class GraphUtil {
      * @param unmatchedItem       - item to be checked for compatibility
      * @return whether or not the item is compatible to the pair
      */
-    public static boolean checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
+    public static boolean itemCanBeAssignedToPairStackableInBothDirections(
         int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
     ) {
         return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
@@ -232,7 +229,7 @@ public class GraphUtil {
      * @param unmatchedItem       - item to be checked for compatibility
      * @return whether or not the item is compatible to the pair
      */
-    public static boolean checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
+    public static boolean itemCanBeAssignedToPairStackableInOneDirection(
         int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
     ) {
         return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
@@ -249,11 +246,11 @@ public class GraphUtil {
      * @param originalCosts       - the current costs for each item assignment
      * @param instance            - the instance of the stacking problem
      */
-    public static void addEdgesToPostProcessingGraph(
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
+    public static void addEdgeToPostProcessingGraph(
+        Graph<String, DefaultWeightedEdge> postProcessingGraph,
         int item,
         StackPosition emptyPos,
-        HashMap<Integer, Double> originalCosts,
+        Map<Integer, Double> originalCosts,
         Instance instance
     ) {
         DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
@@ -283,13 +280,13 @@ public class GraphUtil {
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
-            if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInBothDirections(
+            if (GraphUtil.itemCanBeAssignedToPairStackableInBothDirections(
                 stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
             )) {
                 GraphUtil.addEdgeForTriple(graph, unmatchedItem, itemPair);
             }
         } else {
-            if (GraphUtil.checkWhetherItemCanBeAssignedToPairStackableInOneDirection(
+            if (GraphUtil.itemCanBeAssignedToPairStackableInOneDirection(
                 stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
             )) {
                 GraphUtil.addEdgeForTriple(graph, unmatchedItem, itemPair);
@@ -404,7 +401,7 @@ public class GraphUtil {
      * @param partitionTwo   - the partition of the bipartite graph the vertices are added to
      */
     public static void addVerticesForEmptyPositions(
-            ArrayList<StackPosition> emptyPositions, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
+        List<StackPosition> emptyPositions, Graph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
     ) {
         for (StackPosition pos : emptyPositions) {
             graph.addVertex("pos" + pos);
@@ -422,7 +419,7 @@ public class GraphUtil {
      * @return the generated bipartite graph
      */
     public static DefaultUndirectedGraph<String, DefaultEdge> generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
-            ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems, int[][] stackingConstraints
+            List<MCMEdge> itemPairs, List<Integer> unmatchedItems, int[][] stackingConstraints
     ) {
         DefaultUndirectedGraph<String, DefaultEdge> bipartiteGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
@@ -569,8 +566,8 @@ public class GraphUtil {
      * @param mcm - the given maximum cardinality matching
      * @return the list of parsed item triples
      */
-    public static ArrayList<ArrayList<Integer>> parseItemTripleFromMCM(EdmondsMaximumCardinalityMatching mcm) {
-        ArrayList<ArrayList<Integer>> itemTriples = new ArrayList<>();
+    public static List<List<Integer>> parseItemTripleFromMCM(EdmondsMaximumCardinalityMatching mcm) {
+        List<List<Integer>> itemTriples = new ArrayList<>();
         for (Object edge : mcm.getMatching().getEdges()) {
             String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();
             int first = Integer.parseInt(parsedEdge.split(",")[0].trim());

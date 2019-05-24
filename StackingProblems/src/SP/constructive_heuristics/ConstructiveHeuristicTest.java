@@ -22,12 +22,14 @@ public class ConstructiveHeuristicTest {
     public static int thresholdUB = 75;
     public static int stepSize = 5;
 
+    public static float splitPairsDivisor = 3.4F;
+
     public static void main (String[] args) {
 
         Instance instance = InstanceReader.readInstance("res/instances/b=3_m/slp_instance_300_120_3_02.txt");
         System.out.println("working on: " + instance.getName());
 
-        ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize);
+        ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize, splitPairsDivisor);
         Solution sol = solver.solve(PRIORITZIE_RUNTIME,  POST_PROCESSING);
 
 //        LowerBoundsCalculator lbCalc = new LowerBoundsCalculator(instance);

@@ -257,6 +257,10 @@ public class HeuristicUtil {
         return stackingConstraints[itemTwo][itemOne] == 1 && stackingConstraints[itemOne][itemTwo] == 1;
     }
 
+    public static boolean itemCompatibleWithStack(double[][] costs, int item, int stack) {
+        return costs[item][stack] < Integer.MAX_VALUE / costs.length;
+    }
+
     /**
      * Determines whether the specified current shuffle was already used before.
      *
@@ -279,7 +283,7 @@ public class HeuristicUtil {
      * @param items - the given list of items
      * @return an array of the given items
      */
-    public static int[] getItemArrayFromItemList(ArrayList<Integer> items) {
+    public static int[] getItemArrayFromItemList(List<Integer> items) {
         int[] itemArr = new int[items.size()];
         for (int i = 0; i < items.size(); i++) {
             itemArr[i] = items.get(i);
@@ -307,7 +311,7 @@ public class HeuristicUtil {
      * @param item - the item the savings are computed for
      * @return the savings for the specified item
      */
-    public static double getSavingsForItem(int stackIdx, HashMap<Integer, Double> costsBefore, int item, double[][] costMatrix) {
+    public static double getSavingsForItem(int stackIdx, Map<Integer, Double> costsBefore, int item, double[][] costMatrix) {
         double costs = costMatrix[item][stackIdx];
         return costsBefore.get(item) - costs;
     }
