@@ -50,31 +50,6 @@ public class GraphUtil {
     }
 
     /**
-     * Generates the bipartite graph for the post-processing step.
-     * The graph's first partition consists of items and the second one consists of empty positions in stacks.
-     * An edge between the partitions indicates that an item is compatible to the empty position.
-     * The costs of the edges correspond to the savings that are generated if the item is assigned to the empty position.
-     *
-     * @param items          - list of items in the stacks
-     * @param emptyPositions - list of empty positions in the stacks
-     * @param costsBefore    - original costs for each item assignment
-     * @param sol            - solution to be processed
-     * @return generated bipartite post-processing graph
-     */
-    public static BipartiteGraph generatePostProcessingGraph(
-            List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> costsBefore, Solution sol, Instance instance
-    ) {
-        Graph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
-        Set<String> itemPartition = new HashSet<>();
-        Set<String> emptyPositionPartition = new HashSet<>();
-        GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, itemPartition);
-        GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, emptyPositionPartition);
-
-        HeuristicUtil.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, costsBefore, sol, instance);
-        return new BipartiteGraph(itemPartition, emptyPositionPartition, postProcessingGraph);
-    }
-
-    /**
      * Adds the edges from item pairs to stacks in the given bipartite graph consisting of the items in
      * one partition and stacks in the other one. Such an edge means that the item pair is assignable
      * to the stack. Each pair is assignable to every stack initially. Forbidden assignments are indirectly
