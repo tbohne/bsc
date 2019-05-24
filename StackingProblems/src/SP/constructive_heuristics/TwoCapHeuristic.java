@@ -23,9 +23,9 @@ import java.util.*;
  */
 public class TwoCapHeuristic {
 
-    private Instance instance;
+    private final Instance instance;
     private double startTime;
-    private double timeLimit;
+    private final double timeLimit;
 
     /**
      * Constructor
@@ -48,8 +48,8 @@ public class TwoCapHeuristic {
      * @param unmatchedItems - items that are assigned to their own stack
      * @return generated bipartite graph
      */
-    public BipartiteGraph generateBipartiteGraphBetweenItemsAndStacks(
-        List<MCMEdge> itemPairs, List<Integer> unmatchedItems
+    private BipartiteGraph generateBipartiteGraphBetweenItemsAndStacks(
+            List<MCMEdge> itemPairs, List<Integer> unmatchedItems
     ) {
         Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Set<String> itemPartition = new HashSet<>();
@@ -78,7 +78,7 @@ public class TwoCapHeuristic {
      *
      * @return generated stacking constraint graph
      */
-    public DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph() {
+    private DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph() {
         return GraphUtil.generateStackingConstraintGraph(
             this.instance.getItems(),
             this.instance.getStackingConstraints(),
@@ -95,7 +95,7 @@ public class TwoCapHeuristic {
      * @param mwpm   - minimum weight perfect matching to be parsed
      * @param stacks - stacks the parsed items are going to be assigned to
      */
-    public void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks) {
+    private void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks) {
         for (Object edge : mwpm.getMatching().getEdges()) {
             if (edge.toString().contains("pair")) {
                 int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
@@ -120,8 +120,8 @@ public class TwoCapHeuristic {
      * @param sol            - solution to be processed
      * @return generated bipartite post-processing graph
      */
-    public BipartiteGraph generatePostProcessingGraph(
-        List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> costsBefore, Solution sol
+    private BipartiteGraph generatePostProcessingGraph(
+            List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> costsBefore, Solution sol
     ) {
         Graph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Set<String> itemPartition = new HashSet<>();
@@ -143,9 +143,9 @@ public class TwoCapHeuristic {
      * @param originalCosts       - current costs for each item assignment
      * @param sol                 - solution to be processed
      */
-    public void findCompatibleEmptyPositionsForItems(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
-        Map<Integer, Double> originalCosts, Solution sol
+    private void findCompatibleEmptyPositionsForItems(
+            Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
+            Map<Integer, Double> originalCosts, Solution sol
     ) {
         for (int item : items) {
             for (StackPosition emptyPos : emptyPositions) {
@@ -185,7 +185,7 @@ public class TwoCapHeuristic {
      * @param sol - generated solution to be processed
      * @return resulting solution
      */
-    public Solution postProcessing(Solution sol) {
+    private Solution postProcessing(Solution sol) {
 
         List<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         List<Integer> items = sol.getAssignedItems();
@@ -225,15 +225,15 @@ public class TwoCapHeuristic {
 
         if (this.instance.getStackCapacity() == 2) {
             this.startTime = System.currentTimeMillis();
+
             DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
-            ArrayList<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
-            ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(
-                itemPairs, this.instance.getItems()
-            );
+            List<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
+            List<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(itemPairs, this.instance.getItems());
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraphBetweenItemsAndStacks(itemPairs, unmatchedItems);
+
             if (bipartiteGraph == null) { return sol; }
 
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
