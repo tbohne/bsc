@@ -2,7 +2,6 @@ package SP.util;
 
 import SP.representations.MCMEdge;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -14,14 +13,14 @@ import java.util.*;
 public class RatingSystem {
 
     /**
-     * Computes the row rating for the given unmatched item.
+     * Computes the row rating for the given item.
      * The row rating is the number of items the given item can be stacked upon.
      *
-     * @param item                - the item for which the row rating gets computed
-     * @param stackingConstraints - the stacking constraints the rating is based on
-     * @return the item's row rating
+     * @param item                - item for which the row rating gets computed
+     * @param stackingConstraints - stacking constraints the rating is based on
+     * @return row rating of the item
      */
-    public static int computeRowRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
+    public static int computeRowRatingForItem(int item, int[][] stackingConstraints) {
         int rating = 0;
         for (int entry : stackingConstraints[item]) {
             rating += entry;
@@ -30,14 +29,14 @@ public class RatingSystem {
     }
 
     /**
-     * Computes the column rating for the given unmatched item.
+     * Computes the column rating for the given item.
      * The column rating is the number of items that can be stacked upon the given item.
      *
-     * @param item                - the item for which the col rating gets computed
-     * @param stackingConstraints - teh stacking constraints the rating is based on
-     * @return the item's col rating
+     * @param item                - item for which the col rating gets computed
+     * @param stackingConstraints - stacking constraints the rating is based on
+     * @return col rating of the item
      */
-    public static int computeColRatingForUnmatchedItem(int item, int[][] stackingConstraints) {
+    public static int computeColRatingForItem(int item, int[][] stackingConstraints) {
         int rating = 0;
         for (int i = 0; i < stackingConstraints.length; i++) {
             rating += stackingConstraints[i][item];
@@ -48,31 +47,31 @@ public class RatingSystem {
     /**
      * Provides a map containing the ratings of the item pair.
      *
-     * @param itemOne             - the first item of the pair
-     * @param itemTwo             - the second item of the pair
-     * @param stackingConstraints - the stacking constraints the ratings are based on
-     * @return the map containing the ratings
+     * @param itemOne             - first item of the pair
+     * @param itemTwo             - second item of the pair
+     * @param stackingConstraints - stacking constraints the ratings are based on
+     * @return map containing the ratings
      */
-    public static HashMap<Integer, String> getRatingsMapForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
-        HashMap<Integer, String> itemRatings = new HashMap<>();
-        itemRatings.put(RatingSystem.computeRowRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneRow");
-        itemRatings.put(RatingSystem.computeColRatingForUnmatchedItem(itemOne, stackingConstraints), "itemOneCol");
-        itemRatings.put(RatingSystem.computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoRow");
-        itemRatings.put(RatingSystem.computeColRatingForUnmatchedItem(itemTwo, stackingConstraints), "itemTwoCol");
+    public static Map<Integer, String> getRatingsMapForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
+        Map<Integer, String> itemRatings = new HashMap<>();
+        itemRatings.put(RatingSystem.computeRowRatingForItem(itemOne, stackingConstraints), "itemOneRow");
+        itemRatings.put(RatingSystem.computeColRatingForItem(itemOne, stackingConstraints), "itemOneCol");
+        itemRatings.put(RatingSystem.computeRowRatingForItem(itemTwo, stackingConstraints), "itemTwoRow");
+        itemRatings.put(RatingSystem.computeColRatingForItem(itemTwo, stackingConstraints), "itemTwoCol");
         return itemRatings;
     }
 
     /**
      * Provides a list of the ratings of the item pair.
      *
-     * @param itemOne             - the first item of the pair
-     * @param itemTwo             - the second item of the pair
-     * @param stackingConstraints - the stacking constraints the ratings are based on
-     * @return the list containing the ratings
+     * @param itemOne             - first item of the pair
+     * @param itemTwo             - second item of the pair
+     * @param stackingConstraints - stacking constraints the ratings are based on
+     * @return list containing the ratings
      */
-    public static ArrayList<Integer> getItemRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
-        HashMap<Integer, String> itemRatings = getRatingsMapForItemPair(itemOne, itemTwo, stackingConstraints);
-        ArrayList<Integer> ratings = new ArrayList<>();
+    public static List<Integer> getItemRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
+        Map<Integer, String> itemRatings = getRatingsMapForItemPair(itemOne, itemTwo, stackingConstraints);
+        List<Integer> ratings = new ArrayList<>();
         for (int key : itemRatings.keySet()) {
             ratings.add(key);
         }
@@ -82,29 +81,27 @@ public class RatingSystem {
     /**
      * Returns the sum of the relevant ratings for the item pair.
      *
-     * @param itemOne             - the first item of the pair
-     * @param itemTwo             - the second item of the pair
-     * @param stackingConstraints - the stacking constraints the ratings are based on
-     * @return the sum of the relevant item ratings
+     * @param itemOne             - first item of the pair
+     * @param itemTwo             - second item of the pair
+     * @param stackingConstraints - stacking constraints the ratings are based on
+     * @return sum of the relevant item ratings
      */
     public static int getSumOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
-        if (stackingConstraints[itemOne][itemTwo] == 1 && stackingConstraints[itemTwo][itemOne] == 1) {
-            // stackable in both directions
-            return computeRowRatingForUnmatchedItem(itemOne, stackingConstraints)
-                    + computeColRatingForUnmatchedItem(itemOne, stackingConstraints)
-                    + computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints)
-                    + computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
+        if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+            return computeRowRatingForItem(itemOne, stackingConstraints)
+                + computeColRatingForItem(itemOne, stackingConstraints)
+                + computeRowRatingForItem(itemTwo, stackingConstraints)
+                + computeColRatingForItem(itemTwo, stackingConstraints);
 
         } else if (stackingConstraints[itemOne][itemTwo] == 1) {
             // item one upon item two
-            int colItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
-            int rowItemTwo = computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints);
+            int colItemOne = computeColRatingForItem(itemOne, stackingConstraints);
+            int rowItemTwo = computeRowRatingForItem(itemTwo, stackingConstraints);
             return colItemOne + rowItemTwo;
-
         } else {
             // item two upon item one
-            int colItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
-            int rowItemOne = computeRowRatingForUnmatchedItem(itemOne, stackingConstraints);
+            int colItemTwo = computeColRatingForItem(itemTwo, stackingConstraints);
+            int rowItemOne = computeRowRatingForItem(itemOne, stackingConstraints);
             return colItemTwo + rowItemOne;
         }
     }
@@ -112,11 +109,11 @@ public class RatingSystem {
     /**
      * Returns the extreme value from the relevant ratings of the pair.
      *
-     * @param itemOne             - the first item of the pair
-     * @param itemTwo             - the second item of the pair
-     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param itemOne             - first item of the pair
+     * @param itemTwo             - second item of the pair
+     * @param stackingConstraints - stacking constraints the ratings are based on
      * @param min                 - specifies whether the min value should be returned (max otherwise)
-     * @return the extreme rating value
+     * @return extreme rating value
      */
     public static int getExtremeOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
         if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
@@ -128,8 +125,8 @@ public class RatingSystem {
         } else if (stackingConstraints[itemOne][itemTwo] == 1) {
             // item one upon item two
             // min(col rating item one, row rating item two)
-            int colItemOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
-            int rowItemTwo = computeRowRatingForUnmatchedItem(itemTwo, stackingConstraints);
+            int colItemOne = computeColRatingForItem(itemOne, stackingConstraints);
+            int rowItemTwo = computeRowRatingForItem(itemTwo, stackingConstraints);
             if (min) {
                 return colItemOne < rowItemTwo ? colItemOne : rowItemTwo;
             } else {
@@ -138,8 +135,8 @@ public class RatingSystem {
         } else {
             // item two upon item one
             // min(col rating item two, row rating item one)
-            int colItemTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
-            int rowItemOne = computeRowRatingForUnmatchedItem(itemOne, stackingConstraints);
+            int colItemTwo = computeColRatingForItem(itemTwo, stackingConstraints);
+            int rowItemOne = computeRowRatingForItem(itemOne, stackingConstraints);
             if (min) {
                 return colItemTwo < rowItemOne ? colItemTwo : rowItemOne;
             } else {
@@ -148,18 +145,13 @@ public class RatingSystem {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Rates the given edges based on their items' compatibility to other edges.
      *
-     * @param matchedItems        - the edges (pairs) to be rated
-     * @param stackingConstraints - the stacking constraints to be respected
+     * @param matchedItems        - edges (pairs) to be rated
+     * @param stackingConstraints - stacking constraints to be respected
      */
-    public static void assignCompatibilityRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+    public static void assignCompatibilityRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
@@ -180,17 +172,17 @@ public class RatingSystem {
     /**
      * Rates the given edges based on their extreme cost values.
      *
-     * @param matchedItems        - the edges (pairs) to be rated
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @param costs               - the cost matrix
-     * @param stacks              - the available stacks
+     * @param matchedItems        - edges (pairs) to be rated
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param costs               - cost matrix
+     * @param stacks              - available stacks
      * @param max                 - determines whether the max value is used (min otherwise)
      */
     public static void assignExtremeCostRatingToEdges(
-        ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks, boolean max
+        List<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks, boolean max
     ) {
         for (MCMEdge edge : matchedItems) {
-            ArrayList<Integer> costEntries = new ArrayList<>();
+            List<Integer> costEntries = new ArrayList<>();
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
             int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
@@ -211,13 +203,13 @@ public class RatingSystem {
 
     /**
      * Computes a value that is used as penalty value for incompatible stacks.
-     * The penalty value is five times the avg costs of a feasible item-stack assignment.
+     * The penalty value is penaltyFactor times the avg costs of a feasible item-stack assignment.
      *
-     * @param costs        - the matrix containing the transport costs
-     * @param forbiddenVal - the cost value representing incompatible stacks
-     * @return the computed penalty value
+     * @param costs        - matrix containing the transport costs
+     * @param forbiddenVal - cost value representing incompatible stacks
+     * @return computed penalty value
      */
-    public static double computePenaltyValue(double[][] costs, int forbiddenVal) {
+    public static double computePenaltyValue(double[][] costs, int forbiddenVal, float penaltyFactor) {
         double avgFeasibleCosts = 0;
         int cnt = 0;
         for (int item = 0; item < costs.length; item++) {
@@ -228,23 +220,23 @@ public class RatingSystem {
                 }
             }
         }
-        return avgFeasibleCosts / cnt * 5;
+        return avgFeasibleCosts / cnt * penaltyFactor;
     }
 
     /**
      * Computes the average costs to assign the given pair.
      * An incompatible stack is penalized with a high cost value.
      *
-     * @param stacks       - the available stacks
-     * @param costs        - the cost matrix
-     * @param itemOne      - the first item of the pair
-     * @param itemTwo      - the second item of the pair
-     * @param forbiddenVal - the value indicating incompatible stacks
-     * @return
+     * @param stacks       - available stacks
+     * @param costs        - matrix of transport costs
+     * @param itemOne      - first item of the pair
+     * @param itemTwo      - second item of the pair
+     * @param forbiddenVal - value indicating incompatible stacks
+     * @return average costs (with penalties)
      */
-    public static double computeAvgCosts(int[][] stacks, double[][] costs, int itemOne, int itemTwo, int forbiddenVal) {
+    public static double computeAvgCosts(int[][] stacks, double[][] costs, int itemOne, int itemTwo, int forbiddenVal, float penaltyFactor) {
 
-        double penaltyVal = computePenaltyValue(costs, forbiddenVal);
+        double penaltyVal = computePenaltyValue(costs, forbiddenVal, penaltyFactor);
 
         double avgCosts = 0;
         for (int stack = 0; stack < stacks.length; stack++) {
@@ -261,11 +253,11 @@ public class RatingSystem {
     /**
      * Computes an item's compatibility to other pairs which is the number of other pairs it is assignable to.
      *
-     * @param pairs               - the list of item pairs to be checked
-     * @param item                - the item to compute the compatibility for
-     * @param stackingConstraints - the stacking constraints to compatibility is based on
-     * @param itemEdge            - the edge the item to be checked is part of
-     * @return
+     * @param pairs               - list of item pairs to be checked
+     * @param item                - item to compute the compatibility for
+     * @param stackingConstraints - stacking constraints to compatibility is based on
+     * @param itemEdge            - edge the item to be checked is part of
+     * @return pair compatibility
      */
     public static int computePairCompatibility(List<MCMEdge> pairs, int item, int[][] stackingConstraints, MCMEdge itemEdge) {
         int pairCompatibility = 0;
@@ -279,29 +271,23 @@ public class RatingSystem {
         return pairCompatibility;
     }
 
-    public static int getAvg(ArrayList<Integer> values) {
-        int avg = 0;
-        for (int val : values) {
-            avg += val;
-        }
-        return avg / values.size();
-    }
-
     /**
      * A rating system developed for the 3Cap heuristic.
+     * It assigns ratings to pairs of items considering their compatibility to other
+     * items and their costs for being assigned to a stack together.
      *
-     * @param matchedItems        - the edges (pairs) to be rated
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @param costs               - the cost matrix
-     * @param stacks              - the available stacks
+     * @param matchedItems        - edges (pairs) to be rated
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param costs               - matrix containing transport costs
+     * @param stacks              - available stacks
      * @param deviationThreshold  - determines whether an edge is rated higher then 0
      */
     public static void assignThreeCapPairRating(
-        List<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold
+        List<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold, float penaltyFactor
     ) {
-        ArrayList<ArrayList<Integer>> listOfPairRatings = new ArrayList<>();
-        ArrayList<Integer> worstCompatibilities = new ArrayList<>();
-        ArrayList<Integer> avgCostValues = new ArrayList<>();
+        List<List<Integer>> listOfPairRatings = new ArrayList<>();
+        List<Integer> worstCompatibilities = new ArrayList<>();
+        List<Integer> avgCostValues = new ArrayList<>();
 
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
@@ -312,9 +298,9 @@ public class RatingSystem {
             int pairCompatibilityItemTwo = computePairCompatibility(matchedItems, itemTwo, stackingConstraints, edge);
             int worstCompatibility = pairCompatibilityItemOne > pairCompatibilityItemTwo ? pairCompatibilityItemTwo : pairCompatibilityItemOne;
 
-            double avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
+            double avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal, penaltyFactor);
 
-            ArrayList<Integer> pairRatings = new ArrayList<>();
+            List<Integer> pairRatings = new ArrayList<>();
             pairRatings.add(worstCompatibility);
             pairRatings.add((int)avgCosts);
 
@@ -323,8 +309,8 @@ public class RatingSystem {
             avgCostValues.add((int)avgCosts);
         }
 
-        int avgWorstCompatibility = getAvg(worstCompatibilities);
-        int avgCosts = getAvg(avgCostValues);
+        int avgWorstCompatibility = HeuristicUtil.getAvg(worstCompatibilities);
+        int avgCosts = HeuristicUtil.getAvg(avgCostValues);
 
         for (int i = 0; i < matchedItems.size(); i++) {
             int rating = 0;
@@ -340,83 +326,12 @@ public class RatingSystem {
     }
 
     /**
-     * Rates the pairs based on their avg costs and a bonus if the items are stackable in both directions.
-     *
-     * @param matchedItems        - the edges (pairs) to be rated
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @param costs               - the cost matrix
-     * @param stacks              - the available stacks
-     */
-    public static void assignAvgCostsRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks) {
-        for (MCMEdge edge : matchedItems) {
-            int itemOne = edge.getVertexOne();
-            int itemTwo = edge.getVertexTwo();
-            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
-
-            int bonus = 0;
-            // items that are stackable in both directions shouldn't be separated
-            if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
-                bonus = 1500;
-            }
-            double avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal);
-            double rating = avgCosts - bonus;
-            edge.setRating((int)rating);
-        }
-    }
-
-    /**
-     * Rates the edges based on a combination of several relevant values.
-     *
-     * @param matchedItems        - the edges (pairs) to be rated
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @param costs               - the cost matrix
-     * @param stacks              - the available stacks
-     */
-    public static void assignNewRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, int[][] costs, int[][] stacks) {
-
-        for (MCMEdge edge : matchedItems) {
-            ArrayList<Integer> costEntries = new ArrayList<>();
-            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
-            int avgCosts = 0;
-            int cnt = 0;
-
-            // compatibility with other pairs
-            int itemOne = edge.getVertexOne();
-            int itemTwo = edge.getVertexTwo();
-            int compatibility = 0;
-
-            for (MCMEdge e : matchedItems) {
-                if (e != edge) {
-                    if (HeuristicUtil.itemAssignableToPair(itemOne, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)
-                        || HeuristicUtil.itemAssignableToPair(itemTwo, e.getVertexOne(), e.getVertexTwo(), stackingConstraints)) {
-                            compatibility++;
-                    }
-                }
-            }
-            for (int stack = 0; stack < stacks.length; stack++) {
-                if (costs[itemOne][stack] < forbiddenVal && costs[itemTwo][stack] < forbiddenVal) {
-                    int currCost = costs[itemOne][stack] + costs[itemTwo][stack];
-                    costEntries.add(currCost);
-                    avgCosts += costs[itemOne][stack] + costs[itemTwo][stack];
-                    cnt++;
-                }
-            }
-            edge.setRating((compatibility + cnt) / ((avgCosts / cnt) ));
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
      * Assigns the sum of the ratings to the specified edges.
      *
-     * @param matchedItems        - the matched items (edges) to be rated
-     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - stacking constraints the ratings are based on
      */
-    public static void assignSumRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+    public static void assignSumRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
@@ -427,10 +342,10 @@ public class RatingSystem {
     /**
      * Assigns the minimum rating to the specified edges.
      *
-     * @param matchedItems        - the matched items (edges) to be rated
-     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - tacking constraints the ratings are based on
      */
-    public static void assignMinRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+    public static void assignMinRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
@@ -441,10 +356,10 @@ public class RatingSystem {
     /**
      * Assigns the maximum rating to the specified edges.
      *
-     * @param matchedItems        - the matched items (edges) to be rated
-     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - stacking constraints the ratings are based on
      */
-    public static void assignMaxRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+    public static void assignMaxRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int itemOne = edge.getVertexOne();
             int itemTwo = edge.getVertexTwo();
@@ -455,10 +370,10 @@ public class RatingSystem {
     /**
      * Assigns the row rating to the specified edges.
      *
-     * @param matchedItems        - the matched items (edges) to be rated
-     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - stacking constraints the ratings are based on
      */
-    public static void assignRowRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+    public static void assignRowRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
             for (int entry : stackingConstraints[edge.getVertexOne()]) {
@@ -474,10 +389,10 @@ public class RatingSystem {
     /**
      * Assigns the col rating to the specified edges.
      *
-     * @param matchedItems        - the matched items (edges) to be rated
-     * @param stackingConstraints - the stacking constraints the ratings are based on
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - stacking constraints the ratings are based on
      */
-    public static void assignColRatingToEdges(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
+    public static void assignColRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
         for (MCMEdge edge : matchedItems) {
             int rating = 0;
             // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
@@ -490,43 +405,18 @@ public class RatingSystem {
     }
 
     /**
-     * Assigns the col rating to the specified edges.
-     *
-     * @param matchedItems        - the matched items (edges) to be rated
-     * @param stackingConstraints - the stacking constraints the ratings are based on
-     */
-    public static void assignColRatingToEdgesNewWay(ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints) {
-        for (MCMEdge edge : matchedItems) {
-
-            int itemOne = edge.getVertexOne();
-            int itemTwo = edge.getVertexTwo();
-
-            if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
-                // return the max col rating of both items
-                int colRatingOne = computeColRatingForUnmatchedItem(itemOne, stackingConstraints);
-                int colRatingTwo = computeColRatingForUnmatchedItem(itemTwo, stackingConstraints);
-                edge.setRating(colRatingOne > colRatingTwo ? colRatingOne : colRatingTwo);
-            } else if (stackingConstraints[itemOne][itemTwo] == 1) {
-                edge.setRating(computeColRatingForUnmatchedItem(itemOne, stackingConstraints));
-            } else {
-                edge.setRating(computeColRatingForUnmatchedItem(itemTwo, stackingConstraints));
-            }
-        }
-    }
-
-    /**
      * Returns the list of unmatched items increasingly sorted by col rating.
      *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
+     * @param unmatchedItems - unsorted list of unmatched items
+     * @return sorted list of unmatched items
      */
-    public static ArrayList<Integer> getUnmatchedItemsSortedByColRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
-        HashMap<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
+    public static List<Integer> getUnmatchedItemsSortedByColRating(List<Integer> unmatchedItems, int[][] stackingConstraints) {
+        Map<Integer, Integer> unmatchedItemColRatings = new HashMap<>();
         for (int item : unmatchedItems) {
-            unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForUnmatchedItem(item, stackingConstraints));
+            unmatchedItemColRatings.put(item, RatingSystem.computeColRatingForItem(item, stackingConstraints));
         }
         Map<Integer, Integer> sortedItemColRatings = HeuristicUtil.sortMapByValue(unmatchedItemColRatings);
-        ArrayList<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
+        List<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
         for (int item : sortedItemColRatings.keySet()) {
             unmatchedItemsSortedByColRating.add(item);
         }
@@ -536,35 +426,21 @@ public class RatingSystem {
     /**
      * Returns the list of unmatched items increasingly sorted by row rating.
      *
-     * @param unmatchedItems - the unsorted list of unmatched items
-     * @return the sorted list of unmatched items
+     * @param unmatchedItems - unsorted list of unmatched items
+     * @return sorted list of unmatched items
      */
-    public static ArrayList<Integer> getUnmatchedItemsSortedByRowRating(ArrayList<Integer> unmatchedItems, int[][] stackingConstraints) {
+    public static List<Integer> getUnmatchedItemsSortedByRowRating(List<Integer> unmatchedItems, int[][] stackingConstraints) {
 
-        HashMap<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
+        Map<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
         for (int item : unmatchedItems) {
-            int rating = RatingSystem.computeRowRatingForUnmatchedItem(item, stackingConstraints);
+            int rating = RatingSystem.computeRowRatingForItem(item, stackingConstraints);
             unmatchedItemRowRatings.put(item, rating);
         }
-        ArrayList<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
+        List<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
         Map<Integer, Integer> sortedItemRowRatings = HeuristicUtil.sortMapByValue(unmatchedItemRowRatings);
         for (int item : sortedItemRowRatings.keySet()) {
             unmatchedItemsSortedByRowRating.add(item);
         }
         return unmatchedItemsSortedByRowRating;
-    }
-
-    /**
-     * Applies each edge rating system to a copy of the item pair list.
-     *
-     * @param itemPairPermutations - the list of item pair permutations
-     */
-    public static void applyRatingSystemsToItemPairPermutations(ArrayList<ArrayList<MCMEdge>> itemPairPermutations, int[][] stackingConstraints) {
-        int idx = 0;
-        RatingSystem.assignRowRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignColRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignMaxRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignMinRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
-        RatingSystem.assignSumRatingToEdges(itemPairPermutations.get(idx++), stackingConstraints);
     }
 }
