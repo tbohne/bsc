@@ -109,37 +109,31 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Finds compatible empty positions for the items in the storage area and
-     * initiates the edge addition for these pairs of items and empty positions
-     * to the post-processing graph.
+     * Finds compatible empty positions for the items in the storage area and initiates the edge addition
+     * for these pairs of items and empty positions to the post processing graph.
      *
      * @param postProcessingGraph - graph the edges are added to
      * @param items               - items to be connected to compatible empty positions
      * @param emptyPositions      - empty positions the compatible items get connected with
-     * @param originalCosts       - the current costs for each item assignment
-     * @param sol                 - the solution to be processed
+     * @param originalCosts       - current costs for each item assignment
+     * @param sol                 - solution to be processed
      */
     public void findCompatibleEmptyPositionsForItems(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph,
-        List<Integer> items,
-        List<StackPosition> emptyPositions,
-        Map<Integer, Double> originalCosts,
-        Solution sol
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
+        Map<Integer, Double> originalCosts, Solution sol
     ) {
         for (int item : items) {
             for (StackPosition emptyPos : emptyPositions) {
 
-                // item compatible with stack
-                if (this.instance.getCosts()[item][emptyPos.getStackIdx()] < Integer.MAX_VALUE / this.instance.getItems().length) {
+                if (HeuristicUtil.itemCompatibleWithStack(this.instance.getCosts(), item, emptyPos.getStackIdx())) {
 
                     int levelOfOtherSlot = emptyPos.getLevel() == 0 ? 1 : 0;
 
+                    // other item in stack
                     if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
                         int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
                         // item compatible with other item
-                        if (this.instance.getStackingConstraints()[item][otherItem] == 1
-                            || this.instance.getStackingConstraints()[otherItem][item] == 1) {
-
+                        if (HeuristicUtil.itemsStackableInAtLeastOneDirection(this.instance.getStackingConstraints(), item, otherItem)) {
                             GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
                         }
                     // no other item in stack
@@ -154,30 +148,26 @@ public class TwoCapHeuristic {
     /**
      * Generates the bipartite graph for the post-processing step.
      * The graph's first partition consists of items and the second one consists of empty positions in stacks.
-     * An edge between the partitions means that an item is compatible to the empty position.
+     * An edge between the partitions indicates that an item is compatible to the empty position.
      * The costs of the edges correspond to the savings that are generated if the item is assigned to the empty position.
      *
-     * @param items          - list of items in the storage area
-     * @param emptyPositions - list of empty positions in the storage area
+     * @param items          - list of items in the stacks
+     * @param emptyPositions - list of empty positions in the stacks
      * @param costsBefore    - original costs for each item assignment
      * @param sol            - solution to be processed
-     * @return the generated bipartite graph
+     * @return generated bipartite post-processing graph
      */
     public BipartiteGraph generatePostProcessingGraph(
-        List<Integer> items,
-        ArrayList<StackPosition> emptyPositions,
-        HashMap<Integer, Double> costsBefore,
-        Solution sol
+        List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> costsBefore, Solution sol
     ) {
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph =
-            new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
-        Set<String> partitionOne = new HashSet<>();
-        Set<String> partitionTwo = new HashSet<>();
-        GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, partitionOne);
-        GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, partitionTwo);
+        Graph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+        Set<String> itemPartition = new HashSet<>();
+        Set<String> emptyPositionPartition = new HashSet<>();
+        GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, itemPartition);
+        GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, emptyPositionPartition);
 
         this.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
-        return new BipartiteGraph(partitionOne, partitionTwo, postProcessingGraph);
+        return new BipartiteGraph(itemPartition, emptyPositionPartition, postProcessingGraph);
     }
 
     /**
@@ -192,14 +182,14 @@ public class TwoCapHeuristic {
      * A maximum weight matching is computed on that graph to retrieve an assignment that leads
      * to a maximum cost reduction.
      *
-     * @param sol - the generated solution to be processed
-     * @return the result of the post-processing procedure
+     * @param sol - generated solution to be processed
+     * @return resulting solution
      */
     public Solution postProcessing(Solution sol) {
 
-        ArrayList<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
+        List<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         List<Integer> items = sol.getAssignedItems();
-        HashMap<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
+        Map<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
 
         BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol);
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
