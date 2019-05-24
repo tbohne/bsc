@@ -126,13 +126,12 @@ public class TwoCapHeuristic {
             return null;
         }
         List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, itemPartition, stackPartition);
-        GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
-        GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
-        GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
+        GraphUtil.addEdgesBetweenItemPairsAndStacks(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesBetweenUnmatchedItemsAndStacks(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesBetweenDummyItemsAndStacks(graph, dummyItems, this.instance.getStacks());
 
         return new BipartiteGraph(itemPartition, stackPartition, graph);
     }
-
 
     /**
      * Encapsulates the stacking constraint graph generation.

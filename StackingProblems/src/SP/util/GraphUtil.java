@@ -18,107 +18,64 @@ import java.util.*;
 public class GraphUtil {
 
     /**
-     * Generates a stacking constraint graph containing the given items as nodes.
-     * There exists an edge between two items if the items are stackable in at least one direction
-     * based on the given stacking constraints.
-     *
-     * @param items               - the items to be matched
-     * @param stackingConstraints - the matrix representing the stacking constraints
-     * @return the computed maximum cardinality matching
-     */
-    public static EdmondsMaximumCardinalityMatching<String, DefaultEdge> getMCMForItemList(ArrayList<Integer> items, int[][] stackingConstraints) {
-
-        DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        for (int item : items) {
-            stackingConstraintGraph.addVertex("v" + item);
-        }
-
-        // For all incoming items i and j, there is an edge if s_ij + s_ji >= 1.
-        for (int i = 0; i < items.size(); i++) {
-            for (int j = 0; j < items.size(); j++) {
-                if (items.get(i) != items.get(j) && stackingConstraints[items.get(i)][items.get(j)] == 1
-                        || stackingConstraints[items.get(j)][items.get(i)] == 1) {
-
-                    if (!stackingConstraintGraph.containsEdge("v" + items.get(j), "v" + items.get(i))) {
-                        stackingConstraintGraph.addEdge("v" + items.get(i), "v" + items.get(j));
-                    }
-                }
-            }
-        }
-        EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(stackingConstraintGraph);
-        return mcm;
-    }
-
-    /**
-     * Adds the edges from item pairs to stacks in the given bipartite graph consisting of the items in
-     * one partition and stacks in the other one. Such an edge means that the item pair is assignable
+     * Adds edges between item pairs and stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge indicates that the item pair is assignable
      * to the stack. Each pair is assignable to every stack initially. Forbidden assignments are indirectly
      * avoided by the minimum weight perfect matching through high edge costs.
      *
-     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
-     * @param itemPairs      - the pairs of items to be connected to the stacks
-     * @param stacks         - the stacks the item pairs are going to be connected to
-     * @param costMatrix     - the matrix containing the costs for item-stack-assignments
+     * @param bipartiteGraph - bipartite graph consisting of stacks and items
+     * @param itemPairs      - pairs of items to be connected to the stacks
+     * @param stacks         - stacks the item pairs are going to be connected to
+     * @param costMatrix     - matrix containing the costs for item-stack-assignments
      */
-    public static void addEdgesForItemPairs(
-            Graph<String, DefaultWeightedEdge> bipartiteGraph,
-            List<MCMEdge> itemPairs,
-            int[][] stacks,
-            double[][] costMatrix
+    public static void addEdgesBetweenItemPairsAndStacks(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, List<MCMEdge> itemPairs, int[][] stacks, double[][] costMatrix
     ) {
         for (int pair = 0; pair < itemPairs.size(); pair++) {
             for (int stack = 0; stack < stacks.length; stack++) {
-                // TODO: check necessary?
-                if (!bipartiteGraph.containsEdge("pair" + itemPairs.get(pair), "stack" + stack)) {
-                    DefaultWeightedEdge edge = bipartiteGraph.addEdge("pair" + itemPairs.get(pair), "stack" + stack);
-                    double costs = costMatrix[itemPairs.get(pair).getVertexOne()][stack] + costMatrix[itemPairs.get(pair).getVertexTwo()][stack];
-                    bipartiteGraph.setEdgeWeight(edge, costs);
-                }
-            }
-        }
-    }
-
-    /**
-     * Adds the edges from item triples to stacks in the given bipartite graph consisting of the items in
-     * one partition and stacks in the other one. Such an edge means that the item triple is assignable
-     * to the stack. Each triple is assignable to every stack initially. Forbidden assignments are indirectly
-     * avoided by the minimum weight perfect matching through high edge costs.
-     *
-     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
-     * @param itemTriples    - the triples of items to be connected to the stacks
-     * @param stacks         - the stacks the item triples are going to be connected to
-     * @param costMatrix     - the matrix containing the costs for item-stack-assignments
-     */
-    public static void addEdgesForItemTriples(
-            Graph<String, DefaultWeightedEdge> bipartiteGraph,
-            List<List<Integer>> itemTriples,
-            int[][] stacks,
-            double[][] costMatrix
-    ) {
-        for (int triple = 0; triple < itemTriples.size(); triple++) {
-            for (int stack = 0; stack < stacks.length; stack++) {
-                DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriples.get(triple), "stack" + stack);
-                double costs = costMatrix[itemTriples.get(triple).get(0)][stack]
-                        + costMatrix[itemTriples.get(triple).get(1)][stack]
-                        + costMatrix[itemTriples.get(triple).get(2)][stack];
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("pair" + itemPairs.get(pair), "stack" + stack);
+                double costs = costMatrix[itemPairs.get(pair).getVertexOne()][stack] + costMatrix[itemPairs.get(pair).getVertexTwo()][stack];
                 bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
     }
 
     /**
-     * Adds the edges from dummy items to stacks in the given bipartite graph consisting of the items in
-     * one partition and stacks in the other one. Such an edge means that the dummy item is assignable
+     * Adds edges between item triples and stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge indicates that the item triple is assignable
+     * to the stack. Each triple is assignable to every stack initially. Forbidden assignments are indirectly
+     * avoided by the minimum weight perfect matching through high edge costs.
+     *
+     * @param bipartiteGraph - bipartite graph consisting of stacks and items
+     * @param itemTriples    - triples of items to be connected to the stacks
+     * @param stacks         - stacks the item triples are going to be connected to
+     * @param costMatrix     - matrix containing the costs for item-stack-assignments
+     */
+    public static void addEdgesBetweenItemTriplesAndStacks(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, List<List<Integer>> itemTriples, int[][] stacks, double[][] costMatrix
+    ) {
+        for (int triple = 0; triple < itemTriples.size(); triple++) {
+            for (int stack = 0; stack < stacks.length; stack++) {
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriples.get(triple), "stack" + stack);
+                double costs = costMatrix[itemTriples.get(triple).get(0)][stack]
+                    + costMatrix[itemTriples.get(triple).get(1)][stack]
+                    + costMatrix[itemTriples.get(triple).get(2)][stack];
+                bipartiteGraph.setEdgeWeight(edge, costs);
+            }
+        }
+    }
+
+    /**
+     * Adds edges between dummy items and stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge indicates that the dummy item is assignable
      * to the stack. Each dummy is assignable to every stack at costs 0.
      *
-     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
-     * @param dummyItems     - the dummy items to be connected to the stacks
-     * @param stacks         - the stacks the dummy items are going to be connected to
+     * @param bipartiteGraph - bipartite graph consisting of stacks and items
+     * @param dummyItems     - dummy items to be connected to the stacks
+     * @param stacks         - stacks the dummy items are going to be connected to
      */
-    public static void addEdgesForDummyItems(
-            Graph<String, DefaultWeightedEdge> bipartiteGraph,
-            List<Integer> dummyItems,
-            int[][] stacks
+    public static void addEdgesBetweenDummyItemsAndStacks(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, List<Integer> dummyItems, int[][] stacks
     ) {
         for (int item : dummyItems) {
             for (int stack = 0; stack < stacks.length; stack++) {
@@ -129,30 +86,24 @@ public class GraphUtil {
     }
 
     /**
-     * Adds the edges from unmatched items to stacks in the given bipartite graph consisting of the items in
-     * one partition and stacks in the other one. Such an edge means that the item is assignable
+     * Adds edges between unmatched items and stacks in the given bipartite graph consisting of the items in
+     * one partition and stacks in the other one. Such an edge indicates that the item is assignable
      * to the stack. Each item is assignable to every stack initially. Forbidden assignments are indirectly
      * avoided by the minimum weight perfect matching through high edge costs.
      *
-     * @param bipartiteGraph - the bipartite graph consisting of stacks and items
-     * @param unmatchedItems - the unmatched items to be connected to the stacks
-     * @param stacks         - the stacks the items are going to be connected to
-     * @param costMatrix     - the matrix containing the costs for item-stack-assignments
+     * @param bipartiteGraph - bipartite graph consisting of stacks and items
+     * @param unmatchedItems - unmatched items to be connected to the stacks
+     * @param stacks         - stacks the items are going to be connected to
+     * @param costMatrix     - matrix containing the costs for item-stack-assignments
      */
-    public static void addEdgesForUnmatchedItems(
-            Graph<String, DefaultWeightedEdge> bipartiteGraph,
-            List<Integer> unmatchedItems,
-            int[][] stacks,
-            double[][] costMatrix
+    public static void addEdgesBetweenUnmatchedItemsAndStacks(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, List<Integer> unmatchedItems, int[][] stacks, double[][] costMatrix
     ) {
         for (int item : unmatchedItems) {
             for (int stack = 0; stack < stacks.length; stack++) {
-                // TODO: check necessary?
-                if (!bipartiteGraph.containsEdge("item" + item, "stack" + stack)) {
-                    DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "stack" + stack);
-                    double costs = costMatrix[item][stack];
-                    bipartiteGraph.setEdgeWeight(edge, costs);
-                }
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "stack" + stack);
+                double costs = costMatrix[item][stack];
+                bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
     }
