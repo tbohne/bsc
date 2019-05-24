@@ -413,9 +413,8 @@ public class ThreeCapHeuristic {
         int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
 
         // check pair for compatibility
-        if (this.instance.getStackingConstraints()[item][otherItem] == 1
-            || this.instance.getStackingConstraints()[otherItem][item] == 1) {
-                GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
+        if (HeuristicUtil.itemsStackableInAtLeastOneDirection(this.instance.getStackingConstraints(), item, otherItem)) {
+            GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
         }
     }
 
