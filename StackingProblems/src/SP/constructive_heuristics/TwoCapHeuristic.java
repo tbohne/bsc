@@ -159,8 +159,8 @@ public class TwoCapHeuristic {
         for (Object edge : mwpm.getMatching().getEdges()) {
             if (edge.toString().contains("pair")) {
                 int stack = GraphUtil.parseStackForPair((DefaultWeightedEdge) edge);
-                stacks[stack][1] = GraphUtil.parseItemOneOfPairBasedOnMatching((DefaultWeightedEdge) edge);
-                stacks[stack][0] = GraphUtil.parseItemTwoOfPairBasedOnMatching((DefaultWeightedEdge) edge);
+                stacks[stack][1] = GraphUtil.parseItemOneOfPair((DefaultWeightedEdge) edge);
+                stacks[stack][0] = GraphUtil.parseItemTwoOfPair((DefaultWeightedEdge) edge);
             } else if (edge.toString().contains("item")) {
                 int stack = GraphUtil.parseStack((DefaultWeightedEdge) edge);
                 stacks[stack][1] = GraphUtil.parseItem((DefaultWeightedEdge) edge);

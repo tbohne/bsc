@@ -390,11 +390,15 @@ public class GraphUtil {
         return matchedItems;
     }
 
+    /***********************************************************************/
+    /*************************** PARSING METHODS ***************************/
+    /***********************************************************************/
+
     /**
      * Parses item triples from the given maximum cardinality matching.
      *
-     * @param mcm - the given maximum cardinality matching
-     * @return the list of parsed item triples
+     * @param mcm - maximum cardinality matching to be parsed
+     * @return parsed item triples
      */
     public static List<List<Integer>> parseItemTriplesFromMCM(EdmondsMaximumCardinalityMatching mcm) {
         List<List<Integer>> itemTriples = new ArrayList<>();
@@ -404,7 +408,7 @@ public class GraphUtil {
             int second = Integer.parseInt(parsedEdge.split(",")[1].trim());
             int third = Integer.parseInt(parsedEdge.split(",")[2].trim());
 
-            ArrayList<Integer> currAssignment = new ArrayList<>();
+            List<Integer> currAssignment = new ArrayList<>();
             currAssignment.add(first);
             currAssignment.add(second);
             currAssignment.add(third);
@@ -413,71 +417,93 @@ public class GraphUtil {
         return itemTriples;
     }
 
+    /**
+     * Parses the stacks from the given edge.
+     *
+     * @param edge - edge to parse stack from
+     * @return parsed stack
+     */
     public static int parseStack(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
     }
 
+    /**
+     * Parses the item from the given edge.
+     *
+     * @param edge - edge to parse item from
+     * @return parsed item
+     */
     public static int parseItem(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].replace("(item", "").trim());
     }
 
+    /**
+     * Parses first item of triple from edge.
+     *
+     * @param edge - edge to parse first item from
+     * @return parsed item
+     */
     public static int parseItemOneOfTriple(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].split(",")[0].replace("(triple[", "").trim());
     }
 
+    /**
+     * Parses second item of triple from edge.
+     *
+     * @param edge - edge to parse second item from
+     * @return parsed item
+     */
     public static int parseItemTwoOfTriple(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].split(",")[1].trim());
     }
 
+    /**
+     * Parses third item of triple from edge.
+     *
+     * @param edge - edge to parse third item from
+     * @return parsed item
+     */
     public static int parseItemThreeOfTriple(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].split(",")[2].replace("]", "").trim());
     }
 
-    public static int parseStackForTriple(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-    }
-
-    public static int parseStackForPair(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
-    }
-
+    /**
+     * Parses first item of pair from edge.
+     *
+     * @param edge - edge to parse first item from
+     * @return parsed item
+     */
     public static int parseItemOneOfPair(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[0].split(",")[0].replace("(pair[", "").trim());
-    }
-
-    public static int parseItemTwoOfPair(DefaultWeightedEdge edge) {
-        return Integer.parseInt(edge.toString().split(":")[0].split(",")[1].replace("]", "").trim());
-    }
-
-    public static int parseItemOneOfPairBasedOnMatching(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[0].replace("(", "").trim());
     }
 
-    public static int parseItemTwoOfPairBasedOnMatching(DefaultWeightedEdge edge) {
+    /**
+     * Parses second item of pair from edge.
+     *
+     * @param edge - edge to parse second item from
+     * @return parsed item
+     */
+    public static int parseItemTwoOfPair(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[0].replace("(pair", "").split(",")[1].replace(")", "").trim());
     }
 
     /**
-     * Parses the combination of item pair and compatible stack.
+     * Parses the stack the triple gets assigned to from the given edge.
      *
-     * @param mcm - the maximum cardinality matching to be parsed
-     * @return a map containing the stack and its assigned items
+     * @param edge - edge to parse the stack from
+     * @return parsed stack
      */
-    public static HashMap parseItemPairStackCombination(EdmondsMaximumCardinalityMatching mcm) {
+    public static int parseStackForTriple(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
+    }
 
-        HashMap<Integer, ArrayList<Integer>> itemPairStackCombination = new HashMap<>();
-
-        for (Object edge : mcm.getMatching().getEdges()) {
-            int firstItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[0].trim());
-            int secondItem = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[0].replace(")", "").trim());
-            int stack = Integer.parseInt(edge.toString().replace("(edge(", "").split(",")[1].split(":")[1].replace("stack", "").replace(")", "").trim());
-
-            ArrayList<Integer> items = new ArrayList<>();
-            items.add(firstItem);
-            items.add(secondItem);
-            itemPairStackCombination.put(stack, items);
-        }
-
-        return itemPairStackCombination;
+    /**
+     * Parses the stack the pair gets assigned to from the given edge.
+     *
+     * @param edge - edge to parse the stack from
+     * @return parsed stack
+     */
+    public static int parseStackForPair(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
     }
 }
