@@ -121,8 +121,8 @@ public class GraphUtil {
      * @param stacks         - the stacks the dummy items are going to be connected to
      */
     public static void addEdgesForDummyItems(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-            ArrayList<Integer> dummyItems,
+            Graph<String, DefaultWeightedEdge> bipartiteGraph,
+            List<Integer> dummyItems,
             int[][] stacks
     ) {
         for (int item : dummyItems) {
@@ -145,8 +145,8 @@ public class GraphUtil {
      * @param costMatrix     - the matrix containing the costs for item-stack-assignments
      */
     public static void addEdgesForUnmatchedItems(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-            ArrayList<Integer> unmatchedItems,
+            Graph<String, DefaultWeightedEdge> bipartiteGraph,
+            List<Integer> unmatchedItems,
             int[][] stacks,
             double[][] costMatrix
     ) {
@@ -170,8 +170,8 @@ public class GraphUtil {
      * @param partitionTwo   - the bipartite graph's second partition
      * @return the created list of dummy items corresponding to the dummy vertices
      */
-    public static ArrayList<Integer> introduceDummyVertices(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
+    public static List<Integer> introduceDummyVertices(
+            Graph<String, DefaultWeightedEdge> bipartiteGraph,
             Set<String> partitionOne,
             Set<String> partitionTwo
     ) {

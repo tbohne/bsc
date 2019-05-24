@@ -78,7 +78,7 @@ public class TwoCapHeuristic {
             return null;
         }
 
-        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
         GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());

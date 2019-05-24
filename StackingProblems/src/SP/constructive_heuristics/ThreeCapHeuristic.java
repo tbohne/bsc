@@ -54,32 +54,36 @@ public class ThreeCapHeuristic {
 
     /**
      * Adds the vertices for item triples, item pairs, unmatched items and stacks to the specified graph
-     * and fills the partitions that define the bipartite graph.
+     * and fills the partitions. The items are part of one partitions and the stacks are part of the other.
      *
-     * @param itemTriples    - the list of item triples
-     * @param itemPairs      - the list of item pairs
-     * @param unmatchedItems - the list of unmatched items
-     * @param graph          - the graph to be created
-     * @param partitionOne   - the first partition of the bipartite graph
-     * @param partitionTwo   - the second partition of the bipartite graph
+     * @param itemTriples    - item triples to be added as vertices
+     * @param itemPairs      - item pairs to be added as vertices
+     * @param unmatchedItems - unmatched items to be added as vertices
+     * @param graph          - graph the vertices are added to
+     * @param itemPartition  - partition in which the items are placed
+     * @param stackPartition - partition in which the stacks are placed
      */
-    public void addVertices(List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems,
-        Graph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
-
-            GraphUtil.addVerticesForItemTriples(itemTriples, graph, partitionOne);
-            GraphUtil.addVerticesForItemPairs(itemPairs, graph, partitionOne);
-            GraphUtil.addVerticesForUnmatchedItems(unmatchedItems, graph, partitionOne);
-            GraphUtil.addVerticesForStacks(this.instance.getStacks(), graph, partitionTwo);
+    public void addVerticesForBipartiteGraphBetweenItemsAndStacks(
+        List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems,
+        Graph<String, DefaultWeightedEdge> graph, Set<String> itemPartition, Set<String> stackPartition
+    ) {
+        GraphUtil.addVerticesForItemTriples(itemTriples, graph, itemPartition);
+        GraphUtil.addVerticesForItemPairs(itemPairs, graph, itemPartition);
+        GraphUtil.addVerticesForUnmatchedItems(unmatchedItems, graph, itemPartition);
+        GraphUtil.addVerticesForStacks(this.instance.getStacks(), graph, stackPartition);
     }
 
     /**
-     * Parses the given minimum weight perfect matching and assigns it to the given stacks.
+     * Parses the given minimum weight perfect matching between items and stacks and assigns the
+     * triples, pairs and unmatched items to the stacks in the determined way.
      *
-     * @param mwpm   - the minimum weight perfect matching to be parsed
-     * @param stacks - the stacks the parsed items are going to be assigned to
+     * @param minCostPerfectMatching - minimum weight perfect matching to be parsed
+     * @param stacks                 - stacks the items are going to be assigned to based on the matching
      */
-    public void parseAndAssignMinCostPerfectMatching(KuhnMunkresMinimalWeightBipartitePerfectMatching mwpm, int[][] stacks) {
-        for (Object edge : mwpm.getMatching().getEdges()) {
+    public void parseAndAssignMinCostPerfectMatching(
+        KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching, int[][] stacks
+    ) {
+        for (Object edge : minCostPerfectMatching.getMatching().getEdges()) {
             if (edge.toString().contains("triple")) {
                 int stack = GraphUtil.parseStackForTriple((DefaultWeightedEdge) edge);
                 stacks[stack][2] = GraphUtil.parseItemOneOfTriple((DefaultWeightedEdge) edge);
@@ -97,33 +101,34 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Generates the complete bipartite graph consisting of the item partition and the stack partition.
-     * Since the two partitions aren't necessarily equally sized and the used algorithm to compute the
-     * MinCostPerfectMatching expects a complete bipartite graph, there are dummy items that are used to make
-     * the graph complete bipartite. These items have no influence on the costs and are ignored in later steps.
+     * Generates the complete bipartite graph consisting of an item partition and a stack partition.
+     * Since the two partitions aren't necessarily equally sized which is expected by the used algorithm to compute
+     * the minimum weight perfect matching, dummy items get introduced.
+     * These items have no influence on the costs and are ignored in later steps.
      *
-     * @param itemTriples    - the list of item triples
-     * @param itemPairs      - the list of item pairs
-     * @param unmatchedItems - the list of unmatched items
-     * @return MinCostPerfectMatching between items and stacks
+     * @param itemTriples    - list of item triples
+     * @param itemPairs      - list of item pairs
+     * @param unmatchedItems - list of unmatched items
+     * @return bipartite graph between items and stacks
      */
-    public BipartiteGraph generateBipartiteGraph(List<List<Integer>> itemTriples,
-        List<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
+    public BipartiteGraph generateBipartiteGraphBetweenItemsAndStacks(
+        List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems
+    ) {
+        Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+        Set<String> itemPartition = new HashSet<>();
+        Set<String> stackPartition = new HashSet<>();
 
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
-                DefaultWeightedEdge.class
-            );
-            Set<String> partitionOne = new HashSet<>();
-            Set<String> partitionTwo = new HashSet<>();
-            this.addVertices(itemTriples, itemPairs, unmatchedItems, graph, partitionOne, partitionTwo);
-            ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        this.addVerticesForBipartiteGraphBetweenItemsAndStacks(
+            itemTriples, itemPairs, unmatchedItems, graph, itemPartition, stackPartition
+        );
+        List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, itemPartition, stackPartition);
 
-            GraphUtil.addEdgesForItemTriples(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
-            GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
-            GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
-            GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
+        GraphUtil.addEdgesForItemTriples(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForItemPairs(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForUnmatchedItems(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
+        GraphUtil.addEdgesForDummyItems(graph, dummyItems, this.instance.getStacks());
 
-            return new BipartiteGraph(partitionOne, partitionTwo, graph);
+        return new BipartiteGraph(itemPartition, stackPartition, graph);
     }
 
     /**
@@ -301,7 +306,7 @@ public class ThreeCapHeuristic {
             if (itemTriples.size() + itemPairs.size() + unmatchedItems.size() > this.instance.getStacks().length) {
                 continue;
             }
-            BipartiteGraph bipartiteGraph = this.generateBipartiteGraph(itemTriples, itemPairs, unmatchedItems);
+            BipartiteGraph bipartiteGraph = this.generateBipartiteGraphBetweenItemsAndStacks(itemTriples, itemPairs, unmatchedItems);
             KuhnMunkresMinimalWeightBipartitePerfectMatching<String, DefaultWeightedEdge> minCostPerfectMatching =
                 new KuhnMunkresMinimalWeightBipartitePerfectMatching<>(
                     bipartiteGraph.getGraph(), bipartiteGraph.getPartitionOne(), bipartiteGraph.getPartitionTwo()

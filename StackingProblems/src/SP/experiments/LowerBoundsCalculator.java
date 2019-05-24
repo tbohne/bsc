@@ -4,12 +4,14 @@ import SP.representations.BipartiteGraph;
 import SP.representations.Instance;
 import SP.representations.StackPosition;
 import SP.util.GraphUtil;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -69,9 +71,9 @@ public class LowerBoundsCalculator {
      * @param positions      - positions the dummy items get connected to
      */
     public void addEdgesForDummyItems(
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-        ArrayList<Integer> dummyItems,
-        ArrayList<StackPosition> positions
+        Graph<String, DefaultWeightedEdge> bipartiteGraph,
+        List<Integer> dummyItems,
+        List<StackPosition> positions
     ) {
         for (int item : dummyItems) {
             for (StackPosition pos : positions) {
@@ -106,7 +108,7 @@ public class LowerBoundsCalculator {
         }
         GraphUtil.addVerticesForUnmatchedItems(itemList, graph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(positions, graph, partitionTwo);
-        ArrayList<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
         this.addEdgesForDummyItems(graph, dummyItems, positions);
         this.addEdges(graph, itemList, positions);
         return new BipartiteGraph(partitionOne, partitionTwo, graph);
