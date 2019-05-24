@@ -32,7 +32,7 @@ public class ThreeCapHeuristic {
     private final int deviationThresholdUB;
     private final int deviationThresholdStepSize;
 
-    // used in merge step
+    // configurable divisor used in merge step
     private final float splitPairsDivisor;
 
     /**
@@ -43,6 +43,7 @@ public class ThreeCapHeuristic {
      * @param deviationThresholdLB       - lower bound for deviation threshold
      * @param deviationThresholdUB       - upper bound for deviation threshold
      * @param deviationThresholdStepSize - step size for increments of deviation threshold
+     * @param splitPairsDivisor          - divisor used in merge step to determine the number of pairs to be separated
      */
     public ThreeCapHeuristic(
         Instance instance, double timeLimit, int deviationThresholdLB, int deviationThresholdUB,
@@ -92,7 +93,7 @@ public class ThreeCapHeuristic {
             bestSol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
 
             if (postProcessing) {
-                System.out.println("costs before post processing: " + bestSol.getObjectiveValue());
+                System.out.println("costs before post processing: " + bestSol.computeCosts());
                 // Since the last generated solution is not necessarily the best one,
                 // the stack assignments for the best solution have to be restored before post-processing.
                 this.instance.resetStacks();
@@ -105,7 +106,7 @@ public class ThreeCapHeuristic {
                     bestSolutionCost = bestSol.computeCosts();
                     bestSol = this.postProcessing(bestSol);
                 }
-                System.out.println("final costs: " + bestSol.computeCosts() + " still feasible? " + bestSol.isFeasible());
+                System.out.println("costs after post processing: " + bestSol.computeCosts());
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
@@ -126,8 +127,8 @@ public class ThreeCapHeuristic {
      * @param stackPartition - partition in which the stacks are placed
      */
     private void addVerticesForBipartiteGraphBetweenItemsAndStacks(
-            List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems,
-            Graph<String, DefaultWeightedEdge> graph, Set<String> itemPartition, Set<String> stackPartition
+        List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems,
+        Graph<String, DefaultWeightedEdge> graph, Set<String> itemPartition, Set<String> stackPartition
     ) {
         GraphUtil.addVerticesForItemTriples(itemTriples, graph, itemPartition);
         GraphUtil.addVerticesForItemPairs(itemPairs, graph, itemPartition);
@@ -143,7 +144,7 @@ public class ThreeCapHeuristic {
      * @param stacks                 - stacks the items are going to be assigned to based on the matching
      */
     private void parseAndAssignMinCostPerfectMatching(
-            KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching, int[][] stacks
+        KuhnMunkresMinimalWeightBipartitePerfectMatching minCostPerfectMatching, int[][] stacks
     ) {
         for (Object edge : minCostPerfectMatching.getMatching().getEdges()) {
             if (edge.toString().contains("triple")) {
@@ -174,7 +175,7 @@ public class ThreeCapHeuristic {
      * @return bipartite graph between items and stacks
      */
     private BipartiteGraph generateBipartiteGraphBetweenItemsAndStacks(
-            List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems
+        List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems
     ) {
         Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Set<String> itemPartition = new HashSet<>();
@@ -205,7 +206,7 @@ public class ThreeCapHeuristic {
             itemPairs, unmatchedItems, this.instance.getStackingConstraints()
         );
         EdmondsMaximumCardinalityMatching<String, DefaultEdge> mcm = new EdmondsMaximumCardinalityMatching<>(graph);
-        return GraphUtil.parseItemTripleFromMCM(mcm);
+        return GraphUtil.parseItemTriplesFromMCM(mcm);
     }
 
     /**
@@ -404,8 +405,8 @@ public class ThreeCapHeuristic {
      * @param originalCosts       - current costs for each item assignment
      */
     private void addEdgeForStacksWithSingleItemToPostProcessingGraph(
-            Solution sol, StackPosition emptyPos, List<Integer> levelsOfOtherSlots, int item,
-            Graph<String, DefaultWeightedEdge> postProcessingGraph, Map<Integer, Double> originalCosts
+        Solution sol, StackPosition emptyPos, List<Integer> levelsOfOtherSlots, int item,
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, Map<Integer, Double> originalCosts
     ) {
         int levelOfOtherSlot = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)] != -1 ?
             levelsOfOtherSlots.get(0) : levelsOfOtherSlots.get(1);
@@ -429,8 +430,8 @@ public class ThreeCapHeuristic {
      * @param originalCosts       - current costs for each item assignment
      */
     private void addEdgeForStacksFilledWithPairsToPostProcessingGraph(
-            List<Integer> levelsOfOtherSlots, Solution sol, StackPosition emptyPos,
-            Graph<String, DefaultWeightedEdge> postProcessingGraph, int item, Map<Integer, Double> originalCosts
+        List<Integer> levelsOfOtherSlots, Solution sol, StackPosition emptyPos,
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, int item, Map<Integer, Double> originalCosts
     ) {
         int lowerItemOfPair;
         int upperItemOfPair;
@@ -468,14 +469,13 @@ public class ThreeCapHeuristic {
      * @param sol                 - solution to be processed
      */
     private void findCompatibleEmptyPositionsForItemsAndAddEdges(
-            Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
-            Map<Integer, Double> originalCosts, Solution sol
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
+        Map<Integer, Double> originalCosts, Solution sol
     ) {
         for (int item : items) {
             for (StackPosition emptyPos : emptyPositions) {
 
                 if (HeuristicUtil.itemCompatibleWithStack(this.instance.getCosts(), item, emptyPos.getStackIdx())) {
-
                     // has always two entries
                     List<Integer> levelsOfOtherSlots = this.getLevelsOfOtherSlots(emptyPos.getLevel());
 
@@ -513,7 +513,7 @@ public class ThreeCapHeuristic {
      * @return generated bipartite post-processing graph
      */
     private BipartiteGraph generatePostProcessingGraph(
-            List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> originalCosts, Solution sol
+        List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> originalCosts, Solution sol
     ) {
         Graph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(
             DefaultWeightedEdge.class
