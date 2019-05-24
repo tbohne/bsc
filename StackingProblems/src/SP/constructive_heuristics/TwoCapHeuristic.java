@@ -8,7 +8,6 @@ import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -60,7 +59,7 @@ public class TwoCapHeuristic {
         if (this.instance.getStackCapacity() == 2) {
             this.startTime = System.currentTimeMillis();
 
-            DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
+            Graph<String, DefaultEdge> stackingConstraintGraph = this.generateStackingConstraintGraph();
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
@@ -140,7 +139,7 @@ public class TwoCapHeuristic {
      *
      * @return generated stacking constraint graph
      */
-    private DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph() {
+    private Graph<String, DefaultEdge> generateStackingConstraintGraph() {
         return GraphUtil.generateStackingConstraintGraph(
             this.instance.getItems(),
             this.instance.getStackingConstraints(),

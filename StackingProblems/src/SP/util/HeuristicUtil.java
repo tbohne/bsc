@@ -215,7 +215,7 @@ public class HeuristicUtil {
      * @param items     - the list containing every item
      * @return the list of unmatched items
      */
-    public static ArrayList<Integer> getUnmatchedItemsFromPairs(ArrayList<MCMEdge> itemPairs, int[] items) {
+    public static ArrayList<Integer> getUnmatchedItemsFromPairs(List<MCMEdge> itemPairs, int[] items) {
         return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromPairs(itemPairs), items);
     }
 
