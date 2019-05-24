@@ -38,10 +38,36 @@ public class RatingSystem {
      */
     public static int computeColRatingForItem(int item, int[][] stackingConstraints) {
         int rating = 0;
-        for (int i = 0; i < stackingConstraints.length; i++) {
-            rating += stackingConstraints[i][item];
+        for (int[] stackingConstraint : stackingConstraints) {
+            rating += stackingConstraint[item];
         }
         return rating;
+    }
+
+    /**
+     * Assigns the row rating to the specified edges.
+     *
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - stacking constraints the ratings are based on
+     */
+    public static void assignRowRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            edge.setRating(computeRowRatingForItem(edge.getVertexOne(), stackingConstraints)
+                + computeRowRatingForItem(edge.getVertexTwo(), stackingConstraints));
+        }
+    }
+
+    /**
+     * Assigns the col rating to the specified edges.
+     *
+     * @param matchedItems        - matched items (edges) to be rated
+     * @param stackingConstraints - stacking constraints the ratings are based on
+     */
+    public static void assignColRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
+        for (MCMEdge edge : matchedItems) {
+            edge.setRating(computeColRatingForItem(edge.getVertexOne(), stackingConstraints)
+                + computeColRatingForItem(edge.getVertexTwo(), stackingConstraints));
+        }
     }
 
     /**
@@ -72,9 +98,7 @@ public class RatingSystem {
     public static List<Integer> getItemRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
         Map<Integer, String> itemRatings = getRatingsMapForItemPair(itemOne, itemTwo, stackingConstraints);
         List<Integer> ratings = new ArrayList<>();
-        for (int key : itemRatings.keySet()) {
-            ratings.add(key);
-        }
+        ratings.addAll(itemRatings.keySet());
         return ratings;
     }
 
@@ -212,10 +236,10 @@ public class RatingSystem {
     public static double computePenaltyValue(double[][] costs, int forbiddenVal, float penaltyFactor) {
         double avgFeasibleCosts = 0;
         int cnt = 0;
-        for (int item = 0; item < costs.length; item++) {
-            for (int stack = 0; stack < costs[item].length; stack++) {
-                if (costs[item][stack] < forbiddenVal) {
-                    avgFeasibleCosts += costs[item][stack];
+        for (double[] cost : costs) {
+            for (int stack = 0; stack < cost.length; stack++) {
+                if (cost[stack] < forbiddenVal) {
+                    avgFeasibleCosts += cost[stack];
                     cnt++;
                 }
             }
@@ -368,43 +392,6 @@ public class RatingSystem {
     }
 
     /**
-     * Assigns the row rating to the specified edges.
-     *
-     * @param matchedItems        - matched items (edges) to be rated
-     * @param stackingConstraints - stacking constraints the ratings are based on
-     */
-    public static void assignRowRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
-        for (MCMEdge edge : matchedItems) {
-            int rating = 0;
-            for (int entry : stackingConstraints[edge.getVertexOne()]) {
-                rating += entry;
-            }
-            for (int entry : stackingConstraints[edge.getVertexTwo()]) {
-                rating += entry;
-            }
-            edge.setRating(rating);
-        }
-    }
-
-    /**
-     * Assigns the col rating to the specified edges.
-     *
-     * @param matchedItems        - matched items (edges) to be rated
-     * @param stackingConstraints - stacking constraints the ratings are based on
-     */
-    public static void assignColRatingToEdges(List<MCMEdge> matchedItems, int[][] stackingConstraints) {
-        for (MCMEdge edge : matchedItems) {
-            int rating = 0;
-            // The rating is determined by the number of rows that have a one at position vertexOne or vertexTwo.
-            // A high rating means that many items can be placed on top of the initial assignment.
-            for (int i = 0; i < stackingConstraints.length; i++) {
-                rating += (stackingConstraints[i][edge.getVertexOne()] + stackingConstraints[i][edge.getVertexTwo()]);
-            }
-            edge.setRating(rating);
-        }
-    }
-
-    /**
      * Returns the list of unmatched items increasingly sorted by col rating.
      *
      * @param unmatchedItems - unsorted list of unmatched items
@@ -417,9 +404,7 @@ public class RatingSystem {
         }
         Map<Integer, Integer> sortedItemColRatings = HeuristicUtil.sortMapByValue(unmatchedItemColRatings);
         List<Integer> unmatchedItemsSortedByColRating = new ArrayList<>();
-        for (int item : sortedItemColRatings.keySet()) {
-            unmatchedItemsSortedByColRating.add(item);
-        }
+        unmatchedItemsSortedByColRating.addAll(sortedItemColRatings.keySet());
         return unmatchedItemsSortedByColRating;
     }
 
@@ -438,9 +423,7 @@ public class RatingSystem {
         }
         List<Integer> unmatchedItemsSortedByRowRating = new ArrayList<>();
         Map<Integer, Integer> sortedItemRowRatings = HeuristicUtil.sortMapByValue(unmatchedItemRowRatings);
-        for (int item : sortedItemRowRatings.keySet()) {
-            unmatchedItemsSortedByRowRating.add(item);
-        }
+        unmatchedItemsSortedByRowRating.addAll(sortedItemRowRatings.keySet());
         return unmatchedItemsSortedByRowRating;
     }
 }
