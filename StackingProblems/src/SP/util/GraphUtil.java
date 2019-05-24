@@ -566,7 +566,7 @@ public class GraphUtil {
      * @param mcm - the given maximum cardinality matching
      * @return the list of parsed item triples
      */
-    public static List<List<Integer>> parseItemTripleFromMCM(EdmondsMaximumCardinalityMatching mcm) {
+    public static List<List<Integer>> parseItemTriplesFromMCM(EdmondsMaximumCardinalityMatching mcm) {
         List<List<Integer>> itemTriples = new ArrayList<>();
         for (Object edge : mcm.getMatching().getEdges()) {
             String parsedEdge = edge.toString().replace("(edge(", "").replace(") : v", ", ").replace(")", "").trim();

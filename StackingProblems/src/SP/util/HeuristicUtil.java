@@ -245,6 +245,10 @@ public class HeuristicUtil {
         return costMatrix[itemOne][stackIdx] < invalidEdgeCosts && costMatrix[itemTwo][stackIdx] < invalidEdgeCosts;
     }
 
+    public static boolean itemsStackableInAtLeastOneDirection(int[][] stackingConstraints, int itemOne, int itemTwo) {
+        return stackingConstraints[itemOne][itemTwo] == 1 || stackingConstraints[itemTwo][itemOne] == 1;
+    }
+
     /**
      * Returns whether the specified items are stackable in both directions.
      *
