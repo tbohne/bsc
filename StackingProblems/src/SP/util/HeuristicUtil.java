@@ -21,7 +21,7 @@ public class HeuristicUtil {
      * @param itemPairs - the pairs of items
      * @return a list containing all the matched items
      */
-    public static ArrayList<Integer> getMatchedItemsFromPairs(ArrayList<MCMEdge> itemPairs) {
+    public static ArrayList<Integer> getMatchedItemsFromPairs(List<MCMEdge> itemPairs) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
         for (MCMEdge pair : itemPairs) {
             matchedItems.add(pair.getVertexOne());
@@ -36,9 +36,9 @@ public class HeuristicUtil {
      * @param itemTriples - the triples of items
      * @return a list containing all the matched items
      */
-    public static ArrayList<Integer> getMatchedItemsFromTriples(ArrayList<ArrayList<Integer>> itemTriples) {
+    public static ArrayList<Integer> getMatchedItemsFromTriples(List<List<Integer>> itemTriples) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
-        for (ArrayList<Integer> triple : itemTriples) {
+        for (List<Integer> triple : itemTriples) {
             for (int item : triple) {
                 matchedItems.add(item);
             }
@@ -187,8 +187,8 @@ public class HeuristicUtil {
      * @return a list containing the unmatched items
      */
     public static ArrayList<Integer> getUnmatchedItemsFromTriplesAndPairs(
-        ArrayList<ArrayList<Integer>> itemTriples,
-        ArrayList<MCMEdge> itemPairs,
+        List<List<Integer>> itemTriples,
+        List<MCMEdge> itemPairs,
         int[] items
     ) {
         ArrayList<Integer> matchedItems = new ArrayList<>();
@@ -203,7 +203,7 @@ public class HeuristicUtil {
      * @param itemTriples - the list of item triples
      * @return a list containing the unmatched items
      */
-    public static ArrayList<Integer> getUnmatchedItemsFromTriples(ArrayList<ArrayList<Integer>> itemTriples, int[] items) {
+    public static ArrayList<Integer> getUnmatchedItemsFromTriples(List<List<Integer>> itemTriples, int[] items) {
         return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromTriples(itemTriples), items);
     }
 
@@ -498,7 +498,7 @@ public class HeuristicUtil {
      * @param solutions - the list of generated solutions
      * @return the best solution based on the costs
      */
-    public static Solution getBestSolution(ArrayList<Solution> solutions) {
+    public static Solution getBestSolution(List<Solution> solutions) {
         Solution bestSol = new Solution();
         for (Solution sol : solutions) {
             if (sol.computeCosts() < bestSol.computeCosts()) {

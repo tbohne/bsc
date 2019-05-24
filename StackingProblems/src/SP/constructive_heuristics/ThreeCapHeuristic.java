@@ -4,6 +4,7 @@ import SP.representations.*;
 import SP.util.GraphUtil;
 import SP.util.HeuristicUtil;
 import SP.util.RatingSystem;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.alg.matching.KuhnMunkresMinimalWeightBipartitePerfectMatching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
@@ -62,8 +63,8 @@ public class ThreeCapHeuristic {
      * @param partitionOne   - the first partition of the bipartite graph
      * @param partitionTwo   - the second partition of the bipartite graph
      */
-    public void addVertices(ArrayList<ArrayList<Integer>> itemTriples, ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
+    public void addVertices(List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, List<Integer> unmatchedItems,
+        Graph<String, DefaultWeightedEdge> graph, Set<String> partitionOne, Set<String> partitionTwo) {
 
             GraphUtil.addVerticesForItemTriples(itemTriples, graph, partitionOne);
             GraphUtil.addVerticesForItemPairs(itemPairs, graph, partitionOne);
@@ -106,8 +107,8 @@ public class ThreeCapHeuristic {
      * @param unmatchedItems - the list of unmatched items
      * @return MinCostPerfectMatching between items and stacks
      */
-    public BipartiteGraph generateBipartiteGraph(ArrayList<ArrayList<Integer>> itemTriples,
-        ArrayList<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
+    public BipartiteGraph generateBipartiteGraph(List<List<Integer>> itemTriples,
+        List<MCMEdge> itemPairs, ArrayList<Integer> unmatchedItems) {
 
             DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
                 DefaultWeightedEdge.class
@@ -153,7 +154,7 @@ public class ThreeCapHeuristic {
      * @param itemPairs   - the pairs of items to be merged
      * @param itemTriples - the list of triples to be generated
      */
-    public void mergeItemPairs(ArrayList<MCMEdge> itemPairs, ArrayList<ArrayList<Integer>> itemTriples) {
+    public void mergeItemPairs(List<MCMEdge> itemPairs, List<List<Integer>> itemTriples) {
         ArrayList<MCMEdge> splitPairs = new ArrayList<>();
         ArrayList<MCMEdge> assignPairs = new ArrayList<>();
         for (int i = 0; i < itemPairs.size(); i++) {
@@ -179,7 +180,7 @@ public class ThreeCapHeuristic {
      * @param itemPairs     - the initial list of item pairs
      * @return the number of applied rating systems
      */
-    public void applyRatingSystems(ArrayList<ArrayList<MCMEdge>> itemPairLists, ArrayList<MCMEdge> itemPairs) {
+    public void applyRatingSystems(List<List<MCMEdge>> itemPairLists, List<MCMEdge> itemPairs) {
 
         // the first list (idx 0) should be unrated and unsorted
         int ratingSystemIdx = 1;
@@ -204,7 +205,7 @@ public class ThreeCapHeuristic {
      *
      * @param itemPairLists - the lists of items pairs to be sorted
      */
-    public void sortItemPairListsBasedOnRatings(ArrayList<ArrayList<MCMEdge>> itemPairLists) {
+    public void sortItemPairListsBasedOnRatings(List<List<MCMEdge>> itemPairLists) {
         for (int i = 0; i < itemPairLists.size(); i++) {
             // The first list is supposed to be unsorted.
             if (i != 0) {
@@ -222,9 +223,9 @@ public class ThreeCapHeuristic {
      * @param itemPairs         - the list of item pairs to be merged in different ways
      * @param prioritizeRuntime - determines whether runtime is prioritized instead of solution quality
      */
-    public ArrayList<ArrayList<ArrayList<Integer>>> mergePairsToTriples(ArrayList<MCMEdge> itemPairs, boolean prioritizeRuntime) {
-        ArrayList<ArrayList<ArrayList<Integer>>> listsOfItemTriples = new ArrayList<>();
-        ArrayList<ArrayList<MCMEdge>> listsOfItemPairs = new ArrayList<>();
+    public List<List<List<Integer>>> mergePairsToTriples(List<MCMEdge> itemPairs, boolean prioritizeRuntime) {
+        List<List<List<Integer>>> listsOfItemTriples = new ArrayList<>();
+        List<List<MCMEdge>> listsOfItemPairs = new ArrayList<>();
         listsOfItemPairs.add(itemPairs);
 
         // If the runtime is prioritized, the rating system, which in some cases can increases
@@ -285,11 +286,11 @@ public class ThreeCapHeuristic {
      * @param itemTripleLists - the different lists of item triples
      * @return the generated solutions based on the given lists of triples
      */
-    public ArrayList<Solution> generateSolutionsBasedOnListsOfTriples(ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists) {
+    public List<Solution> generateSolutionsBasedOnListsOfTriples(List<List<List<Integer>>> itemTripleLists) {
 
-        ArrayList<Solution> solutions = new ArrayList<>();
+        List<Solution> solutions = new ArrayList<>();
 
-        for (ArrayList<ArrayList<Integer>> itemTriples : itemTripleLists) {
+        for (List<List<Integer>> itemTriples : itemTripleLists) {
             this.instance.resetStacks();
             ArrayList<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromTriples(itemTriples, this.instance.getItems());
             // items that are stored as pairs
@@ -613,8 +614,8 @@ public class ThreeCapHeuristic {
             ///////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////
 
-            ArrayList<ArrayList<ArrayList<Integer>>> itemTripleLists = this.mergePairsToTriples(itemPairs, prioritizeRuntime);
-            ArrayList<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
+            List<List<List<Integer>>> itemTripleLists = this.mergePairsToTriples(itemPairs, prioritizeRuntime);
+            List<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
             bestSol = HeuristicUtil.getBestSolution(solutions);
 
             bestSol.sortItemsInStacksBasedOnTransitiveStackingConstraints();

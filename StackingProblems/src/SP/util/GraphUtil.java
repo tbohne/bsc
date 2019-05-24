@@ -3,6 +3,7 @@ package SP.util;
 import SP.representations.Instance;
 import SP.representations.MCMEdge;
 import SP.representations.StackPosition;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
@@ -65,8 +66,8 @@ public class GraphUtil {
      * @param costMatrix     - the matrix containing the costs for item-stack-assignments
      */
     public static void addEdgesForItemPairs(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-            ArrayList<MCMEdge> itemPairs,
+            Graph<String, DefaultWeightedEdge> bipartiteGraph,
+            List<MCMEdge> itemPairs,
             int[][] stacks,
             double[][] costMatrix
     ) {
@@ -94,8 +95,8 @@ public class GraphUtil {
      * @param costMatrix     - the matrix containing the costs for item-stack-assignments
      */
     public static void addEdgesForItemTriples(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-            ArrayList<ArrayList<Integer>> itemTriples,
+            Graph<String, DefaultWeightedEdge> bipartiteGraph,
+            List<List<Integer>> itemTriples,
             int[][] stacks,
             double[][] costMatrix
     ) {
@@ -303,10 +304,10 @@ public class GraphUtil {
      * @param bipartiteGraph - the bipartite graph to be extended
      * @param partitionOne   - the partition the vertices are added to
      */
-    public static void addVerticesForItemTriples(ArrayList<ArrayList<Integer>> itemTriples,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
+    public static void addVerticesForItemTriples(List<List<Integer>> itemTriples,
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
 
-            for (ArrayList<Integer> triple : itemTriples) {
+            for (List<Integer> triple : itemTriples) {
                 bipartiteGraph.addVertex("triple" + triple);
                 partitionOne.add("triple" + triple);
             }
@@ -338,8 +339,8 @@ public class GraphUtil {
      * @param bipartiteGraph - the bipartite graph to be extended
      * @param partitionOne   - the partition the vertices are added to
      */
-    public static void addVerticesForItemPairs(ArrayList<MCMEdge> itemPairs,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
+    public static void addVerticesForItemPairs(List<MCMEdge> itemPairs,
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
 
             for (MCMEdge pair : itemPairs) {
                 bipartiteGraph.addVertex("pair" + pair);
@@ -355,7 +356,7 @@ public class GraphUtil {
      * @param partitionOne   - the partition the vertices are added to
      */
     public static void addVerticesForUnmatchedItems(List<Integer> unmatchedItems,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
 
             for (int item : unmatchedItems) {
                 bipartiteGraph.addVertex("item" + item);
@@ -371,7 +372,7 @@ public class GraphUtil {
      * @param partitionTwo   - the partition the vertices are added to
      */
     public static void addVerticesForStacks(
-        int[][] stacks, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionTwo) {
+        int[][] stacks, Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionTwo) {
 
             for (int stack = 0; stack < stacks.length; stack++) {
                 bipartiteGraph.addVertex("stack" + stack);

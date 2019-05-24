@@ -3,10 +3,7 @@ package SP.util;
 import SP.representations.MCMEdge;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A collection of utility methods providing a rating system
@@ -270,7 +267,7 @@ public class RatingSystem {
      * @param itemEdge            - the edge the item to be checked is part of
      * @return
      */
-    public static int computePairCompatibility(ArrayList<MCMEdge> pairs, int item, int[][] stackingConstraints, MCMEdge itemEdge) {
+    public static int computePairCompatibility(List<MCMEdge> pairs, int item, int[][] stackingConstraints, MCMEdge itemEdge) {
         int pairCompatibility = 0;
         for (MCMEdge pair : pairs) {
             if (itemEdge != pair) {
@@ -300,7 +297,7 @@ public class RatingSystem {
      * @param deviationThreshold  - determines whether an edge is rated higher then 0
      */
     public static void assignThreeCapPairRating(
-        ArrayList<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold
+        List<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold
     ) {
         ArrayList<ArrayList<Integer>> listOfPairRatings = new ArrayList<>();
         ArrayList<Integer> worstCompatibilities = new ArrayList<>();
