@@ -277,15 +277,15 @@ public class GraphUtil {
      * Generates the bipartite graph containing pairs of items in
      * one partition and unmatched items in the other one.
      *
-     * @param itemPairs           - the list of item pairs
-     * @param unmatchedItems      - the list of unmatched items
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @return the generated bipartite graph
+     * @param itemPairs           - list of item pairs
+     * @param unmatchedItems      - list of unmatched items
+     * @param stackingConstraints - stacking constraints to be respected
+     * @return generated bipartite graph
      */
-    public static DefaultUndirectedGraph<String, DefaultEdge> generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
-            List<MCMEdge> itemPairs, List<Integer> unmatchedItems, int[][] stackingConstraints
+    public static Graph<String, DefaultEdge> generateBipartiteGraphBetweenPairsOfItemsAndUnmatchedItems(
+        List<MCMEdge> itemPairs, List<Integer> unmatchedItems, int[][] stackingConstraints
     ) {
-        DefaultUndirectedGraph<String, DefaultEdge> bipartiteGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        Graph<String, DefaultEdge> bipartiteGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
         // adding the item pairs as nodes to the graph
         for (int i = 0; i < itemPairs.size(); i++) {
@@ -299,44 +299,26 @@ public class GraphUtil {
         for (int itemPair = 0; itemPair < itemPairs.size(); itemPair++) {
             for (int unmatchedItem = 0; unmatchedItem < unmatchedItems.size(); unmatchedItem++) {
 
+                int itemOne = itemPairs.get(itemPair).getVertexOne();
+                int itemTwo = itemPairs.get(itemPair).getVertexTwo();
+
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
 
-                // stackable in both directions
-                if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1
-                        && stackingConstraints[itemPairs.get(itemPair).getVertexTwo()][itemPairs.get(itemPair).getVertexOne()] == 1) {
-
-                    GraphUtil.addEdgeForCompatibleItemTriple(
-                            bipartiteGraph,
-                            itemPairs.get(itemPair).getVertexTwo(),
-                            unmatchedItems.get(unmatchedItem),
-                            itemPairs.get(itemPair).getVertexOne(),
-                            itemPairs.get(itemPair),
-                            stackingConstraints,
-                            true
+                if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+                    GraphUtil.addEdgeForCompatibleItemTriple(bipartiteGraph, itemTwo, unmatchedItems.get(unmatchedItem),
+                        itemOne, itemPairs.get(itemPair), stackingConstraints, true
                     );
-
                 // one on top of two
-                } else if (stackingConstraints[itemPairs.get(itemPair).getVertexOne()][itemPairs.get(itemPair).getVertexTwo()] == 1) {
+                } else if (stackingConstraints[itemOne][itemTwo] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
-                            bipartiteGraph,
-                            itemPairs.get(itemPair).getVertexTwo(),
-                            unmatchedItems.get(unmatchedItem),
-                            itemPairs.get(itemPair).getVertexOne(),
-                            itemPairs.get(itemPair),
-                            stackingConstraints,
-                            false
+                        bipartiteGraph, itemTwo, unmatchedItems.get(unmatchedItem),
+                        itemOne, itemPairs.get(itemPair), stackingConstraints, false
                     );
-
                 // two on top of one
-                } else if (stackingConstraints[itemPairs.get(itemPair).getVertexTwo()][itemPairs.get(itemPair).getVertexOne()] == 1) {
+                } else if (stackingConstraints[itemTwo][itemOne] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
-                            bipartiteGraph,
-                            itemPairs.get(itemPair).getVertexOne(),
-                            unmatchedItems.get(unmatchedItem),
-                            itemPairs.get(itemPair).getVertexTwo(),
-                            itemPairs.get(itemPair),
-                            stackingConstraints,
-                            false
+                        bipartiteGraph, itemOne, unmatchedItems.get(unmatchedItem),
+                        itemTwo, itemPairs.get(itemPair), stackingConstraints, false
                     );
                 }
             }
@@ -349,25 +331,23 @@ public class GraphUtil {
      * There exists an edge between two items if the items are stackable in
      * at least one direction and if they can be assigned to at least one stack together.
      *
-     * @param items               - the list of items (nodes of the graph)
-     * @param stackingConstraints - the stacking constraints to be respected
-     * @param costMatrix          - the matrix containing the costs for item-stack-assignments
-     * @param invalidEdgeCosts    - the cost value used to implement the placement constraints
-     * @param stacks              - the given stacks in the storage area
-     * @return the generated stacking constraint graph
+     * @param items               - list of items (vertices of the graph)
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param costMatrix          - matrix containing the costs for item-stack-assignments
+     * @param invalidEdgeCosts    - cost value used to implement the placement constraints
+     * @param stacks              - given stacks in the storage area
+     * @return generated stacking constraint graph
      */
-    public static DefaultUndirectedGraph<String, DefaultEdge> generateStackingConstraintGraph(
-            int[] items, int[][] stackingConstraints, double[][] costMatrix, int invalidEdgeCosts, int[][] stacks
+    public static Graph<String, DefaultEdge> generateStackingConstraintGraph(
+        int[] items, int[][] stackingConstraints, double[][] costMatrix, int invalidEdgeCosts, int[][] stacks
     ) {
-        DefaultUndirectedGraph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-        ArrayList<Integer> itemList = new ArrayList<>();
-        // TODO: remove dbg logs / variables
-        double startTime = System.currentTimeMillis();
+        Graph<String, DefaultEdge> stackingConstraintGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+        List<Integer> itemList = new ArrayList<>();
         for (int item : items) {
             itemList.add(item);
             stackingConstraintGraph.addVertex("v" + item);
         }
-//        System.out.println("runtime: " + (System.currentTimeMillis() - startTime) / 1000.0);
+
         for (int i = 0; i < stackingConstraints.length; i++) {
             for (int j = 0; j < stackingConstraints[0].length; j++) {
 
@@ -391,20 +371,6 @@ public class GraphUtil {
             }
         }
         return stackingConstraintGraph;
-    }
-
-    /**
-     * Returns a copy of the given edge list.
-     *
-     * @param edgeList - the edge list to be copied
-     * @return the copied edge list
-     */
-    public static ArrayList<MCMEdge> getCopyOfEdgeList(ArrayList<MCMEdge> edgeList) {
-        ArrayList<MCMEdge> edgeListCopy = new ArrayList<>();
-        for (MCMEdge edge : edgeList) {
-            edgeListCopy.add(new MCMEdge(edge));
-        }
-        return edgeListCopy;
     }
 
     /**
