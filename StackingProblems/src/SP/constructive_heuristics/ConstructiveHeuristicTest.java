@@ -18,13 +18,17 @@ public class ConstructiveHeuristicTest {
     public static final boolean POST_PROCESSING = true;
     public static final boolean PRIORITZIE_RUNTIME = false;
 
+    public static int thresholdLB = 20;
+    public static int thresholdUB = 75;
+    public static int stepSize = 5;
+
     public static void main (String[] args) {
 
-        Instance instance = InstanceReader.readInstance("res/instances/b=2_l/slp_instance_500_300_2_02.txt");
+        Instance instance = InstanceReader.readInstance("res/instances/b=3_m/slp_instance_300_120_3_02.txt");
         System.out.println("working on: " + instance.getName());
 
-//        ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT);
-//        Solution sol = solver.solve(PRIORITZIE_RUNTIME,  POST_PROCESSING);
+        ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize);
+        Solution sol = solver.solve(PRIORITZIE_RUNTIME,  POST_PROCESSING);
 
 //        LowerBoundsCalculator lbCalc = new LowerBoundsCalculator(instance);
 //        lbCalc.computeLowerBound();
@@ -32,8 +36,8 @@ public class ConstructiveHeuristicTest {
 //        BinPackingFormulation solver = new BinPackingFormulation(instance, TIME_LIMIT);
 //        Solution sol = solver.solve();
 
-        TwoCapHeuristic solver = new TwoCapHeuristic(instance, TIME_LIMIT);
-        Solution sol = solver.solve(POST_PROCESSING);
+//        TwoCapHeuristic solver = new TwoCapHeuristic(instance, TIME_LIMIT);
+//        Solution sol = solver.solve(POST_PROCESSING);
 
         System.out.println("feasible: " + sol.isFeasible());
         System.out.println("cost: " + sol.computeCosts());

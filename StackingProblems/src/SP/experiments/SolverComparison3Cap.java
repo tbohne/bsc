@@ -68,7 +68,13 @@ public class SolverComparison3Cap implements SolverComparison {
      * @param writeSol     - determines whether or not the solution should be written to the file system
      */
     public void solveWithThreeCap(Instance instance, String solutionName, boolean writeSol) {
-        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT);
+
+        // TODO: move hard coded values
+        int thresholdLB = 20;
+        int thresholdUB = 75;
+        int stepSize = 5;
+
+        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize);
         Solution sol = threeCapSolver.solve(PRIORITIZE_RUNTIME, POST_PROCESSING);
         if (writeSol) {
             SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP);

@@ -27,18 +27,28 @@ public class ThreeCapHeuristic {
     private double startTime;
     private double timeLimit;
 
-    private int thresholdLB = 20;
-    private int thresholdUB = 75;
+    // configurable rating system parameters
+    private int deviationThresholdLB;
+    private int deviationThresholdUB;
+    private int deviationThresholdStepSize;
 
     /**
      * Constructor
      *
-     * @param instance  - the instance of the stacking problem to be solved
-     * @param timeLimit - the time limit for the solving procedure
+     * @param instance                   - instance of stacking problem to be solved
+     * @param timeLimit                  - time limit for the solving procedure
+     * @param deviationThresholdLB       - lower bound for deviation threshold
+     * @param deviationThresholdUB       - upper bound for deviation threshold
+     * @param deviationThresholdStepSize - step size for increments of deviation threshold
      */
-    public ThreeCapHeuristic(Instance instance, double timeLimit) {
+    public ThreeCapHeuristic(
+        Instance instance, double timeLimit, int deviationThresholdLB, int deviationThresholdUB, int deviationThresholdStepSize
+    ) {
         this.instance = instance;
         this.timeLimit = timeLimit;
+        this.deviationThresholdLB = deviationThresholdLB;
+        this.deviationThresholdUB = deviationThresholdUB;
+        this.deviationThresholdStepSize = deviationThresholdStepSize;
     }
 
     /**
@@ -174,7 +184,7 @@ public class ThreeCapHeuristic {
         // the first list (idx 0) should be unrated and unsorted
         int ratingSystemIdx = 1;
 
-        for (int deviationThreshold = this.thresholdLB; deviationThreshold < this.thresholdUB; deviationThreshold += 5) {
+        for (int deviationThreshold = this.deviationThresholdLB; deviationThreshold < this.deviationThresholdUB; deviationThreshold += this.deviationThresholdStepSize) {
 
             if (itemPairLists.size() == ratingSystemIdx) {
                 itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
