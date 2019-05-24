@@ -83,15 +83,13 @@ public class ThreeCapHeuristic {
 
         if (this.instance.getStackCapacity() == 3) {
             this.startTime = System.currentTimeMillis();
-            List<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
 
+            List<MCMEdge> itemPairs = this.generateItemPairs(this.instance.getItems());
             List<List<List<Integer>>> itemTripleLists = this.mergePairsToTriples(itemPairs, prioritizeRuntime);
             List<Solution> solutions = this.generateSolutionsBasedOnListsOfTriples(itemTripleLists);
-            bestSol = HeuristicUtil.getBestSolution(solutions);
 
+            bestSol = HeuristicUtil.getBestSolution(solutions);
             bestSol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
-            bestSol.setTimeToSolve((System.currentTimeMillis() - this.startTime) / 1000.0);
-            bestSol.lowerItemsThatAreStackedInTheAir();
 
             if (postProcessing) {
                 System.out.println("costs before post processing: " + bestSol.getObjectiveValue());
@@ -102,14 +100,13 @@ public class ThreeCapHeuristic {
 
                 double bestSolutionCost = bestSol.computeCosts();
                 bestSol = this.postProcessing(bestSol);
+
                 while (bestSol.computeCosts() < bestSolutionCost) {
-                    this.instance.resetStacks();
-                    this.restoreStackAssignmentsForBestOriginalSolution(bestSol);
                     bestSolutionCost = bestSol.computeCosts();
                     bestSol = this.postProcessing(bestSol);
                 }
+                System.out.println("final costs: " + bestSol.computeCosts() + " still feasible? " + bestSol.isFeasible());
             }
-            System.out.println("final costs: " + bestSol.computeCosts() + " still feasible? " + bestSol.isFeasible());
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
         }
@@ -373,7 +370,7 @@ public class ThreeCapHeuristic {
                 )
             ;
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
-
+            this.instance.lowerItemsThatAreStackedInTheAir();
             Solution sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
             solutions.add(new Solution(sol));
         }
@@ -572,8 +569,8 @@ public class ThreeCapHeuristic {
         );
 
         HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
+        this.instance.lowerItemsThatAreStackedInTheAir();
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-        sol.lowerItemsThatAreStackedInTheAir();
         sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
         return sol;
     }
