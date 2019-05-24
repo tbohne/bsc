@@ -111,23 +111,20 @@ public class GraphUtil {
     /**
      * Introduces dummy vertices to the given bipartite graph.
      *
-     * @param bipartiteGraph - the given bipartite graph consisting of items and stacks
-     * @param partitionOne   - the bipartite graph's first partition
-     * @param partitionTwo   - the bipartite graph's second partition
-     * @return the created list of dummy items corresponding to the dummy vertices
+     * @param bipartiteGraph - given bipartite graph consisting of items and stacks
+     * @param partitionOne   - bipartite graph's first partition
+     * @param partitionTwo   - bipartite graph's second partition
+     * @return created list of dummy items corresponding to the dummy vertices
      */
-    public static List<Integer> introduceDummyVertices(
-            Graph<String, DefaultWeightedEdge> bipartiteGraph,
-            Set<String> partitionOne,
-            Set<String> partitionTwo
+    public static List<Integer> introduceDummyVerticesToBipartiteGraph(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne, Set<String> partitionTwo
     ) {
         int cnt = 0;
-        ArrayList<Integer> dummyItems = new ArrayList<>();
+        List<Integer> dummyItems = new ArrayList<>();
         while (partitionOne.size() < partitionTwo.size()) {
             bipartiteGraph.addVertex("dummy" + cnt);
             partitionOne.add("dummy" + cnt);
-            dummyItems.add(cnt);
-            cnt++;
+            dummyItems.add(cnt++);
         }
         return dummyItems;
     }
@@ -139,68 +136,26 @@ public class GraphUtil {
      * @param unmatchedItem - item to be connected to pair
      * @param itemPair      - pair the item gets connected to
      */
-    public static void addEdgeForTriple(DefaultUndirectedGraph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair) {
+    public static void addEdgeBetweenPairAndUnmatchedItem(
+        Graph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair
+    ) {
         if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
             graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
         }
     }
 
     /**
-     * Checks whether the specified item can be assigned to the specified pair
-     * in a way that respects the stacking constraints.
-     * The pair is stackable in both directions.
-     *
-     * @param stackingConstraints - stacking constraints to be respected
-     * @param lowerItemOfPair     - lower item of the pair
-     * @param upperItemOfPair     - upper item of the pair
-     * @param unmatchedItem       - item to be checked for compatibility
-     * @return whether or not the item is compatible to the pair
-     */
-    public static boolean itemCanBeAssignedToPairStackableInBothDirections(
-        int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
-    ) {
-        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
-            || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
-            || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
-            || stackingConstraints[upperItemOfPair][unmatchedItem] == 1
-            || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
-            || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1;
-    }
-
-    /**
-     * Checks whether the specified item can be assigned to the specified pair
-     * in a way that respects the stacking constraints.
-     * The pair is only stackable in one direction.
-     *
-     * @param stackingConstraints - stacking constraints to be respected
-     * @param lowerItemOfPair     - lower item of the pair
-     * @param upperItemOfPair     - upper item of the pair
-     * @param unmatchedItem       - item to be checked for compatibility
-     * @return whether or not the item is compatible to the pair
-     */
-    public static boolean itemCanBeAssignedToPairStackableInOneDirection(
-        int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
-    ) {
-        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
-            || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
-            || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1);
-    }
-
-    /**
-     * Adds edges to the post-processing graph connecting an item with a compatible empty position.
+     * Adds an edge to the post processing graph connecting an item with a compatible empty position.
      *
      * @param postProcessingGraph - graph the edges are added to
      * @param item                - item to be connected to compatible empty position
      * @param emptyPos            - empty position the item gets connected to
-     * @param originalCosts       - the current costs for each item assignment
-     * @param instance            - the instance of the stacking problem
+     * @param originalCosts       - current costs for each item assignment
+     * @param instance            - instance of the stacking problem
      */
     public static void addEdgeToPostProcessingGraph(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph,
-        int item,
-        StackPosition emptyPos,
-        Map<Integer, Double> originalCosts,
-        Instance instance
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, int item, StackPosition emptyPos,
+        Map<Integer, Double> originalCosts, Instance instance
     ) {
         DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
         double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
@@ -229,16 +184,16 @@ public class GraphUtil {
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
-            if (GraphUtil.itemCanBeAssignedToPairStackableInBothDirections(
+            if (HeuristicUtil.itemCanBeAssignedToPairStackableInBothDirections(
                 stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
             )) {
-                GraphUtil.addEdgeForTriple(graph, unmatchedItem, itemPair);
+                GraphUtil.addEdgeBetweenPairAndUnmatchedItem(graph, unmatchedItem, itemPair);
             }
         } else {
-            if (GraphUtil.itemCanBeAssignedToPairStackableInOneDirection(
+            if (HeuristicUtil.itemCanBeAssignedToPairStackableInOneDirection(
                 stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
             )) {
-                GraphUtil.addEdgeForTriple(graph, unmatchedItem, itemPair);
+                GraphUtil.addEdgeBetweenPairAndUnmatchedItem(graph, unmatchedItem, itemPair);
             }
         }
     }

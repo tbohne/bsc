@@ -186,7 +186,7 @@ public class ThreeCapHeuristic {
         this.addVerticesForBipartiteGraphBetweenItemsAndStacks(
             itemTriples, itemPairs, unmatchedItems, graph, itemPartition, stackPartition
         );
-        List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, itemPartition, stackPartition);
+        List<Integer> dummyItems = GraphUtil.introduceDummyVerticesToBipartiteGraph(graph, itemPartition, stackPartition);
 
         GraphUtil.addEdgesBetweenItemTriplesAndStacks(graph, itemTriples, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesBetweenItemPairsAndStacks(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
@@ -446,14 +446,14 @@ public class ThreeCapHeuristic {
             lowerItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
         }
         if (HeuristicUtil.itemsStackableInBothDirections(lowerItemOfPair, upperItemOfPair, this.instance.getStackingConstraints())) {
-            if (GraphUtil.itemCanBeAssignedToPairStackableInBothDirections(
+            if (HeuristicUtil.itemCanBeAssignedToPairStackableInBothDirections(
                 this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
                 GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
             }
         // pair stackable in one direction
         } else {
-            if (GraphUtil.itemCanBeAssignedToPairStackableInOneDirection(
+            if (HeuristicUtil.itemCanBeAssignedToPairStackableInOneDirection(
                 this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
                 GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);

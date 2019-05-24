@@ -234,6 +234,47 @@ public class HeuristicUtil {
     }
 
     /**
+     * Checks whether the specified item can be assigned to the specified pair
+     * in a way that respects the stacking constraints.
+     * The pair is stackable in both directions.
+     *
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param lowerItemOfPair     - lower item of the pair
+     * @param upperItemOfPair     - upper item of the pair
+     * @param unmatchedItem       - item to be checked for compatibility
+     * @return whether or not the item is compatible to the pair
+     */
+    public static boolean itemCanBeAssignedToPairStackableInBothDirections(
+            int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
+    ) {
+        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
+                || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
+                || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
+                || stackingConstraints[upperItemOfPair][unmatchedItem] == 1
+                || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
+                || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1;
+    }
+
+    /**
+     * Checks whether the specified item can be assigned to the specified pair
+     * in a way that respects the stacking constraints.
+     * The pair is only stackable in one direction.
+     *
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param lowerItemOfPair     - lower item of the pair
+     * @param upperItemOfPair     - upper item of the pair
+     * @param unmatchedItem       - item to be checked for compatibility
+     * @return whether or not the item is compatible to the pair
+     */
+    public static boolean itemCanBeAssignedToPairStackableInOneDirection(
+            int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
+    ) {
+        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
+                || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
+                || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1);
+    }
+
+    /**
      * Returns whether the specified stack in the storage area is empty.
      *
      * @param stackIdx    - the index of the stack to be checked

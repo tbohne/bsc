@@ -108,7 +108,7 @@ public class LowerBoundsCalculator {
         }
         GraphUtil.addVerticesForUnmatchedItems(itemList, graph, partitionOne);
         GraphUtil.addVerticesForEmptyPositions(positions, graph, partitionTwo);
-        List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, partitionOne, partitionTwo);
+        List<Integer> dummyItems = GraphUtil.introduceDummyVerticesToBipartiteGraph(graph, partitionOne, partitionTwo);
         this.addEdgesForDummyItems(graph, dummyItems, positions);
         this.addEdges(graph, itemList, positions);
         return new BipartiteGraph(partitionOne, partitionTwo, graph);

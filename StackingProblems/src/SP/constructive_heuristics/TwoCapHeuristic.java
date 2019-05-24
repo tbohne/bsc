@@ -125,7 +125,7 @@ public class TwoCapHeuristic {
                 " number of available stacks, instance cannot be solved.");
             return null;
         }
-        List<Integer> dummyItems = GraphUtil.introduceDummyVertices(graph, itemPartition, stackPartition);
+        List<Integer> dummyItems = GraphUtil.introduceDummyVerticesToBipartiteGraph(graph, itemPartition, stackPartition);
         GraphUtil.addEdgesBetweenItemPairsAndStacks(graph, itemPairs, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesBetweenUnmatchedItemsAndStacks(graph, unmatchedItems, this.instance.getStacks(), this.instance.getCosts());
         GraphUtil.addEdgesBetweenDummyItemsAndStacks(graph, dummyItems, this.instance.getStacks());
