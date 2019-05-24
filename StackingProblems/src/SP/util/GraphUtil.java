@@ -145,42 +145,19 @@ public class GraphUtil {
     }
 
     /**
-     * Adds an edge to the post processing graph connecting an item with a compatible empty position.
-     *
-     * @param postProcessingGraph - graph the edges are added to
-     * @param item                - item to be connected to compatible empty position
-     * @param emptyPos            - empty position the item gets connected to
-     * @param originalCosts       - current costs for each item assignment
-     * @param instance            - instance of the stacking problem
-     */
-    public static void addEdgeToPostProcessingGraph(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph, int item, StackPosition emptyPos,
-        Map<Integer, Double> originalCosts, Instance instance
-    ) {
-        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
-        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
-        postProcessingGraph.setEdgeWeight(edge, savings);
-    }
-
-    /**
      * Adds an edge to the graph if the given unmatched item can be assigned
      * to the given pair to build up a valid item triple.
      *
-     * @param graph               - the graph to be extended
-     * @param lowerItemOfPair     - the lower item of the pair
-     * @param unmatchedItem       - the unmatched item to be assigned to the pair
-     * @param upperItemOfPair     - the upper item of the pair
-     * @param itemPair            - the edge that represents the pair
-     * @param stackingConstraints - the stacking constraints to be respected
+     * @param graph               - graph to be extended
+     * @param lowerItemOfPair     - lower item of the pair
+     * @param unmatchedItem       - unmatched item to be assigned to the pair
+     * @param upperItemOfPair     - upper item of the pair
+     * @param itemPair            - edge that represents the pair
+     * @param stackingConstraints - stacking constraints to be respected
      */
     public static void addEdgeForCompatibleItemTriple(
-            DefaultUndirectedGraph<String, DefaultEdge> graph,
-            int lowerItemOfPair,
-            int unmatchedItem,
-            int upperItemOfPair,
-            MCMEdge itemPair,
-            int[][] stackingConstraints,
-            boolean pairStackableInBothDirections
+        Graph<String, DefaultEdge> graph, int lowerItemOfPair, int unmatchedItem, int upperItemOfPair,
+        MCMEdge itemPair, int[][] stackingConstraints, boolean pairStackableInBothDirections
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
@@ -199,110 +176,93 @@ public class GraphUtil {
     }
 
     /**
-     * Adds the item-triple vertices to the given bipartite graph.
+     * Adds an edge to the post processing graph connecting an item with a compatible empty position.
      *
-     * @param itemTriples    - the item triples to be added as vertices
-     * @param bipartiteGraph - the bipartite graph to be extended
-     * @param partitionOne   - the partition the vertices are added to
+     * @param postProcessingGraph - graph the edges are added to
+     * @param item                - item to be connected to compatible empty position
+     * @param emptyPos            - empty position the item gets connected to
+     * @param originalCosts       - current costs for each item assignment
+     * @param instance            - instance of the stacking problem
      */
-    public static void addVerticesForItemTriples(List<List<Integer>> itemTriples,
-        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
-
-            for (List<Integer> triple : itemTriples) {
-                bipartiteGraph.addVertex("triple" + triple);
-                partitionOne.add("triple" + triple);
-            }
+    public static void addEdgeToPostProcessingGraph(
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, int item, StackPosition emptyPos,
+        Map<Integer, Double> originalCosts, Instance instance
+    ) {
+        DefaultWeightedEdge edge = postProcessingGraph.addEdge("item" + item, "pos" + emptyPos);
+        double savings = HeuristicUtil.getSavingsForItem(emptyPos.getStackIdx(), originalCosts, item, instance.getCosts());
+        postProcessingGraph.setEdgeWeight(edge, savings);
     }
 
     /**
-     * Adds the specified item pairs as vertices to the
-     * first partition of the given bipartite graph.
+     * Adds item triples as vertices to the given bipartite graph.
      *
-     * @param itemPairs      - the item pairs to be added as vertices
-     * @param bipartiteGraph - the bipartite graph the vertices are added to
-     * @param partitionOne   - the first partition of the graph
+     * @param itemTriples    - item triples to be added as vertices
+     * @param bipartiteGraph - bipartite graph to be extended
+     * @param partitionOne   - partition the vertices are added to
      */
-    public static void addVerticesForListOfItemPairs(
-        ArrayList<ArrayList<Integer>> itemPairs,
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-        Set<String> partitionOne
+    public static void addVerticesForItemTriples(
+        List<List<Integer>> itemTriples, Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne
     ) {
-        for (ArrayList<Integer> pair : itemPairs) {
+        for (List<Integer> triple : itemTriples) {
+            bipartiteGraph.addVertex("triple" + triple);
+            partitionOne.add("triple" + triple);
+        }
+    }
+
+    /**
+     * Adds item pairs as vertices to the given bipartite graph.
+     *
+     * @param itemPairs      - item pairs to be added as vertices
+     * @param bipartiteGraph - bipartite graph to be extended
+     * @param partitionOne   - partition the vertices are added to
+     */
+    public static void addVerticesForItemPairs(
+        List<MCMEdge> itemPairs, Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne
+    ) {
+        for (MCMEdge pair : itemPairs) {
             bipartiteGraph.addVertex("pair" + pair);
             partitionOne.add("pair" + pair);
         }
     }
 
     /**
-     * Adds the item-pair vertices to the given bipartite graph.
+     * Adds unmatched items as vertices to the given bipartite graph.
      *
-     * @param itemPairs      - the item pairs to be added as vertices
-     * @param bipartiteGraph - the bipartite graph to be extended
-     * @param partitionOne   - the partition the vertices are added to
+     * @param unmatchedItems - unmatched items to be added as vertices
+     * @param bipartiteGraph - bipartite graph to be extended
+     * @param partitionOne   - partition the vertices are added to
      */
-    public static void addVerticesForItemPairs(List<MCMEdge> itemPairs,
-        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
-
-            for (MCMEdge pair : itemPairs) {
-                bipartiteGraph.addVertex("pair" + pair);
-                partitionOne.add("pair" + pair);
-            }
-    }
-
-    /**
-     * Adds the unmatched-item vertices to the given bipartite graph.
-     *
-     * @param unmatchedItems - the unmatched items to be added as vertices
-     * @param bipartiteGraph - the bipartite graph to be extended
-     * @param partitionOne   - the partition the vertices are added to
-     */
-    public static void addVerticesForUnmatchedItems(List<Integer> unmatchedItems,
-        Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne) {
-
-            for (int item : unmatchedItems) {
-                bipartiteGraph.addVertex("item" + item);
-                partitionOne.add("item" + item);
-            }
+    public static void addVerticesForUnmatchedItems(
+        List<Integer> unmatchedItems, Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionOne
+    ) {
+        for (int item : unmatchedItems) {
+            bipartiteGraph.addVertex("item" + item);
+            partitionOne.add("item" + item);
+        }
     }
 
     /**
      * Adds the stacks as vertices to the given bipartite graph.
      *
-     * @param stacks         - the stacks to be added as vertices
-     * @param bipartiteGraph - the bipartite graph to be extended
-     * @param partitionTwo   - the partition the vertices are added to
+     * @param stacks         - stacks to be added as vertices
+     * @param bipartiteGraph - bipartite graph to be extended
+     * @param partitionTwo   - partition the vertices are added to
      */
     public static void addVerticesForStacks(
-        int[][] stacks, Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionTwo) {
-
-            for (int stack = 0; stack < stacks.length; stack++) {
-                bipartiteGraph.addVertex("stack" + stack);
-                partitionTwo.add("stack" + stack);
-            }
-    }
-
-    /**
-     * Adds the empty stacks as vertices to the given bipartite graph.
-     *
-     * @param emptyStacks  - the empty stacks to be added as vertices
-     * @param graph        - the graph the vertices are added to
-     * @param partitionTwo - the partition of the bipartite graph the vertices are added to
-     */
-    public static void addVerticesForEmptyStacks(
-        ArrayList<String> emptyStacks, DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
+        int[][] stacks, Graph<String, DefaultWeightedEdge> bipartiteGraph, Set<String> partitionTwo
     ) {
-        for (String emptyStack : emptyStacks) {
-            graph.addVertex(emptyStack);
-            partitionTwo.add(emptyStack);
+        for (int stack = 0; stack < stacks.length; stack++) {
+            bipartiteGraph.addVertex("stack" + stack);
+            partitionTwo.add("stack" + stack);
         }
     }
 
     /**
      * Adds the empty positions as vertices to the given bipartite graph.
      *
-     * @param emptyPositions - the empty positions to be added as vertices
-     * @param graph          - the graph the vertices are added to
-     * @param partitionTwo   - the partition of the bipartite graph the vertices are added to
+     * @param emptyPositions - empty positions to be added as vertices
+     * @param graph          - graph the vertices are added to
+     * @param partitionTwo   - partition of the bipartite graph the vertices are added to
      */
     public static void addVerticesForEmptyPositions(
         List<StackPosition> emptyPositions, Graph<String, DefaultWeightedEdge> graph, Set<String> partitionTwo
