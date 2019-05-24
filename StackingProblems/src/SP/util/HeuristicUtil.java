@@ -220,6 +220,20 @@ public class HeuristicUtil {
     }
 
     /**
+     *
+     *
+     * @param values
+     * @return
+     */
+    public static int getAvg(List<Integer> values) {
+        int avg = 0;
+        for (int val : values) {
+            avg += val;
+        }
+        return avg / values.size();
+    }
+
+    /**
      * Returns whether the specified stack in the storage area is empty.
      *
      * @param stackIdx    - the index of the stack to be checked

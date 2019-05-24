@@ -31,6 +31,7 @@ public class ThreeCapHeuristic {
     private final int deviationThresholdLB;
     private final int deviationThresholdUB;
     private final int deviationThresholdStepSize;
+    private final float penaltyFactor;
 
     // configurable divisor used in merge step
     private final float splitPairsDivisor;
@@ -47,7 +48,7 @@ public class ThreeCapHeuristic {
      */
     public ThreeCapHeuristic(
         Instance instance, double timeLimit, int deviationThresholdLB, int deviationThresholdUB,
-        int deviationThresholdStepSize, float splitPairsDivisor
+        int deviationThresholdStepSize, float splitPairsDivisor, float penaltyFactor
     ) {
         this.instance = instance;
         this.timeLimit = timeLimit;
@@ -55,6 +56,7 @@ public class ThreeCapHeuristic {
         this.deviationThresholdUB = deviationThresholdUB;
         this.deviationThresholdStepSize = deviationThresholdStepSize;
         this.splitPairsDivisor = splitPairsDivisor;
+        this.penaltyFactor = penaltyFactor;
     }
 
     /**
@@ -253,12 +255,13 @@ public class ThreeCapHeuristic {
                 if (itemPairLists.size() == ratingSystemIdx) {
                     itemPairLists.add(HeuristicUtil.getCopyOfEdgeList(itemPairs));
                 }
-                RatingSystem.assignThreeCapPairRating(
+                RatingSystem.assignPairRating(
                     itemPairLists.get(ratingSystemIdx++),
                     this.instance.getStackingConstraints(),
                     this.instance.getCosts(),
                     this.instance.getStacks(),
-                    deviationThreshold
+                    deviationThreshold,
+                    this.penaltyFactor
                 );
         }
     }

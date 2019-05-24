@@ -74,8 +74,9 @@ public class SolverComparison3Cap implements SolverComparison {
         int thresholdUB = 75;
         int stepSize = 5;
         float splitPairsDivisor = 3.4F;
+        float penaltyFactor = 5.0F;
 
-        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize, splitPairsDivisor);
+        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor);
         Solution sol = threeCapSolver.solve(PRIORITIZE_RUNTIME, POST_PROCESSING);
         if (writeSol) {
             SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP);
