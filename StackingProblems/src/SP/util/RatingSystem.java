@@ -45,6 +45,87 @@ public class RatingSystem {
     }
 
     /**
+     * Computes the worst compatibility for the given pair, which is the number of compatible
+     * items of the less compatible item of the pair.
+     *
+     * @param edge                - edge in the MCM (item pair)
+     * @param stackingConstraints - stacking constraints the compatibility is based on
+     * @param matchedItems        - edges in the MCM (pairs of items)
+     * @return computed worst compatibility
+     */
+    public static int computeWorstCompatibilityForPair(MCMEdge edge, int[][] stackingConstraints, List<MCMEdge> matchedItems) {
+        int itemOne = edge.getVertexOne();
+        int itemTwo = edge.getVertexTwo();
+        int pairCompatibilityItemOne = computePairCompatibility(matchedItems, itemOne, stackingConstraints, edge);
+        int pairCompatibilityItemTwo = computePairCompatibility(matchedItems, itemTwo, stackingConstraints, edge);
+        return pairCompatibilityItemOne > pairCompatibilityItemTwo ? pairCompatibilityItemTwo : pairCompatibilityItemOne;
+    }
+
+    /**
+     * Returns a rating for a pair of items based on its average worst compatibility
+     * and its average costs for a stack assignment.
+     *
+     * @param listOfPairValues      - list containing the values (comp / costs) for the item pairs
+     * @param avgWorstCompatibility - average worst compatibility of an item pair
+     * @param avgCosts              - average costs for a stack assignment of an item pair
+     * @param pairIdx               - index of the considered pair
+     * @param deviationThreshold    - deviation threshold for avg costs and avg worst compatibility
+     * @return computed rating
+     */
+    public static int getRatingBasedOnCompatibilityAndCosts(
+        List<List<Integer>> listOfPairValues, int avgWorstCompatibility, int avgCosts, int pairIdx, int deviationThreshold
+    ) {
+        int rating = 0;
+        if (listOfPairValues.get(pairIdx).get(0) > avgWorstCompatibility && listOfPairValues.get(pairIdx).get(1) > avgCosts) {
+            int compatibilityDeviation = HeuristicUtil.getPercentageDeviation(avgWorstCompatibility, listOfPairValues.get(pairIdx).get(0));
+            int costDeviation = HeuristicUtil.getPercentageDeviation(avgCosts, listOfPairValues.get(pairIdx).get(1));
+            if (compatibilityDeviation + costDeviation > deviationThreshold) {
+                rating = compatibilityDeviation + costDeviation;
+            }
+        }
+        return rating;
+    }
+
+    /**
+     * A rating system developed for the 3Cap heuristic (can be used for other capacities as well).
+     * It assigns ratings to pairs of items considering their compatibility to other
+     * items and their costs for being assigned to a stack together.
+     *
+     * @param matchedItems        - edges (pairs) to be rated
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param costs               - matrix containing transport costs
+     * @param stacks              - available stacks
+     * @param deviationThreshold  - determines whether an edge is rated higher then 0
+     */
+    public static void assignPairRating(
+        List<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold, float penaltyFactor
+    ) {
+        List<List<Integer>> listOfPairValues = new ArrayList<>();
+        List<Integer> worstCompatibilities = new ArrayList<>();
+        List<Integer> avgCostValues = new ArrayList<>();
+
+        for (MCMEdge edge : matchedItems) {
+            int worstCompatibility = computeWorstCompatibilityForPair(edge, stackingConstraints, matchedItems);
+            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
+            double avgCosts = computeAvgCosts(stacks, costs, edge.getVertexOne(), edge.getVertexTwo(), forbiddenVal, penaltyFactor);
+
+            List<Integer> pairValues = new ArrayList<>();
+            pairValues.add(worstCompatibility);
+            pairValues.add((int)avgCosts);
+            listOfPairValues.add(pairValues);
+            worstCompatibilities.add(worstCompatibility);
+            avgCostValues.add((int)avgCosts);
+        }
+        int avgWorstCompatibility = HeuristicUtil.getAvg(worstCompatibilities);
+        int avgCosts = HeuristicUtil.getAvg(avgCostValues);
+
+        for (int i = 0; i < matchedItems.size(); i++) {
+            int rating = getRatingBasedOnCompatibilityAndCosts(listOfPairValues, avgWorstCompatibility, avgCosts, i, deviationThreshold);
+            matchedItems.get(i).setRating(rating);
+        }
+    }
+
+    /**
      * Assigns the row rating to the specified edges.
      *
      * @param matchedItems        - matched items (edges) to be rated
@@ -237,9 +318,9 @@ public class RatingSystem {
         double avgFeasibleCosts = 0;
         int cnt = 0;
         for (double[] cost : costs) {
-            for (int stack = 0; stack < cost.length; stack++) {
-                if (cost[stack] < forbiddenVal) {
-                    avgFeasibleCosts += cost[stack];
+            for (double aCost : cost) {
+                if (aCost < forbiddenVal) {
+                    avgFeasibleCosts += aCost;
                     cnt++;
                 }
             }
@@ -293,60 +374,6 @@ public class RatingSystem {
             }
         }
         return pairCompatibility;
-    }
-
-    /**
-     * A rating system developed for the 3Cap heuristic.
-     * It assigns ratings to pairs of items considering their compatibility to other
-     * items and their costs for being assigned to a stack together.
-     *
-     * @param matchedItems        - edges (pairs) to be rated
-     * @param stackingConstraints - stacking constraints to be respected
-     * @param costs               - matrix containing transport costs
-     * @param stacks              - available stacks
-     * @param deviationThreshold  - determines whether an edge is rated higher then 0
-     */
-    public static void assignThreeCapPairRating(
-        List<MCMEdge> matchedItems, int[][] stackingConstraints, double[][] costs, int[][] stacks, int deviationThreshold, float penaltyFactor
-    ) {
-        List<List<Integer>> listOfPairRatings = new ArrayList<>();
-        List<Integer> worstCompatibilities = new ArrayList<>();
-        List<Integer> avgCostValues = new ArrayList<>();
-
-        for (MCMEdge edge : matchedItems) {
-            int itemOne = edge.getVertexOne();
-            int itemTwo = edge.getVertexTwo();
-            int forbiddenVal = Integer.MAX_VALUE / stackingConstraints.length;
-
-            int pairCompatibilityItemOne = computePairCompatibility(matchedItems, itemOne, stackingConstraints, edge);
-            int pairCompatibilityItemTwo = computePairCompatibility(matchedItems, itemTwo, stackingConstraints, edge);
-            int worstCompatibility = pairCompatibilityItemOne > pairCompatibilityItemTwo ? pairCompatibilityItemTwo : pairCompatibilityItemOne;
-
-            double avgCosts = computeAvgCosts(stacks, costs, itemOne, itemTwo, forbiddenVal, penaltyFactor);
-
-            List<Integer> pairRatings = new ArrayList<>();
-            pairRatings.add(worstCompatibility);
-            pairRatings.add((int)avgCosts);
-
-            listOfPairRatings.add(pairRatings);
-            worstCompatibilities.add(worstCompatibility);
-            avgCostValues.add((int)avgCosts);
-        }
-
-        int avgWorstCompatibility = HeuristicUtil.getAvg(worstCompatibilities);
-        int avgCosts = HeuristicUtil.getAvg(avgCostValues);
-
-        for (int i = 0; i < matchedItems.size(); i++) {
-            int rating = 0;
-            if (listOfPairRatings.get(i).get(0) > avgWorstCompatibility && listOfPairRatings.get(i).get(1) > avgCosts) {
-                int compatibilityDeviation = HeuristicUtil.getPercentageDeviation(avgWorstCompatibility, listOfPairRatings.get(i).get(0));
-                int costDeviation = HeuristicUtil.getPercentageDeviation(avgCosts, listOfPairRatings.get(i).get(1));
-                if (compatibilityDeviation + costDeviation > deviationThreshold) {
-                    rating = compatibilityDeviation + costDeviation;
-                }
-            }
-            matchedItems.get(i).setRating(rating);
-        }
     }
 
     /**
@@ -415,7 +442,6 @@ public class RatingSystem {
      * @return sorted list of unmatched items
      */
     public static List<Integer> getUnmatchedItemsSortedByRowRating(List<Integer> unmatchedItems, int[][] stackingConstraints) {
-
         Map<Integer, Integer> unmatchedItemRowRatings = new HashMap<>();
         for (int item : unmatchedItems) {
             int rating = RatingSystem.computeRowRatingForItem(item, stackingConstraints);
