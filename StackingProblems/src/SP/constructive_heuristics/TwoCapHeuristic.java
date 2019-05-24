@@ -29,27 +29,12 @@ public class TwoCapHeuristic {
     /**
      * Constructor
      *
-     * @param instance  - the instance of the stacking problem to be solved
-     * @param timeLimit - the time limit for the solving procedure
+     * @param instance  - instance of the stacking problem to be solved
+     * @param timeLimit - time limit for the solving procedure
      */
     public TwoCapHeuristic(Instance instance, double timeLimit) {
         this.instance = instance;
         this.timeLimit = timeLimit;
-    }
-
-    /**
-     * Fixes the order of items inside the stacks based on the stacking constraints.
-     */
-    public void fixOrderInStacks() {
-        for (int[] stack : this.instance.getStacks()) {
-            if (stack[0] != -1 && stack[1] != -1) {
-                if (this.instance.getStackingConstraints()[stack[0]][stack[1]] != 1) {
-                    int tmp = stack[0];
-                    stack[0] = stack[1];
-                    stack[1] = tmp;
-                }
-            }
-        }
     }
 
     /**
@@ -285,9 +270,12 @@ public class TwoCapHeuristic {
                 )
             ;
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
-            this.fixOrderInStacks();
+            
             this.instance.lowerItemsThatAreStackedInTheAir();
             sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+            if (!sol.isFeasible()) {
+                sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
+            }
 
             if (postProcessing) {
                 System.out.println("costs before post processing: " + sol.getObjectiveValue());
