@@ -118,35 +118,6 @@ public class ThreeCapHeuristic {
     }
 
     /**
-     * Retrieves all the tuples of items from the stacks of the specified solution.
-     *
-     * @param sol       - solution to retrieve item tuples from
-     * @param tupleSize - size of the tuples to be retrieved
-     * @return item tuples from stacks
-     */
-    public List<List<Integer>> retrieveItemTuples(Solution sol, int tupleSize) {
-        List<List<Integer>> itemTuples = new ArrayList<>();
-        for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
-            List<Integer> stackEntries = new ArrayList<>();
-            for (int entry : sol.getFilledStacks()[stack]) {
-                stackEntries.add(entry);
-            }
-            List<Integer> itemTuple = new ArrayList<>();
-            if (Collections.frequency(stackEntries, -1) == this.instance.getStackCapacity() - tupleSize) {
-                for (int entry : stackEntries) {
-                    if (entry != -1) {
-                        itemTuple.add(entry);
-                    }
-                }
-            }
-            if (itemTuple.size() == tupleSize) {
-                itemTuples.add(itemTuple);
-            }
-        }
-        return itemTuples;
-    }
-
-    /**
      * Adds the vertices for item triples, item pairs, unmatched items and stacks to the specified graph
      * and fills the partitions. The items are part of one partitions and the stacks are part of the other.
      *
