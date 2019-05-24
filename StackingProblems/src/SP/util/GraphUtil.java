@@ -5,17 +5,21 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.EdmondsMaximumCardinalityMatching;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
-import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
 
 /**
  * A collection of graph related utility methods used in the heuristics.
+ * There are three main categories of methods: graph modification, graph generation and parsing.
  *
  * @author Tim Bohne
  */
 public class GraphUtil {
+
+    /**********************************************************************************/
+    /*************************** GRAPH MODIFICATION METHODS ***************************/
+    /**********************************************************************************/
 
     /**
      * Adds edges between item pairs and stacks in the given bipartite graph consisting of the items in
@@ -31,10 +35,10 @@ public class GraphUtil {
     public static void addEdgesBetweenItemPairsAndStacks(
         Graph<String, DefaultWeightedEdge> bipartiteGraph, List<MCMEdge> itemPairs, int[][] stacks, double[][] costMatrix
     ) {
-        for (int pair = 0; pair < itemPairs.size(); pair++) {
+        for (MCMEdge itemPair : itemPairs) {
             for (int stack = 0; stack < stacks.length; stack++) {
-                DefaultWeightedEdge edge = bipartiteGraph.addEdge("pair" + itemPairs.get(pair), "stack" + stack);
-                double costs = costMatrix[itemPairs.get(pair).getVertexOne()][stack] + costMatrix[itemPairs.get(pair).getVertexTwo()][stack];
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("pair" + itemPair, "stack" + stack);
+                double costs = costMatrix[itemPair.getVertexOne()][stack] + costMatrix[itemPair.getVertexTwo()][stack];
                 bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
@@ -54,12 +58,12 @@ public class GraphUtil {
     public static void addEdgesBetweenItemTriplesAndStacks(
         Graph<String, DefaultWeightedEdge> bipartiteGraph, List<List<Integer>> itemTriples, int[][] stacks, double[][] costMatrix
     ) {
-        for (int triple = 0; triple < itemTriples.size(); triple++) {
+        for (List<Integer> itemTriple : itemTriples) {
             for (int stack = 0; stack < stacks.length; stack++) {
-                DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriples.get(triple), "stack" + stack);
-                double costs = costMatrix[itemTriples.get(triple).get(0)][stack]
-                    + costMatrix[itemTriples.get(triple).get(1)][stack]
-                    + costMatrix[itemTriples.get(triple).get(2)][stack];
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriple, "stack" + stack);
+                double costs = costMatrix[itemTriple.get(0)][stack]
+                        + costMatrix[itemTriple.get(1)][stack]
+                        + costMatrix[itemTriple.get(2)][stack];
                 bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
@@ -136,8 +140,8 @@ public class GraphUtil {
      * @param unmatchedItem - item to be connected to pair
      * @param itemPair      - pair the item gets connected to
      */
-    public static void addEdgeBetweenPairAndUnmatchedItem(
-        Graph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair
+    private static void addEdgeBetweenPairAndUnmatchedItem(
+            Graph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair
     ) {
         if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
             graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
@@ -155,9 +159,9 @@ public class GraphUtil {
      * @param itemPair            - edge that represents the pair
      * @param stackingConstraints - stacking constraints to be respected
      */
-    public static void addEdgeForCompatibleItemTriple(
-        Graph<String, DefaultEdge> graph, int lowerItemOfPair, int unmatchedItem, int upperItemOfPair,
-        MCMEdge itemPair, int[][] stackingConstraints, boolean pairStackableInBothDirections
+    private static void addEdgeForCompatibleItemTriple(
+            Graph<String, DefaultEdge> graph, int lowerItemOfPair, int unmatchedItem, int upperItemOfPair,
+            MCMEdge itemPair, int[][] stackingConstraints, boolean pairStackableInBothDirections
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
@@ -273,6 +277,10 @@ public class GraphUtil {
         }
     }
 
+    /********************************************************************************/
+    /*************************** GRAPH GENERATION METHODS ***************************/
+    /********************************************************************************/
+
     /**
      * Generates the bipartite graph containing pairs of items in
      * one partition and unmatched items in the other one.
@@ -288,37 +296,37 @@ public class GraphUtil {
         Graph<String, DefaultEdge> bipartiteGraph = new DefaultUndirectedGraph<>(DefaultEdge.class);
 
         // adding the item pairs as nodes to the graph
-        for (int i = 0; i < itemPairs.size(); i++) {
-            bipartiteGraph.addVertex("edge" + itemPairs.get(i));
+        for (MCMEdge itemPair : itemPairs) {
+            bipartiteGraph.addVertex("edge" + itemPair);
         }
         // adding the unmatched items as nodes to the graph
         for (int i : unmatchedItems) {
             bipartiteGraph.addVertex("v" + i);
         }
 
-        for (int itemPair = 0; itemPair < itemPairs.size(); itemPair++) {
-            for (int unmatchedItem = 0; unmatchedItem < unmatchedItems.size(); unmatchedItem++) {
+        for (MCMEdge itemPair1 : itemPairs) {
+            for (Integer unmatchedItem1 : unmatchedItems) {
 
-                int itemOne = itemPairs.get(itemPair).getVertexOne();
-                int itemTwo = itemPairs.get(itemPair).getVertexTwo();
+                int itemOne = itemPair1.getVertexOne();
+                int itemTwo = itemPair1.getVertexTwo();
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
 
                 if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
-                    GraphUtil.addEdgeForCompatibleItemTriple(bipartiteGraph, itemTwo, unmatchedItems.get(unmatchedItem),
-                        itemOne, itemPairs.get(itemPair), stackingConstraints, true
+                    GraphUtil.addEdgeForCompatibleItemTriple(bipartiteGraph, itemTwo, unmatchedItem1,
+                            itemOne, itemPair1, stackingConstraints, true
                     );
-                // one on top of two
+                    // one on top of two
                 } else if (stackingConstraints[itemOne][itemTwo] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
-                        bipartiteGraph, itemTwo, unmatchedItems.get(unmatchedItem),
-                        itemOne, itemPairs.get(itemPair), stackingConstraints, false
+                            bipartiteGraph, itemTwo, unmatchedItem1,
+                            itemOne, itemPair1, stackingConstraints, false
                     );
-                // two on top of one
+                    // two on top of one
                 } else if (stackingConstraints[itemTwo][itemOne] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
-                        bipartiteGraph, itemOne, unmatchedItems.get(unmatchedItem),
-                        itemTwo, itemPairs.get(itemPair), stackingConstraints, false
+                            bipartiteGraph, itemOne, unmatchedItem1,
+                            itemTwo, itemPair1, stackingConstraints, false
                     );
                 }
             }
@@ -373,6 +381,10 @@ public class GraphUtil {
         return stackingConstraintGraph;
     }
 
+    /***********************************************************************/
+    /*************************** PARSING METHODS ***************************/
+    /***********************************************************************/
+
     /**
      * Parses item pairs from the given maximum cardinality matching.
      *
@@ -389,10 +401,6 @@ public class GraphUtil {
         }
         return matchedItems;
     }
-
-    /***********************************************************************/
-    /*************************** PARSING METHODS ***************************/
-    /***********************************************************************/
 
     /**
      * Parses item triples from the given maximum cardinality matching.
