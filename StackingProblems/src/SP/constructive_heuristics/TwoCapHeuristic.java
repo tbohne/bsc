@@ -109,102 +109,6 @@ public class TwoCapHeuristic {
     }
 
     /**
-     * Finds compatible empty positions for the items in the storage area and initiates the edge addition
-     * for these pairs of items and empty positions to the post processing graph.
-     *
-     * @param postProcessingGraph - graph the edges are added to
-     * @param items               - items to be connected to compatible empty positions
-     * @param emptyPositions      - empty positions the compatible items get connected with
-     * @param originalCosts       - current costs for each item assignment
-     * @param sol                 - solution to be processed
-     */
-    public void findCompatibleEmptyPositionsForItems(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
-        Map<Integer, Double> originalCosts, Solution sol
-    ) {
-        for (int item : items) {
-            for (StackPosition emptyPos : emptyPositions) {
-
-                if (HeuristicUtil.itemCompatibleWithStack(this.instance.getCosts(), item, emptyPos.getStackIdx())) {
-
-                    int levelOfOtherSlot = emptyPos.getLevel() == 0 ? 1 : 0;
-
-                    // other item in stack
-                    if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
-                        int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
-                        // item compatible with other item
-                        if (HeuristicUtil.itemsStackableInAtLeastOneDirection(this.instance.getStackingConstraints(), item, otherItem)) {
-                            GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
-                        }
-                    // no other item in stack
-                    } else {
-                        GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Generates the bipartite graph for the post-processing step.
-     * The graph's first partition consists of items and the second one consists of empty positions in stacks.
-     * An edge between the partitions indicates that an item is compatible to the empty position.
-     * The costs of the edges correspond to the savings that are generated if the item is assigned to the empty position.
-     *
-     * @param items          - list of items in the stacks
-     * @param emptyPositions - list of empty positions in the stacks
-     * @param costsBefore    - original costs for each item assignment
-     * @param sol            - solution to be processed
-     * @return generated bipartite post-processing graph
-     */
-    public BipartiteGraph generatePostProcessingGraph(
-        List<Integer> items, List<StackPosition> emptyPositions, Map<Integer, Double> costsBefore, Solution sol
-    ) {
-        Graph<String, DefaultWeightedEdge> postProcessingGraph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
-        Set<String> itemPartition = new HashSet<>();
-        Set<String> emptyPositionPartition = new HashSet<>();
-        GraphUtil.addVerticesForUnmatchedItems(items, postProcessingGraph, itemPartition);
-        GraphUtil.addVerticesForEmptyPositions(emptyPositions, postProcessingGraph, emptyPositionPartition);
-
-        this.findCompatibleEmptyPositionsForItems(postProcessingGraph, items, emptyPositions, costsBefore, sol);
-        return new BipartiteGraph(itemPartition, emptyPositionPartition, postProcessingGraph);
-    }
-
-    /**
-     * This approach should be used in situations where the number of used stacks is irrelevant
-     * and only the minimization of transport costs matters.
-     *
-     * Takes the generated solution and moves items to empty positions if it's possible to
-     * reduce the total costs by doing so.
-     * Initially, a bipartite graph between items and empty positions is generated.
-     * An edge between the two partitions indicates that an item is assignable to the empty position.
-     * The costs of the edge correspond to the resulting savings if the item is assigned to the empty position.
-     * A maximum weight matching is computed on that graph to retrieve an assignment that leads
-     * to a maximum cost reduction.
-     *
-     * @param sol - generated solution to be processed
-     * @return resulting solution
-     */
-    public Solution postProcessing(Solution sol) {
-
-        List<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
-        List<Integer> items = sol.getAssignedItems();
-        Map<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, this.instance.getCosts());
-
-        BipartiteGraph postProcessingGraph = this.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol);
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
-            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
-        );
-
-        HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
-        this.instance.lowerItemsThatAreStackedInTheAir();
-        sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
-
-        sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
-        return sol;
-    }
-
-    /**
      * Solves the stacking problem with an approach that uses a maximum cardinality matching followed by a minimum
      * weight perfect matching to feasibly assign all items to the storage area while minimizing the costs.
      * Afterwards there's the option to start a post-processing of a solution which means that pairs of items
@@ -245,16 +149,16 @@ public class TwoCapHeuristic {
             this.parseAndAssignMinCostPerfectMatching(minCostPerfectMatching, this.instance.getStacks());
 
             this.instance.lowerItemsThatAreStackedInTheAir();
-            sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, this.timeLimit, this.instance);
+            sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
             sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
 
             if (postProcessing) {
                 System.out.println("costs before post processing: " + sol.getObjectiveValue());
                 double bestSolutionCost = sol.computeCosts();
-                sol = this.postProcessing(sol);
+                sol = HeuristicUtil.postProcessing(sol, this.instance, this.startTime, this.timeLimit);
                 while (sol.computeCosts() < bestSolutionCost) {
                     bestSolutionCost = sol.computeCosts();
-                    sol = this.postProcessing(sol);
+                    sol = HeuristicUtil.postProcessing(sol, this.instance, this.startTime, this.timeLimit);
                 }
                 System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
             }

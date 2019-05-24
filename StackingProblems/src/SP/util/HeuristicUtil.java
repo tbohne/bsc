@@ -1,6 +1,7 @@
 package SP.util;
 
 import SP.representations.*;
+import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -243,6 +244,77 @@ public class HeuristicUtil {
      */
     public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, double[][] costMatrix, int invalidEdgeCosts) {
         return costMatrix[itemOne][stackIdx] < invalidEdgeCosts && costMatrix[itemTwo][stackIdx] < invalidEdgeCosts;
+    }
+
+    /**
+     * Finds compatible empty positions for the items in the storage area and initiates the edge addition
+     * for these pairs of items and empty positions to the post processing graph.
+     *
+     * @param postProcessingGraph - graph the edges are added to
+     * @param items               - items to be connected to compatible empty positions
+     * @param emptyPositions      - empty positions the compatible items get connected with
+     * @param originalCosts       - current costs for each item assignment
+     * @param sol                 - solution to be processed
+     */
+    public static void findCompatibleEmptyPositionsForItems(
+            Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
+            Map<Integer, Double> originalCosts, Solution sol, Instance instance
+    ) {
+        for (int item : items) {
+            for (StackPosition emptyPos : emptyPositions) {
+
+                if (HeuristicUtil.itemCompatibleWithStack(instance.getCosts(), item, emptyPos.getStackIdx())) {
+
+                    int levelOfOtherSlot = emptyPos.getLevel() == 0 ? 1 : 0;
+
+                    // other item in stack
+                    if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
+                        int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
+                        // item compatible with other item
+                        if (HeuristicUtil.itemsStackableInAtLeastOneDirection(instance.getStackingConstraints(), item, otherItem)) {
+                            GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, instance);
+                        }
+                        // no other item in stack
+                    } else {
+                        GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, instance);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * This approach should be used in situations where the number of used stacks is irrelevant
+     * and only the minimization of transport costs matters.
+     *
+     * Takes the generated solution and moves items to empty positions if it's possible to
+     * reduce the total costs by doing so.
+     * Initially, a bipartite graph between items and empty positions is generated.
+     * An edge between the two partitions indicates that an item is assignable to the empty position.
+     * The costs of the edge correspond to the resulting savings if the item is assigned to the empty position.
+     * A maximum weight matching is computed on that graph to retrieve an assignment that leads
+     * to a maximum cost reduction.
+     *
+     * @param sol - generated solution to be processed
+     * @return resulting solution
+     */
+    public static Solution postProcessing(Solution sol, Instance instance, double startTime, double timeLimit) {
+
+        List<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
+        List<Integer> items = sol.getAssignedItems();
+        Map<Integer, Double> costsBefore = HeuristicUtil.getOriginalCosts(sol, instance.getCosts());
+
+        BipartiteGraph postProcessingGraph = GraphUtil.generatePostProcessingGraph(items, emptyPositions, costsBefore, sol, instance);
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching = new MaximumWeightBipartiteMatching<>(
+            postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
+        );
+
+        HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, instance);
+        instance.lowerItemsThatAreStackedInTheAir();
+        sol = new Solution((System.currentTimeMillis() - startTime) / 1000.0, timeLimit, instance);
+
+        sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
+        return sol;
     }
 
     public static boolean itemsStackableInAtLeastOneDirection(int[][] stackingConstraints, int itemOne, int itemTwo) {
