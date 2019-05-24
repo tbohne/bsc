@@ -1,8 +1,6 @@
 package SP.io;
 
 import SP.constructive_heuristics.ThreeCapHeuristic;
-import SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic;
-import SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic;
 import SP.constructive_heuristics.TwoCapHeuristic;
 import SP.experiments.OptimizableSolution;
 import SP.mip_formulations.BinPackingFormulation;
@@ -37,10 +35,6 @@ public class SolutionWriter {
                 return TwoCapHeuristic.class.getName();
             case CONSTRUCTIVE_THREE_CAP:
                 return ThreeCapHeuristic.class.getName();
-            case CONSTRUCTIVE_THREE_CAP_PERMUTATION:
-                return ThreeCapPermutationHeuristic.class.getName();
-            case CONSTRUCTIVE_THREE_CAP_RECURSION:
-                return ThreeCapRecursiveMCMHeuristic.class.getName();
             case TABU_SEARCH:
                 return TabuSearch.class.getName();
             default:

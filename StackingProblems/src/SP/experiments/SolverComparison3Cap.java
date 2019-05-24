@@ -1,8 +1,6 @@
 package SP.experiments;
 
 import SP.constructive_heuristics.ThreeCapHeuristic;
-import SP.constructive_heuristics.deprecated.ThreeCapPermutationHeuristic;
-import SP.constructive_heuristics.deprecated.ThreeCapRecursiveMCMHeuristic;
 import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
 import SP.representations.Instance;
@@ -61,31 +59,6 @@ public class SolverComparison3Cap implements SolverComparison {
         SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_THREEINDEX);
     }
 
-    /**
-     * Solves the given instance with the constructive heuristic based on permutations for a stack capacity of 3.
-     *
-     * @param instance     - the instance to be solved
-     * @param solutionName - the name of the generated solution
-     */
-    public void solveWithThreeCapPerm(Instance instance, String solutionName) {
-        ThreeCapPermutationHeuristic permMCMSolver = new ThreeCapPermutationHeuristic(instance, TIME_LIMIT);
-        Solution sol = permMCMSolver.solve(false);
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP_PERMUTATION);
-        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP_PERMUTATION);
-    }
-
-    /**
-     * Solves the given instance with the constructive heuristic based on recursive MCMs for a stack capacity of 3.
-     *
-     * @param instance     - the instance to be solved
-     * @param solutionName - the name of the generated solution
-     */
-    public void solveWithThreeCapRec(Instance instance, String solutionName) {
-        ThreeCapRecursiveMCMHeuristic recMCMSolver = new ThreeCapRecursiveMCMHeuristic(instance, TIME_LIMIT);
-        Solution sol = recMCMSolver.solve();
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_THREE_CAP_RECURSION);
-        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_THREE_CAP_RECURSION);
-    }
 
     /**
      * Solves the given instance with the constructive heuristic for a stack capacity of 3.
@@ -148,14 +121,6 @@ public class SolverComparison3Cap implements SolverComparison {
                     }
                     if (solversToBeCompared.contains(Solver.MIP_THREEINDEX)) {
                         this.solveWithThreeIndex(instance, solutionName);
-                        instance.resetStacks();
-                    }
-                    if (solversToBeCompared.contains(Solver.CONSTRUCTIVE_THREE_CAP_PERMUTATION)) {
-                        this.solveWithThreeCapPerm(instance, solutionName);
-                        instance.resetStacks();
-                    }
-                    if (solversToBeCompared.contains(Solver.CONSTRUCTIVE_THREE_CAP_RECURSION)) {
-                        this.solveWithThreeCapRec(instance, solutionName);
                         instance.resetStacks();
                     }
                     if (solversToBeCompared.contains(Solver.CONSTRUCTIVE_THREE_CAP)) {
