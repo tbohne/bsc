@@ -46,13 +46,35 @@ public class TestDataGenerator {
     private static final int NUMBER_OF_ROWS_IN_STORAGE_AREA = 2;
     /***********************************************************************************/
 
+    public static void main(String[] args) {
+
+        int numOfStacks = TestDataGenerator.computeNumberOfStacks();
+
+        for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
+
+            List<GridPosition> stackPositions = generateStackPositionsOnSpecifiedNumberOfRows(numOfStacks);
+            Item[] items = generateItems(stackPositions);
+
+            int[][] stackingConstraintMatrix;
+            if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
+                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne();
+            } else {
+                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(items);
+            }
+
+            double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
+            TestDataGenerator.generateCosts(costs, numOfStacks, items, stackPositions);
+            generateInstance(idx, numOfStacks, items, stackPositions, stackingConstraintMatrix, costs);
+        }
+    }
+
     /**
      * Generates the positions of the fixed stacks in the storage area in a square.
      *
      * @param numOfStacks - number of stacks available in the instances
      * @return list of generated stack positions
      */
-    public static List<GridPosition> generateStackPositionsSquare(int numOfStacks) {
+    private static List<GridPosition> generateStackPositionsSquare(int numOfStacks) {
         List<GridPosition> stackPositions = new ArrayList<>();
         int stacksPerRow = (int)Math.ceil(Math.sqrt(numOfStacks));
         float xCoord = 0;
@@ -308,27 +330,5 @@ public class TestDataGenerator {
         );
         InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
         writeConfig();
-    }
-
-    public static void main(String[] args) {
-
-        int numOfStacks = TestDataGenerator.computeNumberOfStacks();
-
-        for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
-
-            List<GridPosition> stackPositions = generateStackPositionsOnSpecifiedNumberOfRows(numOfStacks);
-            Item[] items = generateItems(stackPositions);
-
-            int[][] stackingConstraintMatrix;
-            if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
-                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne();
-            } else {
-                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(items);
-            }
-
-            double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
-            TestDataGenerator.generateCosts(costs, numOfStacks, items, stackPositions);
-            generateInstance(idx, numOfStacks, items, stackPositions, stackingConstraintMatrix, costs);
-        }
     }
 }
