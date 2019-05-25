@@ -165,13 +165,13 @@ public class GraphUtil {
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
-            if (HeuristicUtil.itemCanBeAssignedToPairStackableInBothDirections(
+            if (HeuristicUtil.itemAssignableToPairStackableInBothDirections(
                 stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
             )) {
                 GraphUtil.addEdgeBetweenPairAndUnmatchedItem(graph, unmatchedItem, itemPair);
             }
         } else {
-            if (HeuristicUtil.itemCanBeAssignedToPairStackableInOneDirection(
+            if (HeuristicUtil.itemAssignableToPairStackableInOneDirection(
                 stackingConstraints, lowerItemOfPair, upperItemOfPair, unmatchedItem
             )) {
                 GraphUtil.addEdgeBetweenPairAndUnmatchedItem(graph, unmatchedItem, itemPair);
@@ -312,7 +312,7 @@ public class GraphUtil {
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
 
-                if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+                if (HeuristicUtil.pairStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
                     GraphUtil.addEdgeForCompatibleItemTriple(bipartiteGraph, itemTwo, unmatchedItem1,
                             itemOne, itemPair1, stackingConstraints, true
                     );

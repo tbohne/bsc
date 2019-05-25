@@ -192,7 +192,7 @@ public class RatingSystem {
      * @return sum of the relevant item ratings
      */
     public static int getSumOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints) {
-        if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+        if (HeuristicUtil.pairStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
             return computeRowRatingForItem(itemOne, stackingConstraints)
                 + computeColRatingForItem(itemOne, stackingConstraints)
                 + computeRowRatingForItem(itemTwo, stackingConstraints)
@@ -221,7 +221,7 @@ public class RatingSystem {
      * @return extreme rating value
      */
     public static int getExtremeOfRelevantRatingsForItemPair(int itemOne, int itemTwo, int[][] stackingConstraints, boolean min) {
-        if (HeuristicUtil.itemsStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
+        if (HeuristicUtil.pairStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
             if (min) {
                 return Collections.min(getItemRatingsForItemPair(itemOne, itemTwo, stackingConstraints));
             } else {

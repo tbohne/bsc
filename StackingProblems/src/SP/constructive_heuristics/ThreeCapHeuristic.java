@@ -417,7 +417,7 @@ public class ThreeCapHeuristic {
         int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
 
         // check pair for compatibility
-        if (HeuristicUtil.itemsStackableInAtLeastOneDirection(this.instance.getStackingConstraints(), item, otherItem)) {
+        if (HeuristicUtil.pairStackableInAtLeastOneDirection(this.instance.getStackingConstraints(), item, otherItem)) {
             GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
         }
     }
@@ -445,15 +445,15 @@ public class ThreeCapHeuristic {
             upperItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(1)];
             lowerItemOfPair = sol.getFilledStacks()[emptyPos.getStackIdx()][levelsOfOtherSlots.get(0)];
         }
-        if (HeuristicUtil.itemsStackableInBothDirections(lowerItemOfPair, upperItemOfPair, this.instance.getStackingConstraints())) {
-            if (HeuristicUtil.itemCanBeAssignedToPairStackableInBothDirections(
+        if (HeuristicUtil.pairStackableInBothDirections(lowerItemOfPair, upperItemOfPair, this.instance.getStackingConstraints())) {
+            if (HeuristicUtil.itemAssignableToPairStackableInBothDirections(
                 this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
                 GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);
             }
         // pair stackable in one direction
         } else {
-            if (HeuristicUtil.itemCanBeAssignedToPairStackableInOneDirection(
+            if (HeuristicUtil.itemAssignableToPairStackableInOneDirection(
                 this.instance.getStackingConstraints(), lowerItemOfPair, upperItemOfPair, item
             )) {
                 GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, this.instance);

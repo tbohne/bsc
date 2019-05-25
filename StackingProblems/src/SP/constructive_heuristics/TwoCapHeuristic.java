@@ -218,7 +218,7 @@ public class TwoCapHeuristic {
                     if (sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot] != -1) {
                         int otherItem = sol.getFilledStacks()[emptyPos.getStackIdx()][levelOfOtherSlot];
                         // item compatible with other item
-                        if (HeuristicUtil.itemsStackableInAtLeastOneDirection(instance.getStackingConstraints(), item, otherItem)) {
+                        if (HeuristicUtil.pairStackableInAtLeastOneDirection(instance.getStackingConstraints(), item, otherItem)) {
                             GraphUtil.addEdgeToPostProcessingGraph(postProcessingGraph, item, emptyPos, originalCosts, instance);
                         }
                         // no other item in stack

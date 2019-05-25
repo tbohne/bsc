@@ -183,10 +183,10 @@ public class HeuristicUtil {
     }
 
     /**
+     * Computes the average for the specified list of integers.
      *
-     *
-     * @param values
-     * @return
+     * @param values - list of integer values to compute the average for
+     * @return average value
      */
     public static int getAvg(List<Integer> values) {
         int avg = 0;
@@ -198,106 +198,78 @@ public class HeuristicUtil {
 
     /**
      * Checks whether the specified item can be assigned to the specified pair
-     * in a way that respects the stacking constraints.
-     * The pair is stackable in both directions.
+     * that is stackable in both directions in a way that respects the stacking constraints.
      *
      * @param stackingConstraints - stacking constraints to be respected
      * @param lowerItemOfPair     - lower item of the pair
      * @param upperItemOfPair     - upper item of the pair
-     * @param unmatchedItem       - item to be checked for compatibility
-     * @return whether or not the item is compatible to the pair
+     * @param item                - item to be checked for compatibility with the pair
+     * @return whether or not the item is compatible with the pair
      */
-    public static boolean itemCanBeAssignedToPairStackableInBothDirections(
-            int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
+    public static boolean itemAssignableToPairStackableInBothDirections(
+        int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int item
     ) {
-        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
-                || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
-                || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1)
-                || stackingConstraints[upperItemOfPair][unmatchedItem] == 1
-                || (stackingConstraints[lowerItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][upperItemOfPair] == 1)
-                || stackingConstraints[unmatchedItem][lowerItemOfPair] == 1;
+        return stackingConstraints[lowerItemOfPair][item] == 1
+            || stackingConstraints[item][upperItemOfPair] == 1
+            || (stackingConstraints[upperItemOfPair][item] == 1 && stackingConstraints[item][lowerItemOfPair] == 1)
+            || stackingConstraints[upperItemOfPair][item] == 1
+            || (stackingConstraints[lowerItemOfPair][item] == 1 && stackingConstraints[item][upperItemOfPair] == 1)
+            || stackingConstraints[item][lowerItemOfPair] == 1;
     }
 
     /**
      * Checks whether the specified item can be assigned to the specified pair
-     * in a way that respects the stacking constraints.
-     * The pair is only stackable in one direction.
+     * that is stackable in only one direction in a way that respects the stacking constraints.
      *
      * @param stackingConstraints - stacking constraints to be respected
      * @param lowerItemOfPair     - lower item of the pair
      * @param upperItemOfPair     - upper item of the pair
-     * @param unmatchedItem       - item to be checked for compatibility
-     * @return whether or not the item is compatible to the pair
+     * @param item                - item to be checked for compatibility with the pair
+     * @return whether or not the item is compatible with the pair
      */
-    public static boolean itemCanBeAssignedToPairStackableInOneDirection(
-            int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int unmatchedItem
+    public static boolean itemAssignableToPairStackableInOneDirection(
+        int[][] stackingConstraints, int lowerItemOfPair, int upperItemOfPair, int item
     ) {
-        return stackingConstraints[lowerItemOfPair][unmatchedItem] == 1
-                || stackingConstraints[unmatchedItem][upperItemOfPair] == 1
-                || (stackingConstraints[upperItemOfPair][unmatchedItem] == 1 && stackingConstraints[unmatchedItem][lowerItemOfPair] == 1);
+        return stackingConstraints[lowerItemOfPair][item] == 1
+            || stackingConstraints[item][upperItemOfPair] == 1
+            || (stackingConstraints[upperItemOfPair][item] == 1 && stackingConstraints[item][lowerItemOfPair] == 1);
     }
 
     /**
-     * Returns whether the specified stack in the storage area is empty.
+     * Checks whether the specified items are stackable in at least one direction.
      *
-     * @param stackIdx    - the index of the stack to be checked
-     * @param storageArea - the storage area containing the stacks
-     * @return whether or not the specified stack is empty
+     * @param stackingConstraints - stacking constraints to be respected
+     * @param itemOne             - first item of the pair to be checked
+     * @param itemTwo             - second item of the pair to be checked
+     * @return whether or not the pair of items is stackable
      */
-    public static boolean stackEmpty(int stackIdx, int[][] storageArea) {
-        return storageArea[stackIdx][2] == -1 && storageArea[stackIdx][1] == -1 && storageArea[stackIdx][0] == -1;
-    }
-
-    /**
-     * Returns whether the specified pair of items is compatible with the specified stack
-     * which means that both items are feasibly assignable to the stack without contradicting
-     * the placement constraints.
-     *
-     * @param stackIdx         - the index of the stack to be checked
-     * @param itemOne          - the first item of the pair to be checked
-     * @param itemTwo          - the second item of the pair to be checked
-     * @param costMatrix       - the matrix containing the edge costs
-     * @param invalidEdgeCosts - the cost value used to implement the placement constraints
-     * @return
-     */
-    public static boolean itemPairAndStackCompatible(int stackIdx, int itemOne, int itemTwo, double[][] costMatrix, int invalidEdgeCosts) {
-        return costMatrix[itemOne][stackIdx] < invalidEdgeCosts && costMatrix[itemTwo][stackIdx] < invalidEdgeCosts;
-    }
-
-    public static boolean itemsStackableInAtLeastOneDirection(int[][] stackingConstraints, int itemOne, int itemTwo) {
+    public static boolean pairStackableInAtLeastOneDirection(int[][] stackingConstraints, int itemOne, int itemTwo) {
         return stackingConstraints[itemOne][itemTwo] == 1 || stackingConstraints[itemTwo][itemOne] == 1;
     }
 
     /**
-     * Returns whether the specified items are stackable in both directions.
+     * Checks whether the specified items are stackable in both directions.
      *
-     * @param itemOne             - the first item to be checked
-     * @param itemTwo             - the second item to be checked
-     * @param stackingConstraints - the stacking constraints to be respected
+     * @param itemOne             - first item of the pair to be checked
+     * @param itemTwo             - second item of the pair to be checked
+     * @param stackingConstraints - stacking constraints to be respected
      * @return whether or not the given items are stackable in both directions
      */
-    public static boolean itemsStackableInBothDirections(int itemOne, int itemTwo, int[][] stackingConstraints) {
+    public static boolean pairStackableInBothDirections(int itemOne, int itemTwo, int[][] stackingConstraints) {
         return stackingConstraints[itemTwo][itemOne] == 1 && stackingConstraints[itemOne][itemTwo] == 1;
     }
 
+    /**
+     * Checks whether the specified item is compatible with the specified stack
+     * in terms of the placement constraints.
+     *
+     * @param costs - matrix of transport costs indirectly encoding placement constraints
+     * @param item  - item to check compatibility for
+     * @param stack - stack to check compatibility for
+     * @return whether or not the item is compatible with the stack
+     */
     public static boolean itemCompatibleWithStack(double[][] costs, int item, int stack) {
         return costs[item][stack] < Integer.MAX_VALUE / costs.length;
-    }
-
-    /**
-     * Determines whether the specified current shuffle was already used before.
-     *
-     * @param currentShuffle      - the current shuffle to be checked
-     * @param alreadyUsedShuffles - the list of already used shuffles
-     * @return whether or not the current shuffle was already used
-     */
-    public static boolean alreadyUsedShuffle(ArrayList<Integer> currentShuffle, List<List<Integer>> alreadyUsedShuffles) {
-        for (List<Integer> shuffle : alreadyUsedShuffles) {
-            if (shuffle.equals(currentShuffle)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -633,7 +605,7 @@ public class HeuristicUtil {
      */
     public static boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo, int[][] stackingConstraints) {
         // pair stackable in both directions
-        if (HeuristicUtil.itemsStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
+        if (HeuristicUtil.pairStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
             if (stackingConstraints[item][pairItemOne] == 1) {
                 return true;
             } else if (stackingConstraints[pairItemOne][item] == 1) {
