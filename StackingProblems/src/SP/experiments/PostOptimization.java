@@ -12,8 +12,8 @@ public class PostOptimization {
     public static final String INSTANCE_PREFIX = "res/instances/";
     public static final String SOLUTION_PREFIX = "res/solutions/";
 
-//    public static final String SOLVER = "ThreeCapHeuristic";
-    public static final String SOLVER = "TwoCapHeuristic";
+    public static final String SOLVER = "ThreeCapHeuristic";
+//    public static final String SOLVER = "TwoCapHeuristic";
 
     public static void optimizeSolutions() {
 

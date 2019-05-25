@@ -6,7 +6,6 @@ import SP.representations.GridPosition;
 import SP.util.RepresentationUtil;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +17,50 @@ import java.util.List;
  * @author Tim Bohne
  */
 public class InstanceReader {
+
+    /**
+     * Reads an instance of a stacking problem from the specified file.
+     *
+     * @param filename - name of the file to read from
+     * @return read instance
+     */
+    public static Instance readInstance(String filename) {
+
+        int numberOfItems = 0;
+        int numberOfStacks = 0;
+        int stackCapacity = 0;
+        List<GridPosition> itemPositions = new ArrayList<>();
+        List<GridPosition> stackPositions = new ArrayList<>();
+        List<List<Float>> itemDimensions = new ArrayList<>();
+        int[][] stackingConstraints = new int[numberOfItems][];
+        double[][] costs = new double[numberOfItems][];
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            numberOfItems = Integer.parseInt(reader.readLine().trim());
+            numberOfStacks = Integer.parseInt(reader.readLine().trim());
+            stackCapacity = Integer.parseInt(reader.readLine().trim());
+
+            if (reader.readLine().trim().equals("")) {
+                stackingConstraints = RepresentationUtil.castFloatingPointMatrix(readMatrix(reader, numberOfItems));
+            }
+            costs = readMatrix(reader, numberOfItems);
+            readPositions(itemPositions, reader);
+            readPositions(stackPositions, reader);
+
+            String line = reader.readLine();
+            if (line != null) {
+                readItemDimensions(itemDimensions, line.trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Item[] items = new Item[numberOfItems];
+        createItems(numberOfItems, itemDimensions, items, itemPositions);
+
+        String instanceName = filename.replace("res/", "").replace(".txt", "");
+        return new Instance(items, numberOfStacks, stackPositions, stackCapacity, stackingConstraints, costs, instanceName);
+    }
 
     /**
      * Reads matrices (stacking constraints, costs, ...) from an instance file using the specified reader.
@@ -89,54 +132,23 @@ public class InstanceReader {
     }
 
     /**
-     * Reads the instance from the specified file.
+     * Creates the items based on the read data.
      *
-     * @param filename - the name of the file to be read from
-     * @return the read instance of a stacking problem
+     * @param numberOfItems  - number of items to be generated
+     * @param itemDimensions - list of the item's dimensions
+     * @param items          - array of items to be filled
+     * @param itemPositions  - positions of the items on the grid
      */
-    public static Instance readInstance(String filename) {
-
-        filename = filename.replace("_imp", "");
-
-        int numberOfItems = 0;
-        int numberOfStacks = 0;
-        int stackCapacity = 0;
-        ArrayList<GridPosition> itemPositions = new ArrayList<>();
-        ArrayList<GridPosition> stackPositions = new ArrayList<>();
-        ArrayList<ArrayList<Float>> itemDimensions = new ArrayList<>();
-        int[][] stackingConstraints = new int[numberOfItems][];
-        double[][] costs = new double[numberOfItems][];
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            numberOfItems = Integer.parseInt(reader.readLine().trim());
-            numberOfStacks = Integer.parseInt(reader.readLine().trim());
-            stackCapacity = Integer.parseInt(reader.readLine().trim());
-
-            if (reader.readLine().trim().equals("")) {
-                stackingConstraints = RepresentationUtil.castFloatingPointMatrix(readMatrix(reader, numberOfItems));
-            }
-            costs = readMatrix(reader, numberOfItems);
-            readPositions(itemPositions, reader);
-            readPositions(stackPositions, reader);
-            String line = reader.readLine();
-            if (line != null) {
-                readItemDimensions(itemDimensions, line.trim());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Item[] items = new Item[numberOfItems];
+    private static void createItems(
+        int numberOfItems, List<List<Float>> itemDimensions, Item[] items, List<GridPosition> itemPositions
+    ) {
         for (int i = 0; i < numberOfItems; i++) {
             if (itemDimensions.size() > 0) {
                 items[i] = new Item(i, itemDimensions.get(i).get(0), itemDimensions.get(i).get(1), itemPositions.get(i));
             } else {
-                // no dimensions given (used to handle outdated instances)
+                // no dimensions given (used to handle deprecated instances)
                 items[i] = new Item(i, 0, 0, itemPositions.get(i));
             }
         }
-
-        String instanceName = filename.replace("res/", "").replace(".txt", "");
-        return new Instance(items, numberOfStacks, stackPositions, stackCapacity, stackingConstraints, costs, instanceName);
     }
 }
