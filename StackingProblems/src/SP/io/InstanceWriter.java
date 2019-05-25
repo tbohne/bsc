@@ -14,82 +14,6 @@ import java.io.*;
 public class InstanceWriter {
 
     /**
-     * Writes the stacking constraints to the file using the specified buffered writer.
-     *
-     * @param instance - instance that is written to the file
-     * @param bw       - buffered writer pointing to the part of the file to write to
-     * @throws IOException
-     */
-    private static void writeStackingConstraints(Instance instance, BufferedWriter bw) throws IOException {
-        for (int i = 0; i < instance.getStackingConstraints().length; i++) {
-            for (int j = 0; j < instance.getStackingConstraints()[0].length; j++) {
-                bw.write(instance.getStackingConstraints()[i][j] + " ");
-            }
-            bw.newLine();
-        }
-        bw.newLine();
-    }
-
-    /**
-     * Writes the costs to the file using the specified buffered writer.
-     *
-     * @param instance - instance that is written to the file
-     * @param bw       - buffered writer pointing to the part of the file to write to
-     * @throws IOException
-     */
-    private static void writeCosts(Instance instance, BufferedWriter bw) throws IOException {
-        for (int i = 0; i < instance.getCosts().length; i++) {
-            for (int j = 0; j < instance.getCosts()[0].length; j++) {
-                bw.write(String.format("%.2f", instance.getCosts()[i][j]) + " ");
-            }
-            bw.newLine();
-        }
-        bw.newLine();
-    }
-
-    /**
-     * Writes the item positions to the file using the specified buffered writer.
-     *
-     * @param instance - instance that is written to the file
-     * @param bw       - buffered writer pointing to the part of the file to write to
-     * @throws IOException
-     */
-    private static void writeItemPositions(Instance instance, BufferedWriter bw) throws IOException {
-        for (Item item : instance.getItemObjects()) {
-            bw.write(item.getPosition() + " ");
-        }
-        bw.newLine();
-    }
-
-    /**
-     * Writes the stack positions to the file using the specified buffered writer.
-     *
-     * @param instance - instance that is written to the file
-     * @param bw       - buffered writer pointing to the part of the file to write to
-     * @throws IOException
-     */
-    private static void writeStackPositions(Instance instance, BufferedWriter bw) throws IOException {
-        for (GridPosition stackPos : instance.getStackPositions()) {
-            bw.write(stackPos + " ");
-        }
-        bw.newLine();
-    }
-
-    /**
-     * Writes the item dimensions to the file using the specified buffered writer.
-     *
-     * @param instance - instance that is written to the file
-     * @param bw       - buffered writer pointing to the part of the file to write to
-     * @throws IOException
-     */
-    private static void writeItemDimensions(Instance instance, BufferedWriter bw) throws IOException {
-        for (Item item : instance.getItemObjects()) {
-            bw.write("(" + item.getLength() + "," + item.getWidth() + ")" + " ");
-        }
-        bw.newLine();
-    }
-
-    /**
      * Writes the specified instance to the file with the specified name.
      *
      * @param filename - file the instance gets written to
@@ -117,8 +41,6 @@ public class InstanceWriter {
             bw.close();
             fos.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -170,10 +92,84 @@ public class InstanceWriter {
             bw.close();
             fos.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Writes the stacking constraints to the file using the specified buffered writer.
+     *
+     * @param instance - instance that is written to the file
+     * @param bw       - buffered writer pointing to the part of the file to write to
+     * @throws IOException for errors during writing procedure
+     */
+    private static void writeStackingConstraints(Instance instance, BufferedWriter bw) throws IOException {
+        for (int i = 0; i < instance.getStackingConstraints().length; i++) {
+            for (int j = 0; j < instance.getStackingConstraints()[0].length; j++) {
+                bw.write(instance.getStackingConstraints()[i][j] + " ");
+            }
+            bw.newLine();
+        }
+        bw.newLine();
+    }
+
+    /**
+     * Writes the costs to the file using the specified buffered writer.
+     *
+     * @param instance - instance that is written to the file
+     * @param bw       - buffered writer pointing to the part of the file to write to
+     * @throws IOException for errors during writing procedure
+     */
+    private static void writeCosts(Instance instance, BufferedWriter bw) throws IOException {
+        for (int i = 0; i < instance.getCosts().length; i++) {
+            for (int j = 0; j < instance.getCosts()[0].length; j++) {
+                bw.write(String.format("%.2f", instance.getCosts()[i][j]) + " ");
+            }
+            bw.newLine();
+        }
+        bw.newLine();
+    }
+
+    /**
+     * Writes the item positions to the file using the specified buffered writer.
+     *
+     * @param instance - instance that is written to the file
+     * @param bw       - buffered writer pointing to the part of the file to write to
+     * @throws IOException for errors during writing procedure
+     */
+    private static void writeItemPositions(Instance instance, BufferedWriter bw) throws IOException {
+        for (Item item : instance.getItemObjects()) {
+            bw.write(item.getPosition() + " ");
+        }
+        bw.newLine();
+    }
+
+    /**
+     * Writes the stack positions to the file using the specified buffered writer.
+     *
+     * @param instance - instance that is written to the file
+     * @param bw       - buffered writer pointing to the part of the file to write to
+     * @throws IOException for errors during writing procedure
+     */
+    private static void writeStackPositions(Instance instance, BufferedWriter bw) throws IOException {
+        for (GridPosition stackPos : instance.getStackPositions()) {
+            bw.write(stackPos + " ");
+        }
+        bw.newLine();
+    }
+
+    /**
+     * Writes the item dimensions to the file using the specified buffered writer.
+     *
+     * @param instance - instance that is written to the file
+     * @param bw       - buffered writer pointing to the part of the file to write to
+     * @throws IOException for errors during writing procedure
+     */
+    private static void writeItemDimensions(Instance instance, BufferedWriter bw) throws IOException {
+        for (Item item : instance.getItemObjects()) {
+            bw.write("(" + item.getLength() + "," + item.getWidth() + ")" + " ");
+        }
+        bw.newLine();
     }
 }
