@@ -37,4 +37,20 @@ public class RepresentationUtil {
         }
         return space.toString();
     }
+
+    /**
+     * Returns the corresponding integer matrix for the given double matrix.
+     *
+     * @param matrix - matrix whose entries are going to be casted
+     * @return corresponding integer matrix
+     */
+    public static int[][] castFloatingPointMatrix(double[][] matrix) {
+        int[][] integerMatrix = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                integerMatrix[i][j] = (int)matrix[i][j];
+            }
+        }
+        return integerMatrix;
+    }
 }
