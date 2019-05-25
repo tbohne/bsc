@@ -8,10 +8,10 @@ package SP.util;
 public class RepresentationUtil {
 
     /**
-     * Helper method used in toString of Solution.
+     * Helper method used in toString().
      *
-     * @param numberOfStacks - the number of available stacks
-     * @return the maximum string offset
+     * @param numberOfStacks - number of available stacks
+     * @return maximum string offset
      */
     public static int getMaximumStringOffset(int numberOfStacks) {
         int cnt = 0;
@@ -23,34 +23,18 @@ public class RepresentationUtil {
     }
 
     /**
-     * Helper method used in toString of Solution.
+     * Helper method used in toString().
      *
-     * @param idx       - the index of the stack
-     * @param maxOffset - the maximum space offset
-     * @return the space used for the current stack visualization
+     * @param idx       - index of the stack
+     * @param maxOffset - maximum space offset
+     * @return space used for the current stack visualization
      */
     public static String getCurrentSpace(int idx, int maxOffset) {
-        String space = "";
-        if (idx < 10) {
-            for (int i = 0; i < maxOffset; i++) {
-                space += " ";
-            }
-            return space;
-        } else if (idx < 100) {
-            for (int i = 0; i < maxOffset - 1; i++) {
-                space += " ";
-            }
-            return space;
-        } else if (idx < 1000) {
-            for (int i = 0; i < maxOffset - 2; i++) {
-                space += " ";
-            }
-            return space;
-        } else {
-            for (int i = 0; i < maxOffset - 3; i++) {
-                space += " ";
-            }
-            return space;
+        StringBuilder space = new StringBuilder();
+        String idxStr = Integer.toString(idx);
+        for (int i = 0; i < maxOffset - idxStr.length() - 1; i++) {
+            space.append(" ");
         }
+        return space.toString();
     }
 }
