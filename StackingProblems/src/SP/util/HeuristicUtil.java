@@ -1,7 +1,6 @@
 package SP.util;
 
 import SP.representations.*;
-import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -138,7 +137,7 @@ public class HeuristicUtil {
      * @param blockedStacks - list of blocked stacks (only one item per stack in post-processing)
      */
     public static void updateItemPositionInPostProcessing(int item, int stack, int level, List<Integer> blockedStacks, Instance instance) {
-        HeuristicUtil.removeItemFromOutdatedPosition(item, instance.getStacks());
+        HeuristicUtil.removeItemFromStacks(item, instance.getStacks());
         instance.getStacks()[stack][level] = item;
         blockedStacks.add(stack);
     }
@@ -275,8 +274,8 @@ public class HeuristicUtil {
     /**
      * Creates an item array from the given list of items.
      *
-     * @param items - the given list of items
-     * @return an array of the given items
+     * @param items - list of items
+     * @return array of the given items
      */
     public static int[] getItemArrayFromItemList(List<Integer> items) {
         int[] itemArr = new int[items.size()];
@@ -286,13 +285,17 @@ public class HeuristicUtil {
         return itemArr;
     }
 
-    public static void removeItemFromOutdatedPosition(int item, int[][] stacks) {
+    /**
+     * Removes the specified item from the stack it is assigned to.
+     *
+     * @param item   - item to be removed
+     * @param stacks - containing the stack the item gets removed from
+     */
+    public static void removeItemFromStacks(int item, int[][] stacks) {
         for (int stack = 0; stack < stacks.length; stack++) {
             for (int level = 0; level < stacks[stack].length; level++) {
-
                 if (stacks[stack][level] == item) {
                     stacks[stack][level] = -1;
-                    // TODO: lower all items that are stacked in the air
                 }
             }
         }
@@ -301,10 +304,10 @@ public class HeuristicUtil {
     /**
      * Returns the savings for the specified item.
      *
-     * @param stackIdx - the index of the considered stack
-     * @param costsBefore - the original costs for each item assignment
-     * @param item - the item the savings are computed for
-     * @return the savings for the specified item
+     * @param stackIdx    - index of the considered stack
+     * @param costsBefore - original costs for each item assignment
+     * @param item        - item the savings are computed for
+     * @return savings for the specified item
      */
     public static double getSavingsForItem(int stackIdx, Map<Integer, Double> costsBefore, int item, double[][] costMatrix) {
         double costs = costMatrix[item][stackIdx];
@@ -314,14 +317,14 @@ public class HeuristicUtil {
     /**
      * Returns the maximum savings for the specified pair.
      *
-     * @param itemOne - the first item of the pair
-     * @param itemTwo - the second item of the pair
-     * @param stackIdx - the target stack
-     * @param costsBefore - the original costs for each item assignment
-     * @param costMatrix - the costs for each item-stack assignment
-     * @return the savings for the specified pair
+     * @param itemOne     - first item of the pair
+     * @param itemTwo     - second item of the pair
+     * @param stackIdx    - target stack
+     * @param costsBefore - original costs for each item assignment
+     * @param costMatrix  - costs for each item-stack assignment
+     * @return savings for the specified pair
      */
-    public static double getSavingsForPair(int itemOne, int itemTwo, int stackIdx, HashMap<Integer, Double> costsBefore, double[][] costMatrix) {
+    public static double getSavingsForPair(int itemOne, int itemTwo, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix) {
         double costsItemOne = costMatrix[itemOne][stackIdx];
         double costsItemTwo = costMatrix[itemTwo][stackIdx];
         double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
@@ -329,13 +332,20 @@ public class HeuristicUtil {
         return savingsItemOne > savingsItemTwo ? savingsItemOne : savingsItemTwo;
     }
 
+    /**
+     * Returns the maximum savings for the specified triple.
+     *
+     * @param itemOne     - first item of triple
+     * @param itemTwo     - second item of triple
+     * @param itemThree   - third item of triple
+     * @param stackIdx    - index of considered stack
+     * @param costsBefore - original costs for each item assignment
+     * @param costMatrix  - costs for each item-stack assignment
+     * @return savings for the specified triple
+     */
     public static double getSavingsForTriple(
-        ArrayList<ArrayList<Integer>> itemTriples, int tripleIdx, int stackIdx, HashMap<Integer, Double> costsBefore, double[][] costMatrix
+        int itemOne, int itemTwo, int itemThree, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix
     ) {
-        int itemOne = itemTriples.get(tripleIdx).get(0);
-        int itemTwo = itemTriples.get(tripleIdx).get(1);
-        int itemThree = itemTriples.get(tripleIdx).get(2);
-
         double costsItemOne = costMatrix[itemOne][stackIdx];
         double costsItemTwo = costMatrix[itemTwo][stackIdx];
         double costsItemThree = costMatrix[itemThree][stackIdx];
@@ -344,34 +354,62 @@ public class HeuristicUtil {
         double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
         double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
 
-        ArrayList<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
+        List<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
         return Collections.max(savings);
     }
 
-    public static void updateAssignmentsForCompatibleTriple(
-        int itemOne, int itemTwo, int itemThree, int stack, HashMap<Integer, Double> costsBefore, Instance instance
+    /**
+     * Returns the item of the triple that leads to the maximum savings.
+     *
+     * @param itemOne     - first item of the triple
+     * @param itemTwo     - second item of the triple
+     * @param itemThree   - third item of the triple
+     * @param stackIdx    - index of the considered stack
+     * @param costsBefore - original costs for each item-stack assignment
+     * @param costMatrix  - costs for each item-stack assignment
+     * @return item with the maximum savings
+     */
+    public static int getItemWithMaxSavingsForTriple(
+        int itemOne, int itemTwo, int itemThree, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix
     ) {
-        double costsItemOne = instance.getCosts()[itemOne][stack];
-        double costsItemTwo = instance.getCosts()[itemTwo][stack];
-        double costsItemThree = instance.getCosts()[itemThree][stack];
+        double costsItemOne = costMatrix[itemOne][stackIdx];
+        double costsItemTwo = costMatrix[itemTwo][stackIdx];
+        double costsItemThree = costMatrix[itemThree][stackIdx];
 
         double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
         double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
         double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
 
-        ArrayList<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
+        List<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
         double maxSavings = Collections.max(savings);
 
         if (maxSavings == savingsItemOne) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
+            return itemOne;
         } else if (maxSavings == savingsItemTwo) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+            return itemTwo;
         } else {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemThree, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemThree;
+            return itemThree;
         }
+    }
+
+    /**
+     * Updates the stack assignments for the compatible triple.
+     *
+     * @param itemOne     - first item of the triple
+     * @param itemTwo     - second item of the triple
+     * @param itemThree   - third item of the triple
+     * @param stack       - index of the considered stack
+     * @param costsBefore - original costs for each item-stack assignment
+     * @param instance    - considered instance of the stacking problem
+     */
+    public static void updateAssignmentsForCompatibleTriple(
+        int itemOne, int itemTwo, int itemThree, int stack, Map<Integer, Double> costsBefore, Instance instance
+    ) {
+        int itemWithMaxSavings = HeuristicUtil.getItemWithMaxSavingsForTriple(
+            itemOne, itemTwo, itemThree, stack, costsBefore, instance.getCosts()
+        );
+        HeuristicUtil.removeItemFromStacks(itemWithMaxSavings, instance.getStacks());
+        instance.getStacks()[stack][instance.getGroundLevel()] = itemWithMaxSavings;
     }
 
     public static void updateAssignmentsForCompatiblePair(
@@ -384,10 +422,10 @@ public class HeuristicUtil {
         double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
 
         if (savingsItemOne > savingsItemTwo) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, instance.getStacks());
+            HeuristicUtil.removeItemFromStacks(itemOne, instance.getStacks());
             instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
         } else {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
+            HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
             instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
         }
     }
@@ -527,11 +565,11 @@ public class HeuristicUtil {
 
             // item one compatible
         } else if (instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemOne, instance.getStacks());
+            HeuristicUtil.removeItemFromStacks(itemOne, instance.getStacks());
             instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
             // item two compatible
         } else if (instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / instance.getItems().length) {
-            HeuristicUtil.removeItemFromOutdatedPosition(itemTwo, instance.getStacks());
+            HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
             instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
         }
     }
