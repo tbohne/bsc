@@ -17,16 +17,19 @@ public class BinPackingFormulation {
 
     private Instance instance;
     private double timeLimit;
+    private boolean hideCPLEXOutput;
 
     /**
      * Constructor
      *
-     * @param instance  - instance to be solved
-     * @param timeLimit - time limit for the solving procedure
+     * @param instance        - instance to be solved
+     * @param timeLimit       - time limit for the solving procedure
+     * @param hideCPLEXOutput - determines whether the CPLEX output gets hidden
      */
-    public BinPackingFormulation(Instance instance, double timeLimit) {
+    public BinPackingFormulation(Instance instance, double timeLimit, boolean hideCPLEXOutput) {
         this.instance = instance;
         this.timeLimit = timeLimit;
+        this.hideCPLEXOutput = hideCPLEXOutput;
     }
 
     /**
@@ -168,8 +171,10 @@ public class BinPackingFormulation {
      * @throws ilog.concert.IloException for CPLEX errors
      */
     private void setCPLEXConfig(IloCplex cplex) throws ilog.concert.IloException {
-        
-        cplex.setOut(null);
+
+        if (this.hideCPLEXOutput) {
+            cplex.setOut(null);
+        }
 
         // set time limit
         cplex.setParam(IloCplex.Param.TimeLimit, this.timeLimit);

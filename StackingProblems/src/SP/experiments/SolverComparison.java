@@ -28,6 +28,8 @@ public interface SolverComparison {
     // Specifies the time limit for the solving process in seconds.
     double TIME_LIMIT = 300;
 
+    boolean HIDE_CPLEX_OUTPUT = true;
+
     // The 3Cap heuristic has an option to prioritize the runtime which can be set here.
     boolean PRIORITIZE_RUNTIME = false;
     // 2Cap and 3Cap provide post processing procedures that can be enabled here.
