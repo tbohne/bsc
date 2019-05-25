@@ -7,7 +7,7 @@ import SP.representations.Item;
 import SP.util.HeuristicUtil;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.List;
 
 /**
  * Provides functionalities to configure and generate test instances for stacking problems.
@@ -16,57 +16,43 @@ import java.util.Random;
  */
 public class TestDataGenerator {
 
-    public static final String INSTANCE_PREFIX = "res/instances/";
+    private static final String INSTANCE_PREFIX = "res/instances/";
 
     /******************************* CONFIGURATION *************************************/
-    public static final int NUMBER_OF_INSTANCES = 20;
-    public static final int NUMBER_OF_ITEMS = 1000;
-    public static final int STACK_CAPACITY = 3;
+    private static final int NUMBER_OF_INSTANCES = 20;
+    private static final int NUMBER_OF_ITEMS = 100;
+    private static final int STACK_CAPACITY = 3;
 
     // The number of stacks m is initially m = n / b,
     // this number specifies the percentage by which the initial m gets increased.
-    public static final int ADDITIONAL_STACK_PERCENTAGE = 20;
+    private static final int ADDITIONAL_STACK_PERCENTAGE = 20;
 
-    public static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0159F;
-    public static final float CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS = 0.7F;
+    private static final float CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS = 0.0159F;
+    private static final float CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS = 0.7F;
 
-    public static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
+    private static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
 
-    public static final float ITEM_LENGTH_LB = 1.0F;
-    public static final float ITEM_LENGTH_UB = 6.0F;
-    public static final float ITEM_WIDTH_LB = 1.0F;
-    public static final float ITEM_WIDTH_UB = 2.4F;
+    private static final float ITEM_LENGTH_LB = 1.0F;
+    private static final float ITEM_LENGTH_UB = 6.0F;
+    private static final float ITEM_WIDTH_LB = 1.0F;
+    private static final float ITEM_WIDTH_UB = 2.4F;
 
-    public static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
-    public static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
+    private static final float STORAGE_AREA_SLOT_LENGTH = 6.06F;
+    private static final float STORAGE_AREA_SLOT_WIDTH = 2.44F;
 
-    public static final float STORAGE_AREA_TRUCK_DISTANCE_FACTOR = 5.0F;
+    private static final float STORAGE_AREA_VEHICLE_DISTANCE_FACTOR = 5.0F;
 
-    public static final int NUMBER_OF_ROWS_IN_STORAGE_AREA = 2;
+    private static final int NUMBER_OF_ROWS_IN_STORAGE_AREA = 2;
     /***********************************************************************************/
-
-    /**
-     * Computes the manhattan distance between the specified item and stack.
-     *
-     * @param item           - the item used in the dist computation
-     * @param stack          - the stack used in the dist computation
-     * @param stackPositions - list of stack positions
-     * @return manhattan distance between original item position and stack
-     */
-    public static double computeManhattanDist(int item, int stack, Item[] items, ArrayList<GridPosition> stackPositions) {
-        GridPosition itemPosition = items[item].getPosition();
-        GridPosition stackPosition = stackPositions.get(stack);
-        return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
-    }
 
     /**
      * Generates the positions of the fixed stacks in the storage area in a square.
      *
-     * @param numOfStacks - the number of stacks available in the instances
-     * @return list of stack positions
+     * @param numOfStacks - number of stacks available in the instances
+     * @return list of generated stack positions
      */
-    public static ArrayList<GridPosition> generateStackPositionsSquare(int numOfStacks) {
-        ArrayList<GridPosition> stackPositions = new ArrayList<>();
+    public static List<GridPosition> generateStackPositionsSquare(int numOfStacks) {
+        List<GridPosition> stackPositions = new ArrayList<>();
         int stacksPerRow = (int)Math.ceil(Math.sqrt(numOfStacks));
         float xCoord = 0;
         float yCoord = 0;
@@ -86,12 +72,12 @@ public class TestDataGenerator {
      * Generates the positions of the fixed stacks in the storage area
      * on the specified number of rows.
      *
-     * @param numOfStacks - the number of stacks available in the instances
-     * @return list of stack positions
+     * @param numOfStacks - number of stacks available in the instances
+     * @return list of generated stack positions
      */
-    public static ArrayList<GridPosition> generateStackPositionsOnSpecifiedRows(int numOfStacks) {
-        ArrayList<GridPosition> stackPositions = new ArrayList<>();
+    private static List<GridPosition> generateStackPositionsOnSpecifiedNumberOfRows(int numOfStacks) {
 
+        List<GridPosition> stackPositions = new ArrayList<>();
         float xCoord = 0;
         float yCoord = 0;
         int perRow = numOfStacks / NUMBER_OF_ROWS_IN_STORAGE_AREA;
@@ -119,18 +105,19 @@ public class TestDataGenerator {
     }
 
     /**
-     * Generates the original positions of the items on the trucks.
+     * Generates the original positions of the items on the vehicles they are arriving on.
      * In practical settings, there are often two tracks for arriving vehicles.
-     * Therefore the items are positioned in two rows.
+     * Therefore the items are positioned on two rows.
      *
-     * @return list of item positions
+     * @return list of generated item positions
      */
-    public static ArrayList<GridPosition> generateItemPositions(ArrayList<GridPosition> stackPositions) {
-        ArrayList<GridPosition> itemPositions = new ArrayList<>();
+    private static List<GridPosition> generateItemPositions(List<GridPosition> stackPositions) {
+
+        List<GridPosition> itemPositions = new ArrayList<>();
 
         float xCoord = 0;
         float yCoord = (float)stackPositions.get(stackPositions.size() - 1).getYCoord()
-            + STORAGE_AREA_SLOT_WIDTH + STORAGE_AREA_TRUCK_DISTANCE_FACTOR * STORAGE_AREA_SLOT_WIDTH;
+            + STORAGE_AREA_SLOT_WIDTH + STORAGE_AREA_VEHICLE_DISTANCE_FACTOR * STORAGE_AREA_SLOT_WIDTH;
 
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             if (i == NUMBER_OF_ITEMS / 2) {
@@ -144,29 +131,12 @@ public class TestDataGenerator {
     }
 
     /**
-     * Returns the percentage of one-entries.
-     *
-     * @param stackingConstraintMatrix - the matrix to be considered
-     * @return the percentage of one-entries
-     */
-    public static float getPercentageOfOneEntries(int[][] stackingConstraintMatrix) {
-        int numOfEntries = NUMBER_OF_ITEMS * NUMBER_OF_ITEMS;
-        int numOfOnes = 0;
-        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            for (int j = 0; j < NUMBER_OF_ITEMS; j++) {
-                numOfOnes += stackingConstraintMatrix[i][j];
-            }
-        }
-        return ((float)numOfOnes / (float)numOfEntries) * 100;
-    }
-
-    /**
      * Generates n items with a random length and width from a given range.
      *
-     * @return the generated items
+     * @return generated items
      */
-    public static Item[] generateItems(ArrayList<GridPosition> stackPositions) {
-        ArrayList<GridPosition> itemPositions = generateItemPositions(stackPositions);
+    private static Item[] generateItems(List<GridPosition> stackPositions) {
+        List<GridPosition> itemPositions = generateItemPositions(stackPositions);
         Item[] items = new Item[NUMBER_OF_ITEMS];
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             float length = HeuristicUtil.getRandomValueInBetweenHalfSteps(ITEM_LENGTH_LB, ITEM_LENGTH_UB);
@@ -180,23 +150,15 @@ public class TestDataGenerator {
      * Generates the stacking constraint matrix. In this approach, an item is stackable on top of another item
      * if its length and width values are less than or equal to the length and width of the other item.
      * The length and width per item is a random value from a given range. Two items are stackable in both
-     * directions if the have the same width and length. The transitivity is already given in this approach.
+     * directions if they have the same width and length. The transitivity is already given in this approach.
      *
-     * @param dimOne - the first dimension of the matrix
-     * @param dimTwo - the second dimension of the matrix
-     * @return the generated stacking constraint matrix
+     * @return generated stacking constraint matrix
      */
-    public static int[][] generateStackingConstraintMatrixApproachTwo(int dimOne, int dimTwo, Item[] items) {
-        int[][] stackingConstraintMatrix = new int[dimOne][dimTwo];
+    private static int[][] generateStackingConstraintMatrixApproachTwo(Item[] items) {
+        int[][] stackingConstraintMatrix = new int[TestDataGenerator.NUMBER_OF_ITEMS][TestDataGenerator.NUMBER_OF_ITEMS];
 
-        for (int i = 0; i < dimOne; i++) {
-
-            System.out.println("###########################");
-            System.out.println(items[i].getLength());
-            System.out.println(items[i].getWidth());
-            System.out.println("###########################");
-
-            for (int j = 0; j < dimTwo; j++) {
+        for (int i = 0; i < TestDataGenerator.NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < TestDataGenerator.NUMBER_OF_ITEMS; j++) {
 
                 if (i == j) { stackingConstraintMatrix[i][j] = 1; }
 
@@ -219,15 +181,12 @@ public class TestDataGenerator {
     /**
      * Generates the stacking constraint matrix with "random" 0/1 entries based on a given chance.
      *
-     * @param dimOne     - the first dimension of the matrix
-     * @param dimTwo     - the second dimension of the matrix
-     * @param transitive - specifies whether or not the stacking constraints should be transitive
-     * @return the generated stacking constraint matrix
+     * @return generated stacking constraint matrix
      */
-    public static int[][] generateStackingConstraintMatrixApproachOne(int dimOne, int dimTwo, boolean transitive) {
-        int[][] stackingConstraintMatrix = new int[dimOne][dimTwo];
-        for (int i = 0; i < dimOne; i++) {
-            for (int j = 0; j < dimTwo; j++) {
+    private static int[][] generateStackingConstraintMatrixApproachOne() {
+        int[][] stackingConstraintMatrix = new int[TestDataGenerator.NUMBER_OF_ITEMS][TestDataGenerator.NUMBER_OF_ITEMS];
+        for (int i = 0; i < TestDataGenerator.NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < TestDataGenerator.NUMBER_OF_ITEMS; j++) {
                 if (i == j) {
                     stackingConstraintMatrix[i][j] = 1;
                 } else {
@@ -239,7 +198,7 @@ public class TestDataGenerator {
                 }
             }
         }
-        if (transitive) {
+        if (true) {
             stackingConstraintMatrix = makeMatrixTransitive(stackingConstraintMatrix);
         }
         return stackingConstraintMatrix;
@@ -248,10 +207,10 @@ public class TestDataGenerator {
     /**
      * Adds the one-entries in the stacking constraint matrix that follow from transitivity.
      *
-     * @param matrix - the matrix to be extended
-     * @return the extended matrix
+     * @param matrix - matrix to be extended
+     * @return extended matrix
      */
-    public static int[][] makeMatrixTransitive(int[][] matrix) {
+    private static int[][] makeMatrixTransitive(int[][] matrix) {
         // The ones that are added can then induce new ones in other rows,
         // therefore the process has to be repeated as long as there are changes.
         boolean oneEntryAdded = true;
@@ -279,9 +238,9 @@ public class TestDataGenerator {
     /**
      * Computes the number of stacks available in the instances.
      *
-     * @return the number of available stacks
+     * @return number of available stacks
      */
-    public static int computeNumberOfStacks() {
+    private static int computeNumberOfStacks() {
         int numOfStacks = (int)Math.ceil((float)NUMBER_OF_ITEMS / (float)STACK_CAPACITY);
         if (ADDITIONAL_STACK_PERCENTAGE > 0) {
             numOfStacks = (int)(Math.ceil(numOfStacks + numOfStacks * ((float)ADDITIONAL_STACK_PERCENTAGE / 100.0)));
@@ -294,14 +253,14 @@ public class TestDataGenerator {
      * The placement constraint that forbid certain item-stack-assignments are indirectly implemented
      * via high cost entries.
      *
-     * @param costs          - the matrix of costs to be filled
-     * @param numOfStacks    - the number of available stacks
-     * @param stackPositions - the positions of the stacks in the storage area
+     * @param costs          - matrix of costs to be filled
+     * @param numOfStacks    - number of available stacks
+     * @param stackPositions - positions of the stacks in the storage area
      */
-    public static void generateCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<GridPosition> stackPositions) {
+    private static void generateCosts(double[][] costs, int numOfStacks, Item[] items, List<GridPosition> stackPositions) {
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             for (int j = 0; j < numOfStacks; j++) {
-                costs[i][j] = computeManhattanDist(i, j, items, stackPositions);
+                costs[i][j] = HeuristicUtil.computeManhattanDist(i, j, items, stackPositions);
             }
         }
         // Implements the placement constraints via high cost entries.
@@ -314,58 +273,62 @@ public class TestDataGenerator {
         }
     }
 
-    public static void generateRandomCosts(double[][] costs, int numOfStacks, Item[] items, ArrayList<GridPosition> stackPositions) {
-        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            for (int j = 0; j < numOfStacks; j++) {
-                Random r = new Random();
-                costs[i][j] = r.nextInt((85 - 22) + 1) + 22;
-            }
-        }
-        // Implements the placement constraints via high cost entries.
-        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            for (int j = 0; j < numOfStacks; j++) {
-                if (Math.random() >= CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS) {
-                    costs[i][j] = Integer.MAX_VALUE / NUMBER_OF_ITEMS;
-                }
-            }
-        }
+    /**
+     * Writes the config of the generated instance set to the file system.
+     */
+    private static void writeConfig() {
+        InstanceWriter.writeConfig(
+            INSTANCE_PREFIX + "instance_set_config.csv", NUMBER_OF_INSTANCES, NUMBER_OF_ITEMS,
+            STACK_CAPACITY, ADDITIONAL_STACK_PERCENTAGE, CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
+            CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS, USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE,
+            ITEM_LENGTH_LB, ITEM_LENGTH_UB, ITEM_WIDTH_LB, ITEM_WIDTH_UB
+        );
+    }
+
+    /**
+     * Generates an instance of a stacking problem and writes it to the file system.
+     *
+     * @param idx                      - index of the instance to be generated
+     * @param numOfStacks              - number of available stacks
+     * @param items                    - items that are part of the instance
+     * @param stackPositions           - stack positions in the storage area
+     * @param stackingConstraintMatrix - matrix containing the stacking constraints
+     * @param costs                    - matrix containing the transport costs for items
+     */
+    private static void generateInstance(
+        int idx, int numOfStacks, Item[] items, List<GridPosition> stackPositions,
+        int[][] stackingConstraintMatrix, double[][] costs
+    ) {
+        String idxString = idx < 10 ? "0" + idx : String.valueOf(idx);
+        String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idxString;
+
+        Instance instance = new Instance(
+            items, numOfStacks, stackPositions, STACK_CAPACITY, stackingConstraintMatrix, costs, instanceName
+        );
+        InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
+        writeConfig();
     }
 
     public static void main(String[] args) {
+
         int numOfStacks = TestDataGenerator.computeNumberOfStacks();
-        float avgPercentage = 0;
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
 
-            ArrayList<GridPosition> stackPositions = generateStackPositionsOnSpecifiedRows(numOfStacks);
+            List<GridPosition> stackPositions = generateStackPositionsOnSpecifiedNumberOfRows(numOfStacks);
             Item[] items = generateItems(stackPositions);
 
             int[][] stackingConstraintMatrix;
             if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
-                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, true);
+                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne(
+                );
             } else {
-                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(NUMBER_OF_ITEMS, NUMBER_OF_ITEMS, items);
+                stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(items);
             }
-            avgPercentage += getPercentageOfOneEntries(stackingConstraintMatrix);
 
             double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
             TestDataGenerator.generateCosts(costs, numOfStacks, items, stackPositions);
-
-            String idxString = idx < 10 ? "0" + idx : String.valueOf(idx);
-            String instanceName = "slp_instance_" + NUMBER_OF_ITEMS + "_" + numOfStacks + "_" + STACK_CAPACITY + "_" + idxString;
-            Instance instance = new Instance(
-                items, numOfStacks, stackPositions,
-                STACK_CAPACITY, stackingConstraintMatrix, costs, instanceName
-            );
-            InstanceWriter.writeInstance(INSTANCE_PREFIX + instanceName + ".txt", instance);
-
-            InstanceWriter.writeConfig(
-                INSTANCE_PREFIX + "instance_set_config.csv", NUMBER_OF_INSTANCES, NUMBER_OF_ITEMS,
-                STACK_CAPACITY, ADDITIONAL_STACK_PERCENTAGE, CHANCE_FOR_ONE_IN_STACKING_CONSTRAINTS,
-                CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS, USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE,
-                ITEM_LENGTH_LB, ITEM_LENGTH_UB, ITEM_WIDTH_LB, ITEM_WIDTH_UB
-            );
+            generateInstance(idx, numOfStacks, items, stackPositions, stackingConstraintMatrix, costs);
         }
-        System.out.println("AVG PERCENTAGE OF ONE-ENTRIES: " + avgPercentage / NUMBER_OF_INSTANCES);
     }
 }

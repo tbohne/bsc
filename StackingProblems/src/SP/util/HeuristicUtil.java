@@ -159,6 +159,37 @@ public class HeuristicUtil {
     }
 
     /**
+     * Computes the manhattan distance between the specified item and stack.
+     *
+     * @param item           - the item used in the dist computation
+     * @param stack          - the stack used in the dist computation
+     * @param stackPositions - list of stack positions
+     * @return manhattan distance between original item position and stack
+     */
+    public static double computeManhattanDist(int item, int stack, Item[] items, List<GridPosition> stackPositions) {
+        GridPosition itemPosition = items[item].getPosition();
+        GridPosition stackPosition = stackPositions.get(stack);
+        return Math.abs(itemPosition.getXCoord() - stackPosition.getXCoord()) + Math.abs(itemPosition.getYCoord() - stackPosition.getYCoord());
+    }
+
+    /**
+     * Returns the percentage of one-entries in the stacking constraint matrix.
+     *
+     * @param stackingConstraintMatrix - matrix to be considered
+     * @return percentage of one-entries
+     */
+    public static float getPercentageOfOneEntriesInStackingConstraintMatrix(int[][] stackingConstraintMatrix) {
+        int numOfEntries = stackingConstraintMatrix.length * stackingConstraintMatrix.length;
+        int numOfOnes = 0;
+        for (int i = 0; i < stackingConstraintMatrix.length; i++) {
+            for (int j = 0; j < stackingConstraintMatrix[i].length; j++) {
+                numOfOnes += stackingConstraintMatrix[i][j];
+            }
+        }
+        return ((float)numOfOnes / (float)numOfEntries) * 100;
+    }
+
+    /**
      * Returns whether the given item is validly assignable to the given pair.
      *
      * @param item        - the item to be checked
