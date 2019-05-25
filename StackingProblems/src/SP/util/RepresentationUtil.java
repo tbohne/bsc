@@ -1,5 +1,12 @@
 package SP.util;
 
+import SP.constructive_heuristics.ThreeCapHeuristic;
+import SP.constructive_heuristics.TwoCapHeuristic;
+import SP.mip_formulations.BinPackingFormulation;
+import SP.mip_formulations.ThreeIndexFormulation;
+import SP.post_optimization_methods.TabuSearch;
+import SP.representations.Solvers;
+
 /**
  * A collection of general utility methods used in the representations.
  *
@@ -52,5 +59,51 @@ public class RepresentationUtil {
             }
         }
         return integerMatrix;
+    }
+
+    /**
+     * Returns the name of the solver used to create the solution.
+     *
+     * @param solver - specifies the used solver
+     * @return name of the used solver
+     */
+    public static String getNameOfSolver(Solvers.Solver solver) {
+        switch (solver) {
+            case MIP_BINPACKING:
+                return BinPackingFormulation.class.getName();
+            case MIP_THREEINDEX:
+                return ThreeIndexFormulation.class.getName();
+            case CONSTRUCTIVE_TWO_CAP:
+                return TwoCapHeuristic.class.getName();
+            case CONSTRUCTIVE_THREE_CAP:
+                return ThreeCapHeuristic.class.getName();
+            case TABU_SEARCH:
+                return TabuSearch.class.getName();
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Returns the abbreviated name of the solver used to create the solution.
+     *
+     * @param solver - specifies the used solver
+     * @return abbreviated name of the used solver
+     */
+    public static String getAbbreviatedNameOfSolver(Solvers.Solver solver) {
+        switch (solver) {
+            case MIP_BINPACKING:
+                return "BinP";
+            case MIP_THREEINDEX:
+                return "3Idx";
+            case CONSTRUCTIVE_TWO_CAP:
+                return "2Cap";
+            case CONSTRUCTIVE_THREE_CAP:
+                return "3Cap";
+            case TABU_SEARCH:
+                return "TS";
+            default:
+                return "";
+        }
     }
 }
