@@ -439,16 +439,45 @@ public class HeuristicUtil {
     }
 
     /**
-     * Retrieves all the stacks that remain empty in the original solution.
+     * Updates the stack assignments for the specified pair.
      *
-     * @param sol - the original solution
-     * @return the list of empty stacks
+     * @param itemOne     - first item of the pair
+     * @param itemTwo     - second item of the pair
+     * @param stack       - target stack
+     * @param costsBefore - costs for the original item assignments
+     * @param instance    - considered instance of the stacking problem
      */
-    public static ArrayList<String> retrieveEmptyStacks(Solution sol) {
+    public static void updateStackAssignmentsForPairs(
+        int itemOne, int itemTwo, int stack, Map<Integer, Double> costsBefore, Instance instance
+    ) {
+        // both items compatible
+        if (HeuristicUtil.itemCompatibleWithStack(instance.getCosts(), itemOne, stack)
+            && HeuristicUtil.itemCompatibleWithStack(instance.getCosts(), itemTwo, stack)) {
+
+                HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore, instance);
+
+        // item one compatible
+        } else if (HeuristicUtil.itemCompatibleWithStack(instance.getCosts(), itemOne, stack)) {
+            HeuristicUtil.removeItemFromStacks(itemOne, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
+        // item two compatible
+        } else if (HeuristicUtil.itemCompatibleWithStack(instance.getCosts(), itemTwo, stack)) {
+            HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+        }
+    }
+
+    /**
+     * Retrieves all the stacks that remain empty in the solution.
+     *
+     * @param sol - solution to be checked for empty stacks
+     * @return list of remaining empty stacks
+     */
+    public static List<String> retrieveEmptyStacks(Solution sol) {
 
         int stackCapacity = sol.getFilledStacks()[0].length;
 
-        ArrayList<String> emptyStacks = new ArrayList<>();
+        List<String> emptyStacks = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
             int sumOfEntries = 0;
             for (int entry : sol.getFilledStacks()[stack]) {
@@ -462,13 +491,13 @@ public class HeuristicUtil {
     }
 
     /**
-     * Retrieves the empty positions from the storage area.
+     * Retrieves the empty positions from the stacks.
      *
      * @param sol - solution to retrieve the empty positions for
-     * @return list of empty positions in the storage area
+     * @return list of empty positions in the stacks
      */
-    public static ArrayList<StackPosition> retrieveEmptyPositions(Solution sol) {
-        ArrayList<StackPosition> emptyPositions = new ArrayList<>();
+    public static List<StackPosition> retrieveEmptyPositions(Solution sol) {
+        List<StackPosition> emptyPositions = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
             for (int level = 0; level < sol.getFilledStacks()[stack].length; level++) {
                 if (sol.getFilledStacks()[stack][level] == -1) {
@@ -480,13 +509,13 @@ public class HeuristicUtil {
     }
 
     /**
-     * Returns the costs for each item's assignment in the original solution.
+     * Returns the costs for each item's assignment in the solution.
      *
-     * @param sol - the original solution
-     * @return hashmap containing the original costs for each item assignment
+     * @param sol - solution to get the costs for
+     * @return original costs for each item assignment
      */
-    public static HashMap<Integer, Double> getOriginalCosts(Solution sol, double[][] costMatrix) {
-        HashMap<Integer, Double> originalCosts = new HashMap<>();
+    public static Map<Integer, Double> getOriginalCosts(Solution sol, double[][] costMatrix) {
+        Map<Integer, Double> originalCosts = new HashMap<>();
         for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
             for (int entry : sol.getFilledStacks()[stack]) {
                 if (entry != -1) {
@@ -498,10 +527,10 @@ public class HeuristicUtil {
     }
 
     /**
-     * Returns the best solution from the list of generated solutions.
+     * Returns the best solution from the list of generated solutions based on the transport costs.
      *
-     * @param solutions - the list of generated solutions
-     * @return the best solution based on the costs
+     * @param solutions - list of generated solutions
+     * @return best solution based on the costs
      */
     public static Solution getBestSolution(List<Solution> solutions) {
         Solution bestSol = new Solution();
@@ -511,82 +540,6 @@ public class HeuristicUtil {
             }
         }
         return bestSol;
-    }
-
-    /**
-     * Updates the stack assignments for the specified pair.
-     *
-     * @param itemOne - the first item of the pair
-     * @param itemTwo - the second item of the pair
-     * @param stack - the target stack
-     * @param costsBefore - the costs for the original item assignments
-     * @param instance - the considered instance of the stacking problem
-     */
-    public static void updateStackAssignmentsForPairs(
-        int itemOne, int itemTwo, int stack, HashMap<Integer, Double> costsBefore, Instance instance
-    ) {
-        // both items compatible
-        if (instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / instance.getItems().length
-                && instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / instance.getItems().length) {
-
-            HeuristicUtil.updateAssignmentsForCompatiblePair(itemOne, stack, itemTwo, costsBefore, instance);
-
-            // item one compatible
-        } else if (instance.getCosts()[itemOne][stack] < Integer.MAX_VALUE / instance.getItems().length) {
-            HeuristicUtil.removeItemFromStacks(itemOne, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
-            // item two compatible
-        } else if (instance.getCosts()[itemTwo][stack] < Integer.MAX_VALUE / instance.getItems().length) {
-            HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
-        }
-    }
-
-    /**
-     * Adds the edges for item pairs in the post-processing graph.
-     * The costs for each edge correspond to the maximum savings for
-     * moving an item of the pair to an empty stack.
-     *
-     * @param postProcessingGraph - the graph to add the edges to
-     * @param itemPairs - the item pairs to be connected to compatible empty stacks
-     * @param emptyStacks - the the empty stacks to be connected to compatible item pairs
-     * @param originalCosts - the costs for the original item assignments
-     */
-    public static void addEdgesForItemPairs(
-            DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> postProcessingGraph,
-            ArrayList<ArrayList<Integer>> itemPairs,
-            ArrayList<String> emptyStacks,
-            HashMap<Integer, Double> originalCosts,
-            Instance instance
-    ) {
-
-        for (int pair = 0; pair < itemPairs.size(); pair++) {
-            for (String emptyStack : emptyStacks) {
-
-                DefaultWeightedEdge edge = postProcessingGraph.addEdge("pair" + itemPairs.get(pair), emptyStack);
-                int stackIdx = Integer.parseInt(emptyStack.replace("stack", "").trim());
-                double savings = 0.0;
-
-                // both items compatible
-                if (instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length
-                    && instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
-
-                        savings = HeuristicUtil.getSavingsForPair(
-                            itemPairs.get(pair).get(0), itemPairs.get(pair).get(1), stackIdx, originalCosts, instance.getCosts()
-                        );
-
-                // item one compatible
-                } else if (instance.getCosts()[itemPairs.get(pair).get(0)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
-                    int itemOne = itemPairs.get(pair).get(0);
-                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemOne, instance.getCosts());
-                // item two compatible
-                } else if (instance.getCosts()[itemPairs.get(pair).get(1)][stackIdx] < Integer.MAX_VALUE / instance.getItems().length) {
-                    int itemTwo = itemPairs.get(pair).get(1);
-                    savings = HeuristicUtil.getSavingsForItem(stackIdx, originalCosts, itemTwo, instance.getCosts());
-                }
-                postProcessingGraph.setEdgeWeight(edge, savings);
-            }
-        }
     }
 
     /**
