@@ -18,6 +18,8 @@ public class BinPackingFormulation {
     private Instance instance;
     private double timeLimit;
     private boolean hideCPLEXOutput;
+    private int mipEmphasis;
+    private double tolerance;
 
     /**
      * Constructor
@@ -25,11 +27,15 @@ public class BinPackingFormulation {
      * @param instance        - instance to be solved
      * @param timeLimit       - time limit for the solving procedure
      * @param hideCPLEXOutput - determines whether the CPLEX output gets hidden
+     * @param mipEmphasis     - controls trade-offs between speed, feasibility and optimality
+     * @param tolerance       - termination tolerance
      */
-    public BinPackingFormulation(Instance instance, double timeLimit, boolean hideCPLEXOutput) {
+    public BinPackingFormulation(Instance instance, double timeLimit, boolean hideCPLEXOutput, int mipEmphasis, double tolerance) {
         this.instance = instance;
         this.timeLimit = timeLimit;
         this.hideCPLEXOutput = hideCPLEXOutput;
+        this.mipEmphasis = mipEmphasis;
+        this.tolerance = tolerance;
     }
 
     /**
@@ -179,12 +185,12 @@ public class BinPackingFormulation {
         // set time limit
         cplex.setParam(IloCplex.Param.TimeLimit, this.timeLimit);
 
-        // 1 --> emphasize feasibility over optimality
-        cplex.setParam(IloCplex.IntParam.MIPEmphasis, 1);
+        // controls trade-offs between speed, feasibility, optimality,
+        cplex.setParam(IloCplex.IntParam.MIPEmphasis, this.mipEmphasis);
 
-        // set tolerance to 0.0 - CPLEX will only terminate before the time limit if the actual optimum is found
-        cplex.setParam(IloCplex.DoubleParam.EpAGap, 0.0);
-        cplex.setParam(IloCplex.DoubleParam.EpGap, 0.0);
+        // set termination tolerance
+        cplex.setParam(IloCplex.DoubleParam.EpAGap, this.tolerance);
+        cplex.setParam(IloCplex.DoubleParam.EpGap, this.tolerance);
     }
 }
 

@@ -40,7 +40,9 @@ public class SolverComparison2Cap implements SolverComparison {
      * @param solutionName - the name of the generated solution
      */
     public void solveWithBinPacking(Instance instance, String solutionName) {
-        BinPackingFormulation binPackingFormulation = new BinPackingFormulation(instance, TIME_LIMIT, HIDE_CPLEX_OUTPUT);
+        BinPackingFormulation binPackingFormulation = new BinPackingFormulation(
+            instance, TIME_LIMIT, HIDE_CPLEX_OUTPUT, MIP_EMPHASIS, MIP_TOLERANCE
+        );
         Solution sol = binPackingFormulation.solve();
         SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_BINPACKING);
         SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_BINPACKING);
