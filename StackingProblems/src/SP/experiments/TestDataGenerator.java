@@ -31,6 +31,7 @@ public class TestDataGenerator {
     private static final float CHANCE_FOR_ONE_IN_PLACEMENT_CONSTRAINTS = 0.7F;
 
     private static final boolean USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE = false;
+    private static final boolean TRANSITIVE_STACKING_CONSTRAINTS = true;
 
     private static final float ITEM_LENGTH_LB = 1.0F;
     private static final float ITEM_LENGTH_UB = 6.0F;
@@ -198,7 +199,7 @@ public class TestDataGenerator {
                 }
             }
         }
-        if (true) {
+        if (TRANSITIVE_STACKING_CONSTRAINTS) {
             stackingConstraintMatrix = makeMatrixTransitive(stackingConstraintMatrix);
         }
         return stackingConstraintMatrix;
@@ -320,8 +321,7 @@ public class TestDataGenerator {
 
             int[][] stackingConstraintMatrix;
             if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
-                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne(
-                );
+                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne();
             } else {
                 stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(items);
             }
