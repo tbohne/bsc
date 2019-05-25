@@ -23,6 +23,12 @@ public class SolverComparison3Cap extends SolverComparison {
     private final boolean postProcessing;
     private final boolean prioritizeRuntime;
 
+    private final int thresholdLB;
+    private final int thresholdUB;
+    private final int stepSize;
+    private final float splitPairsDivisor;
+    private final float penaltyFactor;
+
     /**
      * Constructor
      *
@@ -37,11 +43,17 @@ public class SolverComparison3Cap extends SolverComparison {
      */
     public SolverComparison3Cap(
         String solutionPrefix, String instancePrefix, double timeLimit, boolean hideCPLEXOutput,
-        int mipEmphasis, double tolerance, boolean postProcessing, boolean prioritizeRuntime
+        int mipEmphasis, double tolerance, boolean postProcessing, boolean prioritizeRuntime,
+        int thresholdLB, int thresholdUB, int stepSize, float splitPairsDivisor, float penaltyFactor
     ) {
         super(solutionPrefix, instancePrefix, timeLimit, hideCPLEXOutput, mipEmphasis, tolerance);
         this.postProcessing = postProcessing;
         this.prioritizeRuntime = prioritizeRuntime;
+        this.thresholdLB = thresholdLB;
+        this.thresholdUB = thresholdUB;
+        this.stepSize = stepSize;
+        this.splitPairsDivisor = splitPairsDivisor;
+        this.penaltyFactor = penaltyFactor;
     }
 
     /**
@@ -51,14 +63,6 @@ public class SolverComparison3Cap extends SolverComparison {
      * @param solutionName - name of the generated solution
      */
     private void solveWithThreeCap(Instance instance, String solutionName) {
-
-        // TODO: move hard coded values
-        int thresholdLB = 20;
-        int thresholdUB = 75;
-        int stepSize = 5;
-        float splitPairsDivisor = 3.4F;
-        float penaltyFactor = 5.0F;
-
         ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(
             instance, this.timeLimit, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor
         );
@@ -87,10 +91,6 @@ public class SolverComparison3Cap extends SolverComparison {
         for (File file : directoryListing) {
             if (file.toString().contains("slp_instance_") && !allSol.contains(file.toString().replace("res/instances/", ""))) {
 
-                String instanceNumber = file.getName().split("_")[5].replace(".txt", "").trim();
-                if (instanceNumber.equals("00")) {
-                    prepareRuntimeMeasurementByPreLoadingAllClasses(file);
-                }
                 String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
                 Instance instance = InstanceReader.readInstance(this.instancePrefix + instanceName + ".txt");
                 System.out.println("working on: " + instanceName);

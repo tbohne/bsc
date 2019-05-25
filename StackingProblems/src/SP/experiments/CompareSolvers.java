@@ -30,6 +30,12 @@ public class CompareSolvers {
     // 2Cap and 3Cap provide post processing procedures that can be enabled here.
     public static boolean POST_PROCESSING = true;
 
+    public static int THRESHOLD_LB = 20;
+    public static int THRESHOLD_UB = 75;
+    public static int STEP_SIZE = 5;
+    public static float SPLIT_PAIRS_DIVISOR = 3.4F;
+    public static float PENALTY_FACTOR = 5.0F;
+
     public static void main(String[] args) {
 
         ArrayList<Solvers.Solver> solversToBeUsed = new ArrayList<>();
@@ -41,8 +47,10 @@ public class CompareSolvers {
 //         SolverComparison2Cap twoCap = new SolverComparison2Cap();
 //         twoCap.compareSolvers(solversToBeUsed);
 
-        SolverComparison3Cap threeCap = new SolverComparison3Cap(SOLUTION_PREFIX, INSTANCE_PREFIX,
-            TIME_LIMIT, HIDE_CPLEX_OUTPUT, MIP_EMPHASIS, MIP_TOLERANCE, POST_PROCESSING, PRIORITIZE_RUNTIME);
+        SolverComparison3Cap threeCap = new SolverComparison3Cap(
+            SOLUTION_PREFIX, INSTANCE_PREFIX, TIME_LIMIT, HIDE_CPLEX_OUTPUT, MIP_EMPHASIS, MIP_TOLERANCE,
+            POST_PROCESSING, PRIORITIZE_RUNTIME, THRESHOLD_LB, THRESHOLD_UB, STEP_SIZE, SPLIT_PAIRS_DIVISOR, PENALTY_FACTOR
+        );
        threeCap.compareSolvers(solversToBeUsed);
     }
 }
