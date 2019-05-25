@@ -4,6 +4,8 @@ import SP.io.SolutionReader;
 import SP.io.SolutionWriter;
 import SP.post_optimization_methods.TabuSearch;
 import SP.representations.Solution;
+import SP.representations.Solvers;
+import SP.util.RepresentationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,22 +39,21 @@ public class PostOptimization {
             SolutionWriter.writeSolution(
                 SOLUTION_PREFIX
                 + impSol.getNameOfSolvedInstance().replace("instances/", "")
-                + "_imp.txt", impSol, SolverComparison.getNameOfSolver(SolverComparison.Solver.TABU_SEARCH)
+                + "_imp.txt", impSol, RepresentationUtil.getNameOfSolver(Solvers.Solver.TABU_SEARCH)
             );
 
-            SolverComparison.Solver solver;
+            Solvers.Solver solver;
             if (sol.getSol().getFilledStacks()[0].length == 2) {
-                solver = SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP;
+                solver = Solvers.Solver.CONSTRUCTIVE_TWO_CAP;
             } else {
-                solver = SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP;
+                solver = Solvers.Solver.CONSTRUCTIVE_THREE_CAP;
             }
-            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol.getSol(), SolverComparison.getNameOfSolver(solver));
+            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol.getSol(), RepresentationUtil.getNameOfSolver(solver));
             SolutionWriter.writeOptAndImpAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol, impSol);
         }
     }
 
     public static void main(String[] args) {
-
         optimizeSolutions();
     }
 }

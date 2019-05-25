@@ -5,13 +5,27 @@ import SP.io.InstanceReader;
 import SP.io.SolutionWriter;
 import SP.representations.Instance;
 import SP.representations.Solution;
+import SP.representations.Solvers;
 import SP.util.HeuristicUtil;
+import SP.util.RepresentationUtil;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SolverComparison3Cap extends SolverComparison {
+
+    private boolean postProcessing;
+    private boolean prioritizeRuntime;
+
+    public SolverComparison3Cap(
+        String solutionPrefix, String instancePrefix, double timeLimit, boolean hideCPLEXOutput, int mipEmphasis, double tolerance,
+        boolean postProcessing, boolean prioritizeRuntime
+    ) {
+        super(solutionPrefix, instancePrefix, timeLimit, hideCPLEXOutput, mipEmphasis, tolerance);
+        this.postProcessing = postProcessing;
+        this.prioritizeRuntime = prioritizeRuntime;
+    }
 
     /**
      * Solves the given instance with the constructive heuristic for a stack capacity of 3.
@@ -20,7 +34,7 @@ public class SolverComparison3Cap extends SolverComparison {
      * @param solutionName - the name of the generated solution
      * @param writeSol     - determines whether or not the solution should be written to the file system
      */
-    public static void solveWithThreeCap(Instance instance, String solutionName, boolean writeSol) {
+    public void solveWithThreeCap(Instance instance, String solutionName, boolean writeSol) {
 
         // TODO: move hard coded values
         int thresholdLB = 20;
@@ -29,11 +43,11 @@ public class SolverComparison3Cap extends SolverComparison {
         float splitPairsDivisor = 3.4F;
         float penaltyFactor = 5.0F;
 
-        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor);
-        Solution sol = threeCapSolver.solve(PRIORITIZE_RUNTIME, POST_PROCESSING);
+        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(instance, this.timeLimit, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor);
+        Solution sol = threeCapSolver.solve(this.prioritizeRuntime, this.postProcessing);
         if (writeSol) {
-            SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, getNameOfSolver(Solver.CONSTRUCTIVE_THREE_CAP));
-            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, getAbbreviatedNameOfSolver(Solver.CONSTRUCTIVE_THREE_CAP));
+            SolutionWriter.writeSolution(this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP));
+            SolutionWriter.writeSolutionAsCSV(this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP));
         }
     }
 
@@ -42,11 +56,11 @@ public class SolverComparison3Cap extends SolverComparison {
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
      */
-    public static void compareSolvers(ArrayList<SolverComparison.Solver> solversToBeCompared) {
-        File dir = new File(INSTANCE_PREFIX);
+    public void compareSolvers(List<Solvers.Solver> solversToBeCompared) {
+        File dir = new File(this.instancePrefix);
         File[] directoryListing = dir.listFiles();
         Arrays.sort(directoryListing);
-        String allSol = HeuristicUtil.createStringContainingAllSolutionNames(SOLUTION_PREFIX);
+        String allSol = HeuristicUtil.createStringContainingAllSolutionNames(this.solutionPrefix);
 
         if (directoryListing != null) {
             for (File file : directoryListing) {
@@ -57,26 +71,25 @@ public class SolverComparison3Cap extends SolverComparison {
                         prepareRuntimeMeasurementByPreLoadingAllClasses(file);
                     }
                     String instanceName = file.toString().replace("res/instances/", "").replace(".txt", "");
-                    Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
+                    Instance instance = InstanceReader.readInstance(this.instancePrefix + instanceName + ".txt");
                     System.out.println("working on: " + instanceName);
                     String solutionName = instanceName.replace("instance", "sol");
 
                     computeLowerBound(instance, solutionName);
 
-                    if (solversToBeCompared.contains(SolverComparison.Solver.MIP_BINPACKING)) {
+                    if (solversToBeCompared.contains(Solvers.Solver.MIP_BINPACKING)) {
                         solveWithBinPacking(instance, solutionName);
                         instance.resetStacks();
                     }
-                    if (solversToBeCompared.contains(SolverComparison.Solver.MIP_THREEINDEX)) {
+                    if (solversToBeCompared.contains(Solvers.Solver.MIP_THREEINDEX)) {
                         solveWithThreeIdx(instance, solutionName);
                         instance.resetStacks();
                     }
-                    if (solversToBeCompared.contains(SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP)) {
+                    if (solversToBeCompared.contains(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)) {
                         solveWithThreeCap(instance, solutionName, true);
                     }
                 }
             }
         }
     }
-
 }
