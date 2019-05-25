@@ -94,7 +94,7 @@ public class SolutionWriter {
      * @param sol      - solution to be written to the file
      * @param solver   - solver used to create the solution
      */
-    public static void writeSolutionAsCSV(String filename, Solution sol, Solver solver) {
+    public static void writeSolutionAsCSV(String filename, Solution sol, String solver) {
         try {
             File file = new File(filename);
             boolean newFile = false;
@@ -108,11 +108,10 @@ public class SolutionWriter {
             if (newFile) {
                 bw.write("instance,solver,time,val\n");
             }
-            String mip = HeuristicUtil.getAbbreviatedNameOfSolver(solver);
             if (sol.isFeasible()) {
                 bw.write(
                     sol.getNameOfSolvedInstance().replace("instances/slp_instance_", "")
-                    + "," + mip + "," + sol.getTimeToSolve() + "," + sol.computeCosts() + "\n"
+                    + "," + solver + "," + sol.getTimeToSolve() + "," + sol.computeCosts() + "\n"
                 );
             }
 
@@ -154,7 +153,7 @@ public class SolutionWriter {
      * @param sol      - solution to be written to the file
      * @param solver   - solver used to create the solution
      */
-    public static void writeSolution(String filename, Solution sol, Solver solver) {
+    public static void writeSolution(String filename, Solution sol, String solver) {
         try {
             File file = new File(filename);
             boolean appendNewLines = true;
@@ -165,13 +164,12 @@ public class SolutionWriter {
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            String solverName = HeuristicUtil.getNameOfSolver(solver);
             if (appendNewLines) {
                 bw.newLine();
                 bw.write("#####################################################\n");
                 bw.newLine();
             }
-            bw.write("solved with: " + solverName + "\n");
+            bw.write("solved with: " + solver + "\n");
             bw.write(sol.toString());
 
             bw.close();

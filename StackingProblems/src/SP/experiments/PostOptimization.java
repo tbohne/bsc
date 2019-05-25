@@ -37,7 +37,7 @@ public class PostOptimization {
             SolutionWriter.writeSolution(
                 SOLUTION_PREFIX
                 + impSol.getNameOfSolvedInstance().replace("instances/", "")
-                + "_imp.txt", impSol, SolverComparison.Solver.TABU_SEARCH
+                + "_imp.txt", impSol, SolverComparison.getNameOfSolver(SolverComparison.Solver.TABU_SEARCH)
             );
 
             SolverComparison.Solver solver;
@@ -46,12 +46,13 @@ public class PostOptimization {
             } else {
                 solver = SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP;
             }
-            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol.getSol(), solver);
+            SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol.getSol(), SolverComparison.getNameOfSolver(solver));
             SolutionWriter.writeOptAndImpAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol, impSol);
         }
     }
 
     public static void main(String[] args) {
+
         optimizeSolutions();
     }
 }

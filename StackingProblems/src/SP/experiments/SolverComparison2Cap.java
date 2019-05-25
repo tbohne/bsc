@@ -1,67 +1,17 @@
 package SP.experiments;
 
 import SP.constructive_heuristics.TwoCapHeuristic;
-import SP.mip_formulations.BinPackingFormulation;
-import SP.mip_formulations.ThreeIndexFormulation;
-import SP.representations.Instance;
 import SP.io.InstanceReader;
-import SP.representations.Solution;
 import SP.io.SolutionWriter;
+import SP.representations.Instance;
+import SP.representations.Solution;
 import SP.util.HeuristicUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * Compares the solvers for a stack capacity of 2.
- *
- * @author Tim Bohne
- */
-public class SolverComparison2Cap implements SolverComparison {
-
-    /**
-     * Computes a lower bound for the specified instance using the LowerBoundsCalculator.
-     *
-     * @param instance     - the instance to compute a LB for
-     * @param solutionName - the name of the generated solution
-     */
-    public void computeLowerBound(Instance instance, String solutionName) {
-        LowerBoundsCalculator lbc = new LowerBoundsCalculator(instance);
-        double lowerBound = lbc.computeLowerBound();
-        SolutionWriter.writeLowerBound(SOLUTION_PREFIX + solutionName + ".txt", lowerBound);
-        SolutionWriter.writeLowerBoundAsCSV(SOLUTION_PREFIX + "solutions.csv", lowerBound, instance.getName());
-    }
-
-    /**
-     * Solves the given instance with the bin-packing solver.
-     *
-     * @param instance     - the instance to be solved
-     * @param solutionName - the name of the generated solution
-     */
-    public void solveWithBinPacking(Instance instance, String solutionName) {
-        BinPackingFormulation binPackingFormulation = new BinPackingFormulation(
-            instance, TIME_LIMIT, HIDE_CPLEX_OUTPUT, MIP_EMPHASIS, MIP_TOLERANCE
-        );
-        Solution sol = binPackingFormulation.solve();
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_BINPACKING);
-        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_BINPACKING);
-    }
-
-    /**
-     * Solves the given instance with the three-index solver.
-     *
-     * @param instance     - the instance to be solved
-     * @param solutionName - the name of the generated solution
-     */
-    public void solveWithThreeIdx(Instance instance, String solutionName) {
-        ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(
-            instance, TIME_LIMIT, HIDE_CPLEX_OUTPUT, MIP_EMPHASIS, MIP_TOLERANCE
-        );
-        Solution sol = threeIndexFormulation.solve();
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_THREEINDEX);
-        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_THREEINDEX);
-    }
+public class SolverComparison2Cap extends SolverComparison {
 
     /**
      * Solves the given instance with the constructive heuristic for a stack capacity of 2.
@@ -69,11 +19,11 @@ public class SolverComparison2Cap implements SolverComparison {
      * @param instance     - the instance to be solved
      * @param solutionName - the name of the generated solution
      */
-    public void solveWithTwoCap(Instance instance, String solutionName) {
+    public static void solveWithTwoCap(Instance instance, String solutionName) {
         TwoCapHeuristic twoCapHeuristic = new TwoCapHeuristic(instance, TIME_LIMIT);
         Solution sol = twoCapHeuristic.solve(POST_PROCESSING);
-        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.CONSTRUCTIVE_TWO_CAP);
-        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.CONSTRUCTIVE_TWO_CAP);
+        SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, getNameOfSolver(Solver.CONSTRUCTIVE_TWO_CAP));
+        SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, getAbbreviatedNameOfSolver(Solver.CONSTRUCTIVE_TWO_CAP));
     }
 
     /**
@@ -81,7 +31,7 @@ public class SolverComparison2Cap implements SolverComparison {
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
      */
-    public void compareSolvers(ArrayList<Solver> solversToBeCompared) {
+    public static void compareSolvers(ArrayList<SolverComparison.Solver> solversToBeCompared) {
         File dir = new File(INSTANCE_PREFIX);
         File[] directoryListing = dir.listFiles();
         Arrays.sort(directoryListing);
@@ -96,21 +46,21 @@ public class SolverComparison2Cap implements SolverComparison {
                     Instance instance = InstanceReader.readInstance(INSTANCE_PREFIX + instanceName + ".txt");
                     String solutionName = instanceName.replace("instance", "sol");
 
-                    this.computeLowerBound(instance, solutionName);
+                    computeLowerBound(instance, solutionName);
 
-                    if (solversToBeCompared.contains(Solver.MIP_BINPACKING)) {
+                    if (solversToBeCompared.contains(SolverComparison.Solver.MIP_BINPACKING)) {
                         System.out.println("solve with binpacking");
-                        this.solveWithBinPacking(instance, solutionName);
+                        solveWithBinPacking(instance, solutionName);
                         instance.resetStacks();
                     }
-                    if (solversToBeCompared.contains(Solver.MIP_THREEINDEX)) {
+                    if (solversToBeCompared.contains(SolverComparison.Solver.MIP_THREEINDEX)) {
                         System.out.println("solve with 3idx");
-                        this.solveWithThreeIdx(instance, solutionName);
+                        solveWithThreeIdx(instance, solutionName);
                         instance.resetStacks();
                     }
-                    if (solversToBeCompared.contains(Solver.CONSTRUCTIVE_TWO_CAP)) {
+                    if (solversToBeCompared.contains(SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP)) {
                         System.out.println("solve with 2cap");
-                        this.solveWithTwoCap(instance, solutionName);
+                        solveWithTwoCap(instance, solutionName);
                     }
                 }
             }
