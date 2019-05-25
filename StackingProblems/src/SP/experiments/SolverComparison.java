@@ -3,7 +3,7 @@ package SP.experiments;
 import java.util.ArrayList;
 
 /**
- * Defines several fields used to compare the different solvers.
+ * Provides an interface for different comparisons of solvers for stacking problems.
  *
  * @author Tim Bohne
  */
@@ -17,22 +17,22 @@ public interface SolverComparison {
         MIP_THREEINDEX,
         CONSTRUCTIVE_TWO_CAP,
         CONSTRUCTIVE_THREE_CAP,
-        CONSTRUCTIVE_THREE_CAP_PERMUTATION,
-        CONSTRUCTIVE_THREE_CAP_RECURSION,
         TABU_SEARCH
     }
 
     String INSTANCE_PREFIX = "res/instances/";
     String SOLUTION_PREFIX = "res/solutions/";
 
-    // Specifies the time limit for the solving process in seconds.
-    double TIME_LIMIT = 300;
-
+    /************ CPLEX CONFIG ************/
     boolean HIDE_CPLEX_OUTPUT = true;
-
+    // 1 --> feasibility over optimality
     int MIP_EMPHASIS = 1;
-
+    // 0 tolerance --> only terminating with optimal solutions before time limit
     double MIP_TOLERANCE = 0.0;
+    /**************************************/
+
+    // Specifies the time limit for the solving procedure in seconds.
+    double TIME_LIMIT = 300;
 
     // The 3Cap heuristic has an option to prioritize the runtime which can be set here.
     boolean PRIORITIZE_RUNTIME = false;
