@@ -15,52 +15,6 @@ import java.util.*;
 public class HeuristicUtil {
 
     /**
-     * Returns a list containing all the matched items that are part of an item pair.
-     *
-     * @param itemPairs - pairs of items
-     * @return matched items from pairs
-     */
-    private static List<Integer> getMatchedItemsFromPairs(List<MCMEdge> itemPairs) {
-        List<Integer> matchedItems = new ArrayList<>();
-        for (MCMEdge pair : itemPairs) {
-            matchedItems.add(pair.getVertexOne());
-            matchedItems.add(pair.getVertexTwo());
-        }
-        return matchedItems;
-    }
-
-    /**
-     * Returns a list containing all the matched items that are part of an item triple.
-     *
-     * @param itemTriples - triples of items
-     * @return matched items from triples
-     */
-    private static List<Integer> getMatchedItemsFromTriples(List<List<Integer>> itemTriples) {
-        List<Integer> matchedItems = new ArrayList<>();
-        for (List<Integer> triple : itemTriples) {
-            matchedItems.addAll(triple);
-        }
-        return matchedItems;
-    }
-
-    /**
-     * Returns the list of unmatched items based on the list of matched items.
-     *
-     * @param matchedItems - list of matched items
-     * @param items        - list containing every item
-     * @return list of unmatched items
-     */
-    private static List<Integer> getUnmatchedItemsFromMatchedItems(List<Integer> matchedItems, int[] items) {
-        List<Integer> unmatchedItems = new ArrayList<>();
-        for (int item : items) {
-            if (!matchedItems.contains(item)) {
-                unmatchedItems.add(item);
-            }
-        }
-        return unmatchedItems;
-    }
-
-    /**
      * Returns the list of unmatched items based on the matched items from the triples and pairs.
      * The matched items and the list containing every item are used to determine the unmatched items.
      *
@@ -97,46 +51,6 @@ public class HeuristicUtil {
      */
     public static List<Integer> getUnmatchedItemsFromPairs(List<MCMEdge> itemPairs, int[] items) {
         return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromPairs(itemPairs), items);
-    }
-
-    /**
-     * Prepares the update of stack assignments in the post processing step by creating lists of items that
-     * are assigned to the same stack and storing the savings for each item.
-     *
-     * @param maxSavingsMatching  - matching to be processed
-     * @param itemSavings         - map to be filled with each item's saving
-     * @param postProcessingGraph - post-processing graph containing the items and empty positions
-     * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
-     */
-    private static void prepareUpdateOfStackAssignmentsInPostProcessing(
-            MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, Map<Integer, Double> itemSavings,
-            BipartiteGraph postProcessingGraph, Map<Integer, List<Integer>> stackAssignments
-    ) {
-        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
-            int item = GraphUtil.parseItemFromPostProcessingMatching(edge);
-            int stack = GraphUtil.parseStackFromPostProcessingMatching(edge);
-            itemSavings.put(item, postProcessingGraph.getGraph().getEdgeWeight(edge));
-            if (stackAssignments.containsKey(stack)) {
-                stackAssignments.get(stack).add(item);
-            } else {
-                stackAssignments.put(stack, new ArrayList<>());
-            }
-        }
-    }
-
-    /**
-     * Updates the item position in the storage area in the post processing step and adds
-     * the used stack to the list of blocked stacks.
-     *
-     * @param item          - item to be assigned to new position
-     * @param stack         - stack the item gets assigned to
-     * @param level         - level the item gets assigned to
-     * @param blockedStacks - list of blocked stacks (only one item per stack in post-processing)
-     */
-    private static void updateItemPositionInPostProcessing(int item, int stack, int level, List<Integer> blockedStacks, Instance instance) {
-        HeuristicUtil.removeItemFromStacks(item, instance.getStacks());
-        instance.getStacks()[stack][level] = item;
-        blockedStacks.add(stack);
     }
 
     /**
@@ -301,22 +215,6 @@ public class HeuristicUtil {
     }
 
     /**
-     * Removes the specified item from the stack it is assigned to.
-     *
-     * @param item   - item to be removed
-     * @param stacks - containing the stack the item gets removed from
-     */
-    private static void removeItemFromStacks(int item, int[][] stacks) {
-        for (int stack = 0; stack < stacks.length; stack++) {
-            for (int level = 0; level < stacks[stack].length; level++) {
-                if (stacks[stack][level] == item) {
-                    stacks[stack][level] = -1;
-                }
-            }
-        }
-    }
-
-    /**
      * Returns the savings for the specified item.
      *
      * @param stackIdx    - index of the considered stack
@@ -374,40 +272,6 @@ public class HeuristicUtil {
     }
 
     /**
-     * Returns the item of the triple that leads to the maximum savings.
-     *
-     * @param itemOne     - first item of the triple
-     * @param itemTwo     - second item of the triple
-     * @param itemThree   - third item of the triple
-     * @param stackIdx    - index of the considered stack
-     * @param costsBefore - original costs for each item-stack assignment
-     * @param costMatrix  - costs for each item-stack assignment
-     * @return item with the maximum savings
-     */
-    private static int getItemWithMaxSavingsForTriple(
-            int itemOne, int itemTwo, int itemThree, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix
-    ) {
-        double costsItemOne = costMatrix[itemOne][stackIdx];
-        double costsItemTwo = costMatrix[itemTwo][stackIdx];
-        double costsItemThree = costMatrix[itemThree][stackIdx];
-
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-        double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
-
-        List<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
-        double maxSavings = Collections.max(savings);
-
-        if (maxSavings == savingsItemOne) {
-            return itemOne;
-        } else if (maxSavings == savingsItemTwo) {
-            return itemTwo;
-        } else {
-            return itemThree;
-        }
-    }
-
-    /**
      * Updates the stack assignments for the compatible triple.
      *
      * @param itemOne     - first item of the triple
@@ -425,32 +289,6 @@ public class HeuristicUtil {
         );
         HeuristicUtil.removeItemFromStacks(itemWithMaxSavings, instance.getStacks());
         instance.getStacks()[stack][instance.getGroundLevel()] = itemWithMaxSavings;
-    }
-
-    /**
-     * Updates the stack assignments for the compatible pair.
-     *
-     * @param itemOne     - first item of the pair
-     * @param stack       - considered stack
-     * @param itemTwo     - second item of the pair
-     * @param costsBefore - original costs for each item-stack assignment
-     * @param instance    - considered instance of the stacking problem
-     */
-    private static void updateAssignmentsForCompatiblePair(
-            int itemOne, int stack, int itemTwo, Map<Integer, Double> costsBefore, Instance instance
-    ) {
-        double costsItemOne = instance.getCosts()[itemOne][stack];
-        double costsItemTwo = instance.getCosts()[itemTwo][stack];
-        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
-        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
-
-        if (savingsItemOne > savingsItemTwo) {
-            HeuristicUtil.removeItemFromStacks(itemOne, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
-        } else {
-            HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
-            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
-        }
     }
 
     /**
@@ -642,8 +480,7 @@ public class HeuristicUtil {
      */
     public static boolean itemListContainsDuplicates(List<Integer> items) {
         Set<Integer> set = new HashSet<>(items);
-        if(set.size() < items.size()){ return true; }
-        return false;
+        return set.size() < items.size();
     }
 
     /**
@@ -697,9 +534,172 @@ public class HeuristicUtil {
         File dir = new File(prefix);
         File[] dirListing = dir.listFiles();
         StringBuilder str = new StringBuilder();
+        assert dirListing != null;
         for (File f : dirListing) {
             str.append(f.toString()).append(" ");
         }
         return str.toString();
+    }
+
+    /**
+     * Returns a list containing all the matched items that are part of an item pair.
+     *
+     * @param itemPairs - pairs of items
+     * @return matched items from pairs
+     */
+    private static List<Integer> getMatchedItemsFromPairs(List<MCMEdge> itemPairs) {
+        List<Integer> matchedItems = new ArrayList<>();
+        for (MCMEdge pair : itemPairs) {
+            matchedItems.add(pair.getVertexOne());
+            matchedItems.add(pair.getVertexTwo());
+        }
+        return matchedItems;
+    }
+
+    /**
+     * Returns a list containing all the matched items that are part of an item triple.
+     *
+     * @param itemTriples - triples of items
+     * @return matched items from triples
+     */
+    private static List<Integer> getMatchedItemsFromTriples(List<List<Integer>> itemTriples) {
+        List<Integer> matchedItems = new ArrayList<>();
+        for (List<Integer> triple : itemTriples) {
+            matchedItems.addAll(triple);
+        }
+        return matchedItems;
+    }
+
+    /**
+     * Returns the list of unmatched items based on the list of matched items.
+     *
+     * @param matchedItems - list of matched items
+     * @param items        - list containing every item
+     * @return list of unmatched items
+     */
+    private static List<Integer> getUnmatchedItemsFromMatchedItems(List<Integer> matchedItems, int[] items) {
+        List<Integer> unmatchedItems = new ArrayList<>();
+        for (int item : items) {
+            if (!matchedItems.contains(item)) {
+                unmatchedItems.add(item);
+            }
+        }
+        return unmatchedItems;
+    }
+
+    /**
+     * Prepares the update of stack assignments in the post processing step by creating lists of items that
+     * are assigned to the same stack and storing the savings for each item.
+     *
+     * @param maxSavingsMatching  - matching to be processed
+     * @param itemSavings         - map to be filled with each item's saving
+     * @param postProcessingGraph - post-processing graph containing the items and empty positions
+     * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
+     */
+    private static void prepareUpdateOfStackAssignmentsInPostProcessing(
+            MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, Map<Integer, Double> itemSavings,
+            BipartiteGraph postProcessingGraph, Map<Integer, List<Integer>> stackAssignments
+    ) {
+        for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
+            int item = GraphUtil.parseItemFromPostProcessingMatching(edge);
+            int stack = GraphUtil.parseStackFromPostProcessingMatching(edge);
+            itemSavings.put(item, postProcessingGraph.getGraph().getEdgeWeight(edge));
+            if (stackAssignments.containsKey(stack)) {
+                stackAssignments.get(stack).add(item);
+            } else {
+                stackAssignments.put(stack, new ArrayList<>());
+            }
+        }
+    }
+
+    /**
+     * Updates the item position in the storage area in the post processing step and adds
+     * the used stack to the list of blocked stacks.
+     *
+     * @param item          - item to be assigned to new position
+     * @param stack         - stack the item gets assigned to
+     * @param level         - level the item gets assigned to
+     * @param blockedStacks - list of blocked stacks (only one item per stack in post-processing)
+     */
+    private static void updateItemPositionInPostProcessing(int item, int stack, int level, List<Integer> blockedStacks, Instance instance) {
+        HeuristicUtil.removeItemFromStacks(item, instance.getStacks());
+        instance.getStacks()[stack][level] = item;
+        blockedStacks.add(stack);
+    }
+
+    /**
+     * Removes the specified item from the stack it is assigned to.
+     *
+     * @param item   - item to be removed
+     * @param stacks - containing the stack the item gets removed from
+     */
+    private static void removeItemFromStacks(int item, int[][] stacks) {
+        for (int stack = 0; stack < stacks.length; stack++) {
+            for (int level = 0; level < stacks[stack].length; level++) {
+                if (stacks[stack][level] == item) {
+                    stacks[stack][level] = -1;
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the item of the triple that leads to the maximum savings.
+     *
+     * @param itemOne     - first item of the triple
+     * @param itemTwo     - second item of the triple
+     * @param itemThree   - third item of the triple
+     * @param stackIdx    - index of the considered stack
+     * @param costsBefore - original costs for each item-stack assignment
+     * @param costMatrix  - costs for each item-stack assignment
+     * @return item with the maximum savings
+     */
+    private static int getItemWithMaxSavingsForTriple(
+            int itemOne, int itemTwo, int itemThree, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix
+    ) {
+        double costsItemOne = costMatrix[itemOne][stackIdx];
+        double costsItemTwo = costMatrix[itemTwo][stackIdx];
+        double costsItemThree = costMatrix[itemThree][stackIdx];
+
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+        double savingsItemThree = costsBefore.get(itemThree) - costsItemThree;
+
+        List<Double> savings = new ArrayList<>(Arrays.asList(savingsItemOne, savingsItemTwo, savingsItemThree));
+        double maxSavings = Collections.max(savings);
+
+        if (maxSavings == savingsItemOne) {
+            return itemOne;
+        } else if (maxSavings == savingsItemTwo) {
+            return itemTwo;
+        } else {
+            return itemThree;
+        }
+    }
+
+    /**
+     * Updates the stack assignments for the compatible pair.
+     *
+     * @param itemOne     - first item of the pair
+     * @param stack       - considered stack
+     * @param itemTwo     - second item of the pair
+     * @param costsBefore - original costs for each item-stack assignment
+     * @param instance    - considered instance of the stacking problem
+     */
+    private static void updateAssignmentsForCompatiblePair(
+            int itemOne, int stack, int itemTwo, Map<Integer, Double> costsBefore, Instance instance
+    ) {
+        double costsItemOne = instance.getCosts()[itemOne][stack];
+        double costsItemTwo = instance.getCosts()[itemTwo][stack];
+        double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
+        double savingsItemTwo = costsBefore.get(itemTwo) - costsItemTwo;
+
+        if (savingsItemOne > savingsItemTwo) {
+            HeuristicUtil.removeItemFromStacks(itemOne, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemOne;
+        } else {
+            HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
+            instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
+        }
     }
 }
