@@ -412,10 +412,18 @@ public class HeuristicUtil {
         instance.getStacks()[stack][instance.getGroundLevel()] = itemWithMaxSavings;
     }
 
+    /**
+     * Updates the stack assignments for the compatible pair.
+     *
+     * @param itemOne     - first item of the pair
+     * @param stack       - considered stack
+     * @param itemTwo     - second item of the pair
+     * @param costsBefore - original costs for each item-stack assignment
+     * @param instance    - considered instance of the stacking problem
+     */
     public static void updateAssignmentsForCompatiblePair(
-        int itemOne, int stack, int itemTwo, HashMap<Integer, Double> costsBefore, Instance instance
+        int itemOne, int stack, int itemTwo, Map<Integer, Double> costsBefore, Instance instance
     ) {
-
         double costsItemOne = instance.getCosts()[itemOne][stack];
         double costsItemTwo = instance.getCosts()[itemTwo][stack];
         double savingsItemOne = costsBefore.get(itemOne) - costsItemOne;
@@ -428,46 +436,6 @@ public class HeuristicUtil {
             HeuristicUtil.removeItemFromStacks(itemTwo, instance.getStacks());
             instance.getStacks()[stack][instance.getGroundLevel()] = itemTwo;
         }
-    }
-
-    /**
-     * Updates the list of completely filled stacks and prepares the corresponding
-     * items to be removed from the remaining item pairs.
-     *
-     * @param itemPairRemovalList    - the list to keep track of the items that should
-     *                                 be removed form the remaining item pairs
-     * @param itemOneEdge            - the edge (item pair), the first item is assigned to
-     * @param itemTwoEdge            - the edge (item pair), the second item is assigned to
-     * @param startingPair           - the pair that is going to be assigned
-     * @param itemOne                - the first item to be assigned
-     * @param itemTwo                - the second item to be assigned
-     * @param completelyFilledStacks - the list of completely filled stacks
-     */
-    public static void updateCompletelyFilledStacks(
-        ArrayList<MCMEdge> itemPairRemovalList,
-        MCMEdge itemOneEdge,
-        MCMEdge itemTwoEdge,
-        MCMEdge startingPair,
-        int itemOne,
-        int itemTwo,
-        ArrayList<ArrayList<Integer>> completelyFilledStacks
-    ) {
-        itemPairRemovalList.add(itemOneEdge);
-        itemPairRemovalList.add(itemTwoEdge);
-        itemPairRemovalList.add(startingPair);
-
-        ArrayList<Integer> itemOneStack = new ArrayList<>();
-        itemOneStack.add(itemOne);
-        itemOneStack.add(itemOneEdge.getVertexOne());
-        itemOneStack.add(itemOneEdge.getVertexTwo());
-
-        ArrayList<Integer> itemTwoStack = new ArrayList<>();
-        itemTwoStack.add(itemTwo);
-        itemTwoStack.add(itemTwoEdge.getVertexOne());
-        itemTwoStack.add(itemTwoEdge.getVertexTwo());
-
-        completelyFilledStacks.add(itemOneStack);
-        completelyFilledStacks.add(itemTwoStack);
     }
 
     /**
