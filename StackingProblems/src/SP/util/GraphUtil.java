@@ -514,4 +514,34 @@ public class GraphUtil {
     public static int parseStackForPair(DefaultWeightedEdge edge) {
         return Integer.parseInt(edge.toString().split(":")[1].replace("stack", "").replace(")", "").trim());
     }
+
+    /**
+     * Parses the item from the edge of the post processing graph.
+     *
+     * @param edge - edge to be parsed
+     * @return parsed item
+     */
+    public static int parseItemFromPostProcessingMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[0].replace("(", "").replace("item", "").trim());
+    }
+
+    /**
+     * Parses the stack from the edge of the post processing graph.
+     *
+     * @param edge - edge to be parsed
+     * @return parsed stack
+     */
+    public static int parseStackFromPostProcessingMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[2].split(",")[0].trim());
+    }
+
+    /**
+     * Parses the level from the edge of the post processing graph.
+     *
+     * @param edge - edge to be parsed
+     * @return parsed level
+     */
+    public static int parseLevelFromPostProcessingMatching(DefaultWeightedEdge edge) {
+        return Integer.parseInt(edge.toString().split(":")[3].replace(")", "").trim());
+    }
 }
