@@ -570,7 +570,7 @@ public class ThreeCapHeuristic {
             postProcessingGraph.getGraph(), postProcessingGraph.getPartitionOne(), postProcessingGraph.getPartitionTwo()
         );
 
-        HeuristicUtil.updateStackAssignments(maxSavingsMatching, postProcessingGraph, this.instance);
+        HeuristicUtil.updateStackAssignmentsInPostProcessing(maxSavingsMatching, postProcessingGraph, this.instance);
         this.instance.lowerItemsThatAreStackedInTheAir();
         sol = new Solution((System.currentTimeMillis() - this.startTime) / 1000.0, this.timeLimit, this.instance);
         sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();

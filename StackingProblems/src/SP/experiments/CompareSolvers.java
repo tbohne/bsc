@@ -14,13 +14,13 @@ public class CompareSolvers {
         ArrayList<SolverComparison.Solver> solversToBeUsed = new ArrayList<>();
 //        solversToBeUsed.add(SolverComparison.Solver.MIP_BINPACKING);
 //        solversToBeUsed.add(SolverComparison.Solver.MIP_THREEINDEX);
-        solversToBeUsed.add(SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP);
-//        solversToBeUsed.add(SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP);
+//        solversToBeUsed.add(SolverComparison.Solver.CONSTRUCTIVE_TWO_CAP);
+        solversToBeUsed.add(SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP);
 
-         SolverComparison2Cap twoCap = new SolverComparison2Cap();
-         twoCap.compareSolvers(solversToBeUsed);
+//         SolverComparison2Cap twoCap = new SolverComparison2Cap();
+//         twoCap.compareSolvers(solversToBeUsed);
 
-//        SolverComparison3Cap threeCap = new SolverComparison3Cap();
-//       threeCap.compareSolvers(solversToBeUsed);
+        SolverComparison3Cap threeCap = new SolverComparison3Cap();
+       threeCap.compareSolvers(solversToBeUsed);
     }
 }

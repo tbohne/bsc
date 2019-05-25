@@ -65,7 +65,46 @@ public class HeuristicUtil {
     }
 
     /**
-     * Prepares the update of the stack assignments by creating lists of items that
+     * Returns the list of unmatched items based on the matched items from the triples and pairs.
+     * The matched items and the list containing every item are used to determine the unmatched items.
+     *
+     * @param itemTriples - list of item triples
+     * @param itemPairs   - list of item pairs
+     * @param items       - list of all items
+     * @return list containing the unmatched items
+     */
+    public static List<Integer> getUnmatchedItemsFromTriplesAndPairs(
+        List<List<Integer>> itemTriples, List<MCMEdge> itemPairs, int[] items
+    ) {
+        List<Integer> matchedItems = new ArrayList<>();
+        matchedItems.addAll(getMatchedItemsFromTriples(itemTriples));
+        matchedItems.addAll(getMatchedItemsFromPairs(itemPairs));
+        return getUnmatchedItemsFromMatchedItems(matchedItems, items);
+    }
+
+    /**
+     * Returns a list of unmatched items based on the list of matched triples.
+     *
+     * @param itemTriples - list of item triples
+     * @return list containing the unmatched items
+     */
+    public static List<Integer> getUnmatchedItemsFromTriples(List<List<Integer>> itemTriples, int[] items) {
+        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromTriples(itemTriples), items);
+    }
+
+    /**
+     * Returns the list of unmatched items based on the given list of item pairs.
+     *
+     * @param itemPairs - list of matched items
+     * @param items     - list containing every item
+     * @return list of unmatched items
+     */
+    public static List<Integer> getUnmatchedItemsFromPairs(List<MCMEdge> itemPairs, int[] items) {
+        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromPairs(itemPairs), items);
+    }
+
+    /**
+     * Prepares the update of stack assignments in the post processing step by creating lists of items that
      * are assigned to the same stack and storing the savings for each item.
      *
      * @param maxSavingsMatching  - matching to be processed
@@ -73,13 +112,10 @@ public class HeuristicUtil {
      * @param postProcessingGraph - post-processing graph containing the items and empty positions
      * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
      */
-    public static void prepareUpdateOfStackAssignments(
-        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
-        HashMap<Integer, Double> itemSavings,
-        BipartiteGraph postProcessingGraph,
-        HashMap<Integer, ArrayList<Integer>> stackAssignments
+    public static void prepareUpdateOfStackAssignmentsInPostProcessing(
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, Map<Integer, Double> itemSavings,
+        BipartiteGraph postProcessingGraph, Map<Integer, List<Integer>> stackAssignments
     ) {
-
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
             int item = GraphUtil.parseItemFromPostProcessingMatching(edge);
             int stack = GraphUtil.parseStackFromPostProcessingMatching(edge);
@@ -93,7 +129,7 @@ public class HeuristicUtil {
     }
 
     /**
-     * Updates the item position in the storage area and adds
+     * Updates the item position in the storage area in the post processing step and adds
      * the used stack to the list of blocked stacks.
      *
      * @param item          - item to be assigned to new position
@@ -101,31 +137,29 @@ public class HeuristicUtil {
      * @param level         - level the item gets assigned to
      * @param blockedStacks - list of blocked stacks (only one item per stack in post-processing)
      */
-    public static void updateItemPosition(int item, int stack, int level, ArrayList<Integer> blockedStacks, Instance instance) {
+    public static void updateItemPositionInPostProcessing(int item, int stack, int level, List<Integer> blockedStacks, Instance instance) {
         HeuristicUtil.removeItemFromOutdatedPosition(item, instance.getStacks());
         instance.getStacks()[stack][level] = item;
         blockedStacks.add(stack);
     }
 
     /**
-     * Updates the stack assignments with the specified matching.
+     * Updates the stack assignments in the post processing step with the specified matching.
      * Only one item can be assigned to each stack, because otherwise incompatibilities in terms
      * of the stacking constraints could arise. Therefore each stack is blocked for additional assignments
      * after an item has been assigned to it.
      *
      * @param maxSavingsMatching - matching the stack assignments are updated with
      */
-    public static void updateStackAssignments(
+    public static void updateStackAssignmentsInPostProcessing(
         MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching,
-        BipartiteGraph postProcessingGraph,
-        Instance instance
+        BipartiteGraph postProcessingGraph, Instance instance
     ) {
+        List<Integer> blockedStacks = new ArrayList<>();
+        Map<Integer, List<Integer>> stackAssignments = new HashMap<>();
+        Map<Integer, Double> itemSavings = new HashMap<>();
 
-        ArrayList<Integer> blockedStacks = new ArrayList<>();
-        HashMap<Integer, ArrayList<Integer>> stackAssignments = new HashMap<>();
-        HashMap<Integer, Double> itemSavings = new HashMap<>();
-
-        HeuristicUtil.prepareUpdateOfStackAssignments(maxSavingsMatching, itemSavings, postProcessingGraph, stackAssignments);
+        HeuristicUtil.prepareUpdateOfStackAssignmentsInPostProcessing(maxSavingsMatching, itemSavings, postProcessingGraph, stackAssignments);
 
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
             int item = GraphUtil.parseItemFromPostProcessingMatching(edge);
@@ -141,52 +175,11 @@ public class HeuristicUtil {
                         bestItem = stackAssignments.get(stack).get(i);
                     }
                 }
-                HeuristicUtil.updateItemPosition(bestItem, stack, level, blockedStacks, instance);
+                HeuristicUtil.updateItemPositionInPostProcessing(bestItem, stack, level, blockedStacks, instance);
             } else {
-                HeuristicUtil.updateItemPosition(item, stack, level, blockedStacks, instance);
+                HeuristicUtil.updateItemPositionInPostProcessing(item, stack, level, blockedStacks, instance);
             }
         }
-    }
-
-    /**
-     * Returns the list of unmatched items based on the matched items from the triples and pairs.
-     * The matched items and the list containing every item are used to determine the unmatched items.
-     *
-     * @param itemTriples - the list of item triples
-     * @param itemPairs   - the list of item pairs
-     * @param items       - the list of all items
-     * @return a list containing the unmatched items
-     */
-    public static List<Integer> getUnmatchedItemsFromTriplesAndPairs(
-        List<List<Integer>> itemTriples,
-        List<MCMEdge> itemPairs,
-        int[] items
-    ) {
-        ArrayList<Integer> matchedItems = new ArrayList<>();
-        matchedItems.addAll(getMatchedItemsFromTriples(itemTriples));
-        matchedItems.addAll(getMatchedItemsFromPairs(itemPairs));
-        return getUnmatchedItemsFromMatchedItems(matchedItems, items);
-    }
-
-    /**
-     * Returns a list of unmatched items based on the list of matched triples.
-     *
-     * @param itemTriples - the list of item triples
-     * @return a list containing the unmatched items
-     */
-    public static List<Integer> getUnmatchedItemsFromTriples(List<List<Integer>> itemTriples, int[] items) {
-        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromTriples(itemTriples), items);
-    }
-
-    /**
-     * Returns the list of unmatched items based on the given list of item pairs.
-     *
-     * @param itemPairs - the list of matched items
-     * @param items     - the list containing every item
-     * @return the list of unmatched items
-     */
-    public static List<Integer> getUnmatchedItemsFromPairs(List<MCMEdge> itemPairs, int[] items) {
-        return HeuristicUtil.getUnmatchedItemsFromMatchedItems(HeuristicUtil.getMatchedItemsFromPairs(itemPairs), items);
     }
 
     /**
