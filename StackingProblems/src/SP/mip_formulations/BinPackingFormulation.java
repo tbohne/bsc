@@ -30,6 +30,93 @@ public class BinPackingFormulation {
     }
 
     /**
+     * Solves the stacking problem using the bin-packing formulation.
+     *
+     * @return generated solution to the stacking problem
+     */
+    public Solution solve() {
+
+        Solution sol = new Solution();
+
+        try {
+            // define new model
+            IloCplex cplex = new IloCplex();
+
+            IloIntVar[][] x = new IloIntVar[this.instance.getItems().length][];
+            this.initVariables(cplex, x);
+            IloLinearNumExpr objective = cplex.linearNumExpr();
+            this.defineObjective(cplex, objective, x);
+            this.addConstraints(cplex, x);
+
+            this.setCPLEXConfig(cplex);
+            double startTime = cplex.getCplexTime();
+
+            if (cplex.solve()) {
+                double timeToSolve = cplex.getCplexTime() - startTime;
+                this.setStacks(cplex, x);
+                this.instance.lowerItemsThatAreStackedInTheAir();
+                sol = new Solution(timeToSolve, timeLimit, this.instance);
+                sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
+            }
+            cplex.end();
+
+        } catch (IloException e) {
+            e.printStackTrace();
+        }
+        return sol;
+    }
+
+    /**
+     * Defines the objective function which is to minimize the transport costs.
+     *
+     * @param cplex     - CPLEX model
+     * @param objective - objective to be defined
+     * @throws ilog.concert.IloException for CPLEX errors
+     */
+    private void defineObjective(IloCplex cplex, IloLinearNumExpr objective, IloIntVar[][] x) throws ilog.concert.IloException {
+        for (int i = 0; i < this.instance.getItems().length; i++) {
+            for (int q = 0; q < this.instance.getStacks().length; q++) {
+                objective.addTerm(this.instance.getCosts()[i][q], x[i][q]);
+            }
+        }
+        cplex.addMinimize(objective);
+    }
+
+    /**
+     * Initializes the variables x_iq.
+     *
+     * @param cplex - CPLEX model
+     * @param x     - variables x_iq
+     * @throws ilog.concert.IloException for CPLEX errors
+     */
+    private void initVariables(IloCplex cplex, IloIntVar[][] x) throws ilog.concert.IloException {
+        for (int i = 0; i < this.instance.getItems().length; i++) {
+            x[i] = cplex.intVarArray(this.instance.getStacks().length, 0, 1);
+        }
+    }
+
+    /**
+     * Sets the stacks based on the CPLEX variables.
+     *
+     * @param cplex - CPLEX model
+     * @param x     - variables x_iq
+     * @throws ilog.concert.IloException for CPLEX errors
+     */
+    private void setStacks(IloCplex cplex, IloIntVar[][] x) throws ilog.concert.IloException {
+        for (int i = 0; i < x.length; i++) {
+            for (int q = 0; q < x[0].length; q++) {
+                if (Math.round(cplex.getValue(x[i][q])) == 1) {
+                    int idx = 0;
+                    while (this.instance.getStacks()[q][idx] != -1) {
+                        idx++;
+                    }
+                    this.instance.getStacks()[q][idx] = i;
+                }
+            }
+        }
+    }
+
+    /**
      * Adds the bin-packing formulation's constraints to the CPLEX model.
      *
      * @param cplex - CPLEX model
@@ -74,8 +161,14 @@ public class BinPackingFormulation {
         }
     }
 
+    /**
+     * Sets the CPLEX configuration.
+     *
+     * @param cplex - CPLEX model
+     * @throws ilog.concert.IloException for CPLEX errors
+     */
     private void setCPLEXConfig(IloCplex cplex) throws ilog.concert.IloException {
-        // set CPLEX output
+        
         cplex.setOut(null);
 
         // set time limit
@@ -87,78 +180,6 @@ public class BinPackingFormulation {
         // set tolerance to 0.0 - CPLEX will only terminate before the time limit if the actual optimum is found
         cplex.setParam(IloCplex.DoubleParam.EpAGap, 0.0);
         cplex.setParam(IloCplex.DoubleParam.EpGap, 0.0);
-    }
-
-    /**
-     * Solves the stacking problem using the bin-packing formulation.
-     *
-     * @return generated solution to the stacking problem
-     */
-    public Solution solve() {
-
-        Solution sol = new Solution();
-
-        try {
-            // define new model
-            IloCplex cplex = new IloCplex();
-
-            // init variables x_iq
-            IloIntVar[][] x = new IloIntVar[this.instance.getItems().length][];
-            for (int i = 0; i < this.instance.getItems().length; i++) {
-                x[i] = cplex.intVarArray(this.instance.getStacks().length, 0, 1);
-            }
-
-            // define objective
-            IloLinearNumExpr objective = cplex.linearNumExpr();
-            for (int i = 0; i < this.instance.getItems().length; i++) {
-                for (int q = 0; q < this.instance.getStacks().length; q++) {
-                    objective.addTerm(this.instance.getCosts()[i][q], x[i][q]);
-                }
-            }
-            cplex.addMinimize(objective);
-
-            this.addConstraints(cplex, x);
-
-            this.setCPLEXConfig(cplex);
-            double startTime = cplex.getCplexTime();
-
-            if (cplex.solve()) {
-                double timeToSolve = cplex.getCplexTime() - startTime;
-                this.setStacks(cplex, x);
-                this.instance.lowerItemsThatAreStackedInTheAir();
-                sol = new Solution(timeToSolve, timeLimit, this.instance);
-                sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
-            }
-            cplex.end();
-
-        } catch (IloException e) {
-            e.printStackTrace();
-        }
-        return sol;
-    }
-
-    /**
-     * Sets the stacks based on the CPLEX variables.
-     *
-     * @param cplex - the cplex model
-     * @param x     - the variables x_iq
-     */
-    public void setStacks(IloCplex cplex, IloIntVar[][] x) {
-        for (int i = 0; i < x.length; i++) {
-            for (int q = 0; q < x[0].length; q++) {
-                try {
-                    if (Math.round(cplex.getValue(x[i][q])) == 1) {
-                        int idx = 0;
-                        while (this.instance.getStacks()[q][idx] != -1) {
-                            idx++;
-                        }
-                        this.instance.getStacks()[q][idx] = i;
-                    }
-                } catch (IloException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }
 
