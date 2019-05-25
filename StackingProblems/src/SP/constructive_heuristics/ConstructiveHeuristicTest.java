@@ -1,11 +1,14 @@
 package SP.constructive_heuristics;
 
 import SP.experiments.LowerBoundsCalculator;
+import SP.experiments.SolverComparison;
+import SP.io.SolutionWriter;
 import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
 import SP.representations.Instance;
 import SP.io.InstanceReader;
 import SP.representations.Solution;
+import SP.util.HeuristicUtil;
 
 /**
  * Test class for constructive heuristics.
@@ -33,6 +36,8 @@ public class ConstructiveHeuristicTest {
 
         ThreeCapHeuristic solver = new ThreeCapHeuristic(instance, TIME_LIMIT, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor);
         Solution sol = solver.solve(PRIORITZIE_RUNTIME,  POST_PROCESSING);
+
+        SolutionWriter.writeSolution("test", sol, SolverComparison.Solver.CONSTRUCTIVE_THREE_CAP);
 
 //        LowerBoundsCalculator lbCalc = new LowerBoundsCalculator(instance);
 //        lbCalc.computeLowerBound();
