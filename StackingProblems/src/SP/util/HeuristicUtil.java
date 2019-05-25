@@ -196,6 +196,24 @@ public class HeuristicUtil {
     }
 
     /**
+     * Returns whether the given item is validly assignable to the given pair.
+     *
+     * @param item        - the item to be checked
+     * @param pairItemOne - the first item of the pair
+     * @param pairItemTwo - the second item of the pair
+     * @return whether or not the item is assignable to the pair
+     */
+    public static boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo, int[][] stackingConstraints) {
+        if (HeuristicUtil.pairStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
+            return HeuristicUtil.itemAssignableToPairStackableInBothDirections(stackingConstraints, pairItemOne, pairItemTwo, item);
+        } else if (stackingConstraints[pairItemOne][pairItemTwo] == 1) {
+            return HeuristicUtil.itemAssignableToPairStackableInOneDirection(stackingConstraints, pairItemTwo, pairItemOne, item);
+        } else {
+            return HeuristicUtil.itemAssignableToPairStackableInOneDirection(stackingConstraints, pairItemOne, pairItemTwo, item);
+        }
+    }
+
+    /**
      * Checks whether the specified item can be assigned to the specified pair
      * that is stackable in both directions in a way that respects the stacking constraints.
      *
@@ -545,9 +563,9 @@ public class HeuristicUtil {
     /**
      * Returns the percentage deviation between the expected and the actual value.
      *
-     * @param expected - the expected value
-     * @param actual   - the actual value
-     * @return the percentage deviation between the expected and the actual value
+     * @param expected - expected value
+     * @param actual   - actual value
+     * @return percentage deviation between expected and actual value
      */
     public static int getPercentageDeviation(float expected, float actual) {
         float diff = Math.abs(expected - actual);
@@ -555,57 +573,11 @@ public class HeuristicUtil {
     }
 
     /**
-     * Returns whether the given item is validly assignable to the given pair.
-     *
-     * @param item        - the item to be checked
-     * @param pairItemOne - the first item of the pair
-     * @param pairItemTwo - the second item of the pair
-     * @return whether or not the item is assignable to the pair
-     */
-    public static boolean itemAssignableToPair(int item, int pairItemOne, int pairItemTwo, int[][] stackingConstraints) {
-        // pair stackable in both directions
-        if (HeuristicUtil.pairStackableInBothDirections(pairItemOne, pairItemTwo, stackingConstraints)) {
-            if (stackingConstraints[item][pairItemOne] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemOne][item] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemTwo][item] == 1) {
-                return true;
-            } else if (stackingConstraints[item][pairItemTwo] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemOne][item] == 1 && stackingConstraints[item][pairItemTwo] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemTwo][item] == 1 && stackingConstraints[item][pairItemOne] == 1) {
-                return true;
-            }
-        // pairItemOne above pairItemTwo
-        } else if (stackingConstraints[pairItemOne][pairItemTwo] == 1) {
-            if (stackingConstraints[item][pairItemOne] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemTwo][item] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemOne][item] == 1 && stackingConstraints[item][pairItemTwo] == 1) {
-                return true;
-            }
-        // pairItemTwo above pairItemOne
-        } else {
-            if (stackingConstraints[item][pairItemTwo] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemOne][item] == 1) {
-                return true;
-            } else if (stackingConstraints[pairItemTwo][item] == 1 && stackingConstraints[item][pairItemOne] == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns a random value in between the specified limits.
      *
-     * @param min - the lower bound of the value
-     * @param max - the upper bound of the value
-     * @return the random value in between the specified limits
+     * @param min - lower bound of the value (inclusive)
+     * @param max - upper bound of the value (inclusive)
+     * @return random value in between the specified limits
      */
     public static float getRandomValueInBetween(float min, float max) {
         Random r = new Random();
@@ -615,8 +587,8 @@ public class HeuristicUtil {
     /**
      * Rounds the given value to the next half.
      *
-     * @param val - the value to be rounded
-     * @return the rounded value
+     * @param val - value to be rounded
+     * @return rounded value
      */
     public static float roundToHalf(float val) {
         return (float)(Math.round(val * 2) / 2.0);
@@ -625,9 +597,9 @@ public class HeuristicUtil {
     /**
      * Returns a random value in between the specified limits in .5 steps.
      *
-     * @param min - the lower bound of the value
-     * @param max - the upper bound of the value
-     * @return the random value in between the specified limits
+     * @param min - lower bound of the value
+     * @param max - upper bound of the value
+     * @return random value in between the specified limits
      */
     public static float getRandomValueInBetweenHalfSteps(float min, float max) {
         Random r = new Random();
@@ -639,15 +611,23 @@ public class HeuristicUtil {
     /**
      * Returns a random integer in between the specified limits.
      *
-     * @param min - the lower bound of the value
-     * @param max - the upper bound of the value
-     * @return the random value in between the specified limits (inclusive limits)
+     * @param min - lower bound of the value
+     * @param max - upper bound of the value
+     * @return random value in between the specified limits (inclusive limits)
      */
     public static int getRandomIntegerInBetween(int min, int max) {
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
     }
 
+    /**
+     * Returns a random integer in between the specified limits except the specified value.
+     *
+     * @param min       - lower bound of the value
+     * @param max       - upper bound of the value
+     * @param exception - value not to be returned
+     * @return random value in between the specified limits (inclusive limits)
+     */
     public static int getRandomIntegerInBetweenWithException(int min, int max, int exception) {
         Random r = new Random();
         int val = r.nextInt((max - min) + 1) + min;
@@ -658,27 +638,9 @@ public class HeuristicUtil {
     }
 
     /**
-     * Returns the number of items that are assigned to a stack in the storage area.
-     *
-     * @param stacks - the stacks to be checked
-     * @return the number of assigned items
-     */
-    public static int getNumberOfItemsAssignedToStacks(int[][] stacks) {
-        int numberOfItems = 0;
-        for (int i = 0; i < stacks.length; i++) {
-            for (int j = 0; j < stacks[i].length; j++) {
-                if (stacks[i][j] != -1) {
-                    numberOfItems++;
-                }
-            }
-        }
-        return numberOfItems;
-    }
-
-    /**
      * Returns whether the specified list of items contains duplicates.
      *
-     * @param items - ths list of items to be checked
+     * @param items - list of items to be checked
      * @return whether or not the list contains duplicates
      */
     public static boolean itemListContainsDuplicates(List<Integer> items) {
@@ -688,21 +650,13 @@ public class HeuristicUtil {
     }
 
     /**
-     * Returns a list of items corresponding to the specified array of items.
+     * Returns a copy of the specified edge list.
      *
-     * @param itemsArr - the array of items to be replaces by a list of items
-     * @return the list of items
+     * @param edges - list of edges to be copied
+     * @return copy of edge list
      */
-    public static ArrayList<Integer> getArrayListOfItems(int[] itemsArr) {
-        ArrayList<Integer> items = new ArrayList<>();
-        for (int item : itemsArr) {
-            items.add(item);
-        }
-        return items;
-    }
-
-    public static ArrayList<MCMEdge> getCopyOfEdgeList(List<MCMEdge> edges) {
-        ArrayList<MCMEdge> copy = new ArrayList<>();
+    public static List<MCMEdge> getCopyOfEdgeList(List<MCMEdge> edges) {
+        List<MCMEdge> copy = new ArrayList<>();
         for (MCMEdge edge : edges) {
             copy.add(new MCMEdge(edge));
         }
@@ -712,11 +666,11 @@ public class HeuristicUtil {
     /**
      * Returns a reversed copy of the specified edge list.
      *
-     * @param edges - the list of edges to be reversed
-     * @return the reversed edge list
+     * @param edges - list of edges to be reversed
+     * @return reversed edge list
      */
-    public static ArrayList<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
-        ArrayList<MCMEdge> edgesRev = new ArrayList<>(edges);
+    public static List<MCMEdge> getReversedCopyOfEdgeList(List<MCMEdge> edges) {
+        List<MCMEdge> edgesRev = new ArrayList<>(edges);
         Collections.reverse(edgesRev);
         return edgesRev;
     }
@@ -724,8 +678,8 @@ public class HeuristicUtil {
     /**
      * Sorts the given map by value.
      *
-     * @param map - the map to be sorted
-     * @return the sorted map
+     * @param map - map to be sorted
+     * @return sorted map
      */
     public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
