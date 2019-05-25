@@ -55,7 +55,9 @@ public class SolverComparison2Cap implements SolverComparison {
      * @param solutionName - the name of the generated solution
      */
     public void solveWithThreeIdx(Instance instance, String solutionName) {
-        ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(instance, TIME_LIMIT);
+        ThreeIndexFormulation threeIndexFormulation = new ThreeIndexFormulation(
+            instance, TIME_LIMIT, HIDE_CPLEX_OUTPUT, MIP_EMPHASIS, MIP_TOLERANCE
+        );
         Solution sol = threeIndexFormulation.solve();
         SolutionWriter.writeSolution(SOLUTION_PREFIX + solutionName + ".txt", sol, Solver.MIP_THREEINDEX);
         SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions.csv", sol, Solver.MIP_THREEINDEX);
