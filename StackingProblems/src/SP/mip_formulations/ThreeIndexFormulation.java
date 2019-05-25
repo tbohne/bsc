@@ -7,7 +7,6 @@ import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearIntExpr;
 import ilog.concert.IloLinearNumExpr;
 import ilog.cplex.IloCplex;
-import ilog.cplex.IloCplex.Param;
 
 /**
  * Represents the three-index MIP formulation of stacking problems that gets solved by CPLEX.
@@ -16,11 +15,11 @@ import ilog.cplex.IloCplex.Param;
  */
 public class ThreeIndexFormulation {
 
-    private Instance instance;
-    private double timeLimit;
-    private boolean hideCPLEXOutput;
-    private int mipEmphasis;
-    private double tolerance;
+    private final Instance instance;
+    private final double timeLimit;
+    private final boolean hideCPLEXOutput;
+    private final int mipEmphasis;
+    private final double tolerance;
 
     /**
      * Constructor
@@ -40,9 +39,9 @@ public class ThreeIndexFormulation {
     }
 
     /**
-     * Solves the stacking problem using the bin-packing formulation.
+     * Solves the instance of a stacking problem using the three-index formulation.
      *
-     * @return the generated solution to the stacking problem
+     * @return generated solution to the stacking problem
      */
     public Solution solve() {
 
@@ -169,6 +168,7 @@ public class ThreeIndexFormulation {
      * @param cplex - CPLEX model
      * @throws ilog.concert.IloException for CPLEX errors
      */
+    @SuppressWarnings("Duplicates")
     private void setCPLEXConfig(IloCplex cplex) throws ilog.concert.IloException {
 
         if (this.hideCPLEXOutput) {
@@ -189,7 +189,7 @@ public class ThreeIndexFormulation {
     /**
      * Reverses the item order for each stack to be consistent with the other solvers.
      */
-    public void reverseItemOrderForEachStack() {
+    private void reverseItemOrderForEachStack() {
         for (int i = 0; i < this.instance.getStacks().length; i++) {
             for (int j = 0; j < this.instance.getStacks()[i].length / 2; j++) {
                 int tmp = this.instance.getStacks()[i][j];
@@ -205,7 +205,7 @@ public class ThreeIndexFormulation {
      * @param cplex - the CPLEX model
      * @param x     - the variable x_iq
      */
-    public void setStacks(IloCplex cplex, IloIntVar[][][] x) {
+    private void setStacks(IloCplex cplex, IloIntVar[][][] x) {
 
         for (int i = 0; i < this.instance.getItems().length; i++) {
             for (int q = 0; q < this.instance.getStacks().length; q++) {
@@ -220,7 +220,7 @@ public class ThreeIndexFormulation {
                 }
             }
         }
-        // Used to end up with a top to bottom order.
+        // used to end up with a top to bottom order
         this.reverseItemOrderForEachStack();
     }
 }
