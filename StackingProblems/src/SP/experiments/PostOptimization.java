@@ -6,6 +6,7 @@ import SP.post_optimization_methods.TabuSearch;
 import SP.representations.Solution;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostOptimization {
 
@@ -17,7 +18,7 @@ public class PostOptimization {
 
     public static void optimizeSolutions() {
 
-        ArrayList<OptimizableSolution> solutions = SolutionReader.readSolutionsFromDir(SOLUTION_PREFIX, INSTANCE_PREFIX, SOLVER);
+        List<OptimizableSolution> solutions = SolutionReader.readSolutionsFromDir(SOLUTION_PREFIX, INSTANCE_PREFIX, SOLVER);
 
         for (OptimizableSolution sol : solutions) {
 

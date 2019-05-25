@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Provides functionalities to read solutions for stacking problems from the file system.
@@ -19,15 +20,37 @@ import java.util.Arrays;
 public class SolutionReader {
 
     /**
-     * Reads the storage area from the file.
+     * Reads the solutions from the files contained in the specified directory.
      *
-     * @param br          - the buffered reader pointing to the specific line
-     * @param storageArea - the storage area to be filled
-     * @throws IOException
+     * @param solutionDirName - name of the directory containing the solutions
+     * @param instanceDirName - name of the directory containing the solved instances
+     * @param solver          - specifies the solver for which the solution is to be read
+     * @return list of the read solutions as optimizable solutions
      */
-    public static void readStorageArea(BufferedReader br, ArrayList<ArrayList<Integer>> storageArea) throws IOException {
-        for (String line; (line = br.readLine()) != null && !line.contains("###############"); ) {
-            ArrayList<Integer> stack = new ArrayList<>();
+    public static List<OptimizableSolution> readSolutionsFromDir(String solutionDirName, String instanceDirName, String solver) {
+        File dir = new File(solutionDirName);
+        List<OptimizableSolution> solutions = new ArrayList<>();
+        File[] directoryListing = dir.listFiles();
+        assert directoryListing != null;
+        Arrays.sort(directoryListing);
+        for (File file : directoryListing) {
+            if (!file.isDirectory() && file.getName().contains("slp_")) {
+                solutions.add(readSolutionFile(file, instanceDirName, solver));
+            }
+        }
+        return solutions;
+    }
+
+    /**
+     * Reads the stack assignments from a solution file using the specified reader.
+     *
+     * @param br     - buffered reader pointing to the line to read from
+     * @param stacks - stacks to be filled
+     * @throws IOException for errors during reading procedure
+     */
+    private static void readStackAssignments(BufferedReader br, List<List<Integer>> stacks) throws IOException {
+        for (String line; (line = br.readLine()) != null && !line.contains("#"); ) {
+            List<Integer> stack = new ArrayList<>();
             String[] splitArr = line.split(":");
             if (splitArr.length > 1) {
                 String first = splitArr[1].trim();
@@ -37,44 +60,36 @@ public class SolutionReader {
                         stack.add(item);
                     }
                 }
-                storageArea.add(new ArrayList<>(stack));
+                stacks.add(new ArrayList<>(stack));
             } else {
-                storageArea.add(new ArrayList<>());
+                stacks.add(new ArrayList<>());
             }
         }
     }
 
     /**
-     * Copies the read storage area to the solution's filled storage area.
-     * TODO: not the best way to do that
+     * Copies the read stack assignments to the solution's filled stacks.
      *
-     * @param storageArea - the storage area to be copied
-     * @param sol         - the solution whose storage area gets filled
+     * @param stackAssignments - stack assignments to be copied
+     * @param sol              - solution whose stacks get filled
      */
-    public static void fillStorageArea(ArrayList<ArrayList<Integer>> storageArea, Solution sol) {
-        for (int i = 0; i < storageArea.size(); i++) {
-            for (int j = 0; j < storageArea.get(i).size(); j++) {
-                sol.getFilledStacks()[i][j] = storageArea.get(i).get(j);
+    private static void fillStacks(List<List<Integer>> stackAssignments, Solution sol) {
+        for (int i = 0; i < stackAssignments.size(); i++) {
+            for (int j = 0; j < stackAssignments.get(i).size(); j++) {
+                sol.getFilledStacks()[i][j] = stackAssignments.get(i).get(j);
             }
         }
     }
 
     /**
-     * Skips the section of the file containing solutions from other solvers.
+     * Reads a solution to a stacking problem from the specified file.
      *
-     * @param br     - the buffered reader used to read the file
-     * @param solver - the solver to search for
-     * @throws IOException
+     * @param br              - buffered reader pointing to the file to read from
+     * @param instanceDirName - name of the instance directory
+     * @param file            - file to read from
+     * @return read solution
      */
-    public static void skipOtherSolutions(BufferedReader br, String solver) throws IOException {
-        for (String line; (line = br.readLine()) != null; ) {
-            if (line.contains("solved with: SP.constructive_heuristics." + solver)) {
-                break;
-            }
-        }
-    }
-
-    public static Solution actuallyReadSolution(BufferedReader br, String instanceDirName, File file) {
+    private static Solution readSolution(BufferedReader br, String instanceDirName, File file) {
 
         Solution sol = new Solution();
 
@@ -83,95 +98,65 @@ public class SolutionReader {
             if (line.contains("Problem not solved")) { return sol; }
             double timeLimit = Double.parseDouble(line.split(":")[1].replace("s", "").trim());
             line = br.readLine();
-
-            if (line.contains("time limit exceeded")) {
-                return sol;
-            }
+            if (line.contains("time limit exceeded")) { return sol; }
 
             double timeToSolveInSeconds = Double.parseDouble(line.split(":")[1].replace(",", ".").replace("s", "").trim());
-            line = br.readLine();
-            double objectiveValue = Double.parseDouble(line.split(":")[1].trim());
             br.readLine();
             br.readLine();
-            ArrayList<ArrayList<Integer>> storageArea = new ArrayList<>();
-            readStorageArea(br, storageArea);
+            br.readLine();
+
+            List<List<Integer>> stackAssignments = new ArrayList<>();
+            readStackAssignments(br, stackAssignments);
             String instanceName = file.getName().replace("sol", "instance");
             Instance instance = InstanceReader.readInstance(instanceDirName + instanceName);
             sol = new Solution(timeToSolveInSeconds, timeLimit, instance);
-            fillStorageArea(storageArea, sol);
+            fillStacks(stackAssignments, sol);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return sol;
     }
 
     /**
-     * Reads the solution of a stacking-problem from the specified file.
+     * Reads the solution to a stacking problem from the specified file.
      *
-     * @param file            - the file to read from
-     * @param instanceDirName - the name of the instance directory
+     * @param file            - file to read from
+     * @param instanceDirName - name of the instance directory
      * @param solver          - specifies the solver for which the solution is to be read
-     * @return the read solution
+     * @return generated optimizable solution from the read solution
      */
-    public static OptimizableSolution readSolution(File file, String instanceDirName, String solver) {
+    private static OptimizableSolution readSolutionFile(File file, String instanceDirName, String solver) {
+
         Solution sol = new Solution();
         double optimalObjectiveValue = -1;
         double runtimeForOptimalSolution = -1;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
-//            skipOtherSolutions(br, solver);
-
             String line = br.readLine();
 
             while (line != null) {
-
                 if (line.contains("solved with:")) {
+
                     if (!line.contains(solver)) {
-                        System.out.println(line);
-                        Solution tmpSol = actuallyReadSolution(br, instanceDirName, file);
+                        Solution tmpSol = readSolution(br, instanceDirName, file);
                         if (tmpSol.getTimeToSolveAsDouble() < tmpSol.getTimeLimit()) {
                             optimalObjectiveValue = tmpSol.computeCosts();
                             runtimeForOptimalSolution = tmpSol.getTimeToSolveAsDouble();
                         }
                     } else {
-                        sol = actuallyReadSolution(br, instanceDirName, file);
+                        sol = readSolution(br, instanceDirName, file);
                     }
                 }
                 line = br.readLine();
             }
-
             br.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         sol.lowerItemsThatAreStackedInTheAir();
-
-        OptimizableSolution optSol = new OptimizableSolution(sol, optimalObjectiveValue, runtimeForOptimalSolution);
-
-        return optSol;
-    }
-
-    /**
-     * Reads the solutions from the files contained in the specified directory.
-     *
-     * @param solutionDirName - name of the directory containing the solutions
-     * @param instanceDirName - name of the directory containing the solved instances
-     * @param solver          - specifies the solver for which the solution is to be read
-     * @return a list of the read solutions
-     */
-    public static ArrayList<OptimizableSolution> readSolutionsFromDir(String solutionDirName, String instanceDirName, String solver) {
-        File dir = new File(solutionDirName);
-        ArrayList<OptimizableSolution> solutions = new ArrayList<>();
-        File[] directoryListing = dir.listFiles();
-        Arrays.sort(directoryListing);
-        for (File file : directoryListing) {
-            if (!file.isDirectory() && file.getName().contains("slp_")) {
-                solutions.add(readSolution(file, instanceDirName, solver));
-            }
-        }
-        return solutions;
+        return new OptimizableSolution(sol, optimalObjectiveValue, runtimeForOptimalSolution);
     }
 }

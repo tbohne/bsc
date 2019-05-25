@@ -5,11 +5,12 @@ import SP.representations.Solution;
 import SP.io.SolutionReader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TabuSearchTest {
 
     public static void main(String[] args) {
-        ArrayList<OptimizableSolution> solutions = SolutionReader.readSolutionsFromDir(
+        List<OptimizableSolution> solutions = SolutionReader.readSolutionsFromDir(
             "res/solutions/", "res/instances/", "ThreeCapHeuristic"
         );
         Solution sol = solutions.get(0).getSol();
