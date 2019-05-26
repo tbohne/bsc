@@ -22,96 +22,15 @@ import java.util.Set;
  */
 public class LowerBoundsCalculator {
 
-    private Instance instance;
+    private final Instance instance;
 
     /**
      * Constructor
      *
-     * @param instance  - the instance of the stacking problem to compute a LB for
+     * @param instance  - instance of the stacking problem to compute a LB for
      */
     public LowerBoundsCalculator(Instance instance) {
         this.instance = instance;
-    }
-
-    /**
-     * Returns the considered instance's name.
-     *
-     * @return the name of the considered instance
-     */
-    public String getNameOfConsideredInstance() {
-        return this.instance.getName();
-    }
-
-    /**
-     * Adds edges to the bipartite graph that connect items with stack positions.
-     *
-     * @param bipartiteGraph - bipartite graph to add the edges to
-     * @param items          - dummy items to be connected to positions
-     * @param positions      - positions the dummy items get connected to
-     */
-    public void addEdges(
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> bipartiteGraph,
-        ArrayList<Integer> items,
-        ArrayList<StackPosition> positions
-    ) {
-        for (int item : items) {
-            for (StackPosition pos : positions) {
-                DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "pos" + pos);
-                double costs = this.instance.getCosts()[item][pos.getStackIdx()];
-                bipartiteGraph.setEdgeWeight(edge, costs);
-            }
-        }
-    }
-
-    /**
-     * Adds edges to the bipartite graph that connect dummy items with stack positions.
-     *
-     * @param bipartiteGraph - bipartite graph to add the edges to
-     * @param dummyItems     - dummy items to be connected to positions
-     * @param positions      - positions the dummy items get connected to
-     */
-    public void addEdgesForDummyItems(
-        Graph<String, DefaultWeightedEdge> bipartiteGraph,
-        List<Integer> dummyItems,
-        List<StackPosition> positions
-    ) {
-        for (int item : dummyItems) {
-            for (StackPosition pos : positions) {
-                DefaultWeightedEdge edge = bipartiteGraph.addEdge("dummy" + item, "pos" + pos);
-                bipartiteGraph.setEdgeWeight(edge, 0);
-            }
-        }
-    }
-
-    /**
-     * Generates the bipartite graph between items and stack positions.
-     *
-     * @return the generated bipartite graph
-     */
-    public BipartiteGraph generateBipartiteGraph() {
-
-        DefaultUndirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(
-            DefaultWeightedEdge.class
-        );
-        Set<String> partitionOne = new HashSet<>();
-        Set<String> partitionTwo = new HashSet<>();
-
-        ArrayList<StackPosition> positions = new ArrayList<>();
-        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
-            for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
-                positions.add(new StackPosition(stack, level));
-            }
-        }
-        ArrayList<Integer> itemList = new ArrayList<>();
-        for (int item : this.instance.getItems()) {
-            itemList.add(item);
-        }
-        GraphUtil.addVerticesForUnmatchedItems(itemList, graph, partitionOne);
-        GraphUtil.addVerticesForEmptyPositions(positions, graph, partitionTwo);
-        List<Integer> dummyItems = GraphUtil.introduceDummyVerticesToBipartiteGraph(graph, partitionOne, partitionTwo);
-        this.addEdgesForDummyItems(graph, dummyItems, positions);
-        this.addEdges(graph, itemList, positions);
-        return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 
     /**
@@ -133,5 +52,73 @@ public class LowerBoundsCalculator {
         double lowerBound = Math.round(minCostPerfectMatching.getMatching().getWeight() * 100.0) / 100.0;
         System.out.println("LB (with relaxed s_ij): " + lowerBound);
         return lowerBound;
+    }
+
+    /**
+     * Adds edges to the bipartite graph that connect items with stack positions.
+     *
+     * @param bipartiteGraph - bipartite graph to add the edges to
+     * @param items          - items to be connected to positions
+     * @param positions      - positions the items get connected to
+     */
+    private void addEdgesBetweenItemsAndStackPositions(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, List<Integer> items, List<StackPosition> positions
+    ) {
+        for (int item : items) {
+            for (StackPosition pos : positions) {
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("item" + item, "pos" + pos);
+                double costs = this.instance.getCosts()[item][pos.getStackIdx()];
+                bipartiteGraph.setEdgeWeight(edge, costs);
+            }
+        }
+    }
+
+    /**
+     * Adds edges to the bipartite graph that connect dummy items with stack positions.
+     *
+     * @param bipartiteGraph - bipartite graph to add the edges to
+     * @param dummyItems     - dummy items to be connected to positions
+     * @param positions      - positions the dummy items get connected to
+     */
+    private void addEdgesBetweenDummyItemsAndStackPositions(
+        Graph<String, DefaultWeightedEdge> bipartiteGraph, List<Integer> dummyItems, List<StackPosition> positions
+    ) {
+        for (int item : dummyItems) {
+            for (StackPosition pos : positions) {
+                DefaultWeightedEdge edge = bipartiteGraph.addEdge("dummy" + item, "pos" + pos);
+                bipartiteGraph.setEdgeWeight(edge, 0);
+            }
+        }
+    }
+
+    /**
+     * Generates the bipartite graph between items and stack positions.
+     *
+     * @return generated bipartite graph
+     */
+    private BipartiteGraph generateBipartiteGraph() {
+
+        Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+        Set<String> partitionOne = new HashSet<>();
+        Set<String> partitionTwo = new HashSet<>();
+
+        List<StackPosition> positions = new ArrayList<>();
+        for (int stack = 0; stack < this.instance.getStacks().length; stack++) {
+            for (int level = 0; level < this.instance.getStacks()[stack].length; level++) {
+                positions.add(new StackPosition(stack, level));
+            }
+        }
+        List<Integer> itemList = new ArrayList<>();
+        for (int item : this.instance.getItems()) {
+            itemList.add(item);
+        }
+
+        GraphUtil.addVerticesForUnmatchedItems(itemList, graph, partitionOne);
+        GraphUtil.addVerticesForEmptyPositions(positions, graph, partitionTwo);
+        List<Integer> dummyItems = GraphUtil.introduceDummyVerticesToBipartiteGraph(graph, partitionOne, partitionTwo);
+        this.addEdgesBetweenDummyItemsAndStackPositions(graph, dummyItems, positions);
+        this.addEdgesBetweenItemsAndStackPositions(graph, itemList, positions);
+
+        return new BipartiteGraph(partitionOne, partitionTwo, graph);
     }
 }
