@@ -13,7 +13,6 @@ paste("BinP: ", sum(input == "BinP"), " solutions")
 paste("3Idx: ", sum(input == "3Idx"), " solutions")
 paste("2Cap: ", sum(input == "2Cap"), " solutions")
 
-
 SOLUTIONS <- c(
     sum(input == "BinP") / as.integer(numOfInstances) * 100,
     sum(input == "3Idx") / as.integer(numOfInstances) * 100,

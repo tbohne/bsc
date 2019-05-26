@@ -12,15 +12,11 @@ print("##########################################")
 paste("BinP: ", sum(input == "BinP"), " solutions")
 paste("3Idx: ", sum(input == "3Idx"), " solutions")
 paste("3Cap: ", sum(input == "3Cap"), " solutions")
-# paste("3CapPerm: ", sum(input == "3CapPerm"), " solutions")
-# paste("3CapRec: ", sum(input == "3CapRec"), " solutions")
 
 SOLUTIONS <- c(
     sum(input == "BinP") / as.integer(numOfInstances) * 100,
     sum(input == "3Idx") / as.integer(numOfInstances) * 100,
     sum(input == "3Cap") / as.integer(numOfInstances) * 100
-    # sum(input == "3CapPerm") / as.integer(numOfInstances) * 100,
-    # sum(input == "3CapRec") / as.integer(numOfInstances) * 100
 )
 SOLVER <- c("BinP", "3Idx", "3Cap")
 
