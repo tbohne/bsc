@@ -254,11 +254,10 @@ public class TabuSearch {
     /**
      * Generates a neighbor for the current solution using the "shift-neighborhood".
      *
-     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
      * @return neighboring solution
      */
     @SuppressWarnings("Duplicates")
-    public Solution getNeighborShift(PostOptimization.ShortTermStrategies shortTermStrategy) {
+    public Solution getNeighborShift() {
 
         List<Solution> nbrs = new ArrayList<>();
         this.failCnt = 0;
@@ -276,7 +275,7 @@ public class TabuSearch {
             if (!neighbor.isFeasible()) { continue; }
 
             // FIRST-FIT
-            if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT && !this.tabuList.contains(shift)
+            if (this.shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT && !this.tabuList.contains(shift)
                 && neighbor.computeCosts() < this.currSol.computeCosts()) {
 
                     this.forbidShift(shift);
@@ -300,7 +299,7 @@ public class TabuSearch {
 
             // ASPIRATION CRITERION
             if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
-                if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT) {
+                if (this.shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT) {
                     return neighbor;
                 } else {
                     nbrs.add(neighbor);
@@ -329,12 +328,11 @@ public class TabuSearch {
     /**
      * Generates a neighbor for the current solution using the "k-swap-neighborhood".
      *
-     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
      * @param numberOfSwaps     - number of swaps to be performed
      * @return a neighboring solution
      */
     @SuppressWarnings("Duplicates")
-    public Solution getNeighborKSwap(PostOptimization.ShortTermStrategies shortTermStrategy, int numberOfSwaps) {
+    public Solution getNeighborKSwap(int numberOfSwaps) {
 
         List<Solution> nbrs = new ArrayList<>();
         this.failCnt = 0;
@@ -342,7 +340,7 @@ public class TabuSearch {
 
         while (nbrs.size() < this.numberOfNeighbors) {
 
-            if (numberOfSwaps > 1 && cnt++ == PostOptimization.UNSUCCESSFUL_K_SWAP_ATTEMPTS) {
+            if (numberOfSwaps > 1 && cnt++ == this.unsuccessfulKSwapAttempts) {
                 Solution best = HeuristicUtil.getBestSolution(nbrs);
                 if (best.isEmpty()) {
                     return this.currSol;
@@ -380,7 +378,7 @@ public class TabuSearch {
             if (!neighbor.isFeasible()) { continue; }
 
             // FIRST-FIT
-            if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT
+            if (this.shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT
                 && !this.containsTabuSwap(swapList) && neighbor.computeCosts() < this.currSol.computeCosts()) {
 
                 for (Swap swap : swapList) {
@@ -410,7 +408,7 @@ public class TabuSearch {
 
             // ASPIRATION CRITERION
             if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
-                if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT) {
+                if (this.shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT) {
                     return neighbor;
                 } else {
                     nbrs.add(neighbor);
@@ -423,24 +421,23 @@ public class TabuSearch {
     /**
      * Retrieves a neighboring solution by applying the operators with certain probabilities.
      *
-     * @param shortTermStrategy - used short term strategy
      * @return neighboring solution
      */
-    public Solution getNeighborBasedOnProbabilities(PostOptimization.ShortTermStrategies shortTermStrategy) {
+    public Solution getNeighborBasedOnProbabilities() {
 
         double rand = Math.random();
         Solution sol;
 
         if (rand < this.kSwapProbability / 100.0) {
-            sol = this.getNeighborKSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB));
+            sol = this.getNeighborKSwap(HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB));
         } else if (rand < (this.swapProbability + this.kSwapProbability) / 100.0) {
-            sol =  this.getNeighborKSwap(shortTermStrategy, 1);
+            sol =  this.getNeighborKSwap(1);
         } else {
             // shift is only possible if there are free slots
             if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
-                sol = this.getNeighborShift(shortTermStrategy);
+                sol = this.getNeighborShift();
             } else {
-                sol =  this.getNeighborKSwap(shortTermStrategy, 1);
+                sol =  this.getNeighborKSwap(1);
             }
         }
         if (sol == null) {
@@ -452,17 +449,16 @@ public class TabuSearch {
     /**
      * Applies the combined shift- and swap-neighborhood to retrieve the best neighbor.
      *
-     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
      * @return best generated neighbor
      */
-    public Solution getNeighbor(PostOptimization.ShortTermStrategies shortTermStrategy) {
+    public Solution getNeighbor() {
         List<Solution> nbrs = new ArrayList<>();
         // shift is only possible if there are free slots
         if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
-            nbrs.add(this.getNeighborShift(shortTermStrategy));
+            nbrs.add(this.getNeighborShift());
         }
-        nbrs.add(this.getNeighborKSwap(shortTermStrategy, 1));
-        nbrs.add(this.getNeighborKSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB)));
+        nbrs.add(this.getNeighborKSwap(1));
+        nbrs.add(this.getNeighborKSwap(HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB)));
 
         return Collections.min(nbrs);
     }
@@ -471,11 +467,10 @@ public class TabuSearch {
      * Updates the current solution with the best neighbor.
      * Additionally, the best solution gets updated if a new best solution is found.
      *
-     * @param shortTermStrategy - determines the strategy for the neighbor retrieval
      * @param iteration         - current iteration
      */
-    public void updateCurrentSolution(PostOptimization.ShortTermStrategies shortTermStrategy, int iteration) {
-        this.currSol = this.getNeighborBasedOnProbabilities(shortTermStrategy);
+    public void updateCurrentSolution(int iteration) {
+        this.currSol = this.getNeighborBasedOnProbabilities();
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
             this.iterationOfLastImprovement = iteration;
@@ -489,7 +484,7 @@ public class TabuSearch {
         for (int i = 0; i < this.numberOfIterations; i++) {
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
-            this.updateCurrentSolution(PostOptimization.SHORT_TERM_STRATEGY, i);
+            this.updateCurrentSolution(i);
         }
     }
 
@@ -501,7 +496,7 @@ public class TabuSearch {
         while (this.tabuListClears < PostOptimization.NUMBER_OF_TABU_LIST_CLEARS) {
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
-            this.updateCurrentSolution(PostOptimization.SHORT_TERM_STRATEGY, iteration++);
+            this.updateCurrentSolution(iteration++);
         }
     }
 
@@ -516,7 +511,7 @@ public class TabuSearch {
             System.out.println(this.tabuList.size());
             System.out.println(this.bestSol.computeCosts());
             System.out.println("diff: " + Math.abs(this.iterationOfLastImprovement - iteration));
-            this.updateCurrentSolution(PostOptimization.SHORT_TERM_STRATEGY, iteration++);
+            this.updateCurrentSolution(iteration++);
         }
     }
 
@@ -529,7 +524,7 @@ public class TabuSearch {
 
         this.startTime = System.currentTimeMillis();
 
-        switch (PostOptimization.STOPPING_CRITERION) {
+        switch (this.stoppingCriterion) {
             case ITERATIONS:
                 this.solveIterations();
                 break;
