@@ -59,7 +59,6 @@ public class CompareSolvers {
 
             // solving instances with capacity 2
             if (SOLVE_TWO_CAP) {
-
                 SolverComparison2Cap twoCap = new SolverComparison2Cap(
                     SOLUTION_PREFIX, INSTANCE_PREFIX, TIME_LIMIT, HIDE_CPLEX_OUTPUT,
                     MIP_EMPHASIS, MIP_TOLERANCE, POST_PROCESSING

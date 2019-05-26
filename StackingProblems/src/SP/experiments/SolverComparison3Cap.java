@@ -57,27 +57,6 @@ public class SolverComparison3Cap extends SolverComparison {
     }
 
     /**
-     * Solves the given instance with the constructive heuristic for a stack capacity of 3.
-     *
-     * @param instance     - instance to be solved
-     * @param solutionName - name of the generated solution
-     */
-    private void solveWithThreeCap(Instance instance, String solutionName) {
-        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(
-            instance, this.timeLimit, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor
-        );
-        Solution sol = threeCapSolver.solve(this.prioritizeRuntime, this.postProcessing);
-        if (!sol.isEmpty()) {
-            SolutionWriter.writeSolution(
-                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
-            );
-            SolutionWriter.writeSolutionAsCSV(
-                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
-            );
-        }
-    }
-
-    /**
      * Compares the different solvers for a stack capacity of 3.
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
@@ -112,6 +91,27 @@ public class SolverComparison3Cap extends SolverComparison {
                     solveWithThreeCap(instance, solutionName);
                 }
             }
+        }
+    }
+
+    /**
+     * Solves the given instance with the constructive heuristic for a stack capacity of 3.
+     *
+     * @param instance     - instance to be solved
+     * @param solutionName - name of the generated solution
+     */
+    private void solveWithThreeCap(Instance instance, String solutionName) {
+        ThreeCapHeuristic threeCapSolver = new ThreeCapHeuristic(
+            instance, this.timeLimit, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor
+        );
+        Solution sol = threeCapSolver.solve(this.prioritizeRuntime, this.postProcessing);
+        if (!sol.isEmpty()) {
+            SolutionWriter.writeSolution(
+                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+            );
+            SolutionWriter.writeSolutionAsCSV(
+                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+            );
         }
     }
 }

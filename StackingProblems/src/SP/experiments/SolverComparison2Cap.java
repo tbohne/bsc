@@ -42,25 +42,6 @@ class SolverComparison2Cap extends SolverComparison {
     }
 
     /**
-     * Solves the given instance with the constructive heuristic for a stack capacity of 2.
-     *
-     * @param instance     - instance to be solved
-     * @param solutionName - name of the generated solution
-     */
-    private void solveWithTwoCap(Instance instance, String solutionName) {
-        TwoCapHeuristic twoCapHeuristic = new TwoCapHeuristic(instance, this.timeLimit);
-        Solution sol = twoCapHeuristic.solve(this.postProcessing);
-        if (!sol.isEmpty()) {
-            SolutionWriter.writeSolution(
-                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
-            );
-            SolutionWriter.writeSolutionAsCSV(
-                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
-            );
-        }
-    }
-
-    /**
      * Compares the different solvers for a stack capacity of 2.
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
@@ -98,6 +79,25 @@ class SolverComparison2Cap extends SolverComparison {
                     solveWithTwoCap(instance, solutionName);
                 }
             }
+        }
+    }
+
+    /**
+     * Solves the given instance with the constructive heuristic for a stack capacity of 2.
+     *
+     * @param instance     - instance to be solved
+     * @param solutionName - name of the generated solution
+     */
+    private void solveWithTwoCap(Instance instance, String solutionName) {
+        TwoCapHeuristic twoCapHeuristic = new TwoCapHeuristic(instance, this.timeLimit);
+        Solution sol = twoCapHeuristic.solve(this.postProcessing);
+        if (!sol.isEmpty()) {
+            SolutionWriter.writeSolution(
+                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+            );
+            SolutionWriter.writeSolutionAsCSV(
+                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+            );
         }
     }
 }
