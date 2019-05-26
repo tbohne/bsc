@@ -33,6 +33,8 @@ public class TabuSearch {
     private int unsuccessfulNeighborGenerationAttempts;
     private int unsuccessfulKSwapAttempts;
     private int kSwapIntervalUB;
+    private float kSwapProbability;
+    private float swapProbability;
 
     private int iterationOfLastImprovement;
     private int numberOfNonImprovingIterations;
@@ -60,12 +62,13 @@ public class TabuSearch {
         Solution initialSolution, double timeLimit, double optimalObjectiveValue, int numberOfNeighbors,
         int maxTabuListLengthFactor, PostOptimization.ShortTermStrategies shortTermStrategy,
         int unsuccessfulNeighborGenerationAttempts, int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations,
-        int kSwapIntervalUB, int numberOfIterations, int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion
+        int kSwapIntervalUB, int numberOfIterations, int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion,
+        float kSwapProbability, float swapProbability
     ) {
         this(
             initialSolution, optimalObjectiveValue, numberOfNeighbors, maxTabuListLengthFactor, shortTermStrategy,
             unsuccessfulNeighborGenerationAttempts, unsuccessfulKSwapAttempts, numberOfNonImprovingIterations,
-            kSwapIntervalUB, numberOfIterations, numberOfTabuListClears, stoppingCriterion
+            kSwapIntervalUB, numberOfIterations, numberOfTabuListClears, stoppingCriterion, kSwapProbability, swapProbability
         );
         this.timeLimit = timeLimit;
     }
@@ -85,12 +88,14 @@ public class TabuSearch {
      * @param numberOfIterations                     - number of iterations before termination
      * @param numberOfTabuListClears                 - number of tabu list clears before termination
      * @param stoppingCriterion                      - stopping criterion to be used
+     * @param kSwapProbability                       - probability for applying the k-swap operator
+     * @param swapProbability                        - probability for applying the swap operator
      */
     public TabuSearch(
         Solution initialSolution, double optimalObjectiveValue, int numberOfNeighbors, int maxTabuListLengthFactor,
         PostOptimization.ShortTermStrategies shortTermStrategy, int unsuccessfulNeighborGenerationAttempts,
         int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations, int kSwapIntervalUB, int numberOfIterations,
-        int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion
+        int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion, float kSwapProbability, float swapProbability
     ) {
         this.currSol = new Solution(initialSolution);
         this.bestSol = new Solution(initialSolution);
@@ -108,6 +113,8 @@ public class TabuSearch {
         this.numberOfNonImprovingIterations = numberOfNonImprovingIterations;
 
         this.kSwapIntervalUB = kSwapIntervalUB;
+        this.kSwapProbability = kSwapProbability;
+        this.swapProbability = swapProbability;
 
         this.numberOfIterations = numberOfIterations;
         this.numberOfTabuListClears = numberOfTabuListClears;
@@ -424,13 +431,17 @@ public class TabuSearch {
         double rand = Math.random();
         Solution sol;
 
-        if (rand < 0.05) {
+        if (rand < this.kSwapProbability / 100.0) {
             sol = this.getNeighborKSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB));
-        // shift is only possible if there are free slots
-        } else if (rand < 0.5 && this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
-            sol = this.getNeighborShift(shortTermStrategy);
-        } else {
+        } else if (rand < (this.swapProbability + this.kSwapProbability) / 100.0) {
             sol =  this.getNeighborKSwap(shortTermStrategy, 1);
+        } else {
+            // shift is only possible if there are free slots
+            if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
+                sol = this.getNeighborShift(shortTermStrategy);
+            } else {
+                sol =  this.getNeighborKSwap(shortTermStrategy, 1);
+            }
         }
         if (sol == null) {
             return this.currSol;
