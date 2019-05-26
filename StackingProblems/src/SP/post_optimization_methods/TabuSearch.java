@@ -304,6 +304,16 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
+    private boolean containsTabuSwap(ArrayList<Swap> swapList) {
+        for (Swap swap : swapList) {
+            // a swap consists of two shift operations
+            if (this.tabuList.contains(swap.getShiftOne()) && this.tabuList.contains(swap.getShiftTwo())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Generates a neighbor for the current solution using the "x-swap-neighborhood".
      *
@@ -313,11 +323,8 @@ public class TabuSearch {
      */
     public Solution getNeighborXSwap(PostOptimization.ShortTermStrategies shortTermStrategy, int numberOfSwaps) {
 
-        this.failCnt = 0;
-//        System.out.println(numberOfSwaps + " - swap");
-
         ArrayList<Solution> nbrs = new ArrayList<>();
-
+        this.failCnt = 0;
         int cnt = 0;
 
         while (nbrs.size() < this.numberOfNeighbors) {
@@ -331,25 +338,18 @@ public class TabuSearch {
             }
 
             Solution neighbor = new Solution(this.currSol);
-
             ArrayList<Swap> swapList = new ArrayList<>();
-
             int swapCnt = 0;
 
             while (swapCnt < numberOfSwaps) {
 
-                StackPosition posOne = this.getRandomPositionInStorageArea(neighbor);
-                StackPosition posTwo = this.getRandomPositionInStorageArea(neighbor);
-
-                int swapItemOne = this.currSol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
+                StackPosition posOne = this.getRandomStackPositionFilledWithItem(neighbor);
+                int swapItemOne = neighbor.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
+                StackPosition posTwo = this.getRandomStackPositionFilledWithItem(neighbor);
                 int swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
 
-                while (swapItemOne == -1) {
-                    posOne = this.getRandomPositionInStorageArea(neighbor);
-                    swapItemOne = this.currSol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
-                }
                 // the swapped items should differ
-                while (swapItemTwo == -1 || swapItemTwo == swapItemOne) {
+                while (swapItemTwo == swapItemOne) {
                     posTwo = this.getRandomPositionInStorageArea(neighbor);
                     swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
                 }
@@ -366,17 +366,9 @@ public class TabuSearch {
 
             if (!neighbor.isFeasible()) { continue; }
 
-            boolean containsTabuSwap = false;
-            for (Swap swap : swapList) {
-                // a swap consists of two shift operations
-                if (this.tabuList.contains(swap.getShiftOne()) && this.tabuList.contains(swap.getShiftTwo())) {
-                    containsTabuSwap = true;
-                }
-            }
-
             // FIRST-FIT
             if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT
-                    && !containsTabuSwap && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                    && !this.containsTabuSwap(swapList) && neighbor.computeCosts() < this.currSol.computeCosts()) {
 
                 for (Swap swap : swapList) {
                     this.forbidShift(swap.getShiftOne());
@@ -385,7 +377,7 @@ public class TabuSearch {
                 return neighbor;
 
                 // BEST-FIT
-            } else if (!containsTabuSwap) {
+            } else if (!this.containsTabuSwap(swapList)) {
                 nbrs.add(neighbor);
                 for (Swap swap : swapList) {
                     this.forbidShift(swap.getShiftOne());
