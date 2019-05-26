@@ -69,6 +69,11 @@ public class PostOptimization {
             );
         }
 
+        if (solutions.size() == 0) {
+            System.out.println("No solution read. Either the specified directory doesn't "
+                + "contain any solutions, or the specified heuristic doesn't match the stack capacity of the solutions.");
+        }
+
         for (OptimizableSolution sol : solutions) {
 
             double startTime = System.currentTimeMillis();

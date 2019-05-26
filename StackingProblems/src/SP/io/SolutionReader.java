@@ -1,8 +1,10 @@
 package SP.io;
 
+import SP.experiments.CompareSolvers;
 import SP.representations.OptimizableSolution;
 import SP.representations.Instance;
 import SP.representations.Solution;
+import SP.util.RepresentationUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,6 +37,15 @@ public class SolutionReader {
         Arrays.sort(directoryListing);
         for (File file : directoryListing) {
             if (!file.isDirectory() && file.getName().contains("slp_")) {
+
+                if (file.getName().contains("_2_")
+                    && solver.equals(RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_THREE_CAP))
+                    || file.getName().contains("_3_")
+                    && solver.equals(RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_TWO_CAP))
+                ) {
+                    return solutions;
+                }
+
                 solutions.add(readSolutionFile(file, instanceDirName, solver));
             }
         }
