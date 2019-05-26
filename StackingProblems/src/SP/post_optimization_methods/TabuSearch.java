@@ -57,15 +57,15 @@ public class TabuSearch {
      * @param stoppingCriterion                      - stopping criterion to be used
      */
     public TabuSearch(
-            Solution initialSolution, double timeLimit, double optimalObjectiveValue,
-            int numberOfNeighbors, int maxTabuListLengthFactor, PostOptimization.ShortTermStrategies shortTermStrategy,
-            int unsuccessfulNeighborGenerationAttempts, int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations,
-            int kSwapIntervalUB, int numberOfIterations, int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion
+        Solution initialSolution, double timeLimit, double optimalObjectiveValue, int numberOfNeighbors,
+        int maxTabuListLengthFactor, PostOptimization.ShortTermStrategies shortTermStrategy,
+        int unsuccessfulNeighborGenerationAttempts, int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations,
+        int kSwapIntervalUB, int numberOfIterations, int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion
     ) {
         this(
-                initialSolution, optimalObjectiveValue, numberOfNeighbors, maxTabuListLengthFactor, shortTermStrategy,
-                unsuccessfulNeighborGenerationAttempts, unsuccessfulKSwapAttempts, numberOfNonImprovingIterations,
-                kSwapIntervalUB, numberOfIterations, numberOfTabuListClears, stoppingCriterion
+            initialSolution, optimalObjectiveValue, numberOfNeighbors, maxTabuListLengthFactor, shortTermStrategy,
+            unsuccessfulNeighborGenerationAttempts, unsuccessfulKSwapAttempts, numberOfNonImprovingIterations,
+            kSwapIntervalUB, numberOfIterations, numberOfTabuListClears, stoppingCriterion
         );
         this.timeLimit = timeLimit;
     }
@@ -87,10 +87,10 @@ public class TabuSearch {
      * @param stoppingCriterion                      - stopping criterion to be used
      */
     public TabuSearch(
-            Solution initialSolution, double optimalObjectiveValue, int numberOfNeighbors, int maxTabuListLengthFactor,
-            PostOptimization.ShortTermStrategies shortTermStrategy, int unsuccessfulNeighborGenerationAttempts,
-            int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations, int kSwapIntervalUB, int numberOfIterations,
-            int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion
+        Solution initialSolution, double optimalObjectiveValue, int numberOfNeighbors, int maxTabuListLengthFactor,
+        PostOptimization.ShortTermStrategies shortTermStrategy, int unsuccessfulNeighborGenerationAttempts,
+        int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations, int kSwapIntervalUB, int numberOfIterations,
+        int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion
     ) {
         this.currSol = new Solution(initialSolution);
         this.bestSol = new Solution(initialSolution);
@@ -127,25 +127,25 @@ public class TabuSearch {
     }
 
     /**
-     * Returns a random position in the storage area.
+     * Returns a random position in the stacks.
      *
-     * @param sol - the solution the storage area is based on
-     * @return random position in the storage area
+     * @param sol - solution for which to retrieve a random stack position
+     * @return random position in the stacks
      */
-    public StackPosition getRandomPositionInStorageArea(Solution sol) {
+    public StackPosition getRandomStackPosition(Solution sol) {
         int stackIdx = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStacks().length - 1);
         int level = HeuristicUtil.getRandomIntegerInBetween(0, sol.getFilledStacks()[stackIdx].length - 1);
         return new StackPosition(stackIdx, level);
     }
 
     /**
-     * Retrieves the free slots in the storage area.
+     * Retrieves the free slots in the stacks.
      *
-     * @param sol - the solution retrieve the free slots for
-     * @return list of free slots in the storage area
+     * @param sol - solution to retrieve the free slots for
+     * @return list of free slots in the stacks
      */
-    public ArrayList<StackPosition> getFreeSlots(Solution sol) {
-        ArrayList<StackPosition> freeSlots = new ArrayList<>();
+    public List<StackPosition> getFreeSlots(Solution sol) {
+        List<StackPosition> freeSlots = new ArrayList<>();
         for (int stack = 0; stack < sol.getFilledStacks().length; stack++) {
             for (int level = 0; level < sol.getFilledStacks()[stack].length; level++) {
                 if (sol.getFilledStacks()[stack][level] == -1) {
@@ -157,28 +157,27 @@ public class TabuSearch {
     }
 
     /**
-     * Returns a random free slot in the storage area of the specified solution.
+     * Returns a random free slot in the stacks of the specified solution.
      *
-     * @param sol - the specified solution to return a free slot for
-     * @return a random free slot in the storage area
+     * @param sol - specified solution to return a free slot for
+     * @return random free slot in the stacks
      */
     public StackPosition getRandomFreeSlot(Solution sol) {
-        ArrayList<StackPosition> freeSlots = this.getFreeSlots(sol);
+        List<StackPosition> freeSlots = this.getFreeSlots(sol);
         int freeSlotIdx = HeuristicUtil.getRandomIntegerInBetween(0, freeSlots.size() - 1);
         return freeSlots.get(freeSlotIdx);
     }
 
     /**
-     * Exchanges the items in the specified positions in the storage area of the given solution.
+     * Exchanges the items in the specified positions in the stacks of the given solution.
      *
-     * @param sol    - the solution to be altered
-     * @param posOne - the first position of the exchange
-     * @param posTwo - the second position of the exchange
+     * @param sol    - solution to be altered
+     * @param posOne - first position of the exchange
+     * @param posTwo - second position of the exchange
      */
     public Swap swapItems(Solution sol, StackPosition posOne, StackPosition posTwo) {
         int itemOne = sol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
         int itemTwo = sol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
-
         sol.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()] = itemTwo;
         sol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()] = itemOne;
 
@@ -189,14 +188,16 @@ public class TabuSearch {
     /**
      * Shifts the item stored in pos to the shift target.
      *
-     * @param sol         - the solution to be updated
-     * @param item        - the item to be shifted
-     * @param shiftTarget - the position the item is shifted to
+     * @param sol         - solution to be updated
+     * @param item        - item to be shifted
+     * @param shiftTarget - position the item is shifted to
      * @param pos         - the item's original position
      */
     public Shift shiftItem(Solution sol, int item, StackPosition pos, StackPosition shiftTarget) {
+
         sol.getFilledStacks()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
-                sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
+            sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
+
         sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()] = -1;
         return new Shift(item, shiftTarget);
     }
@@ -205,7 +206,7 @@ public class TabuSearch {
      * Adds the specified shift operation to the tabu list.
      * Replaces the oldest entry if the maximum length of the tabu list is reached.
      *
-     * @param shift - the shift operation to be added to the tabu list
+     * @param shift - shift operation to be added to the tabu list
      */
     public void forbidShift(Shift shift) {
         if (this.tabuList.size() >= this.maxTabuListLength) {
@@ -221,24 +222,21 @@ public class TabuSearch {
      * @return occupied stack position
      */
     public StackPosition getRandomStackPositionFilledWithItem(Solution neighbor) {
-
-        StackPosition pos = this.getRandomPositionInStorageArea(neighbor);
-
+        StackPosition pos = this.getRandomStackPosition(neighbor);
         int item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
         while (item == -1) {
-            pos = this.getRandomPositionInStorageArea(neighbor);
+            pos = this.getRandomStackPosition(neighbor);
             item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
         }
-
         return pos;
     }
 
     /**
      * Ensures that the shift target is in a different stack.
      *
-     * @param shiftTarget
-     * @param pos
-     * @param neighbor
+     * @param shiftTarget - stack position the item gets shifted to
+     * @param pos         - current position of the item
+     * @param neighbor    - considered solution
      */
     public void getRandomShiftTargetFromOtherStack(StackPosition shiftTarget, StackPosition pos, Solution neighbor) {
         while (shiftTarget.getStackIdx() == pos.getStackIdx()) {
@@ -250,11 +248,12 @@ public class TabuSearch {
      * Generates a neighbor for the current solution using the "shift-neighborhood".
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
-     * @return a neighboring solution
+     * @return neighboring solution
      */
+    @SuppressWarnings("Duplicates")
     public Solution getNeighborShift(PostOptimization.ShortTermStrategies shortTermStrategy) {
 
-        ArrayList<Solution> nbrs = new ArrayList<>();
+        List<Solution> nbrs = new ArrayList<>();
         this.failCnt = 0;
 
         while (nbrs.size() < this.numberOfNeighbors) {
@@ -304,7 +303,13 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
-    private boolean containsTabuSwap(ArrayList<Swap> swapList) {
+    /**
+     * Checks whether the swap list contains a tabu swap operation.
+     *
+     * @param swapList - list of swaps to be checked for tabu operations
+     * @return whether or not the swap list contains a tabu swap operation
+     */
+    private boolean containsTabuSwap(List<Swap> swapList) {
         for (Swap swap : swapList) {
             // a swap consists of two shift operations
             if (this.tabuList.contains(swap.getShiftOne()) && this.tabuList.contains(swap.getShiftTwo())) {
@@ -315,21 +320,22 @@ public class TabuSearch {
     }
 
     /**
-     * Generates a neighbor for the current solution using the "x-swap-neighborhood".
+     * Generates a neighbor for the current solution using the "k-swap-neighborhood".
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
      * @param numberOfSwaps     - number of swaps to be performed
      * @return a neighboring solution
      */
-    public Solution getNeighborXSwap(PostOptimization.ShortTermStrategies shortTermStrategy, int numberOfSwaps) {
+    @SuppressWarnings("Duplicates")
+    public Solution getNeighborKSwap(PostOptimization.ShortTermStrategies shortTermStrategy, int numberOfSwaps) {
 
-        ArrayList<Solution> nbrs = new ArrayList<>();
+        List<Solution> nbrs = new ArrayList<>();
         this.failCnt = 0;
         int cnt = 0;
 
         while (nbrs.size() < this.numberOfNeighbors) {
 
-            if (numberOfSwaps > 1 && cnt++ == PostOptimization.UNSUCCESSFUL_X_SWAP_ATTEMPTS) {
+            if (numberOfSwaps > 1 && cnt++ == PostOptimization.UNSUCCESSFUL_K_SWAP_ATTEMPTS) {
                 Solution best = HeuristicUtil.getBestSolution(nbrs);
                 if (best.isEmpty()) {
                     return this.currSol;
@@ -338,7 +344,7 @@ public class TabuSearch {
             }
 
             Solution neighbor = new Solution(this.currSol);
-            ArrayList<Swap> swapList = new ArrayList<>();
+            List<Swap> swapList = new ArrayList<>();
             int swapCnt = 0;
 
             while (swapCnt < numberOfSwaps) {
@@ -350,7 +356,7 @@ public class TabuSearch {
 
                 // the swapped items should differ
                 while (swapItemTwo == swapItemOne) {
-                    posTwo = this.getRandomPositionInStorageArea(neighbor);
+                    posTwo = this.getRandomStackPosition(neighbor);
                     swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
                 }
 
@@ -368,7 +374,7 @@ public class TabuSearch {
 
             // FIRST-FIT
             if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT
-                    && !this.containsTabuSwap(swapList) && neighbor.computeCosts() < this.currSol.computeCosts()) {
+                && !this.containsTabuSwap(swapList) && neighbor.computeCosts() < this.currSol.computeCosts()) {
 
                 for (Swap swap : swapList) {
                     this.forbidShift(swap.getShiftOne());
@@ -376,7 +382,7 @@ public class TabuSearch {
                 }
                 return neighbor;
 
-                // BEST-FIT
+            // BEST-FIT
             } else if (!this.containsTabuSwap(swapList)) {
                 nbrs.add(neighbor);
                 for (Swap swap : swapList) {
@@ -407,27 +413,28 @@ public class TabuSearch {
         return HeuristicUtil.getBestSolution(nbrs);
     }
 
+    /**
+     * Retrieves a neighboring solution by applying the operators with certain probabilities.
+     *
+     * @param shortTermStrategy - used short term strategy
+     * @return neighboring solution
+     */
     public Solution getNeighborBasedOnProbabilities(PostOptimization.ShortTermStrategies shortTermStrategy) {
 
         double rand = Math.random();
         Solution sol;
 
-//        double startTime = System.currentTimeMillis();
-
         if (rand < 0.05) {
-            sol = this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB));
-            // shift is only possible if there are free slots
+            sol = this.getNeighborKSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB));
+        // shift is only possible if there are free slots
         } else if (rand < 0.5 && this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
             sol = this.getNeighborShift(shortTermStrategy);
         } else {
-            sol =  this.getNeighborXSwap(shortTermStrategy, 1);
+            sol =  this.getNeighborKSwap(shortTermStrategy, 1);
         }
         if (sol == null) {
             return this.currSol;
         }
-
-//        System.out.println("time: " + (System.currentTimeMillis() - startTime) / 1000);
-
         return sol;
     }
 
@@ -438,15 +445,13 @@ public class TabuSearch {
      * @return best generated neighbor
      */
     public Solution getNeighbor(PostOptimization.ShortTermStrategies shortTermStrategy) {
-
         List<Solution> nbrs = new ArrayList<>();
-
         // shift is only possible if there are free slots
         if (this.currSol.getNumberOfAssignedItems() < this.currSol.getFilledStacks().length * this.currSol.getFilledStacks()[0].length) {
             nbrs.add(this.getNeighborShift(shortTermStrategy));
         }
-        nbrs.add(this.getNeighborXSwap(shortTermStrategy, 1));
-        nbrs.add(this.getNeighborXSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB)));
+        nbrs.add(this.getNeighborKSwap(shortTermStrategy, 1));
+        nbrs.add(this.getNeighborKSwap(shortTermStrategy, HeuristicUtil.getRandomIntegerInBetween(2, this.kSwapIntervalUB)));
 
         return Collections.min(nbrs);
     }
@@ -456,10 +461,9 @@ public class TabuSearch {
      * Additionally, the best solution gets updated if a new best solution is found.
      *
      * @param shortTermStrategy - determines the strategy for the neighbor retrieval
-     * @param iteration         - the current iteration
+     * @param iteration         - current iteration
      */
     public void updateCurrentSolution(PostOptimization.ShortTermStrategies shortTermStrategy, int iteration) {
-//        this.currSol = this.getNeighbor(shortTermStrategy);
         this.currSol = this.getNeighborBasedOnProbabilities(shortTermStrategy);
         if (this.currSol.computeCosts() < this.bestSol.computeCosts()) {
             this.bestSol = this.currSol;
@@ -472,11 +476,8 @@ public class TabuSearch {
      */
     public void solveIterations() {
         for (int i = 0; i < this.numberOfIterations; i++) {
-//            System.out.println(this.tabuList.size());
-
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
-
             this.updateCurrentSolution(PostOptimization.SHORT_TERM_STRATEGY, i);
         }
     }
@@ -487,10 +488,8 @@ public class TabuSearch {
     public void solveTabuListClears() {
         int iteration = 0;
         while (this.tabuListClears < PostOptimization.NUMBER_OF_TABU_LIST_CLEARS) {
-
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
-
             this.updateCurrentSolution(PostOptimization.SHORT_TERM_STRATEGY, iteration++);
         }
     }
@@ -501,10 +500,8 @@ public class TabuSearch {
     public void solveIterationsSinceLastImprovement() {
         int iteration = 0;
         while (Math.abs(this.iterationOfLastImprovement - iteration) < this.numberOfNonImprovingIterations) {
-
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
-
             System.out.println(this.tabuList.size());
             System.out.println(this.bestSol.computeCosts());
             System.out.println("diff: " + Math.abs(this.iterationOfLastImprovement - iteration));
@@ -515,7 +512,7 @@ public class TabuSearch {
     /**
      * Improves a given solution to a stacking problem using a tabu search.
      *
-     * @return the best solution generated in the tabu search procedure
+     * @return best solution generated in the tabu search procedure
      */
     public Solution solve() {
 
