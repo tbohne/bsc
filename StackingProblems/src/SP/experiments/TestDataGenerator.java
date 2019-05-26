@@ -48,7 +48,7 @@ public class TestDataGenerator {
 
     public static void main(String[] args) {
 
-        int numOfStacks = TestDataGenerator.computeNumberOfStacks();
+        int numOfStacks = computeNumberOfStacks();
 
         for (int idx = 0; idx < NUMBER_OF_INSTANCES; idx++) {
 
@@ -57,13 +57,13 @@ public class TestDataGenerator {
 
             int[][] stackingConstraintMatrix;
             if (USING_STACKING_CONSTRAINT_GENERATION_APPROACH_ONE) {
-                stackingConstraintMatrix = TestDataGenerator.generateStackingConstraintMatrixApproachOne();
+                stackingConstraintMatrix = generateStackingConstraintMatrixApproachOne();
             } else {
                 stackingConstraintMatrix = generateStackingConstraintMatrixApproachTwo(items);
             }
 
             double[][] costs = new double[NUMBER_OF_ITEMS][numOfStacks];
-            TestDataGenerator.generateCosts(costs, numOfStacks, items, stackPositions);
+            generateCosts(costs, numOfStacks, items, stackPositions);
             generateInstance(idx, numOfStacks, items, stackPositions, stackingConstraintMatrix, costs);
         }
     }
@@ -178,10 +178,10 @@ public class TestDataGenerator {
      * @return generated stacking constraint matrix
      */
     private static int[][] generateStackingConstraintMatrixApproachTwo(Item[] items) {
-        int[][] stackingConstraintMatrix = new int[TestDataGenerator.NUMBER_OF_ITEMS][TestDataGenerator.NUMBER_OF_ITEMS];
+        int[][] stackingConstraintMatrix = new int[NUMBER_OF_ITEMS][NUMBER_OF_ITEMS];
 
-        for (int i = 0; i < TestDataGenerator.NUMBER_OF_ITEMS; i++) {
-            for (int j = 0; j < TestDataGenerator.NUMBER_OF_ITEMS; j++) {
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < NUMBER_OF_ITEMS; j++) {
 
                 if (i == j) { stackingConstraintMatrix[i][j] = 1; }
 
@@ -207,9 +207,9 @@ public class TestDataGenerator {
      * @return generated stacking constraint matrix
      */
     private static int[][] generateStackingConstraintMatrixApproachOne() {
-        int[][] stackingConstraintMatrix = new int[TestDataGenerator.NUMBER_OF_ITEMS][TestDataGenerator.NUMBER_OF_ITEMS];
-        for (int i = 0; i < TestDataGenerator.NUMBER_OF_ITEMS; i++) {
-            for (int j = 0; j < TestDataGenerator.NUMBER_OF_ITEMS; j++) {
+        int[][] stackingConstraintMatrix = new int[NUMBER_OF_ITEMS][NUMBER_OF_ITEMS];
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            for (int j = 0; j < NUMBER_OF_ITEMS; j++) {
                 if (i == j) {
                     stackingConstraintMatrix[i][j] = 1;
                 } else {
