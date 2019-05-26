@@ -82,7 +82,6 @@ public class TwoCapHeuristic {
             sol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
 
             if (postProcessing) {
-                System.out.println("costs before post processing: " + sol.getObjectiveValue());
                 double bestSolutionCost = sol.computeCosts();
                 sol = this.postProcessing(sol);
 
@@ -90,7 +89,6 @@ public class TwoCapHeuristic {
                     bestSolutionCost = sol.computeCosts();
                     sol = this.postProcessing(sol);
                 }
-                System.out.println("costs after post processing: " + sol.getObjectiveValue() + " still feasible ? " + sol.isFeasible());
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 2.");

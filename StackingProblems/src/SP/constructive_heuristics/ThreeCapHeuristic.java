@@ -95,7 +95,6 @@ public class ThreeCapHeuristic {
             bestSol.sortItemsInStacksBasedOnTransitiveStackingConstraints();
 
             if (postProcessing) {
-                System.out.println("costs before post processing: " + bestSol.computeCosts());
                 // Since the last generated solution is not necessarily the best one,
                 // the stack assignments for the best solution have to be restored before post-processing.
                 this.instance.resetStacks();
@@ -108,7 +107,6 @@ public class ThreeCapHeuristic {
                     bestSolutionCost = bestSol.computeCosts();
                     bestSol = this.postProcessing(bestSol);
                 }
-                System.out.println("costs after post processing: " + bestSol.computeCosts());
             }
         } else {
             System.out.println("This heuristic is designed to solve SP with a stack capacity of 3.");
