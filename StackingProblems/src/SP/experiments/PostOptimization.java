@@ -5,7 +5,6 @@ import SP.io.SolutionWriter;
 import SP.post_optimization_methods.TabuSearch;
 import SP.representations.OptimizableSolution;
 import SP.representations.Solution;
-import SP.representations.Solvers;
 import SP.util.RepresentationUtil;
 
 import java.util.List;
@@ -62,11 +61,11 @@ public class PostOptimization {
         List<OptimizableSolution> solutions;
         if (OPTIMIZE_TWO_CAP_SOLUTIONS) {
             solutions = SolutionReader.readSolutionsFromDir(
-                SOLUTION_PREFIX, INSTANCE_PREFIX, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+                SOLUTION_PREFIX, INSTANCE_PREFIX, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_TWO_CAP)
             );
         } else {
             solutions = SolutionReader.readSolutionsFromDir(
-                SOLUTION_PREFIX, INSTANCE_PREFIX, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+                SOLUTION_PREFIX, INSTANCE_PREFIX, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_THREE_CAP)
             );
         }
 
@@ -87,14 +86,14 @@ public class PostOptimization {
             SolutionWriter.writeSolution(
                 SOLUTION_PREFIX
                 + impSol.getNameOfSolvedInstance().replace("instances/", "")
-                + "_imp.txt", impSol, RepresentationUtil.getNameOfSolver(Solvers.Solver.TABU_SEARCH)
+                + "_imp.txt", impSol, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.TABU_SEARCH)
             );
 
-            Solvers.Solver solver;
+            CompareSolvers.Solver solver;
             if (sol.getSol().getFilledStacks()[0].length == 2) {
-                solver = Solvers.Solver.CONSTRUCTIVE_TWO_CAP;
+                solver = CompareSolvers.Solver.CONSTRUCTIVE_TWO_CAP;
             } else {
-                solver = Solvers.Solver.CONSTRUCTIVE_THREE_CAP;
+                solver = CompareSolvers.Solver.CONSTRUCTIVE_THREE_CAP;
             }
             SolutionWriter.writeSolutionAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol.getSol(), RepresentationUtil.getAbbreviatedNameOfSolver(solver));
             SolutionWriter.writeOptAndImpAsCSV(SOLUTION_PREFIX + "solutions_imp.csv", sol, impSol);

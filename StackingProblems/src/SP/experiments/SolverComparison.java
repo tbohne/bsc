@@ -6,7 +6,6 @@ import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
 import SP.representations.Instance;
 import SP.representations.Solution;
-import SP.representations.Solvers;
 import SP.util.HeuristicUtil;
 import SP.util.RepresentationUtil;
 
@@ -77,10 +76,10 @@ public class SolverComparison {
         );
         Solution sol = binPackingFormulation.solve();
         SolutionWriter.writeSolution(
-            this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.MIP_BINPACKING)
+            this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.MIP_BINPACKING)
         );
         SolutionWriter.writeSolutionAsCSV(
-            this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.MIP_BINPACKING)
+            this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(CompareSolvers.Solver.MIP_BINPACKING)
         );
     }
 
@@ -96,10 +95,10 @@ public class SolverComparison {
         );
         Solution sol = threeIndexFormulation.solve();
         SolutionWriter.writeSolution(
-            this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.MIP_THREEINDEX)
+            this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.MIP_THREEINDEX)
         );
         SolutionWriter.writeSolutionAsCSV(
-            this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.MIP_THREEINDEX)
+            this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(CompareSolvers.Solver.MIP_THREEINDEX)
         );
     }
 
@@ -122,7 +121,7 @@ public class SolverComparison {
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
      */
-    public void compareSolvers(List<Solvers.Solver> solversToBeCompared) {
+    public void compareSolvers(List<CompareSolvers.Solver> solversToBeCompared) {
 
         File dir = new File(this.instancePrefix);
         File[] directoryListing = dir.listFiles();
@@ -140,12 +139,12 @@ public class SolverComparison {
 
                 computeLowerBound(instance, solutionName);
 
-                if (solversToBeCompared.contains(Solvers.Solver.MIP_BINPACKING)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_BINPACKING)) {
                     System.out.println("solve with binpacking");
                     solveWithBinPacking(instance, solutionName);
                     instance.resetStacks();
                 }
-                if (solversToBeCompared.contains(Solvers.Solver.MIP_THREEINDEX)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_THREEINDEX)) {
                     System.out.println("solve with 3idx");
                     solveWithThreeIdx(instance, solutionName);
                     instance.resetStacks();

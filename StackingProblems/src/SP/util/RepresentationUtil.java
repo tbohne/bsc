@@ -2,10 +2,10 @@ package SP.util;
 
 import SP.constructive_heuristics.ThreeCapHeuristic;
 import SP.constructive_heuristics.TwoCapHeuristic;
+import SP.experiments.CompareSolvers;
 import SP.mip_formulations.BinPackingFormulation;
 import SP.mip_formulations.ThreeIndexFormulation;
 import SP.post_optimization_methods.TabuSearch;
-import SP.representations.Solvers;
 
 /**
  * A collection of general utility methods used in the representations.
@@ -67,7 +67,7 @@ public class RepresentationUtil {
      * @param solver - specifies the used solver
      * @return name of the used solver
      */
-    public static String getNameOfSolver(Solvers.Solver solver) {
+    public static String getNameOfSolver(CompareSolvers.Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
                 return BinPackingFormulation.class.getName();
@@ -90,7 +90,7 @@ public class RepresentationUtil {
      * @param solver - specifies the used solver
      * @return abbreviated name of the used solver
      */
-    public static String getAbbreviatedNameOfSolver(Solvers.Solver solver) {
+    public static String getAbbreviatedNameOfSolver(CompareSolvers.Solver solver) {
         switch (solver) {
             case MIP_BINPACKING:
                 return "BinP";

@@ -5,7 +5,6 @@ import SP.io.InstanceReader;
 import SP.io.SolutionWriter;
 import SP.representations.Instance;
 import SP.representations.Solution;
-import SP.representations.Solvers;
 import SP.util.HeuristicUtil;
 import SP.util.RepresentationUtil;
 
@@ -46,7 +45,7 @@ class SolverComparison2Cap extends SolverComparison {
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
      */
-    public void compareSolvers(List<Solvers.Solver> solversToBeCompared) {
+    public void compareSolvers(List<CompareSolvers.Solver> solversToBeCompared) {
 
         File dir = new File(this.instancePrefix);
         File[] directoryListing = dir.listFiles();
@@ -64,17 +63,17 @@ class SolverComparison2Cap extends SolverComparison {
 
                 computeLowerBound(instance, solutionName);
 
-                if (solversToBeCompared.contains(Solvers.Solver.MIP_BINPACKING)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_BINPACKING)) {
                     System.out.println("solve with binpacking");
                     solveWithBinPacking(instance, solutionName);
                     instance.resetStacks();
                 }
-                if (solversToBeCompared.contains(Solvers.Solver.MIP_THREEINDEX)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_THREEINDEX)) {
                     System.out.println("solve with 3idx");
                     solveWithThreeIdx(instance, solutionName);
                     instance.resetStacks();
                 }
-                if (solversToBeCompared.contains(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.CONSTRUCTIVE_TWO_CAP)) {
                     System.out.println("solve with 2cap");
                     solveWithTwoCap(instance, solutionName);
                 }
@@ -93,10 +92,10 @@ class SolverComparison2Cap extends SolverComparison {
         Solution sol = twoCapHeuristic.solve(this.postProcessing);
         if (!sol.isEmpty()) {
             SolutionWriter.writeSolution(
-                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_TWO_CAP)
             );
             SolutionWriter.writeSolutionAsCSV(
-                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_TWO_CAP)
             );
         }
     }

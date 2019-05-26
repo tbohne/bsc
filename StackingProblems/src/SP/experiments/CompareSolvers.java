@@ -1,6 +1,5 @@
 package SP.experiments;
 
-import SP.representations.Solvers;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -12,15 +11,26 @@ import java.util.List;
  */
 public class CompareSolvers {
 
+    /**
+     * Enumeration containing the names of the different solvers.
+     */
+    public enum Solver {
+        MIP_BINPACKING,
+        MIP_THREEINDEX,
+        CONSTRUCTIVE_TWO_CAP,
+        CONSTRUCTIVE_THREE_CAP,
+        TABU_SEARCH
+    }
+
     private static final String INSTANCE_PREFIX = "res/instances/";
     private static final String SOLUTION_PREFIX = "res/solutions/";
 
     // solvers to be used
-    private static final List<Solvers.Solver> SOLVERS = Lists.newArrayList(
-        Solvers.Solver.MIP_BINPACKING,
-        Solvers.Solver.MIP_THREEINDEX,
-        Solvers.Solver.CONSTRUCTIVE_TWO_CAP,
-        Solvers.Solver.CONSTRUCTIVE_THREE_CAP
+    private static final List<Solver> SOLVERS = Lists.newArrayList(
+        Solver.MIP_BINPACKING,
+        Solver.MIP_THREEINDEX,
+        Solver.CONSTRUCTIVE_TWO_CAP,
+        Solver.CONSTRUCTIVE_THREE_CAP
     );
 
     /********************** CPLEX CONFIG **********************/

@@ -5,7 +5,6 @@ import SP.io.InstanceReader;
 import SP.io.SolutionWriter;
 import SP.representations.Instance;
 import SP.representations.Solution;
-import SP.representations.Solvers;
 import SP.util.HeuristicUtil;
 import SP.util.RepresentationUtil;
 
@@ -61,7 +60,7 @@ public class SolverComparison3Cap extends SolverComparison {
      *
      * @param solversToBeCompared - determines the solvers that are supposed to be compared
      */
-    public void compareSolvers(List<Solvers.Solver> solversToBeCompared) {
+    public void compareSolvers(List<CompareSolvers.Solver> solversToBeCompared) {
 
         File dir = new File(this.instancePrefix);
         File[] directoryListing = dir.listFiles();
@@ -79,15 +78,15 @@ public class SolverComparison3Cap extends SolverComparison {
 
                 computeLowerBound(instance, solutionName);
 
-                if (solversToBeCompared.contains(Solvers.Solver.MIP_BINPACKING)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_BINPACKING)) {
                     solveWithBinPacking(instance, solutionName);
                     instance.resetStacks();
                 }
-                if (solversToBeCompared.contains(Solvers.Solver.MIP_THREEINDEX)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_THREEINDEX)) {
                     solveWithThreeIdx(instance, solutionName);
                     instance.resetStacks();
                 }
-                if (solversToBeCompared.contains(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)) {
+                if (solversToBeCompared.contains(CompareSolvers.Solver.CONSTRUCTIVE_THREE_CAP)) {
                     solveWithThreeCap(instance, solutionName);
                 }
             }
@@ -107,10 +106,10 @@ public class SolverComparison3Cap extends SolverComparison {
         Solution sol = threeCapSolver.solve(this.prioritizeRuntime, this.postProcessing);
         if (!sol.isEmpty()) {
             SolutionWriter.writeSolution(
-                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_THREE_CAP)
             );
             SolutionWriter.writeSolutionAsCSV(
-                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(CompareSolvers.Solver.CONSTRUCTIVE_THREE_CAP)
             );
         }
     }
