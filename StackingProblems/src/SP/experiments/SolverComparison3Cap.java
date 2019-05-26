@@ -67,12 +67,14 @@ public class SolverComparison3Cap extends SolverComparison {
             instance, this.timeLimit, thresholdLB, thresholdUB, stepSize, splitPairsDivisor, penaltyFactor
         );
         Solution sol = threeCapSolver.solve(this.prioritizeRuntime, this.postProcessing);
-        SolutionWriter.writeSolution(
-            this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
-        );
-        SolutionWriter.writeSolutionAsCSV(
-            this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
-        );
+        if (!sol.isEmpty()) {
+            SolutionWriter.writeSolution(
+                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+            );
+            SolutionWriter.writeSolutionAsCSV(
+                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_THREE_CAP)
+            );
+        }
     }
 
     /**

@@ -50,12 +50,14 @@ class SolverComparison2Cap extends SolverComparison {
     private void solveWithTwoCap(Instance instance, String solutionName) {
         TwoCapHeuristic twoCapHeuristic = new TwoCapHeuristic(instance, this.timeLimit);
         Solution sol = twoCapHeuristic.solve(this.postProcessing);
-        SolutionWriter.writeSolution(
-            this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
-        );
-        SolutionWriter.writeSolutionAsCSV(
-            this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
-        );
+        if (!sol.isEmpty()) {
+            SolutionWriter.writeSolution(
+                this.solutionPrefix + solutionName + ".txt", sol, RepresentationUtil.getNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+            );
+            SolutionWriter.writeSolutionAsCSV(
+                this.solutionPrefix + "solutions.csv", sol, RepresentationUtil.getAbbreviatedNameOfSolver(Solvers.Solver.CONSTRUCTIVE_TWO_CAP)
+            );
+        }
     }
 
     /**
