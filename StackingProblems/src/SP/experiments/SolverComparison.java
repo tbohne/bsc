@@ -140,12 +140,12 @@ public class SolverComparison {
                 computeLowerBound(instance, solutionName);
 
                 if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_BINPACKING)) {
-                    System.out.println("solve with binpacking");
+                    System.out.println("solving with BinP..");
                     solveWithBinPacking(instance, solutionName);
                     instance.resetStacks();
                 }
                 if (solversToBeCompared.contains(CompareSolvers.Solver.MIP_THREEINDEX)) {
-                    System.out.println("solve with 3idx");
+                    System.out.println("solving with 3Idx..");
                     solveWithThreeIdx(instance, solutionName);
                     instance.resetStacks();
                 }
