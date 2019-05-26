@@ -224,7 +224,7 @@ public class TabuSearch {
      * @param pos         - the item's original position
      */
     private Shift shiftItem(Solution sol, int item, StackPosition pos, StackPosition shiftTarget) {
-        
+
         sol.getFilledStacks()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
             sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
 

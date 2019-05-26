@@ -62,8 +62,8 @@ public class GraphUtil {
             for (int stack = 0; stack < stacks.length; stack++) {
                 DefaultWeightedEdge edge = bipartiteGraph.addEdge("triple" + itemTriple, "stack" + stack);
                 double costs = costMatrix[itemTriple.get(0)][stack]
-                        + costMatrix[itemTriple.get(1)][stack]
-                        + costMatrix[itemTriple.get(2)][stack];
+                    + costMatrix[itemTriple.get(1)][stack]
+                    + costMatrix[itemTriple.get(2)][stack];
                 bipartiteGraph.setEdgeWeight(edge, costs);
             }
         }
@@ -141,7 +141,7 @@ public class GraphUtil {
      * @param itemPair      - pair the item gets connected to
      */
     private static void addEdgeBetweenPairAndUnmatchedItem(
-            Graph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair
+        Graph<String, DefaultEdge> graph, int unmatchedItem, MCMEdge itemPair
     ) {
         if (!graph.containsEdge("v" + unmatchedItem, "edge" + itemPair)) {
             graph.addEdge("edge" + itemPair, "v" + unmatchedItem);
@@ -160,8 +160,8 @@ public class GraphUtil {
      * @param stackingConstraints - stacking constraints to be respected
      */
     private static void addEdgeForCompatibleItemTriple(
-            Graph<String, DefaultEdge> graph, int lowerItemOfPair, int unmatchedItem, int upperItemOfPair,
-            MCMEdge itemPair, int[][] stackingConstraints, boolean pairStackableInBothDirections
+        Graph<String, DefaultEdge> graph, int lowerItemOfPair, int unmatchedItem, int upperItemOfPair,
+        MCMEdge itemPair, int[][] stackingConstraints, boolean pairStackableInBothDirections
     ) {
         // all permutations to be tested
         if (pairStackableInBothDirections) {
@@ -304,29 +304,27 @@ public class GraphUtil {
             bipartiteGraph.addVertex("v" + i);
         }
 
-        for (MCMEdge itemPair1 : itemPairs) {
-            for (Integer unmatchedItem1 : unmatchedItems) {
+        for (MCMEdge itemPair : itemPairs) {
+            for (Integer unmatchedItem : unmatchedItems) {
 
-                int itemOne = itemPair1.getVertexOne();
-                int itemTwo = itemPair1.getVertexTwo();
+                int itemOne = itemPair.getVertexOne();
+                int itemTwo = itemPair.getVertexTwo();
 
                 // if it is possible to complete the stack assignment with the unmatched item, it is done
 
                 if (HeuristicUtil.pairStackableInBothDirections(itemOne, itemTwo, stackingConstraints)) {
-                    GraphUtil.addEdgeForCompatibleItemTriple(bipartiteGraph, itemTwo, unmatchedItem1,
-                            itemOne, itemPair1, stackingConstraints, true
+                    GraphUtil.addEdgeForCompatibleItemTriple(
+                        bipartiteGraph, itemTwo, unmatchedItem, itemOne, itemPair, stackingConstraints, true
                     );
-                    // one on top of two
+                // one on top of two
                 } else if (stackingConstraints[itemOne][itemTwo] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
-                            bipartiteGraph, itemTwo, unmatchedItem1,
-                            itemOne, itemPair1, stackingConstraints, false
+                        bipartiteGraph, itemTwo, unmatchedItem, itemOne, itemPair, stackingConstraints, false
                     );
-                    // two on top of one
+                // two on top of one
                 } else if (stackingConstraints[itemTwo][itemOne] == 1) {
                     GraphUtil.addEdgeForCompatibleItemTriple(
-                            bipartiteGraph, itemOne, unmatchedItem1,
-                            itemTwo, itemPair1, stackingConstraints, false
+                        bipartiteGraph, itemOne, unmatchedItem, itemTwo, itemPair, stackingConstraints, false
                     );
                 }
             }
