@@ -246,7 +246,6 @@ public class Solution implements Comparable<Solution> {
     public boolean isFeasible() {
         if (!this.allItemsAssigned()) {
             System.out.println("infeasible solution - not all items have been assigned");
-            System.out.println("number: " + this.getNumberOfAssignedItems());
             return false;
         } else if (!this.stackingConstraintsRespected()) {
             System.out.println("infeasible solution - the stacking constraints are violated");
