@@ -27,7 +27,6 @@ public class TabuSearch {
 
     private Queue<Shift> tabuList;
     private int tabuListClears;
-    private int maxTabuListLengthFactor;
     private int maxTabuListLength;
     private int failCnt;
     private int unsuccessfulNeighborGenerationAttempts;
@@ -105,7 +104,6 @@ public class TabuSearch {
         this.iterationOfLastImprovement = 0;
 
         this.numberOfNeighbors = numberOfNeighbors;
-        this.maxTabuListLengthFactor = maxTabuListLengthFactor;
         this.shortTermStrategy = shortTermStrategy;
         this.stoppingCriterion = stoppingCriterion;
         this.unsuccessfulNeighborGenerationAttempts = unsuccessfulNeighborGenerationAttempts;
@@ -119,7 +117,7 @@ public class TabuSearch {
         this.numberOfIterations = numberOfIterations;
         this.numberOfTabuListClears = numberOfTabuListClears;
 
-        this.maxTabuListLength = this.numberOfNeighbors * this.maxTabuListLengthFactor;
+        this.maxTabuListLength = this.numberOfNeighbors * maxTabuListLengthFactor;
         this.startTime = System.currentTimeMillis();
         this.timeLimit = 0;
         this.optimalObjectiveValue = optimalObjectiveValue;
@@ -493,7 +491,7 @@ public class TabuSearch {
      */
     public void solveTabuListClears() {
         int iteration = 0;
-        while (this.tabuListClears < PostOptimization.NUMBER_OF_TABU_LIST_CLEARS) {
+        while (this.tabuListClears < this.numberOfTabuListClears) {
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
             this.updateCurrentSolution(iteration++);

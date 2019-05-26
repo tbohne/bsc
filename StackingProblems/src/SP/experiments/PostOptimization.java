@@ -40,7 +40,7 @@ public class PostOptimization {
     private static final int K_SWAP_INTERVAL_UB = 4;
 
     private static final int NUMBER_OF_ITERATIONS = 50;
-    public static final int NUMBER_OF_TABU_LIST_CLEARS = 10;
+    private static final int NUMBER_OF_TABU_LIST_CLEARS = 10;
     private static final int NUMBER_OF_NON_IMPROVING_ITERATIONS = 50;
 
     private static final int NUMBER_OF_NEIGHBORS = 1000;
