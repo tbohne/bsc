@@ -63,7 +63,6 @@ public class TwoCapHeuristic {
             EdmondsMaximumCardinalityMatching<String, DefaultEdge> itemMatching = new EdmondsMaximumCardinalityMatching<>(
                 stackingConstraintGraph
             );
-
             List<MCMEdge> itemPairs = GraphUtil.parseItemPairsFromMCM(itemMatching);
             List<Integer> unmatchedItems = HeuristicUtil.getUnmatchedItemsFromPairs(itemPairs, this.instance.getItems());
             BipartiteGraph bipartiteGraph = this.generateBipartiteGraphBetweenItemsAndStacks(itemPairs, unmatchedItems);
@@ -202,8 +201,8 @@ public class TwoCapHeuristic {
      * @param sol                 - solution to be processed
      */
     private void findCompatibleEmptyPositionsForItems(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
-        Map<Integer, Double> originalCosts, Solution sol
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items,
+        List<StackPosition> emptyPositions, Map<Integer, Double> originalCosts, Solution sol
     ) {
         for (int item : items) {
             for (StackPosition emptyPos : emptyPositions) {
@@ -243,6 +242,7 @@ public class TwoCapHeuristic {
      * @param sol - generated solution to be processed
      * @return resulting solution
      */
+    @SuppressWarnings("Duplicates")
     private Solution postProcessing(Solution sol) {
 
         List<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);

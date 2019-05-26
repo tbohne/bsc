@@ -470,8 +470,8 @@ public class ThreeCapHeuristic {
      * @param sol                 - solution to be processed
      */
     private void findCompatibleEmptyPositionsForItemsAndAddEdges(
-        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items, List<StackPosition> emptyPositions,
-        Map<Integer, Double> originalCosts, Solution sol
+        Graph<String, DefaultWeightedEdge> postProcessingGraph, List<Integer> items,
+        List<StackPosition> emptyPositions, Map<Integer, Double> originalCosts, Solution sol
     ) {
         for (int item : items) {
             for (StackPosition emptyPos : emptyPositions) {
@@ -557,6 +557,7 @@ public class ThreeCapHeuristic {
      * @param sol - original solution to be processed
      * @return resulting solution
      */
+    @SuppressWarnings("Duplicates")
     private Solution postProcessing(Solution sol) {
         List<StackPosition> emptyPositions = HeuristicUtil.retrieveEmptyPositions(sol);
         List<Integer> items = sol.getAssignedItems();
