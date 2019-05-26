@@ -3,11 +3,11 @@ package SP.experiments;
 import SP.io.SolutionReader;
 import SP.io.SolutionWriter;
 import SP.post_optimization_methods.TabuSearch;
+import SP.representations.OptimizableSolution;
 import SP.representations.Solution;
 import SP.representations.Solvers;
 import SP.util.RepresentationUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostOptimization {

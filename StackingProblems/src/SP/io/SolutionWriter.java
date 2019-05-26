@@ -1,12 +1,9 @@
 package SP.io;
 
-import SP.experiments.OptimizableSolution;
+import SP.representations.OptimizableSolution;
 import SP.representations.Solution;
-import SP.util.HeuristicUtil;
 
 import java.io.*;
-
-import static SP.experiments.SolverComparison3Cap.*;
 
 /**
  * Provides functionalities to write solutions of stacking problems to the file system.

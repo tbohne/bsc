@@ -1,10 +1,9 @@
 package SP.post_optimization_methods;
 
-import SP.experiments.OptimizableSolution;
+import SP.representations.OptimizableSolution;
 import SP.representations.Solution;
 import SP.io.SolutionReader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TabuSearchTest {

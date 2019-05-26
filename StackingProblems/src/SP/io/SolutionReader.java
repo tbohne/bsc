@@ -1,6 +1,6 @@
 package SP.io;
 
-import SP.experiments.OptimizableSolution;
+import SP.representations.OptimizableSolution;
 import SP.representations.Instance;
 import SP.representations.Solution;
 
