@@ -1,11 +1,5 @@
 package SP.util;
 
-import SP.constructive_heuristics.ThreeCapHeuristic;
-import SP.constructive_heuristics.TwoCapHeuristic;
-import SP.experiments.SolverComparison;
-import SP.mip_formulations.BinPackingFormulation;
-import SP.mip_formulations.ThreeIndexFormulation;
-import SP.post_optimization_methods.TabuSearch;
 import SP.representations.*;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -634,8 +628,8 @@ public class HeuristicUtil {
      * @param stackAssignments    - map to be filled with the stacks and the items assigned to each stack
      */
     private static void prepareUpdateOfStackAssignmentsInPostProcessing(
-            MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, Map<Integer, Double> itemSavings,
-            BipartiteGraph postProcessingGraph, Map<Integer, List<Integer>> stackAssignments
+        MaximumWeightBipartiteMatching<String, DefaultWeightedEdge> maxSavingsMatching, Map<Integer, Double> itemSavings,
+        BipartiteGraph postProcessingGraph, Map<Integer, List<Integer>> stackAssignments
     ) {
         for (DefaultWeightedEdge edge : maxSavingsMatching.getMatching().getEdges()) {
             int item = GraphUtil.parseItemFromPostProcessingMatching(edge);
@@ -692,7 +686,7 @@ public class HeuristicUtil {
      * @return item with the maximum savings
      */
     private static int getItemWithMaxSavingsForTriple(
-            int itemOne, int itemTwo, int itemThree, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix
+        int itemOne, int itemTwo, int itemThree, int stackIdx, Map<Integer, Double> costsBefore, double[][] costMatrix
     ) {
         double costsItemOne = costMatrix[itemOne][stackIdx];
         double costsItemTwo = costMatrix[itemTwo][stackIdx];
@@ -724,7 +718,7 @@ public class HeuristicUtil {
      * @param instance    - considered instance of the stacking problem
      */
     private static void updateAssignmentsForCompatiblePair(
-            int itemOne, int stack, int itemTwo, Map<Integer, Double> costsBefore, Instance instance
+        int itemOne, int stack, int itemTwo, Map<Integer, Double> costsBefore, Instance instance
     ) {
         double costsItemOne = instance.getCosts()[itemOne][stack];
         double costsItemTwo = instance.getCosts()[itemTwo][stack];
