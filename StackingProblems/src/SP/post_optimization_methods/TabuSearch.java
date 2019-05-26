@@ -224,7 +224,7 @@ public class TabuSearch {
      * @param pos         - the item's original position
      */
     private Shift shiftItem(Solution sol, int item, StackPosition pos, StackPosition shiftTarget) {
-
+        
         sol.getFilledStacks()[shiftTarget.getStackIdx()][shiftTarget.getLevel()] =
             sol.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
 
@@ -319,7 +319,6 @@ public class TabuSearch {
                     }
                 }
             }
-
             // ASPIRATION CRITERION
             if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
                 if (this.shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT) {
@@ -406,7 +405,6 @@ public class TabuSearch {
                 }
                 return best;
             }
-
             List<Swap> swapList = new ArrayList<>();
             Solution neighbor = this.performSwaps(numberOfSwaps, swapList);
 
@@ -440,7 +438,6 @@ public class TabuSearch {
                     }
                 }
             }
-
             // ASPIRATION CRITERION
             if (neighbor.computeCosts() < this.bestSol.computeCosts()) {
                 if (this.shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT) {
@@ -543,9 +540,6 @@ public class TabuSearch {
         while (Math.abs(this.iterationOfLastImprovement - iteration) < this.numberOfNonImprovingIterations) {
             if (this.timeLimit != 0 && (System.currentTimeMillis() - this.startTime) / 1000 > this.timeLimit) { break; }
             if (this.bestSol.computeCosts() == this.optimalObjectiveValue) { break; }
-            System.out.println(this.tabuList.size());
-            System.out.println(this.bestSol.computeCosts());
-            System.out.println("diff: " + Math.abs(this.iterationOfLastImprovement - iteration));
             this.updateCurrentSolution(iteration++);
         }
     }
