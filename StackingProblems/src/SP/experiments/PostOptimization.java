@@ -34,27 +34,30 @@ public class PostOptimization {
         BEST_FIT
     }
 
-    public static final ShortTermStrategies SHORT_TERM_STRATEGY = ShortTermStrategies.BEST_FIT;
-    public static final StoppingCriteria STOPPING_CRITERION = StoppingCriteria.NON_IMPROVING_ITERATIONS;
+    private static final ShortTermStrategies SHORT_TERM_STRATEGY = ShortTermStrategies.BEST_FIT;
+    private static final StoppingCriteria STOPPING_CRITERION = StoppingCriteria.NON_IMPROVING_ITERATIONS;
 
-    public static final int XSWAP_INTERVAL_UB = 4;
+    private static final int K_SWAP_INTERVAL_UB = 4;
 
-    public static final int NUMBER_OF_ITERATIONS = 50;
+    private static final int NUMBER_OF_ITERATIONS = 50;
     public static final int NUMBER_OF_TABU_LIST_CLEARS = 10;
-    public static final int NUMBER_OF_NON_IMPROVING_ITERATIONS = 50;
+    private static final int NUMBER_OF_NON_IMPROVING_ITERATIONS = 50;
 
-    public static final int NUMBER_OF_NEIGHBORS = 1000;
-    public static final int MAX_TABU_LIST_LENGTH_FACTOR = 9;
-    public static final int UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS = 5000;
-    public static final int UNSUCCESSFUL_X_SWAP_ATTEMPTS = 1000;
+    private static final int NUMBER_OF_NEIGHBORS = 1000;
+    private static final int MAX_TABU_LIST_LENGTH_FACTOR = 9;
+    private static final int UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS = 5000;
+    private static final int UNSUCCESSFUL_K_SWAP_ATTEMPTS = 1000;
 
-    public static final String INSTANCE_PREFIX = "res/instances/";
-    public static final String SOLUTION_PREFIX = "res/solutions/";
+    private static final float K_SWAP_PROBABILITY = 5.0F;
+    private static final float SWAP_PROBABILITY = 45.0F;
+
+    private static final String INSTANCE_PREFIX = "res/instances/";
+    private static final String SOLUTION_PREFIX = "res/solutions/";
 
     // 3Cap solutions otherwise
-    public static final boolean OPTIMIZE_TWO_CAP_SOLUTIONS = true;
+    private static final boolean OPTIMIZE_TWO_CAP_SOLUTIONS = true;
 
-    public static void optimizeSolutions() {
+    private static void optimizeSolutions() {
 
         List<OptimizableSolution> solutions;
         if (OPTIMIZE_TWO_CAP_SOLUTIONS) {
@@ -73,8 +76,9 @@ public class PostOptimization {
 
             TabuSearch ts = new TabuSearch(
                 sol.getSol(), sol.getOptimalObjectiveValue(), NUMBER_OF_NEIGHBORS, MAX_TABU_LIST_LENGTH_FACTOR, SHORT_TERM_STRATEGY,
-                    UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS, UNSUCCESSFUL_X_SWAP_ATTEMPTS, NUMBER_OF_NON_IMPROVING_ITERATIONS,
-                    XSWAP_INTERVAL_UB, NUMBER_OF_ITERATIONS, NUMBER_OF_TABU_LIST_CLEARS, STOPPING_CRITERION
+                UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS, UNSUCCESSFUL_K_SWAP_ATTEMPTS, NUMBER_OF_NON_IMPROVING_ITERATIONS,
+                K_SWAP_INTERVAL_UB, NUMBER_OF_ITERATIONS, NUMBER_OF_TABU_LIST_CLEARS, STOPPING_CRITERION,
+                K_SWAP_PROBABILITY, SWAP_PROBABILITY
             );
 
             Solution impSol = ts.solve();
