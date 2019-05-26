@@ -122,7 +122,6 @@ public class TabuSearch {
      * Clears the entries in the shift tabu list and increments the clear counter.
      */
     public void clearTabuList() {
-//        System.out.println("clearing tabu list...");
         this.tabuList = new LinkedList<>();
         this.tabuListClears++;
     }
@@ -216,15 +215,35 @@ public class TabuSearch {
     }
 
     /**
-     * Counts the shift failure and resets the shift tabu list if
-     * the number of specified unsuccessful shift attempts is reached.
+     * Returns a random stack position that is occupied with an item.
+     *
+     * @param neighbor - neighbor to return an occupied stack position for
+     * @return occupied stack position
      */
-    public void neighborGenerationFailure() {
-        this.failCnt++;
-//        if (this.failCnt == TabuSearchConfig.UNSUCCESSFUL_NEIGHBOR_GENERATION_ATTEMPTS) {
-////            this.clearTabuList();
-//            this.failCnt = 0;
-//        }
+    public StackPosition getRandomStackPositionFilledWithItem(Solution neighbor) {
+
+        StackPosition pos = this.getRandomPositionInStorageArea(neighbor);
+
+        int item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
+        while (item == -1) {
+            pos = this.getRandomPositionInStorageArea(neighbor);
+            item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
+        }
+
+        return pos;
+    }
+
+    /**
+     * Ensures that the shift target is in a different stack.
+     *
+     * @param shiftTarget
+     * @param pos
+     * @param neighbor
+     */
+    public void getRandomShiftTargetFromOtherStack(StackPosition shiftTarget, StackPosition pos, Solution neighbor) {
+        while (shiftTarget.getStackIdx() == pos.getStackIdx()) {
+            shiftTarget = this.getRandomFreeSlot(neighbor);
+        }
     }
 
     /**
@@ -234,44 +253,35 @@ public class TabuSearch {
      * @return a neighboring solution
      */
     public Solution getNeighborShift(PostOptimization.ShortTermStrategies shortTermStrategy) {
-        ArrayList<Solution> nbrs = new ArrayList<>();
 
+        ArrayList<Solution> nbrs = new ArrayList<>();
         this.failCnt = 0;
 
         while (nbrs.size() < this.numberOfNeighbors) {
 
             Solution neighbor = new Solution(this.currSol);
-            StackPosition pos = this.getRandomPositionInStorageArea(neighbor);
+            StackPosition pos = this.getRandomStackPositionFilledWithItem(neighbor);
             int item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
-
-            while (item == -1) {
-                pos = this.getRandomPositionInStorageArea(neighbor);
-                item = neighbor.getFilledStacks()[pos.getStackIdx()][pos.getLevel()];
-            }
-
             StackPosition shiftTarget = this.getRandomFreeSlot(neighbor);
-            // the shift target shouldn't be in the same stack
-            while (shiftTarget.getStackIdx() == pos.getStackIdx()) {
-                shiftTarget = this.getRandomFreeSlot(neighbor);
-            }
-
+            this.getRandomShiftTargetFromOtherStack(shiftTarget, pos, neighbor);
             Shift shift = this.shiftItem(neighbor, item, pos, shiftTarget);
             neighbor.lowerItemsThatAreStackedInTheAir();
 
             if (!neighbor.isFeasible()) { continue; }
 
             // FIRST-FIT
-            if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT
-                    && !this.tabuList.contains(shift)
-                    && neighbor.computeCosts() < this.currSol.computeCosts()) {
-                this.forbidShift(shift);
-                return neighbor;
-                // BEST-FIT
+            if (shortTermStrategy == PostOptimization.ShortTermStrategies.FIRST_FIT && !this.tabuList.contains(shift)
+                && neighbor.computeCosts() < this.currSol.computeCosts()) {
+
+                    this.forbidShift(shift);
+                    return neighbor;
+
+            // BEST-FIT
             } else if (!this.tabuList.contains(shift)) {
                 nbrs.add(neighbor);
                 this.forbidShift(shift);
             } else {
-                this.neighborGenerationFailure();
+                this.failCnt++;
                 if (this.failCnt == this.unsuccessfulNeighborGenerationAttempts) {
                     this.failCnt = 0;
                     if (nbrs.size() == 0) {
@@ -382,7 +392,7 @@ public class TabuSearch {
                     this.forbidShift(swap.getShiftTwo());
                 }
             } else {
-                this.neighborGenerationFailure();
+                this.failCnt++;
                 if (this.failCnt == this.unsuccessfulNeighborGenerationAttempts) {
                     this.failCnt = 0;
                     if (nbrs.size() == 0) {
