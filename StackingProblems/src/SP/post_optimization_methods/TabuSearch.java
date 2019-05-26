@@ -61,8 +61,8 @@ public class TabuSearch {
         Solution initialSolution, double timeLimit, double optimalObjectiveValue, int numberOfNeighbors,
         int maxTabuListLengthFactor, PostOptimization.ShortTermStrategies shortTermStrategy,
         int unsuccessfulNeighborGenerationAttempts, int unsuccessfulKSwapAttempts, int numberOfNonImprovingIterations,
-        int kSwapIntervalUB, int numberOfIterations, int numberOfTabuListClears, PostOptimization.StoppingCriteria stoppingCriterion,
-        float kSwapProbability, float swapProbability
+        int kSwapIntervalUB, int numberOfIterations, int numberOfTabuListClears,
+        PostOptimization.StoppingCriteria stoppingCriterion, float kSwapProbability, float swapProbability
     ) {
         this(
             initialSolution, optimalObjectiveValue, numberOfNeighbors, maxTabuListLengthFactor, shortTermStrategy,
@@ -349,9 +349,45 @@ public class TabuSearch {
     }
 
     /**
+     * Performs the specified number of swap operations and stores them in the swap list.
+     *
+     * @param numberOfSwaps - number of swaps to be performed
+     * @param swapList      - list to store the performer swaps
+     * @return generated neighbor solution
+     */
+    private Solution performSwaps(int numberOfSwaps, List<Swap> swapList) {
+
+        Solution neighbor = new Solution(this.currSol);
+        int swapCnt = 0;
+
+        while (swapCnt < numberOfSwaps) {
+            StackPosition posOne = this.getRandomStackPositionFilledWithItem(neighbor);
+            int swapItemOne = neighbor.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
+            StackPosition posTwo = this.getRandomStackPositionFilledWithItem(neighbor);
+            int swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
+
+            // the swapped items should differ
+            while (swapItemTwo == swapItemOne) {
+                posTwo = this.getRandomStackPosition(neighbor);
+                swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
+            }
+
+            Solution tmpSol = new Solution(neighbor);
+            Swap swap = this.swapItems(tmpSol, posOne, posTwo);
+            if (!swapList.contains(swap)) {
+                swapList.add(swap);
+                neighbor = tmpSol;
+                swapCnt++;
+                neighbor.lowerItemsThatAreStackedInTheAir();
+            }
+        }
+        return neighbor;
+    }
+
+    /**
      * Generates a neighbor for the current solution using the "k-swap-neighborhood".
      *
-     * @param numberOfSwaps     - number of swaps to be performed
+     * @param numberOfSwaps - number of swaps to be performed
      * @return a neighboring solution
      */
     @SuppressWarnings("Duplicates")
@@ -359,11 +395,11 @@ public class TabuSearch {
 
         List<Solution> nbrs = new ArrayList<>();
         this.failCnt = 0;
-        int cnt = 0;
+        int unsuccessfulKSwapCounter = 0;
 
         while (nbrs.size() < this.numberOfNeighbors) {
 
-            if (numberOfSwaps > 1 && cnt++ == this.unsuccessfulKSwapAttempts) {
+            if (numberOfSwaps > 1 && unsuccessfulKSwapCounter++ == this.unsuccessfulKSwapAttempts) {
                 Solution best = HeuristicUtil.getBestSolution(nbrs);
                 if (best.isEmpty()) {
                     return this.currSol;
@@ -371,32 +407,8 @@ public class TabuSearch {
                 return best;
             }
 
-            Solution neighbor = new Solution(this.currSol);
             List<Swap> swapList = new ArrayList<>();
-            int swapCnt = 0;
-
-            while (swapCnt < numberOfSwaps) {
-
-                StackPosition posOne = this.getRandomStackPositionFilledWithItem(neighbor);
-                int swapItemOne = neighbor.getFilledStacks()[posOne.getStackIdx()][posOne.getLevel()];
-                StackPosition posTwo = this.getRandomStackPositionFilledWithItem(neighbor);
-                int swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
-
-                // the swapped items should differ
-                while (swapItemTwo == swapItemOne) {
-                    posTwo = this.getRandomStackPosition(neighbor);
-                    swapItemTwo = this.currSol.getFilledStacks()[posTwo.getStackIdx()][posTwo.getLevel()];
-                }
-
-                Solution tmpSol = new Solution(neighbor);
-                Swap swap = this.swapItems(tmpSol, posOne, posTwo);
-                if (!swapList.contains(swap)) {
-                    swapList.add(swap);
-                    neighbor = tmpSol;
-                    swapCnt++;
-                    neighbor.lowerItemsThatAreStackedInTheAir();
-                }
-            }
+            Solution neighbor = this.performSwaps(numberOfSwaps, swapList);
 
             if (!neighbor.isFeasible()) { continue; }
 
@@ -490,7 +502,7 @@ public class TabuSearch {
      * Updates the current solution with the best neighbor.
      * Additionally, the best solution gets updated if a new best solution is found.
      *
-     * @param iteration         - current iteration
+     * @param iteration - current iteration
      */
     private void updateCurrentSolution(int iteration) {
         this.currSol = this.getNeighborBasedOnProbabilities();
