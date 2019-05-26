@@ -37,7 +37,7 @@ public class CompareSolvers {
     private static final boolean HIDE_CPLEX_OUTPUT = true;
     // 1 --> feasibility over optimality
     private static final int MIP_EMPHASIS = 1;
-    // 0 tolerance --> only terminating with optimal solutions before time limit
+    // 0 --> only terminating with optimal solutions before time limit
     private static final double MIP_TOLERANCE = 0.0;
     /**********************************************************/
 
@@ -59,13 +59,13 @@ public class CompareSolvers {
     /*********************************************************/
 
     // determines whether only b=2 or b=3 instances are considered (general b otherwise)
-    private static final boolean SOLVE_INSTANCES_WITH_SPECIFIC_CAPACITY = true;
+    private static final boolean SOLVE_INSTANCES_WITH_SPECIFIC_STACK_CAPACITY = true;
     // in case of specific capacity: determines whether only b=2 instances are considered (b=3 otherwise)
     private static final boolean SOLVE_TWO_CAP = true;
 
     public static void main(String[] args) {
 
-        if (SOLVE_INSTANCES_WITH_SPECIFIC_CAPACITY) {
+        if (SOLVE_INSTANCES_WITH_SPECIFIC_STACK_CAPACITY) {
 
             // solving instances with capacity 2
             if (SOLVE_TWO_CAP) {
